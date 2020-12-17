@@ -10,6 +10,7 @@ public interface DAO <T>
 	{
 		throw new RuntimeException("Method undefined");
 	}
+	public T find(String... args);
 	public void delete(T t);
 	public void update(T t, String... args);
 }

@@ -1,10 +1,10 @@
 # Logiweb
 Java School Public Repository
 
-# VERSION 0.0.2
+# VERSION 0.0.3
 
-Added Spring MVC support. Removed DB URL, user and password data from XML to gitignored properties file (for security purposes)
+Added Spring Security support.
 
 # TODO
 
-Make log in form and add Spring Security.
+Custom 403 page. Add pages for each role with appropriate info. Code refactoring. Maybe frontend :(
