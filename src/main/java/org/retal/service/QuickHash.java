@@ -11,7 +11,7 @@ public class QuickHash
 	public static void main(String[] args) throws NoSuchAlgorithmException
 	{
 		MessageDigest md = MessageDigest.getInstance("SHA-512");
-		byte[] pass = "admin111".getBytes(StandardCharsets.ISO_8859_1);
+		byte[] pass = "manager".getBytes(StandardCharsets.ISO_8859_1);
 		pass = md.digest(pass);
 		String hash = new String(pass, StandardCharsets.ISO_8859_1);
 		String h2 = new String(Base64.getEncoder().encode(pass), StandardCharsets.UTF_8);

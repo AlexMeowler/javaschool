@@ -1,6 +1,7 @@
-package org.retal.model;
+package org.retal.domain;
 
 import javax.persistence.*;
+
 
 @Entity
 @Table(name = "users")

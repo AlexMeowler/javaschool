@@ -1,10 +1,10 @@
 # Logiweb
 Java School Public Repository
 
-# VERSION 0.0.1
+# VERSION 0.0.2
 
-Made a working "Hello, World" web application. Added Hibernate support.
+Added Spring MVC support. Removed DB URL, user and password data from XML to gitignored properties file (for security purposes)
 
 # TODO
 
-Add Spring MVC, Security and make log in form.
+Make log in form and add Spring Security.

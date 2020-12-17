@@ -1,33 +1,53 @@
 package org.retal.dao;
 
+import java.util.List;
+
+import javax.transaction.Transactional;
+
 import org.hibernate.Session;
-import org.retal.model.User;
+import org.retal.domain.User;
 import org.retal.service.HibernateSessionFactory;
 
-public class UserDAO 
+public class UserDAO implements DAO<User>
 {
+	@Override
+	@Transactional
 	public void save(User user)
 	{
 		
 		
 	}
 	
+	@Override
+	@Transactional
 	public User read(int id)
 	{
 		Session session = HibernateSessionFactory.getSessionFactory().openSession();
-		session.beginTransaction();
 		User user = session.get(User.class, id);
-		session.flush();
 		session.close();
 		return user;
 	}
 	
-	public void modify()
+	@Override
+	@Transactional
+	public List<User> readAll()
+	{
+		Session session = HibernateSessionFactory.getSessionFactory().openSession();
+		List<User> users = session.createNativeQuery("SELECT * FROM USERS", User.class).getResultList();
+		session.close();
+		return users;
+	}
+	
+	@Override
+	@Transactional
+	public void update(User user, String... args)
 	{
 		
 	}
 	
-	public void delete()
+	@Override
+	@Transactional
+	public void delete(User user)
 	{
 		
 	}

@@ -1,2 +1,3 @@
 nondev/
 target/
+src/main/resources/db.properties
