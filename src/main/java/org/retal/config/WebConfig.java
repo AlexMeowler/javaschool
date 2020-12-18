@@ -1,6 +1,5 @@
 package org.retal.config;
 
-import org.retal.service.UserAuthorizationService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -22,9 +21,4 @@ public class WebConfig
 		return resolver;
 	}
 	
-	/*@Bean
-	public UserAuthorizationService getUserAuthorizationService()
-	{
-	    return new UserAuthorizationService();
-	}*/
 }

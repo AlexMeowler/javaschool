@@ -1,5 +1,6 @@
 package org.retal.config;
 
+import org.retal.domain.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -10,10 +11,11 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.password.MessageDigestPasswordEncoder;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 @SuppressWarnings("deprecation")
 @Configuration
-@EnableWebSecurity(debug = true)
+@EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true)
 @ComponentScan(basePackages = "org.retal")
 public class SecurityConfig extends WebSecurityConfigurerAdapter
@@ -31,18 +33,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
 	@Override
 	protected void configure(HttpSecurity http) throws Exception
 	{
-		http.authorizeRequests().antMatchers("/resources/*", "home.jsp").permitAll()
+		http.authorizeRequests().antMatchers("/resources/*", "/home", "/", "/403").permitAll()
 			.antMatchers("spring_auth").anonymous()
-			.antMatchers("logged.jsp").authenticated()
-			.antMatchers("adminPage.jsp").access("hasRole('ADMIN')")
-			.antMatchers("managerPage.jsp").access("hasRole('MANAGER')")
-			.antMatchers("logiweb/driverPage.jsp").access("hasRole('DRIVER')")
+			.antMatchers("/adminPage").hasAuthority(UserRole.ADMIN.toString())
+			.antMatchers("/managerPage").hasAnyAuthority(UserRole.MANAGER.toString(), UserRole.ADMIN.toString())
+			.antMatchers("/driverPage").hasAnyAuthority(UserRole.DRIVER.toString(), UserRole.ADMIN.toString())
 			.anyRequest().authenticated()
-			.and();
+			.and().exceptionHandling().authenticationEntryPoint(authEntryPointAndAccessDeniedHandler)
+			.accessDeniedHandler(authEntryPointAndAccessDeniedHandler);
 		http.formLogin()
 			.loginPage("/home")
 			.loginProcessingUrl("/spring_auth")
-			.successForwardUrl("/logged")
+			.successHandler(authSuccessHandler)
 			.failureUrl("/spring_auth?error")
 			.usernameParameter("j_login")
 			.passwordParameter("j_password")
@@ -51,10 +53,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
 			.permitAll()
 			.logoutUrl("/logout") //URL trigger for log out
 			.logoutSuccessUrl("/spring_auth?logout")
-			.invalidateHttpSession(true);
-		
+			.invalidateHttpSession(true);	
 	}
 	
 	@Autowired
 	private UserDetailsService authService;
+	
+	@Autowired
+	private AuthenticationSuccessHandler authSuccessHandler;
+	
+	@Autowired
+	private Error403Handler authEntryPointAndAccessDeniedHandler;
 }

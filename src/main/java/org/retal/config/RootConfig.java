@@ -8,6 +8,7 @@ public class RootConfig implements WebMvcConfigurer
 {
 	@Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
+		//css?
         registry.addResourceHandler("/pages/**").addResourceLocations("/pages/");
     }
 	

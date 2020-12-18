@@ -8,6 +8,7 @@ import javax.persistence.*;
 public class User 
 {
 	@Id
+	//@Column(name = "id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	
@@ -20,12 +21,12 @@ public class User
 	@Column(name = "role")
 	private String role;
 	
-	public int getID()
+	public int getId()
 	{
 		return id;
 	}
 	
-	public void setID(int id)
+	public void setId(int id)
 	{
 		this.id = id;
 	}
