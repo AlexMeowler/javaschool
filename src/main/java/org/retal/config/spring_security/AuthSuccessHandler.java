@@ -1,4 +1,4 @@
-package org.retal.config;
+package org.retal.config.spring_security;
 
 import java.io.IOException;
 import java.util.Arrays;

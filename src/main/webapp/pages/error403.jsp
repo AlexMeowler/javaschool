@@ -6,6 +6,6 @@
 	<c:if test="${not empty username}">
 	<p>Sorry, <c:out value="${username}"/>, but you can't access this page...</p>
 	</c:if>
-	<a href="/logiweb/home">Return to home page</a>
+	<a href="${pageContext.request.contextPath}/home">Return to home page</a>
 </body>
 </html>

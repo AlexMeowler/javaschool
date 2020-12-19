@@ -5,20 +5,20 @@
 <html>
 <body>
 	<table>
-	<tr>
-		<td><a href="/logiweb/home">Home</a></td>
-		<td><a href="/logiweb/adminPage">Administrator page</a></td>
-		<td><a href="/logiweb/managerPage">Manager page</a></td>
-		<td><a href="/logiweb/driverPage">Driver page</a></td>
-		<td>
-			<sec:authorize access = "isAuthenticated()">
-			<c:url value="/logout" var = "logoutURL"/>
-			<form:form action="${logoutURL}" method="POST">
-				<input type="submit" value="Log out">
-			</form:form>
-			</sec:authorize>
-		</td>
-	</tr>
+		<tr>
+			<td><a href="${pageContext.request.contextPath}/home">Home</a></td>
+			<td><a href="${pageContext.request.contextPath}/adminPage">Administrator page</a></td>
+			<td><a href="${pageContext.request.contextPath}/managerPage">Manager page</a></td>
+			<td><a href="${pageContext.request.contextPath}/driverPage">Driver page</a></td>
+			<td>
+				<sec:authorize access = "isAuthenticated()">
+				<c:url value="/logout" var = "logoutURL"/>
+				<form:form action="${logoutURL}" method="POST">
+					<input type="submit" value="Log out">
+				</form:form>
+				</sec:authorize>
+			</td>
+		</tr>
 	</table>
 	<p>Welcome to protected driver page!</p>
 </body>

@@ -1,5 +1,8 @@
 package org.retal.config;
 
+import org.retal.config.spring.RootConfig;
+import org.retal.config.spring.WebConfig;
+import org.retal.config.spring_security.SecurityConfig;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
 public class WebInitialiser extends AbstractAnnotationConfigDispatcherServletInitializer

@@ -2,6 +2,7 @@ package org.retal.service;
 
 import java.util.*;
 
+import org.apache.log4j.Logger;
 import org.retal.dao.UserDAO;
 import org.retal.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +23,10 @@ public class UserAuthorizationService implements UserDetailsService
 		User user = userDAO.find(username);
 		if(user == null)
 		{
+			log.info("User " + username + " not found");
 			throw new UsernameNotFoundException("User not found");
 		}
+		log.info("User " + username + " found");
 		Set<GrantedAuthority> roles = new HashSet<>();
 		/*switch(user.getRole())
 		{
@@ -41,4 +44,6 @@ public class UserAuthorizationService implements UserDetailsService
 	
 	@Autowired
 	private UserDAO userDAO;
+	
+	private static final Logger log = Logger.getLogger(UserAuthorizationService.class);
 }

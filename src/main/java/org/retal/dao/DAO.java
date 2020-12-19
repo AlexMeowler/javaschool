@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface DAO <T>
 {
-	public void save (T t);
+	public void add (T t);
 	public T read(int primaryKey);
 	public default List<T> readAll()
 	{
@@ -12,5 +12,6 @@ public interface DAO <T>
 	}
 	public T find(String... args);
 	public void delete(T t);
+	public void deleteById(int id);
 	public void update(T t, String... args);
 }

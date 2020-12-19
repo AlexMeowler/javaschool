@@ -1,4 +1,4 @@
-package org.retal.config;
+package org.retal.config.spring;
 
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;

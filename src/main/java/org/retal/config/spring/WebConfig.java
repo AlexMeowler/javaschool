@@ -1,4 +1,4 @@
-package org.retal.config;
+package org.retal.config.spring;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;

@@ -3,13 +3,30 @@
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 <html>
+<head>
+	<script>
+		function showForm()
+		{
+			var elem = document.getElementById("form").style.display;
+			if(elem == "none")
+			{
+				elem = "";	
+			}
+			else
+			{
+				elem = "none";	
+			}
+			document.getElementById("form").style["display"] = elem;
+		}
+	</script>
+</head>
 <body>
 	<table>
 		<tr>
-			<td><a href="/logiweb/home">Home</a></td>
-			<td><a href="/logiweb/adminPage">Administrator page</a></td>
-			<td><a href="/logiweb/managerPage">Manager page</a></td>
-			<td><a href="/logiweb/driverPage">Driver page</a></td>
+			<td><a href="${pageContext.request.contextPath}/home">Home</a></td>
+			<td><a href="${pageContext.request.contextPath}/adminPage">Administrator page</a></td>
+			<td><a href="${pageContext.request.contextPath}/managerPage">Manager page</a></td>
+			<td><a href="${pageContext.request.contextPath}/driverPage">Driver page</a></td>
 			<td>
 				<sec:authorize access = "isAuthenticated()">
 				<c:url value="/logout" var = "logoutURL"/>
@@ -28,6 +45,7 @@
 			<td>Login</td>
 			<td>Password</td>
 			<td>Role</td>
+			<td>Delete</td>
 		</tr>
 		<c:forEach var="user" items="${userList}">
 		<tr>
@@ -35,8 +53,26 @@
 			<td>${user.login}</td>
 			<td>${user.password}</td>
 			<td>${user.role}</td>
+			<td><a href="${pageContext.request.contextPath}/deleteUser/${user.id}">Delete user</a></td>
 		</tr>
 		</c:forEach>
 	</table>
+	<button name = "openOrCloseForm" onclick = "showForm()">Add new user</button>
+	<c:set var = "hidden" value = ""/>
+	<c:if test = "${empty visible}"><c:set var = "hidden" value = "display:none;"/></c:if>
+	<c:url value="/addNewUser" var = "addUser"/>
+	<form:form id = "form" action="${addUser}" method="POST" style = "${hidden}">
+		<label>Login</label>
+		<input type="text" name="login"/>
+		<label>Password</label>
+		<input type="password" name="password"/>
+		<label>Role</label>
+		<select name = "role">
+			<option value = "admin" selected>Administrator</option>
+			<option value = "manager">Manager</option>
+			<option value = "driver">Driver</option>
+		</select>
+		<input type="submit" value="Add user">
+	</form:form>
 </body>
 </html>
