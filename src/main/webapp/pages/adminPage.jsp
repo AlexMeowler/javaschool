@@ -43,7 +43,8 @@
 		<tr>
 			<td>ID</td>
 			<td>Login</td>
-			<td>Password</td>
+			<td>Name</td>
+			<td>Surname</td>
 			<td>Role</td>
 			<td>Delete</td>
 		</tr>
@@ -51,7 +52,8 @@
 		<tr>
 			<td>${user.id}</td>
 			<td>${user.login}</td>
-			<td>${user.password}</td>
+			<td>${user.userInfo.name}</td>
+			<td>${user.userInfo.surname}</td>
 			<td>${user.role}</td>
 			<td><a href="${pageContext.request.contextPath}/deleteUser/${user.id}">Delete user</a></td>
 		</tr>

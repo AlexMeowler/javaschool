@@ -6,8 +6,6 @@ import java.util.Base64;
 
 import javax.persistence.*;
 
-import org.retal.dao.UserDAO;
-
 
 @Entity
 @Table(name = "users")
@@ -30,6 +28,8 @@ public class User
 	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
 	private UserInfo userInfo;
+	
+	//order_id
 	
 	public int getId()
 	{

@@ -22,6 +22,14 @@ public class UserInfo
 	@Column(name = "surname")
 	private String surname;
 	
+	@Column(name = "hours_worked_month")
+	private Integer hoursWorked;
+	
+	@Column(name = "status")
+	private String status;
+	
+	//current city
+	
 	@OneToOne
     @MapsId
     @JoinColumn(name = "id")
@@ -52,7 +60,7 @@ public class UserInfo
 		return surname;
 	}
 	
-	public void setPassword(String surname)
+	public void setSurname(String surname)
 	{
 		this.surname = surname;
 	}
@@ -65,6 +73,26 @@ public class UserInfo
 	public void setUser(User user)
 	{
 		this.user = user;
+	}
+	
+	public Integer getHoursWorked()
+	{
+		return hoursWorked;
+	}
+	
+	public void setHoursWorked(Integer hoursWorked)
+	{
+		this.hoursWorked = hoursWorked;
+	}
+	
+	public String getStatus()
+	{
+		return status;
+	}
+	
+	public void setStatus(String status)
+	{
+		this.status = status;
 	}
 	
 	public String toString()

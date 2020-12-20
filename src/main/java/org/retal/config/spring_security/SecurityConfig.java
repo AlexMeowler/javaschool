@@ -53,7 +53,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
 			.permitAll()
 			.logoutUrl("/logout") //URL trigger for log out
 			.logoutSuccessUrl("/spring_auth?logout")
-			.invalidateHttpSession(true);	
+			.invalidateHttpSession(true)
+			.deleteCookies("JSESSIONID");
 	}
 	
 	@Autowired
