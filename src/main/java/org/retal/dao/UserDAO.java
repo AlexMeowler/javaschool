@@ -22,18 +22,8 @@ public class UserDAO implements DAO<User>
 	public void add(User user)
 	{
 		log.info("Attempt to add user: name='" + user.getLogin() + "', role='" + user.getRole() + "'");
-		MessageDigest mg = null;
-		try
-		{
-			mg = MessageDigest.getInstance("sha-512");
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-		}
-		byte[] password = user.getPassword().getBytes(StandardCharsets.UTF_8);
-		String hashedPassword = Base64.getEncoder().encodeToString(mg.digest(password));
-		user.setPassword(hashedPassword);
+		//String hashedPassword = getPasswordAsBase64Hash(user.getPassword());
+		//user.setPassword(hashedPassword);
 		Session session = HibernateSessionFactory.getSessionFactory().openSession();
 		session.save(user);
 		session.close();
@@ -45,6 +35,8 @@ public class UserDAO implements DAO<User>
 	{
 		Session session = HibernateSessionFactory.getSessionFactory().openSession();
 		User user = session.get(User.class, id);
+		String info = user.getUserInfo() != null ? user.getUserInfo().toString() : "null";
+		log.info("for user id='" + user.getId() + "' user info = " + info);
 		session.close();
 		return user;
 	}
@@ -66,6 +58,11 @@ public class UserDAO implements DAO<User>
 		
 		Session session = HibernateSessionFactory.getSessionFactory().openSession();
 		List<User> users = session.createNativeQuery("SELECT * FROM USERS", User.class).getResultList();
+		for(User u : users)
+		{
+			String info = u.getUserInfo() != null ? u.getUserInfo().toString() : "null";
+			log.info("for user id='" + u.getId() + "' user info = " + info);
+		}
 		session.close();
 		return users;
 	}

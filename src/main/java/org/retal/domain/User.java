@@ -1,6 +1,12 @@
 package org.retal.domain;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.util.Base64;
+
 import javax.persistence.*;
+
+import org.retal.dao.UserDAO;
 
 
 @Entity
@@ -8,7 +14,7 @@ import javax.persistence.*;
 public class User 
 {
 	@Id
-	//@Column(name = "id")
+	@Column(name = "id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	
@@ -20,6 +26,10 @@ public class User
 	
 	@Column(name = "role")
 	private String role;
+	
+	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @PrimaryKeyJoinColumn
+	private UserInfo userInfo;
 	
 	public int getId()
 	{
@@ -36,9 +46,9 @@ public class User
 		return login;
 	}
 	
-	public void setLogin(String name)
+	public void setLogin(String login)
 	{
-		this.login = name;
+		this.login = login;
 	}
 	
 	public String getPassword()
@@ -48,7 +58,8 @@ public class User
 	
 	public void setPassword(String password)
 	{
-		this.password = password;
+		String hashedPassword = getPasswordAsBase64Hash(password);
+		this.password = hashedPassword;
 	}
 	
 	public String getRole()
@@ -61,8 +72,34 @@ public class User
 		this.role = role;
 	}
 	
+	public UserInfo getUserInfo()
+	{
+		return userInfo;
+	}
+	
+	public void setUserInfo(UserInfo userInfo)
+	{
+		this.userInfo = userInfo;
+	}
+	
 	public String toString()
 	{
 		return "User [id = " + id + ", login = " + login + ", role = " + role + "]";
+	}
+	
+	private String getPasswordAsBase64Hash(String pass)
+	{
+		MessageDigest mg = null;
+		try
+		{
+			mg = MessageDigest.getInstance("sha-512");
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		byte[] password = pass.getBytes(StandardCharsets.UTF_8);
+		String hashedPassword = Base64.getEncoder().encodeToString(mg.digest(password));
+		return hashedPassword;
 	}
 }

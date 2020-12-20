@@ -2,8 +2,10 @@ package org.retal.controller;
 
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.retal.dao.UserDAO;
-import org.retal.domain.User;
+import org.retal.dao.UserInfoDAO;
+import org.retal.domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -34,11 +36,15 @@ public class AdminPageController
 	}*/
 	
 	@RequestMapping(value = "/addNewUser", method = RequestMethod.POST)
-	public RedirectView addNewUser(User user, RedirectAttributes redir)
+	public RedirectView addNewUser(User user, UserInfo userInfo, RedirectAttributes redir)
 	{
 		RedirectView redirectView = new RedirectView("/adminPage", true);
 		redir.addFlashAttribute("visible", "true");
-		userDAO.add(user);
+		//userInfo.setId(user.getId());
+		userInfo.setUser(user);
+		user.setUserInfo(userInfo);
+		//userDAO.add(user);
+		userInfoDAO.add(userInfo);
 		return redirectView;
 	}
 	
@@ -52,4 +58,9 @@ public class AdminPageController
 	
 	@Autowired
 	private UserDAO userDAO;
+	
+	@Autowired
+	private UserInfoDAO userInfoDAO;
+	
+	private static final Logger log = Logger.getLogger(AdminPageController.class);
 }

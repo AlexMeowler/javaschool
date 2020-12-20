@@ -72,6 +72,11 @@
 			<option value = "manager">Manager</option>
 			<option value = "driver">Driver</option>
 		</select>
+		<br>
+		<label>Name</label>
+		<input type="text" name="name"/>
+		<label>Surname</label>
+		<input type="text" name="surname"/>
 		<input type="submit" value="Add user">
 	</form:form>
 </body>
