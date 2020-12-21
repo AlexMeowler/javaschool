@@ -10,6 +10,7 @@ public class RootConfig implements WebMvcConfigurer
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
 		//css?
         registry.addResourceHandler("/pages/**").addResourceLocations("/pages/");
+        registry.addResourceHandler("/static/**").addResourceLocations("/js/", "/css/");
     }
 	
 	

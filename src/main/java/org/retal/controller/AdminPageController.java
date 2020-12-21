@@ -7,6 +7,7 @@ import org.retal.dao.UserDAO;
 import org.retal.dao.UserInfoDAO;
 import org.retal.domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -40,11 +41,10 @@ public class AdminPageController
 	{
 		RedirectView redirectView = new RedirectView("/adminPage", true);
 		redir.addFlashAttribute("visible", "true");
-		log.info(user.toString() + " : " + user.getPassword());
-		log.info(userInfo.toString());
 		userInfo.setUser(user);
 		user.setUserInfo(userInfo);
-		userInfoDAO.add(userInfo);
+		userDAO.add(user);
+		//userInfoDAO.add(userInfo);
 		return redirectView;
 	}
 	

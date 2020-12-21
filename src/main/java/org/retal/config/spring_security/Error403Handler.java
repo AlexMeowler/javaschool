@@ -36,8 +36,8 @@ public class Error403Handler implements AuthenticationEntryPoint, AccessDeniedHa
 		{
 			log.warn("User: " + auth.getName() + " attempted to access the protected URL: " + request.getRequestURI());
 		}
-		
-		response.sendRedirect(request.getContextPath() + "/403/" + auth.getName());
+		String param = auth != null ? "/" + auth.getName() : "";
+		response.sendRedirect(request.getContextPath() + "/403" + param);
 	}
 	
 	private static final Logger log = Logger.getLogger(Error403Handler.class);

@@ -34,9 +34,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
 	protected void configure(HttpSecurity http) throws Exception
 	{
 		http.authorizeRequests().antMatchers("/resources/*", "/home", "/", "/403").permitAll()
-			.antMatchers("spring_auth").anonymous()
-			.antMatchers("/adminPage").hasAuthority(UserRole.ADMIN.toString())
-			.antMatchers("/managerPage").hasAnyAuthority(UserRole.MANAGER.toString(), UserRole.ADMIN.toString())
+			.antMatchers("/spring_auth").anonymous()
+			.antMatchers("/adminPage", "/addNewUser", "/deleteUser/*").hasAuthority(UserRole.ADMIN.toString())
+			.antMatchers("/managerPage", "/deleteDriver/*").hasAnyAuthority(UserRole.MANAGER.toString(), UserRole.ADMIN.toString())
 			.antMatchers("/driverPage").hasAnyAuthority(UserRole.DRIVER.toString(), UserRole.ADMIN.toString())
 			.anyRequest().authenticated()
 			.and().exceptionHandling().authenticationEntryPoint(authEntryPointAndAccessDeniedHandler)

@@ -28,15 +28,6 @@ public class UserAuthorizationService implements UserDetailsService
 		}
 		log.info("User " + username + " found");
 		Set<GrantedAuthority> roles = new HashSet<>();
-		/*switch(user.getRole())
-		{
-			case "admin":
-				break;
-			case "driver":
-				break;
-			case "manager":
-				break;
-		}*/
 		roles.add(new SimpleGrantedAuthority(user.getRole().toUpperCase()));
 		UserDetails details = new org.springframework.security.core.userdetails.User(user.getLogin(), user.getPassword(), roles);
 		return details;

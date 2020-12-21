@@ -25,8 +25,9 @@ public class User
 	@Column(name = "role")
 	private String role;
 	
-	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    @PrimaryKeyJoinColumn
+	@OneToOne(orphanRemoval = true)
+    @MapsId
+    @JoinColumn(name = "id")
 	private UserInfo userInfo;
 	
 	//order_id

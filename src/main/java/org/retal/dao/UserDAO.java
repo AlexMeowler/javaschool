@@ -1,8 +1,5 @@
 package org.retal.dao;
 
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.util.Base64;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -18,14 +15,14 @@ import org.springframework.stereotype.Component;
 public class UserDAO implements DAO<User>
 {
 	@Override
-	@Transactional
 	public void add(User user)
 	{
 		log.info("Attempt to add user: name='" + user.getLogin() + "', role='" + user.getRole() + "'");
-		//String hashedPassword = getPasswordAsBase64Hash(user.getPassword());
-		//user.setPassword(hashedPassword);
 		Session session = HibernateSessionFactory.getSessionFactory().openSession();
+		Transaction transaction = session.beginTransaction();
 		session.save(user);
+		session.flush();
+		transaction.commit();
 		session.close();
 	}
 	
@@ -62,6 +59,20 @@ public class UserDAO implements DAO<User>
 		{
 			String info = u.getUserInfo() != null ? u.getUserInfo().toString() : "null";
 			log.info("for user id='" + u.getId() + "' user info = " + info);
+		}
+		session.close();
+		return users;
+	}
+	
+	@Transactional
+	public List<User> readAllWithRole(String role)
+	{
+		role = role.toLowerCase();
+		Session session = HibernateSessionFactory.getSessionFactory().openSession();
+		List<User> users = session.createNativeQuery("SELECT * FROM USERS WHERE role = '" + role + "'", User.class).getResultList();
+		for(User u : users)
+		{
+			log.info("Driver found: id='" + u.getId() + "'");
 		}
 		session.close();
 		return users;
