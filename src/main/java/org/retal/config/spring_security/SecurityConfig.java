@@ -33,7 +33,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
 	@Override
 	protected void configure(HttpSecurity http) throws Exception
 	{
-		http.authorizeRequests().antMatchers("/resources/*", "/home", "/", "/403").permitAll()
+		http.authorizeRequests().antMatchers("/static/*", "/home", "/", "/403").permitAll()
 			.antMatchers("/spring_auth").anonymous()
 			.antMatchers("/adminPage", "/addNewUser", "/deleteUser/*").hasAuthority(UserRole.ADMIN.toString())
 			.antMatchers("/managerPage", "/deleteDriver/*").hasAnyAuthority(UserRole.MANAGER.toString(), UserRole.ADMIN.toString())
