@@ -6,7 +6,8 @@
 <head>
 	<link rel="stylesheet" type="text/css" href="<c:url value="static/bootstrap.min.css"/>">
 	<link rel="stylesheet" type="text/css" href="<c:url value="static/menu.css"/>">
-	<script type="text/javascript" src = "<c:url value="js/my_js_library.js"/>"></script>
+	<link rel="stylesheet" type="text/css" href="<c:url value="static/main.css"/>">
+	<script type="text/javascript" src = "<c:url value="static/my_js_library.js"/>"></script>
 </head>
 <body>
 	<jsp:include page="menu.jsp"/>
@@ -31,11 +32,12 @@
 		</tr>
 		</c:forEach>
 	</table>
-	<button name = "openOrCloseForm" onclick = "showForm()">Add new user</button>
+	<button class = "table-edit-button" name = "openOrCloseForm" onclick = "showForm()">Add new driver</button>
 	<c:set var = "hidden" value = ""/>
 	<c:if test = "${empty visible}"><c:set var = "hidden" value = "display:none;"/></c:if>
 	<c:url value="/addNewDriver" var = "addDriver"/>
 	<form:form id = "form" action="${addDriver}" method="POST" style = "${hidden}">
+		<br>
 		<label>Login</label>
 		<input type="text" name="login"/>
 		<label>Password</label>
@@ -48,6 +50,27 @@
 		<br>
 		<input type="submit" value="Add user">
 	</form:form>
+	<p>Cars list:</p>
+	<table>
+		<tr>
+			<td>Registration ID</td>
+			<td>Shift length</td>
+			<td>Capacity(tons)</td>
+			<td>Status</td>
+			<td>Current location</td>
+		</tr>
+		<c:forEach var="car" items="${carsList}">
+		<tr>
+			<td>${car.registrationId}</td>
+			<td>${car.shiftLength}</td>
+			<td>${car.capacityTons}</td>
+			<c:set var = "status" value = "Broken"/>
+			<c:if test = "${car.isWorking}"><c:set var = "status" value = "Normal"/></c:if>
+			<td>${status}</td>
+			<td>${car.location}</td>
+		</tr>
+		</c:forEach>
+	</table>
 	</div>
 </body>
 </html>

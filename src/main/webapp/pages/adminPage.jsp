@@ -6,9 +6,7 @@
 <head>
 	<link rel="stylesheet" type="text/css" href="<c:url value="static/bootstrap.min.css"/>">
 	<link rel="stylesheet" type="text/css" href="<c:url value="static/menu.css"/>">
-	<script type="text/javascript" src = "<c:url value="js/my_js_library.js"/>"></script>
-</head>
-<head>
+	<link rel="stylesheet" type="text/css" href="<c:url value="static/main.css"/>">
 	<script type="text/javascript" src = "<c:url value="static/my_js_library.js"/>"></script>
 </head>
 <body>
@@ -23,6 +21,10 @@
 			<td>Name</td>
 			<td>Surname</td>
 			<td>Role</td>
+			<td>Hours worked in current month</td>
+			<td>Status</td>
+			<td>Location</td>
+			<td>Edit</td>
 			<td>Delete</td>
 		</tr>
 		<c:forEach var="user" items="${userList}">
@@ -32,15 +34,20 @@
 			<td>${user.userInfo.name}</td>
 			<td>${user.userInfo.surname}</td>
 			<td>${user.role}</td>
+			<td>${user.userInfo.hoursWorked}</td>
+			<td>${user.userInfo.status}</td>
+			<td>${user.userInfo.currentCity}</td>
+			<td><!-- add edit link here --></td>
 			<td><a href="${pageContext.request.contextPath}/deleteUser/${user.id}">Delete user</a></td>
 		</tr>
 		</c:forEach>
 	</table>
-	<button name = "openOrCloseForm" onclick = "showForm()">Add new user</button>
+	<button class = "table-edit-button" name = "openOrCloseForm" onclick = "showForm()">Add new user</button>
 	<c:set var = "hidden" value = ""/>
 	<c:if test = "${empty visible}"><c:set var = "hidden" value = "display:none;"/></c:if>
 	<c:url value="/addNewUser" var = "addUser"/>
 	<form:form id = "form" action="${addUser}" method="POST" style = "${hidden}">
+		<br>
 		<label>Login</label>
 		<input type="text" name="login"/>
 		<label>Password</label>

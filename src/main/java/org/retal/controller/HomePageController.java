@@ -23,11 +23,5 @@ public class HomePageController
 		return "home";
 	}
 	
-	/*@RequestMapping(value = "/home", method = RequestMethod.POST)
-	public String logInHome(@RequestParam(value="j_login") String login, @RequestParam(value="j_password") String password)
-	{
-		return "home";
-	}*/
-	
 	private static final Logger log = Logger.getLogger(HomePageController.class);
 }

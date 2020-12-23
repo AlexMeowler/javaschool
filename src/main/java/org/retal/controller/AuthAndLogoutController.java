@@ -12,13 +12,6 @@ import org.springframework.web.servlet.view.RedirectView;
 @Controller
 public class AuthAndLogoutController 
 {
-	/*@RequestMapping(value = "/spring_auth", method = RequestMethod.POST)
-	public void logInAuthPost(@RequestParam(value="j_login") String login, 
-	        					@RequestParam(value="j_password") String password,
-	        					Model model)
-	{
-		log.info("auth attempt");
-	}*/
 	
 	@RequestMapping(value = "/spring_auth", method = RequestMethod.GET)
 	public RedirectView logInAuthGet(@RequestParam(value = "error", required = false) String error,

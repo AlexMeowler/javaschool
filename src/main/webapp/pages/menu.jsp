@@ -6,9 +6,8 @@
 		<a class="navbar-brand" href="${pageContext.request.contextPath}/home">Home</a>
 		<sec:authorize access = "isAuthenticated()">
 		<c:url value="/logout" var = "logoutURL"/>
-		<form:form id="logout" action="${logoutURL}" method="POST">
-				<a href="javascript:;" onclick="document.getElementById('logout').submit();">Log out</a>
-				<input type="submit" value="Log out">
+		<form:form style="margin-block-end: 0" id="logout" action="${logoutURL}" method="POST">
+				<a class = "navbar-brand" href="javascript:;" onclick="document.getElementById('logout').submit();">Log out</a>
 		</form:form>
 		</sec:authorize>
 		<button class = "navbar-toggler" type = "button" data-toggle = "collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">

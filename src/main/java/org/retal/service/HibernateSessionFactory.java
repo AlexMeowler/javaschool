@@ -7,6 +7,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
+import org.retal.domain.Car;
 import org.retal.domain.User;
 import org.retal.domain.UserInfo;
 
@@ -32,8 +33,8 @@ public class HibernateSessionFactory
 				e.printStackTrace();
 			}
 			config.configure().addProperties(properties);
-			config.addAnnotatedClass(User.class);
-			config.addAnnotatedClass(UserInfo.class);
+			config.addAnnotatedClass(User.class).addAnnotatedClass(UserInfo.class)
+			.addAnnotatedClass(Car.class);
 			ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder().applySettings(config.getProperties()).build();
 			sessionFactory = config.buildSessionFactory(serviceRegistry);
 		}

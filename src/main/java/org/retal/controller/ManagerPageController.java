@@ -3,11 +3,14 @@ package org.retal.controller;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.retal.dao.CarDAO;
 import org.retal.dao.UserDAO;
+import org.retal.domain.Car;
 import org.retal.domain.SessionInfo;
 import org.retal.domain.User;
 import org.retal.domain.UserInfo;
 import org.retal.domain.UserRole;
+import org.retal.service.UserEditor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,8 +29,10 @@ public class ManagerPageController
 		User user = sessionInfo.getCurrentUser();
 		UserInfo userInfo = user.getUserInfo();
 		model.addAttribute("name", userInfo.getName() + " " + userInfo.getSurname());
-		List<User> users = userDAO.readAllWithRole("driver");
+		List<User> users = userEditor.getAllDrivers();
 		model.addAttribute("driverList", users);
+		List<Car> cars = carDAO.readAll();
+		model.addAttribute("carsList", cars);
 		return "managerPage";
 	}
 	
@@ -39,7 +44,7 @@ public class ManagerPageController
 		userInfo.setUser(user);
 		user.setRole("driver");
 		user.setUserInfo(userInfo);
-		userDAO.add(user);
+		userEditor.addNewUser(user);
 		return redirectView;
 	}
 	
@@ -47,22 +52,12 @@ public class ManagerPageController
 	public RedirectView delete(@PathVariable Integer id, RedirectAttributes redir)
 	{
 		RedirectView redirectView = new RedirectView("/managerPage", true);
-		User user = userDAO.read(id);
+		User user = userEditor.getUser(id);
 		User we = sessionInfo.getCurrentUser();
-		if(user.getRole().equals(UserRole.DRIVER.toString().toLowerCase()))
+		String url403 = userEditor.deleteWithRoleChecking(we, user);
+		if(!url403.isEmpty())
 		{
-			userDAO.deleteById(id);
-		}
-		else
-		{
-			String ourLogin = we.getLogin();
-			String ourRole = we.getRole();
-			String targetLogin = user.getLogin();
-			String targetRole = user.getRole();
-			String warnMessage = String.format("Attempt to delete user without appropriate rights. "
-					+ "Source: login = '%s', role = '%s'. Target: login = '%s', role = '%s'", ourLogin, ourRole, targetLogin, targetRole);
-			log.warn(warnMessage);
-			redirectView.setUrl("/403");
+			redirectView.setUrl(url403);
 		}
 		return redirectView;
 	}
@@ -71,7 +66,10 @@ public class ManagerPageController
 	private SessionInfo sessionInfo;
 	
 	@Autowired
-	private UserDAO userDAO;
+	private UserEditor userEditor;
+	
+	@Autowired 
+	private CarDAO carDAO;
 	
 	private static final Logger log = Logger.getLogger(ManagerPageController.class);
 }

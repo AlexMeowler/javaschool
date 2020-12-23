@@ -1,8 +1,12 @@
 .main-body{
-	top:100px;
+	top:130px;
  	position: relative;
 }
 
 .home-page{
 	
+}
+
+.table-edit-button {
+	margin-top: 1em;	
 }

@@ -1,9 +1,9 @@
 # Logiweb
 Java School Public Repository
 
-# VERSION 0.0.5.3
+# VERSION 0.0.5.4
 
-I've mananged to get to frontend. Added Bootstrap and tested it by making this beautiful navbar and log in form.
+Moved all requests to DAO from controllers to Service layer, Controllers now use Service classes. Minor front-end improvements. Added DAO and Entity for cars. Started to work on "Edit" button for managers (and admins as well).
 
 # TODO
 

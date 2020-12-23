@@ -33,7 +33,8 @@ public class UserInfo
 	@Column(name = "status")
 	private String status;
 	
-	//current city
+	@Column(name = "current_city")
+	private String currentCity;
 	
 	@OneToOne(mappedBy = "userInfo", cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
@@ -97,6 +98,16 @@ public class UserInfo
 	public void setStatus(String status)
 	{
 		this.status = status;
+	}
+	
+	public String getCurrentCity()
+	{
+		return currentCity;
+	}
+	
+	public void setCurrentCity(String currentCity)
+	{
+		this.currentCity = currentCity;
 	}
 	
 	public String toString()
