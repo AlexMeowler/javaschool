@@ -1,9 +1,9 @@
 # Logiweb
 Java School Public Repository
 
-# VERSION 0.0.5.5
+# VERSION 0.0.6
 
-Added validation for adding users. Now I can start working on "Edit" option.
+Added "Edit" options for users with input validation. 
 
 # TODO
 
