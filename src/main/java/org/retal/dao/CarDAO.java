@@ -61,7 +61,7 @@ public class CarDAO implements DAO<Car>
 	}
 
 	@Override
-	public void update(Car t, String... args) {
+	public void update(Car newCar) {
 		// TODO Auto-generated method stub
 		
 	}

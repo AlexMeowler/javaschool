@@ -20,6 +20,7 @@
 			<td>Login</td>
 			<td>Name</td>
 			<td>Surname</td>
+			<td>Edit</td>
 			<td>Delete</td>
 		</tr>
 		<c:forEach var="driver" items="${driverList}">
@@ -28,6 +29,7 @@
 			<td>${driver.login}</td>
 			<td>${driver.userInfo.name}</td>
 			<td>${driver.userInfo.surname}</td>
+			<td><a href="${pageContext.request.contextPath}/editDriver/${driver.id}">Edit driver</a></td>
 			<td><a href="${pageContext.request.contextPath}/deleteDriver/${driver.id}">Delete driver</a></td>
 		</tr>
 		</c:forEach>

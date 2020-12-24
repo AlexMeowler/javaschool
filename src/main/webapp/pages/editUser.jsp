@@ -12,20 +12,20 @@
 <body>
 	<jsp:include page="menu.jsp"/>
 	<div class="container main-body">
-	<c:url value="/submitEditedUser" var = "editUser"/>
-	<form:form id = "form" action="${editUser}" method="POST">
+	<form:form id = "form" action="${pageContext.request.contextPath}${editUser}" method="POST">
 		<br>
 		<input type="text" name="id" value="${user.id}" hidden = "true"/>
 		<label>Login</label>
 		<input type="text" name="login" value="${user.login}"/>
 		<span class = "error">${error_login}</span>
+		<span class = "error">${error_unique}</span>
 		<br>
 		<label>Password</label>
 		<input type="password" name="password"/>
 		<span class = "error">${error_realPassword}</span>
 		<br>
 		<label>Role</label>
-		<select name = "role">
+		<select name = "role" ${we.role != 'admin' ? 'hidden' : ''}>
 			<option value = "admin" ${user.role == 'admin' ? 'selected' : ''}>Administrator</option>
 			<option value = "manager" ${user.role == 'manager' ? 'selected' : ''}>Manager</option>
 			<option value = "driver" ${user.role == 'driver' ? 'selected' : ''}>Driver</option>

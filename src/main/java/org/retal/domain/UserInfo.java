@@ -9,9 +9,12 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
+import javax.persistence.PrePersist;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import javax.validation.constraints.*;
+
+import org.hibernate.annotations.ColumnDefault;
 
 @Entity
 @Table(name = "user_info")
@@ -31,7 +34,7 @@ public class UserInfo
 	private String surname;
 	
 	@Column(name = "hours_worked_month")
-	private Integer hoursWorked;
+	private Integer hoursWorked = 0;
 	
 	@Column(name = "status")
 	private String status;

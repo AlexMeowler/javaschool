@@ -36,7 +36,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
 		http.authorizeRequests().antMatchers("/static/*", "/home", "/", "/403").permitAll()
 			.antMatchers("/spring_auth").anonymous()
 			.antMatchers("/adminPage", "/addNewUser", "/deleteUser/*").hasAuthority(UserRole.ADMIN.toString())
-			.antMatchers("/managerPage", "/deleteDriver/*").hasAnyAuthority(UserRole.MANAGER.toString(), UserRole.ADMIN.toString())
+			.antMatchers("/managerPage", "/deleteDriver/*", "/editUser").hasAnyAuthority(UserRole.MANAGER.toString(), UserRole.ADMIN.toString())
 			.antMatchers("/driverPage").hasAnyAuthority(UserRole.DRIVER.toString(), UserRole.ADMIN.toString())
 			.anyRequest().authenticated()
 			.and().exceptionHandling().authenticationEntryPoint(authEntryPointAndAccessDeniedHandler)

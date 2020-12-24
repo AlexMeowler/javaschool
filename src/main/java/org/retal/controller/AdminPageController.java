@@ -29,6 +29,10 @@ public class AdminPageController
 	{
 		BindingResult result = (BindingResult)model.asMap().get(BindingResult.MODEL_KEY_PREFIX + "user");
 		Map<String, String> errors = UserEditorValidator.convertErrorsToHashMap(result);
+		for(Map.Entry<String, String> e : errors.entrySet())
+		{
+			log.info(e.getKey() + ":" + e.getValue());
+		}
 		model.addAllAttributes(errors);
 		List<User> users = userEditor.getAllUsers();
 		model.addAttribute("userList", users);
@@ -36,7 +40,7 @@ public class AdminPageController
 	}
 	
 	@RequestMapping(value = "/addNewUser", method = RequestMethod.POST)
-	public RedirectView addNewUser(@ModelAttribute("user") User user, BindingResult bindingResult, UserInfo userInfo, 
+	public RedirectView addNewUser(User user, BindingResult bindingResult, UserInfo userInfo, 
 			RedirectAttributes redir, @RequestParam(name = "password") String password)
 	{
 		log.info("Attempt to add new user");
@@ -45,8 +49,11 @@ public class AdminPageController
 		user.setUserInfo(userInfo);
 		user.setRealPassword(password);
 		userEditor.addNewUser(user, bindingResult);
-		redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + "user", bindingResult);
-		redir.addFlashAttribute("user", user);
+		if(bindingResult.hasErrors())
+		{
+			redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + "user", bindingResult);
+			redir.addFlashAttribute("user", user);
+		}
 		return redirectView;
 	}
 	
@@ -69,19 +76,30 @@ public class AdminPageController
 	@RequestMapping(value = "/editUser", method = RequestMethod.GET)
 	public String editForm(Model model)
 	{
+		BindingResult result = (BindingResult)model.asMap().get(BindingResult.MODEL_KEY_PREFIX + "user");
+		Map<String, String> errors = UserEditorValidator.convertErrorsToHashMap(result);
+		model.addAllAttributes(errors);
+		model.addAttribute("editUser", "/submitEditedUser");
 		return "editUser";
 	}
 	
 	@RequestMapping(value = "/submitEditedUser",  method = RequestMethod.POST)
-	public RedirectView finishEditing(User user, UserInfo userInfo, 
-			@RequestParam(name = "password") String password)
+	public RedirectView finishEditing(User user, BindingResult bindingResult, UserInfo userInfo, 
+			@RequestParam(name = "password") String password, RedirectAttributes redir)
 	{
 		RedirectView redirectView = new RedirectView("/adminPage", true);
 		user.setUserInfo(userInfo);
 		user.setRealPassword(password);
-		userEditor.updateUser(user);
+		userEditor.updateUser(user, bindingResult);
+		if(bindingResult.hasErrors())
+		{
+			redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + "user", bindingResult);
+			redir.addFlashAttribute("user", user);
+			redirectView.setUrl("/editUser");
+		}
 		return redirectView;
 	}
+	
 	@Autowired
 	private UserEditor userEditor;
 	

@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.validation.Validator;
 
@@ -39,7 +40,7 @@ public class UserEditor
 		userValidator.validate(user, bindingResult);
 		if(userDAO.find(user.getLogin()) != null)
 		{
-			bindingResult.addError(new ObjectError("unique", "Login must be unique"));
+			bindingResult.reject("unique", "Login must be unique");
 		}
 		user.setRealPassword(null);
 		if(!bindingResult.hasErrors())
@@ -70,12 +71,18 @@ public class UserEditor
 		return redirect;
 	}
 	
-	public String updateUser(User updatedUser)
+	public String updateUser(User updatedUser, BindingResult bindingResult)
 	{
+		userValidator.validate(updatedUser, bindingResult);
+		User correlationDB = userDAO.find(updatedUser.getLogin());
+		if((correlationDB != null) && (correlationDB.getId() != updatedUser.getId()))
+		{
+			bindingResult.reject("unique", "Login must be unique");
+		}
 		User caller = sessionInfo.getCurrentUser();
 		String redirect = "";
 		User target = userDAO.read(updatedUser.getId());
-		if(userHasRightsToEditOrDeleteUser(caller, target))
+		if(!bindingResult.hasErrors() && userHasRightsToEditOrDeleteUser(caller, target))
 		{
 			userDAO.update(updatedUser);
 		}

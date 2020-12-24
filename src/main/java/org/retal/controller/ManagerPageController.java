@@ -51,12 +51,15 @@ public class ManagerPageController
 		RedirectView redirectView = new RedirectView("/managerPage", true);
 		redir.addFlashAttribute("visible", "true");
 		userInfo.setUser(user);
-		user.setRole("driver");
+		user.setRole(UserRole.DRIVER.toString().toLowerCase());
 		user.setUserInfo(userInfo);
 		user.setRealPassword(password);
 		userEditor.addNewUser(user, bindingResult);
-		redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + "user", bindingResult);
-		redir.addFlashAttribute("user", user);
+		if(bindingResult.hasErrors())
+		{
+			redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + "user", bindingResult);
+			redir.addFlashAttribute("user", user);
+		}
 		return redirectView;
 	}
 	
@@ -70,6 +73,43 @@ public class ManagerPageController
 		{
 			String param = sessionInfo.getCurrentUser().getLogin();
 			redirectView.setUrl(url403 + "/" + param);
+		}
+		return redirectView;
+	}
+	
+	@RequestMapping(value = "/editDriver/{id}")
+	public RedirectView edit(@PathVariable Integer id, RedirectAttributes redir)
+	{
+		RedirectView redirectView = new RedirectView("/editDriver", true);
+		redir.addFlashAttribute("user", userEditor.getUser(id));
+		redir.addFlashAttribute("we", sessionInfo.getCurrentUser());
+		return redirectView;
+	}
+	
+	@RequestMapping(value = "/editDriver", method = RequestMethod.GET)
+	public String editForm(Model model)
+	{
+		BindingResult result = (BindingResult)model.asMap().get(BindingResult.MODEL_KEY_PREFIX + "user");
+		Map<String, String> errors = UserEditorValidator.convertErrorsToHashMap(result);
+		model.addAllAttributes(errors);
+		model.addAttribute("editUser", "/submitEditedDriver");
+		return "editUser";
+	}
+	
+	@RequestMapping(value = "/submitEditedDriver",  method = RequestMethod.POST)
+	public RedirectView finishEditing(User user, BindingResult bindingResult, UserInfo userInfo, 
+			@RequestParam(name = "password") String password, RedirectAttributes redir)
+	{
+		RedirectView redirectView = new RedirectView("/managerPage", true);
+		user.setRole(UserRole.DRIVER.toString().toLowerCase());
+		user.setUserInfo(userInfo);
+		user.setRealPassword(password);
+		userEditor.updateUser(user, bindingResult);
+		if(bindingResult.hasErrors())
+		{
+			redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + "user", bindingResult);
+			redir.addFlashAttribute("user", user);
+			redirectView.setUrl("/editDriver");
 		}
 		return redirectView;
 	}
