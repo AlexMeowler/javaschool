@@ -39,19 +39,20 @@
 	<form:form id = "form" action="${addDriver}" method="POST" style = "${hidden}">
 		<br>
 		<label>Login</label>
-		<input type="text" name="login" value="${login}"/>
+		<input type="text" name="login" value="${user.login}"/>
 		<span class = "error">${error_login}</span>
+		<span class = "error">${error_unique}</span>
 		<br>
 		<label>Password</label>
 		<input type="password" name="password"/>
 		<span class = "error">${error_realPassword}</span>
 		<br>
 		<label>Name</label>
-		<input type="text" name="name" value="${name}"/>
+		<input type="text" name="name" value="${user.userInfo.name}"/>
 		<span class = "error">${error_name}</span>
 		<br>
 		<label>Surname</label>
-		<input type="text" name="surname" value="${surname}"/>
+		<input type="text" name="surname" value="${user.userInfo.surname}"/>
 		<span class = "error">${error_surname}</span>
 		<br>
 		<input type="submit" value="Add driver">

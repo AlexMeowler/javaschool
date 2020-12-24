@@ -12,46 +12,13 @@
 <body>
 	<jsp:include page="menu.jsp"/>
 	<div class="container main-body">
-	<p>Welcome, administrator <sec:authentication property="principal.username" />!</p>
-	<p>Here is user list:</p>
-	<table>
-		<tr>
-			<td>ID</td>
-			<td>Login</td>
-			<td>Name</td>
-			<td>Surname</td>
-			<td>Role</td>
-			<td>Hours worked in current month</td>
-			<td>Status</td>
-			<td>Location</td>
-			<td>Edit</td>
-			<td>Delete</td>
-		</tr>
-		<c:forEach var="user" items="${userList}">
-		<tr>
-			<td>${user.id}</td>
-			<td>${user.login}</td>
-			<td>${user.userInfo.name}</td>
-			<td>${user.userInfo.surname}</td>
-			<td>${user.role}</td>
-			<td>${user.userInfo.hoursWorked}</td>
-			<td>${user.userInfo.status}</td>
-			<td>${user.userInfo.currentCity}</td>
-			<td><a href="${pageContext.request.contextPath}/editUser/${user.id}">Edit user</a></td>
-			<td><a href="${pageContext.request.contextPath}/deleteUser/${user.id}">Delete user</a></td>
-		</tr>
-		</c:forEach>
-	</table>
-	<button class = "table-edit-button" name = "openOrCloseForm" onclick = "showForm()">Add new user</button>
-	<c:set var = "hidden" value = ""/>
-	<c:if test = "${empty visible}"><c:set var = "hidden" value = "display:none;"/></c:if>
-	<c:url value="/addNewUser" var = "addUser"/>
-	<form:form id = "form" action="${addUser}" method="POST" style = "${hidden}">
+	<c:url value="/submitEditedUser" var = "editUser"/>
+	<form:form id = "form" action="${editUser}" method="POST">
 		<br>
+		<input type="text" name="id" value="${user.id}" hidden = "true"/>
 		<label>Login</label>
 		<input type="text" name="login" value="${user.login}"/>
 		<span class = "error">${error_login}</span>
-		<span class = "error">${error_unique}</span>
 		<br>
 		<label>Password</label>
 		<input type="password" name="password"/>
@@ -72,9 +39,8 @@
 		<input type="text" name="surname" value="${user.userInfo.surname}"/>
 		<span class = "error">${error_surname}</span>
 		<br>
-		<input type="submit" value="Add user">
+		<input type="submit" value="Finish editing user">
 	</form:form>	
 	</div>
-	
 </body>
 </html>

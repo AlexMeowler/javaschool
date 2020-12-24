@@ -1,6 +1,5 @@
 package org.retal.controller;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,14 +27,6 @@ public class AdminPageController
 	@RequestMapping(value = "/adminPage", method = RequestMethod.GET)
 	public String getAdminPage(Model model)
 	{
-		if (model.containsAttribute("user")) 
-		{
-	        User user = (User)model.getAttribute("user");
-	        model.addAttribute("login", user.getLogin());
-	        model.addAttribute("role", user.getRole());
-	        model.addAttribute("name", user.getUserInfo().getName());
-	        model.addAttribute("surname", user.getUserInfo().getSurname());
-	    }
 		BindingResult result = (BindingResult)model.asMap().get(BindingResult.MODEL_KEY_PREFIX + "user");
 		Map<String, String> errors = UserEditorValidator.convertErrorsToHashMap(result);
 		model.addAllAttributes(errors);
@@ -67,6 +58,30 @@ public class AdminPageController
 		return redirectView;
 	}
 	
+	@RequestMapping(value = "/editUser/{id}")
+	public RedirectView edit(@PathVariable Integer id, RedirectAttributes redir)
+	{
+		RedirectView redirectView = new RedirectView("/editUser", true);
+		redir.addFlashAttribute("user", userEditor.getUser(id));
+		return redirectView;
+	}
+	
+	@RequestMapping(value = "/editUser", method = RequestMethod.GET)
+	public String editForm(Model model)
+	{
+		return "editUser";
+	}
+	
+	@RequestMapping(value = "/submitEditedUser",  method = RequestMethod.POST)
+	public RedirectView finishEditing(User user, UserInfo userInfo, 
+			@RequestParam(name = "password") String password)
+	{
+		RedirectView redirectView = new RedirectView("/adminPage", true);
+		user.setUserInfo(userInfo);
+		user.setRealPassword(password);
+		userEditor.updateUser(user);
+		return redirectView;
+	}
 	@Autowired
 	private UserEditor userEditor;
 	

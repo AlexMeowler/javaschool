@@ -13,5 +13,5 @@ public interface DAO <T>
 	public T find(String... args);
 	public void delete(T t);
 	public void deleteById(int id);
-	public void update(T t, String... args);
+	public void update(T a);
 }

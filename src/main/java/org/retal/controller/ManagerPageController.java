@@ -30,14 +30,6 @@ public class ManagerPageController
 	@RequestMapping(value = "/managerPage", method = RequestMethod.GET)
 	public String getManagerPage(Model model)
 	{
-		if (model.containsAttribute("user")) 
-		{
-	        User user = (User)model.getAttribute("user");
-	        model.addAttribute("login", user.getLogin());
-	        model.addAttribute("role", user.getRole());
-	        model.addAttribute("name", user.getUserInfo().getName());
-	        model.addAttribute("surname", user.getUserInfo().getSurname());
-	    }
 		BindingResult result = (BindingResult)model.asMap().get(BindingResult.MODEL_KEY_PREFIX + "user");
 		Map<String, String> errors = UserEditorValidator.convertErrorsToHashMap(result);
 		model.addAllAttributes(errors);
@@ -52,7 +44,7 @@ public class ManagerPageController
 	}
 	
 	@RequestMapping(value = "/addNewDriver", method = RequestMethod.POST)
-	public RedirectView addNewUser(User user, UserInfo userInfo, RedirectAttributes redir,
+	public RedirectView addNewDriver(User user, UserInfo userInfo, RedirectAttributes redir,
 			BindingResult bindingResult, @RequestParam(name = "password") String password)
 	{
 		log.info("Attempt to add new driver");

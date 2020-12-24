@@ -79,10 +79,27 @@ public class UserDAO implements DAO<User>
 	}
 	
 	@Override
-	@Transactional
-	public void update(User user, String... args)
+	public void update(User newUser)
 	{
-		
+		log.info("Editing user");
+		Session session = HibernateSessionFactory.getSessionFactory().openSession();
+		//User oldUser = session.find(User.class, newUser.getId()); //add exception
+		Transaction transaction = session.beginTransaction();
+		//session.evict(oldUser);
+		session.update(newUser);
+		/*session.evict(oldUser);
+		oldUser.setLogin(newUser.getLogin());
+		oldUser.setPassword(newUser.getPassword());
+		oldUser.setRole(newUser.getRole());
+		oldUser.setUserInfo(newUser.getUserInfo());
+		oldUser.getUserInfo().setUser(oldUser);
+		session.persist(oldUser.getUserInfo());
+		session.detach(oldUser.getUserInfo());
+		session.update(oldUser);
+		oldUser = (User) session.merge(oldUser);*/
+		session.flush();
+		transaction.commit();
+		session.close();
 	}
 	
 	@Override

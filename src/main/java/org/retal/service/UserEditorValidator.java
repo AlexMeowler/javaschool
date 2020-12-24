@@ -33,7 +33,8 @@ public class UserEditorValidator implements Validator
 	public void validate(Object target, Errors errors) 
 	{
 		log.info("Validating user");
-		Set<ConstraintViolation<Object>> validates = validator.validate(target);
+		User user = (User)target;
+		Set<ConstraintViolation<Object>> validates = validator.validate(user);
 		for(ConstraintViolation<Object> violation : validates)
 		{
 			String propertyPath = violation.getPropertyPath().toString();
@@ -42,7 +43,7 @@ public class UserEditorValidator implements Validator
 			errors.reject(propertyPath, message);
 		}
 		log.info("Validating user info");
-		UserInfo userInfo = ((User)target).getUserInfo();
+		UserInfo userInfo = user.getUserInfo();
 		validates = validator.validate(userInfo);
 		for(ConstraintViolation<Object> violation : validates)
 		{
@@ -51,8 +52,6 @@ public class UserEditorValidator implements Validator
 			log.info(propertyPath + " : " + message);
 			errors.reject(propertyPath, message);
 		}
-		
-		//if(user)
 	}
 	
 	public static Map<String, String> convertErrorsToHashMap(BindingResult bindingResult)

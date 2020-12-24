@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.validation.Validator;
 
 @Service
@@ -36,6 +37,10 @@ public class UserEditor
 	public void addNewUser(User user, BindingResult bindingResult)
 	{
 		userValidator.validate(user, bindingResult);
+		if(userDAO.find(user.getLogin()) != null)
+		{
+			bindingResult.addError(new ObjectError("unique", "Login must be unique"));
+		}
 		user.setRealPassword(null);
 		if(!bindingResult.hasErrors())
 		{
@@ -53,7 +58,7 @@ public class UserEditor
 	{
 		User caller = sessionInfo.getCurrentUser();
 		String redirect = "";
-		if(userHasRightsToDeleteUser(caller, target))
+		if(userHasRightsToEditOrDeleteUser(caller, target))
 		{
 			userDAO.delete(target);
 		}
@@ -65,7 +70,24 @@ public class UserEditor
 		return redirect;
 	}
 	
-	private boolean userHasRightsToDeleteUser(User caller, User target)
+	public String updateUser(User updatedUser)
+	{
+		User caller = sessionInfo.getCurrentUser();
+		String redirect = "";
+		User target = userDAO.read(updatedUser.getId());
+		if(userHasRightsToEditOrDeleteUser(caller, target))
+		{
+			userDAO.update(updatedUser);
+		}
+		else
+		{
+			log.warn("Attempt to edit user without sufficient permissions");
+			redirect = "/403";
+		}
+		return redirect;
+	}
+	
+	private boolean userHasRightsToEditOrDeleteUser(User caller, User target)
 	{
 		String callerRoleString = caller.getRole().toUpperCase();
 		String targetRoleString = target.getRole().toUpperCase();
