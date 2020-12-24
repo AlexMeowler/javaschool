@@ -49,20 +49,28 @@
 	<form:form id = "form" action="${addUser}" method="POST" style = "${hidden}">
 		<br>
 		<label>Login</label>
-		<input type="text" name="login"/>
+		<input type="text" name="login" value="${login}"/>
+		<span class = "error">${error_login}</span>
+		<br>
 		<label>Password</label>
 		<input type="password" name="password"/>
+		<span class = "error">${error_realPassword}</span>
+		<br>
 		<label>Role</label>
 		<select name = "role">
-			<option value = "admin" selected>Administrator</option>
-			<option value = "manager">Manager</option>
-			<option value = "driver">Driver</option>
+			<option value = "admin" ${role == 'admin' ? 'selected' : ''}>Administrator</option>
+			<option value = "manager" ${role == 'manager' ? 'selected' : ''}>Manager</option>
+			<option value = "driver" ${role == 'driver' ? 'selected' : ''}>Driver</option>
 		</select>
 		<br>
 		<label>Name</label>
-		<input type="text" name="name"/>
+		<input type="text" name="name" value="${name}"/>
+		<span class = "error">${error_name}</span>
+		<br>
 		<label>Surname</label>
-		<input type="text" name="surname"/>
+		<input type="text" name="surname" value="${surname}"/>
+		<span class = "error">${error_surname}</span>
+		<br>
 		<input type="submit" value="Add user">
 	</form:form>	
 	</div>

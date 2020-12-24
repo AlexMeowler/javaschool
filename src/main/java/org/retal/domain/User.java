@@ -5,6 +5,7 @@ import java.security.MessageDigest;
 import java.util.Base64;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 
 
 @Entity
@@ -17,6 +18,7 @@ public class User
 	private int id;
 	
 	@Column(name = "login")
+	@Size(min = 5, max = 25, message = "Login must have at least 5 and at most 25 characters")
 	private String login;
 	
 	@Column(name = "password")
@@ -30,7 +32,18 @@ public class User
     @JoinColumn(name = "id")
 	private UserInfo userInfo;
 	
-	//order_id
+	/**
+	 * "Temporal" variable which is used for validating user input.
+	 * To avoid user data compromising it should be used only in validation and
+	 * immediately nullified after by using {@link User#setRealPassword(String)}
+	 * @deprecated Deprecation only indicates that this method should never be used somewhere else except validation
+	 * when adding new users.
+	 * @see User#setRealPassword(String)
+	 * @see User#getRealPassword()
+	 */
+	@Deprecated
+	@Size(min = 6, message = "Password must have at least 6 characters")
+	private String realPassword;
 	
 	public int getId()
 	{
@@ -59,8 +72,11 @@ public class User
 	
 	public void setPassword(String password)
 	{
-		String hashedPassword = getPasswordAsBase64Hash(password);
-		this.password = hashedPassword;
+		if(password != null)
+		{
+			String hashedPassword = getPasswordAsBase64Hash(password);
+			this.password = hashedPassword;
+		}
 	}
 	
 	public String getRole()
@@ -81,6 +97,32 @@ public class User
 	public void setUserInfo(UserInfo userInfo)
 	{
 		this.userInfo = userInfo;
+	}
+	
+	/**
+	 * Getter for {@link User#realPassword}. Used only in validation.
+	 * @deprecated Deprecation only indicates that this method should never be used somewhere else except validation
+	 * when adding new users.
+	 * @return password which was put in form before hashing
+	 * @see User#setRealPassword(String)
+	 */
+	@Deprecated
+	public String getRealPassword()
+	{
+		return realPassword;
+	}
+	
+	/**
+	 * Setter for {@link User#realPassword}. Used only in validation.
+	 * @deprecated Deprecation only indicates that this method should never be used somewhere else except validation
+	 * when adding new users.
+	 * @param real user password which was put in form before hashing
+	 * @see User#getRealPassword()
+	 */
+	@Deprecated
+	public void setRealPassword(String password)
+	{
+		realPassword = password;
 	}
 	
 	public String toString()

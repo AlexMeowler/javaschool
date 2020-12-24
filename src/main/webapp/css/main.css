@@ -10,3 +10,7 @@
 .table-edit-button {
 	margin-top: 1em;	
 }
+
+.error {
+	color: #FF5000;
+}

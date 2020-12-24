@@ -4,7 +4,7 @@
 <body>
 	<h2>Access Denied</h2>
 	<c:if test="${not empty username}">
-	<p>Sorry, <c:out value="${username}"/>, but you can't access this page...</p>
+	<p>Sorry, <c:out value="${username}"/>, but I can't let you do that...</p>
 	</c:if>
 	<a href="${pageContext.request.contextPath}/home">Return to home page</a>
 </body>

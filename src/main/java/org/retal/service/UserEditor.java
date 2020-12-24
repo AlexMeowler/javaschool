@@ -6,10 +6,14 @@ import org.apache.log4j.Logger;
 import org.retal.controller.ManagerPageController;
 import org.retal.dao.UserDAO;
 import org.retal.dao.UserInfoDAO;
+import org.retal.domain.SessionInfo;
 import org.retal.domain.User;
 import org.retal.domain.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.Validator;
 
 @Service
 public class UserEditor 
@@ -26,26 +30,28 @@ public class UserEditor
 	
 	public List<User> getAllDrivers()
 	{
-		return userDAO.readAllWithRole("driver");
+		return userDAO.readAllWithRole(UserRole.DRIVER.toString());
 	}
 	
-	public void addNewUser(User user)
+	public void addNewUser(User user, BindingResult bindingResult)
 	{
-		userDAO.add(user);
+		userValidator.validate(user, bindingResult);
+		user.setRealPassword(null);
+		if(!bindingResult.hasErrors())
+		{
+			userDAO.add(user);
+		}
 	}
 	
 	public void delete(int id)
 	{
-		userDAO.deleteById(id);
+		User target = userDAO.read(id);
+		delete(target);
 	}
 	
-	public void delete(User user)
+	public String delete(User target)
 	{
-		userDAO.delete(user);
-	}
-	
-	public String deleteWithRoleChecking(User caller, User target)
-	{
+		User caller = sessionInfo.getCurrentUser();
 		String redirect = "";
 		if(userHasRightsToDeleteUser(caller, target))
 		{
@@ -65,11 +71,20 @@ public class UserEditor
 		String targetRoleString = target.getRole().toUpperCase();
 		UserRole callerRole = UserRole.valueOf(callerRoleString);
 		UserRole targetRole = UserRole.valueOf(targetRoleString);
-		return callerRole.ordinal() > targetRole.ordinal();
+		boolean hasHigherRank = callerRole.ordinal() > targetRole.ordinal(); 
+		boolean isAdmin = caller.getRole().equals(UserRole.ADMIN.toString().toLowerCase());
+		return hasHigherRank || isAdmin;
 	}
 	
 	@Autowired
 	private UserDAO userDAO;
+	
+	@Autowired
+	private SessionInfo sessionInfo;
+	
+	@Autowired
+	@Qualifier("userEditorValidator")
+	private Validator userValidator;
 	
 	private static final Logger log = Logger.getLogger(UserEditor.class);
 }

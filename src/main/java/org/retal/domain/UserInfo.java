@@ -11,6 +11,7 @@ import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
+import javax.validation.constraints.*;
 
 @Entity
 @Table(name = "user_info")
@@ -22,9 +23,11 @@ public class UserInfo
 	private int id;
 	
 	@Column(name = "name")
+	@NotEmpty(message = "Please enter name")
 	private String name;
 	
 	@Column(name = "surname")
+	@NotEmpty(message = "Please enter surname")
 	private String surname;
 	
 	@Column(name = "hours_worked_month")

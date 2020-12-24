@@ -3,6 +3,7 @@ package org.retal.config.spring;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
@@ -21,4 +22,9 @@ public class WebConfig
 		return resolver;
 	}
 	
+	@Bean
+	public javax.validation.Validator localValidatorFactoryBean() 
+	{
+	   return new LocalValidatorFactoryBean();
+	}
 }

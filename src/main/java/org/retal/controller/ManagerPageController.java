@@ -1,6 +1,7 @@
 package org.retal.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.retal.dao.CarDAO;
@@ -11,12 +12,15 @@ import org.retal.domain.User;
 import org.retal.domain.UserInfo;
 import org.retal.domain.UserRole;
 import org.retal.service.UserEditor;
+import org.retal.service.UserEditorValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
@@ -26,9 +30,20 @@ public class ManagerPageController
 	@RequestMapping(value = "/managerPage", method = RequestMethod.GET)
 	public String getManagerPage(Model model)
 	{
+		if (model.containsAttribute("user")) 
+		{
+	        User user = (User)model.getAttribute("user");
+	        model.addAttribute("login", user.getLogin());
+	        model.addAttribute("role", user.getRole());
+	        model.addAttribute("name", user.getUserInfo().getName());
+	        model.addAttribute("surname", user.getUserInfo().getSurname());
+	    }
+		BindingResult result = (BindingResult)model.asMap().get(BindingResult.MODEL_KEY_PREFIX + "user");
+		Map<String, String> errors = UserEditorValidator.convertErrorsToHashMap(result);
+		model.addAllAttributes(errors);
 		User user = sessionInfo.getCurrentUser();
 		UserInfo userInfo = user.getUserInfo();
-		model.addAttribute("name", userInfo.getName() + " " + userInfo.getSurname());
+		model.addAttribute("current_user_name", userInfo.getName() + " " + userInfo.getSurname());
 		List<User> users = userEditor.getAllDrivers();
 		model.addAttribute("driverList", users);
 		List<Car> cars = carDAO.readAll();
@@ -37,14 +52,19 @@ public class ManagerPageController
 	}
 	
 	@RequestMapping(value = "/addNewDriver", method = RequestMethod.POST)
-	public RedirectView addNewUser(User user, UserInfo userInfo, RedirectAttributes redir)
+	public RedirectView addNewUser(User user, UserInfo userInfo, RedirectAttributes redir,
+			BindingResult bindingResult, @RequestParam(name = "password") String password)
 	{
+		log.info("Attempt to add new driver");
 		RedirectView redirectView = new RedirectView("/managerPage", true);
 		redir.addFlashAttribute("visible", "true");
 		userInfo.setUser(user);
 		user.setRole("driver");
 		user.setUserInfo(userInfo);
-		userEditor.addNewUser(user);
+		user.setRealPassword(password);
+		userEditor.addNewUser(user, bindingResult);
+		redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + "user", bindingResult);
+		redir.addFlashAttribute("user", user);
 		return redirectView;
 	}
 	
@@ -53,11 +73,11 @@ public class ManagerPageController
 	{
 		RedirectView redirectView = new RedirectView("/managerPage", true);
 		User user = userEditor.getUser(id);
-		User we = sessionInfo.getCurrentUser();
-		String url403 = userEditor.deleteWithRoleChecking(we, user);
+		String url403 = userEditor.delete(user);
 		if(!url403.isEmpty())
 		{
-			redirectView.setUrl(url403);
+			String param = sessionInfo.getCurrentUser().getLogin();
+			redirectView.setUrl(url403 + "/" + param);
 		}
 		return redirectView;
 	}

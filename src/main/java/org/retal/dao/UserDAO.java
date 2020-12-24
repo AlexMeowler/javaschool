@@ -72,7 +72,7 @@ public class UserDAO implements DAO<User>
 		List<User> users = session.createNativeQuery("SELECT * FROM USERS WHERE role = '" + role + "'", User.class).getResultList();
 		for(User u : users)
 		{
-			log.info("Driver found: id='" + u.getId() + "'");
+			log.info(role + " found: id='" + u.getId() + "'");
 		}
 		session.close();
 		return users;

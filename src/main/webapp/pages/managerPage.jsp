@@ -12,7 +12,7 @@
 <body>
 	<jsp:include page="menu.jsp"/>
 	<div class="container main-body">
-	<p>Welcome, manager ${name}!</p>
+	<p>Welcome, manager ${current_user_name}!</p>
 	<p>Driver list:</p>
 	<table>
 		<tr>
@@ -39,16 +39,22 @@
 	<form:form id = "form" action="${addDriver}" method="POST" style = "${hidden}">
 		<br>
 		<label>Login</label>
-		<input type="text" name="login"/>
+		<input type="text" name="login" value="${login}"/>
+		<span class = "error">${error_login}</span>
+		<br>
 		<label>Password</label>
 		<input type="password" name="password"/>
+		<span class = "error">${error_realPassword}</span>
 		<br>
 		<label>Name</label>
-		<input type="text" name="name"/>
-		<label>Surname</label>
-		<input type="text" name="surname"/>
+		<input type="text" name="name" value="${name}"/>
+		<span class = "error">${error_name}</span>
 		<br>
-		<input type="submit" value="Add user">
+		<label>Surname</label>
+		<input type="text" name="surname" value="${surname}"/>
+		<span class = "error">${error_surname}</span>
+		<br>
+		<input type="submit" value="Add driver">
 	</form:form>
 	<p>Cars list:</p>
 	<table>
