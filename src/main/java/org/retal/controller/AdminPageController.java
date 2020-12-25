@@ -47,8 +47,7 @@ public class AdminPageController
 		RedirectView redirectView = new RedirectView("/adminPage", true);
 		redir.addFlashAttribute("visible", "true");
 		user.setUserInfo(userInfo);
-		user.setRealPassword(password);
-		userEditor.addNewUser(user, bindingResult);
+		userEditor.addNewUser(user, bindingResult, password);
 		if(bindingResult.hasErrors())
 		{
 			redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + "user", bindingResult);
@@ -70,6 +69,7 @@ public class AdminPageController
 	{
 		RedirectView redirectView = new RedirectView("/editUser", true);
 		redir.addFlashAttribute("user", userEditor.getUser(id));
+		redir.addFlashAttribute("we", sessionInfo.getCurrentUser());
 		return redirectView;
 	}
 	
@@ -89,8 +89,7 @@ public class AdminPageController
 	{
 		RedirectView redirectView = new RedirectView("/adminPage", true);
 		user.setUserInfo(userInfo);
-		user.setRealPassword(password);
-		userEditor.updateUser(user, bindingResult);
+		userEditor.updateUser(user, bindingResult, password);
 		if(bindingResult.hasErrors())
 		{
 			redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + "user", bindingResult);
@@ -102,6 +101,9 @@ public class AdminPageController
 	
 	@Autowired
 	private UserEditor userEditor;
+	
+	@Autowired
+	private SessionInfo sessionInfo;
 	
 	private static final Logger log = Logger.getLogger(AdminPageController.class);
 }

@@ -26,14 +26,16 @@ public class UserEditorValidator implements Validator
 	@Override
 	public boolean supports(Class<?> clazz) 
 	{
-		return User.class.isAssignableFrom(clazz);
+		return UserEditor.UserWrapper.class.isAssignableFrom(clazz);
 	}
 
 	@Override
 	public void validate(Object target, Errors errors) 
 	{
 		log.info("Validating user");
-		User user = (User)target;
+		UserEditor.UserWrapper wrapper = (UserEditor.UserWrapper)target;
+		User user = wrapper.getUser();
+		String password = wrapper.getPassword();
 		Set<ConstraintViolation<Object>> validates = validator.validate(user);
 		for(ConstraintViolation<Object> violation : validates)
 		{
@@ -51,6 +53,14 @@ public class UserEditorValidator implements Validator
 			String message = violation.getMessage();
 			log.info(propertyPath + " : " + message);
 			errors.reject(propertyPath, message);
+		}
+		//add special characters checking
+		if(password.length() < 6 && !password.isEmpty())
+		{
+			String property = "realPassword";
+			String message = "Password must have at least 6 characters";
+			log.info(property + " : " + message);
+			errors.reject(property, message);
 		}
 	}
 	

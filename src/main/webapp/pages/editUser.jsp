@@ -20,17 +20,19 @@
 		<span class = "error">${error_login}</span>
 		<span class = "error">${error_unique}</span>
 		<br>
-		<label>Password</label>
+		<label>Password (leave empty for no change)</label>
 		<input type="password" name="password"/>
 		<span class = "error">${error_realPassword}</span>
 		<br>
+		<c:if test="${we.role == 'admin'}">
 		<label>Role</label>
-		<select name = "role" ${we.role != 'admin' ? 'hidden' : ''}>
+		<select name = "role">
 			<option value = "admin" ${user.role == 'admin' ? 'selected' : ''}>Administrator</option>
 			<option value = "manager" ${user.role == 'manager' ? 'selected' : ''}>Manager</option>
 			<option value = "driver" ${user.role == 'driver' ? 'selected' : ''}>Driver</option>
 		</select>
 		<br>
+		</c:if>
 		<label>Name</label>
 		<input type="text" name="name" value="${user.userInfo.name}"/>
 		<span class = "error">${error_name}</span>

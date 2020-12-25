@@ -59,6 +59,7 @@
 		<br>
 		<input type="submit" value="Add driver">
 	</form:form>
+	<br>
 	<p>Cars list:</p>
 	<table>
 		<tr>

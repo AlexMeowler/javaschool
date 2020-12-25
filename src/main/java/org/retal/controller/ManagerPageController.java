@@ -5,7 +5,6 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.retal.dao.CarDAO;
-import org.retal.dao.UserDAO;
 import org.retal.domain.Car;
 import org.retal.domain.SessionInfo;
 import org.retal.domain.User;
@@ -53,8 +52,7 @@ public class ManagerPageController
 		userInfo.setUser(user);
 		user.setRole(UserRole.DRIVER.toString().toLowerCase());
 		user.setUserInfo(userInfo);
-		user.setRealPassword(password);
-		userEditor.addNewUser(user, bindingResult);
+		userEditor.addNewUser(user, bindingResult, password);
 		if(bindingResult.hasErrors())
 		{
 			redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + "user", bindingResult);
@@ -103,8 +101,7 @@ public class ManagerPageController
 		RedirectView redirectView = new RedirectView("/managerPage", true);
 		user.setRole(UserRole.DRIVER.toString().toLowerCase());
 		user.setUserInfo(userInfo);
-		user.setRealPassword(password);
-		userEditor.updateUser(user, bindingResult);
+		userEditor.updateUser(user, bindingResult, password);
 		if(bindingResult.hasErrors())
 		{
 			redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + "user", bindingResult);

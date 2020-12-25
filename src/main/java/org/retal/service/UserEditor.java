@@ -35,14 +35,20 @@ public class UserEditor
 		return userDAO.readAllWithRole(UserRole.DRIVER.toString());
 	}
 	
-	public void addNewUser(User user, BindingResult bindingResult)
+	public void addNewUser(User user, BindingResult bindingResult, String password)
 	{
-		userValidator.validate(user, bindingResult);
+		userValidator.validate(new UserWrapper(user, password), bindingResult);
+		if(password.length() < 6)
+		{
+			String property = "realPassword";
+			String message = "Password must have at least 6 characters";
+			log.info(property + " : " + message);
+			bindingResult.reject(property, message);
+		}
 		if(userDAO.find(user.getLogin()) != null)
 		{
 			bindingResult.reject("unique", "Login must be unique");
 		}
-		user.setRealPassword(null);
 		if(!bindingResult.hasErrors())
 		{
 			userDAO.add(user);
@@ -71,19 +77,27 @@ public class UserEditor
 		return redirect;
 	}
 	
-	public String updateUser(User updatedUser, BindingResult bindingResult)
+	public String updateUser(User updatedUser, BindingResult bindingResult, String password)
 	{
-		userValidator.validate(updatedUser, bindingResult);
+		userValidator.validate(new UserWrapper(updatedUser, password), bindingResult);
 		User correlationDB = userDAO.find(updatedUser.getLogin());
 		if((correlationDB != null) && (correlationDB.getId() != updatedUser.getId()))
 		{
-			bindingResult.reject("unique", "Login must be unique");
+			bindingResult.reject("unique", "New login must be unique");
 		}
 		User caller = sessionInfo.getCurrentUser();
 		String redirect = "";
 		User target = userDAO.read(updatedUser.getId());
 		if(!bindingResult.hasErrors() && userHasRightsToEditOrDeleteUser(caller, target))
 		{
+			if(password.isEmpty())
+			{
+				User copy = userDAO.read(updatedUser.getId());
+				copy.setLogin(updatedUser.getLogin());
+				copy.setRole(updatedUser.getRole());
+				copy.setUserInfo(updatedUser.getUserInfo());
+				updatedUser = copy;
+			}
 			userDAO.update(updatedUser);
 		}
 		else
@@ -116,4 +130,25 @@ public class UserEditor
 	private Validator userValidator;
 	
 	private static final Logger log = Logger.getLogger(UserEditor.class);
+	
+	public class UserWrapper
+	{
+		public UserWrapper(User user, String password)
+		{
+			this.user = user;
+			this.password = password;
+		}
+		
+		public User getUser()
+		{
+			return user;
+		}
+		
+		public String getPassword()
+		{
+			return password;
+		}
+		private User user;
+		private String password;
+	}
 }
