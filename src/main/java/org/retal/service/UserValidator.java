@@ -7,7 +7,7 @@ import java.util.Set;
 import javax.validation.ConstraintViolation;
 
 import org.apache.log4j.Logger;
-import org.retal.dao.UserDAO;
+import org.retal.domain.DriverStatus;
 import org.retal.domain.User;
 import org.retal.domain.UserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +37,6 @@ public class UserValidator implements Validator {
 		for (ConstraintViolation<Object> violation : validates) {
 			String propertyPath = violation.getPropertyPath().toString();
 			String message = violation.getMessage();
-			log.info(propertyPath + " : " + message);
 			errors.reject(propertyPath, message);
 		}
 		log.info("Validating user info");
@@ -46,14 +45,22 @@ public class UserValidator implements Validator {
 		for (ConstraintViolation<Object> violation : validates) {
 			String propertyPath = violation.getPropertyPath().toString();
 			String message = violation.getMessage();
-			log.info(propertyPath + " : " + message);
 			errors.reject(propertyPath, message);
 		}
 		// add special characters checking
 		if (password.length() < 6 && !password.isEmpty()) {
 			String property = "realPassword";
 			String message = "Password must have at least 6 characters";
-			log.info(property + " : " + message);
+			errors.reject(property, message);
+		}
+		DriverStatus[] statuses = DriverStatus.values();
+		boolean statusValid = false;
+		for(DriverStatus status : statuses) {
+			statusValid |= status.toString().equalsIgnoreCase(userInfo.getStatus());
+		}
+		if(!statusValid) {
+			String property = "status";
+			String message = "Invalid status";
 			errors.reject(property, message);
 		}
 	}
@@ -69,7 +76,6 @@ public class UserValidator implements Validator {
 		return map;
 	}
 
-	@Autowired
 	private static final Logger log = Logger.getLogger(UserValidator.class);
 
 	@Autowired

@@ -42,12 +42,6 @@ public class UserInfoDAO implements DAO<UserInfo> {
 	}
 
 	@Override
-	public void deleteById(int id) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	@Transactional
 	public void update(UserInfo newUserInfo) {
 		log.info("Editing user info");

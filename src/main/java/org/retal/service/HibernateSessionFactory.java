@@ -3,6 +3,7 @@ package org.retal.service;
 import java.io.IOException;
 import java.util.Properties;
 
+import org.apache.log4j.Logger;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
@@ -23,7 +24,7 @@ public class HibernateSessionFactory {
 			try {
 				properties.load(HibernateSessionFactory.class.getResourceAsStream("/db.properties"));
 			} catch (IOException e) {
-				e.printStackTrace();
+				log.info("Hibernate config file not found");
 			}
 			config.configure().addProperties(properties);
 			config.addAnnotatedClass(User.class).addAnnotatedClass(UserInfo.class).addAnnotatedClass(Car.class);
@@ -34,5 +35,6 @@ public class HibernateSessionFactory {
 		return sessionFactory;
 	}
 
+	private static final Logger log = Logger.getLogger(HibernateSessionFactory.class);
 	private static SessionFactory sessionFactory = null;
 }

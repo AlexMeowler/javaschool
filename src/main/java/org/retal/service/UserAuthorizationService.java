@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 public class UserAuthorizationService implements UserDetailsService {
 
 	@Override
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+	public UserDetails loadUserByUsername(String username) {
 		User user = userDAO.find(username);
 		if (user == null) {
 			log.info("User " + username + " not found");
@@ -26,9 +26,8 @@ public class UserAuthorizationService implements UserDetailsService {
 		log.info("User " + username + " found");
 		Set<GrantedAuthority> roles = new HashSet<>();
 		roles.add(new SimpleGrantedAuthority(user.getRole().toUpperCase()));
-		UserDetails details = new org.springframework.security.core.userdetails.User(user.getLogin(),
+		return new org.springframework.security.core.userdetails.User(user.getLogin(),
 				user.getPassword(), roles);
-		return details;
 	}
 
 	@Autowired

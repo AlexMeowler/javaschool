@@ -2,9 +2,23 @@ package org.retal.domain;
 
 import javax.persistence.*;
 
+import org.retal.dto.CarDTO;
+
 @Entity
 @Table(name = "cars")
 public class Car {
+	
+	public Car() {
+		
+	}
+	
+	public Car(CarDTO carDTO) {
+		setRegistrationId(carDTO.getRegistrationId());
+		setShiftLength(carDTO.getShiftLength());
+		setCapacityTons(carDTO.getCapacityTons());
+		setIsWorking(carDTO.getIsWorking());
+		setLocation(carDTO.getLocation());
+	}
 	@Id
 	@Column(name = "registration_id")
 	private String registrationId;

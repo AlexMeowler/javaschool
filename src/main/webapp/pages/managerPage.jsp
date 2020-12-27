@@ -2,8 +2,10 @@
 <%@page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
-<html>
+<!doctype html>
+<html lang="en">
 <head>
+	<title>Manager page</title>
 	<link rel="stylesheet" type="text/css" href="<c:url value="static/bootstrap.min.css"/>">
 	<link rel="stylesheet" type="text/css" href="<c:url value="static/menu.css"/>">
 	<link rel="stylesheet" type="text/css" href="<c:url value="static/main.css"/>">
@@ -13,15 +15,19 @@
 	<jsp:include page="menu.jsp"/>
 	<div class="container main-body">
 	<p>Welcome, manager ${current_user_name}!</p>
-	<p>Driver list:</p>
+	<p>Drivers list:</p>
 	<table>
+		<caption hidden="true">Drivers list</caption>
 		<tr>
-			<td>ID</td>
-			<td>Login</td>
-			<td>Name</td>
-			<td>Surname</td>
-			<td>Edit</td>
-			<td>Delete</td>
+			<th scope="col">ID</th>
+			<th scope="col">Login</th>
+			<th scope="col">Name</th>
+			<th scope="col">Surname</th>
+			<th scope="col">Hours worked in current month</th>
+			<th scope="col">Status</th>
+			<th scope="col">Location</th>
+			<th scope="col">Edit</th>
+			<th scope="col">Delete</th>
 		</tr>
 		<c:forEach var="driver" items="${driverList}">
 		<tr>
@@ -29,6 +35,9 @@
 			<td>${driver.login}</td>
 			<td>${driver.userInfo.name}</td>
 			<td>${driver.userInfo.surname}</td>
+			<td>${driver.userInfo.hoursWorked}</td>
+			<td>${driver.userInfo.status}</td>
+			<td>${driver.userInfo.currentCity}</td>
 			<td><a href="<c:url value="/editDriver/${driver.id}"/>">Edit driver</a></td>
 			<td><a href="<c:url value="/deleteDriver/${driver.id}"/>">Delete driver</a></td>
 		</tr>
@@ -57,19 +66,31 @@
 		<input type="text" name="surname" value="${user.userInfo.surname}"/>
 		<span class = "error">${error_surname}</span>
 		<br>
+		<label>Status</label>
+		<select name = "status">
+			<option value = "resting" ${user.userInfo.status == 'resting' ? 'selected' : ''}>Resting</option>
+			<option value = "on_shift" ${user.userInfo.status == 'on_shift' ? 'selected' : ''}>On shift</option>
+			<option value = "driving" ${user.userInfo.status == 'driving' ? 'selected' : ''}>Driving</option>
+		</select>
+		<br>
+		<label>City</label>
+		<input type="text" name="currentCity" value="${user.userInfo.currentCity}"/>
+		<span class = "error">${error_currentCity}</span>
+		<br>
 		<input type="submit" value="Add driver">
 	</form:form>
-	<br>
+	<br><br><br>
 	<p>Cars list:</p>
 	<table>
+		<caption hidden="true">Cars list</caption>
 		<tr>
-			<td>Registration ID</td>
-			<td>Shift length</td>
-			<td>Capacity(tons)</td>
-			<td>Status</td>
-			<td>Current location</td>
-			<td>Edit</td>
-			<td>Delete</td>
+			<th scope="col">Registration ID</th>
+			<th scope="col">Shift length</th>
+			<th scope="col">Capacity(tons)</th>
+			<th scope="col">Status</th>
+			<th scope="col">Current location</th>
+			<th scope="col">Edit</th>
+			<th scope="col">Delete</th>
 		</tr>
 		<c:forEach var="car" items="${carsList}">
 		<tr>

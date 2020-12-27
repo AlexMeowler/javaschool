@@ -7,9 +7,24 @@ import java.util.Base64;
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 
+import org.apache.log4j.Logger;
+import org.retal.dto.UserDTO;
+
 @Entity
 @Table(name = "users")
 public class User {
+	
+	public User() {
+		
+	}
+	
+	public User(UserDTO userDTO)
+	{
+		setId(userDTO.getId());
+		setLogin(userDTO.getLogin());
+		setPassword(userDTO.getPassword());
+		setRole(userDTO.getRole());
+	}
 	@Id
 	@Column(name = "id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -78,14 +93,15 @@ public class User {
 	}
 
 	private String getPasswordAsBase64Hash(String pass) {
-		MessageDigest mg = null;
 		try {
-			mg = MessageDigest.getInstance("sha-512");
+			MessageDigest mg = MessageDigest.getInstance("sha-512");
+			byte[] passwordBytes = pass.getBytes(StandardCharsets.UTF_8);
+			return Base64.getEncoder().encodeToString(mg.digest(passwordBytes));
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.info("NoSuchAlgorithmException, returning null. How did this even happen?");
+			return null;
 		}
-		byte[] password = pass.getBytes(StandardCharsets.UTF_8);
-		String hashedPassword = Base64.getEncoder().encodeToString(mg.digest(password));
-		return hashedPassword;
 	}
+	
+	private static final Logger log = Logger.getLogger(User.class);
 }

@@ -6,19 +6,30 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
-import javax.persistence.PrePersist;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import javax.validation.constraints.*;
 
-import org.hibernate.annotations.ColumnDefault;
+import org.retal.dto.UserInfoDTO;
 
 @Entity
 @Table(name = "user_info")
 public class UserInfo {
+	
+	public UserInfo() {
+		
+	}
+	
+	public UserInfo(UserInfoDTO userInfoDTO)
+	{
+		setId(userInfoDTO.getId());
+		setName(userInfoDTO.getName());
+		setSurname(userInfoDTO.getSurname());
+		setHoursWorked(userInfoDTO.getHoursWorked());
+		setStatus(userInfoDTO.getStatus());
+		setCurrentCity(userInfoDTO.getCurrentCity());
+	}
 	@Id
 	@Column(name = "id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,6 +50,7 @@ public class UserInfo {
 	private String status;
 
 	@Column(name = "current_city")
+	@NotEmpty(message = "Please enter city")
 	private String currentCity;
 
 	@OneToOne(mappedBy = "userInfo", cascade = CascadeType.ALL)

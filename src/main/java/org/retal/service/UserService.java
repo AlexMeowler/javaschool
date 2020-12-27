@@ -3,9 +3,7 @@ package org.retal.service;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.retal.controller.ManagerPageController;
 import org.retal.dao.UserDAO;
-import org.retal.dao.UserInfoDAO;
 import org.retal.domain.SessionInfo;
 import org.retal.domain.User;
 import org.retal.domain.UserRole;
@@ -13,8 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
-import org.springframework.validation.ObjectError;
 import org.springframework.validation.Validator;
 
 @Service
@@ -92,11 +88,11 @@ public class UserService {
 
 	private boolean userHasRightsToEditOrDeleteUser(User caller, User target) {
 		String callerRoleString = caller.getRole().toUpperCase();
-		String targetRoleString = target.getRole().toUpperCase();
+		String targetRoleString = target != null ? target.getRole().toUpperCase() : UserRole.DRIVER.toString().toUpperCase();
 		UserRole callerRole = UserRole.valueOf(callerRoleString);
 		UserRole targetRole = UserRole.valueOf(targetRoleString);
 		boolean hasHigherRank = callerRole.ordinal() > targetRole.ordinal();
-		boolean isAdmin = caller.getRole().equals(UserRole.ADMIN.toString().toLowerCase());
+		boolean isAdmin = caller.getRole().equalsIgnoreCase(UserRole.ADMIN.toString());
 		return hasHigherRank || isAdmin;
 	}
 

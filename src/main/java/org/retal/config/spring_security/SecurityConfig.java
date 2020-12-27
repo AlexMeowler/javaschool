@@ -10,10 +10,8 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.crypto.password.MessageDigestPasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
-@SuppressWarnings("deprecation")
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true)
@@ -22,10 +20,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
 	public void registerGlobalAuthentication(AuthenticationManagerBuilder auth) throws Exception {
-		// need to rethink
-		MessageDigestPasswordEncoder encoder = new MessageDigestPasswordEncoder("sha-512");
-		encoder.setEncodeHashAsBase64(true);
-		auth.userDetailsService(authService).passwordEncoder(encoder);
+		auth.userDetailsService(authService).passwordEncoder(new SHA512PasswordEncoder());
 
 	}
 

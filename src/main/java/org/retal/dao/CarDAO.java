@@ -8,7 +8,6 @@ import org.apache.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.retal.domain.Car;
-import org.retal.domain.User;
 import org.retal.service.HibernateSessionFactory;
 import org.springframework.stereotype.Component;
 
@@ -46,10 +45,7 @@ public class CarDAO implements DAO<Car> {
 
 		Session session = HibernateSessionFactory.getSessionFactory().openSession();
 		List<Car> cars = session.createNativeQuery("SELECT * FROM CARS", Car.class).getResultList();
-		/*
-		 * for(Car c : cars) { log.info(c.getShiftlength() != null);
-		 * log.info(c.getCapacitytonns() != null); }
-		 */
+		log.info(cars.size() + " cars retrieved");
 		session.close();
 		return cars;
 	}
@@ -74,12 +70,6 @@ public class CarDAO implements DAO<Car> {
 		session.flush();
 		transaction.commit();
 		session.close();
-	}
-
-	@Override
-	public void deleteById(int id) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override

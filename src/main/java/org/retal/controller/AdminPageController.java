@@ -5,25 +5,24 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.retal.domain.*;
+import org.retal.dto.UserDTO;
+import org.retal.dto.UserInfoDTO;
 import org.retal.service.UserService;
 import org.retal.service.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
 @Controller
 public class AdminPageController {
 
-	@RequestMapping(value = "/adminPage", method = RequestMethod.GET)
+	@GetMapping(value = ADMIN_PAGE)
 	public String getAdminPage(Model model) {
 		BindingResult result = (BindingResult) model.asMap().get(BindingResult.MODEL_KEY_PREFIX + "user");
 		Map<String, String> errors = UserValidator.convertErrorsToHashMap(result);
@@ -36,14 +35,16 @@ public class AdminPageController {
 		return "adminPage";
 	}
 
-	@RequestMapping(value = "/addNewUser", method = RequestMethod.POST)
-	public RedirectView addNewUser(User user, BindingResult bindingResult, UserInfo userInfo, RedirectAttributes redir,
-			@RequestParam(name = "password") String password) {
+	@PostMapping(value = "/addNewUser")
+	public RedirectView addNewUser(UserDTO userDTO, BindingResult bindingResult, 
+			UserInfoDTO userInfoDTO, RedirectAttributes redir) {
 		log.info("Attempt to add new user");
-		RedirectView redirectView = new RedirectView("/adminPage", true);
+		RedirectView redirectView = new RedirectView(ADMIN_PAGE, true);
 		redir.addFlashAttribute("visible", "true");
+		User user = new User(userDTO);
+		UserInfo userInfo = new UserInfo(userInfoDTO);
 		user.setUserInfo(userInfo);
-		userEditor.addNewUser(user, bindingResult, password);
+		userEditor.addNewUser(user, bindingResult, userDTO.getPassword());
 		if (bindingResult.hasErrors()) {
 			redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + "user", bindingResult);
 			redir.addFlashAttribute("user", user);
@@ -51,14 +52,14 @@ public class AdminPageController {
 		return redirectView;
 	}
 
-	@RequestMapping(value = "/deleteUser/{id}")
+	@GetMapping(value = "/deleteUser/{id}")
 	public RedirectView delete(@PathVariable Integer id, RedirectAttributes redir) {
-		RedirectView redirectView = new RedirectView("/adminPage", true);
+		RedirectView redirectView = new RedirectView(ADMIN_PAGE, true);
 		userEditor.deleteUser(id);
 		return redirectView;
 	}
 
-	@RequestMapping(value = "/editUser/{id}")
+	@GetMapping(value = "/editUser/{id}")
 	public RedirectView edit(@PathVariable Integer id, RedirectAttributes redir) {
 		RedirectView redirectView = new RedirectView("/editUser", true);
 		redir.addFlashAttribute("user", userEditor.getUser(id));
@@ -66,7 +67,7 @@ public class AdminPageController {
 		return redirectView;
 	}
 
-	@RequestMapping(value = "/editUser", method = RequestMethod.GET)
+	@GetMapping(value = "/editUser")
 	public String editForm(Model model) {
 		BindingResult result = (BindingResult) model.asMap().get(BindingResult.MODEL_KEY_PREFIX + "user");
 		Map<String, String> errors = UserValidator.convertErrorsToHashMap(result);
@@ -75,12 +76,14 @@ public class AdminPageController {
 		return "editUser";
 	}
 
-	@RequestMapping(value = "/submitEditedUser", method = RequestMethod.POST)
-	public RedirectView finishEditing(User user, BindingResult bindingResult, UserInfo userInfo,
-			@RequestParam(name = "password") String password, RedirectAttributes redir) {
-		RedirectView redirectView = new RedirectView("/adminPage", true);
+	@PostMapping(value = "/submitEditedUser")
+	public RedirectView finishEditing(UserDTO userDTO, BindingResult bindingResult, 
+			UserInfoDTO userInfoDTO, RedirectAttributes redir) {
+		RedirectView redirectView = new RedirectView(ADMIN_PAGE, true);
+		User user = new User(userDTO);
+		UserInfo userInfo = new UserInfo(userInfoDTO);
 		user.setUserInfo(userInfo);
-		userEditor.updateUser(user, bindingResult, password);
+		userEditor.updateUser(user, bindingResult, userDTO.getPassword());
 		if (bindingResult.hasErrors()) {
 			redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + "user", bindingResult);
 			redir.addFlashAttribute("user", user);
@@ -94,6 +97,8 @@ public class AdminPageController {
 
 	@Autowired
 	private SessionInfo sessionInfo;
+	
+	private static final String ADMIN_PAGE = "/adminPage";
 
 	private static final Logger log = Logger.getLogger(AdminPageController.class);
 }

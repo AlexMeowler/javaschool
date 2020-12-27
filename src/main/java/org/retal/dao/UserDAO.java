@@ -31,8 +31,12 @@ public class UserDAO implements DAO<User> {
 		Session session = HibernateSessionFactory.getSessionFactory().openSession();
 		Integer id = (Integer)keys[0];
 		User user = session.get(User.class, id);
-		String info = user.getUserInfo() != null ? user.getUserInfo().toString() : "null";
-		log.info("for user id='" + user.getId() + "' user info = " + info);
+		if(user != null) {
+			String info = user.getUserInfo() != null ? user.getUserInfo().toString() : "null";
+			log.info("for user id='" + user.getId() + "' user info = " + info);
+		} else {
+			log.info("user not found");
+		}
 		session.close();
 		return user;
 	}
@@ -91,19 +95,6 @@ public class UserDAO implements DAO<User> {
 		log.info("Attempt to delete user: " + user.toString() + "'");
 		Session session = HibernateSessionFactory.getSessionFactory().openSession();
 		Transaction transaction = session.beginTransaction();
-		session.delete(user);
-		session.flush();
-		transaction.commit();
-		session.close();
-	}
-
-	@Override
-	public void deleteById(int id) {
-		log.info("Attempt to delete user: id='" + id + "'");
-		Session session = HibernateSessionFactory.getSessionFactory().openSession();
-		Transaction transaction = session.beginTransaction();
-		User user = session.load(User.class, id);
-		log.info("found user: " + user.toString());
 		session.delete(user);
 		session.flush();
 		transaction.commit();

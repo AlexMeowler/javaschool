@@ -3,18 +3,17 @@ package org.retal.controller;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class HomePageController {
 
-	@RequestMapping(value = "/", method = RequestMethod.GET)
+	@GetMapping(value = "/")
 	public String getHomeFromBlankPath(Model model) {
 		return "redirect:/home";
 	}
 
-	@RequestMapping("/home")
+	@GetMapping("/home")
 	public String getHome(Model model) {
 		log.info("Redirected to home page");
 		return "home";
