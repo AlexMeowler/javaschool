@@ -16,29 +16,25 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.access.AccessDeniedHandler;
 
 @Configuration
-public class Error403Handler implements AuthenticationEntryPoint, AccessDeniedHandler  
-{
+public class Error403Handler implements AuthenticationEntryPoint, AccessDeniedHandler {
 
 	@Override
 	public void commence(HttpServletRequest request, HttpServletResponse response,
-			AuthenticationException authException) throws IOException, ServletException 
-	{
+			AuthenticationException authException) throws IOException, ServletException {
 		log.warn("Access denied for unauthorized user: " + request.getRequestURI());
-        response.sendRedirect(request.getContextPath() + "/403");
+		response.sendRedirect(request.getContextPath() + "/403");
 	}
 
 	@Override
 	public void handle(HttpServletRequest request, HttpServletResponse response,
-			AccessDeniedException accessDeniedException) throws IOException, ServletException 
-	{
+			AccessDeniedException accessDeniedException) throws IOException, ServletException {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		if (auth != null) 
-		{
+		if (auth != null) {
 			log.warn("User: " + auth.getName() + " attempted to access the protected URL: " + request.getRequestURI());
 		}
 		String param = auth != null ? "/" + auth.getName() : "";
 		response.sendRedirect(request.getContextPath() + "/403" + param);
 	}
-	
+
 	private static final Logger log = Logger.getLogger(Error403Handler.class);
 }

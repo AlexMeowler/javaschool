@@ -7,21 +7,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 @Controller
-public class HomePageController 
-{
-	
+public class HomePageController {
+
 	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public String getHomeFromBlankPath(Model model)
-	{
+	public String getHomeFromBlankPath(Model model) {
 		return "redirect:/home";
 	}
-	
+
 	@RequestMapping("/home")
-	public String getHome(Model model)
-	{
+	public String getHome(Model model) {
 		log.info("Redirected to home page");
 		return "home";
 	}
-	
+
 	private static final Logger log = Logger.getLogger(HomePageController.class);
 }

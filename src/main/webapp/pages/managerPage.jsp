@@ -29,16 +29,16 @@
 			<td>${driver.login}</td>
 			<td>${driver.userInfo.name}</td>
 			<td>${driver.userInfo.surname}</td>
-			<td><a href="${pageContext.request.contextPath}/editDriver/${driver.id}">Edit driver</a></td>
-			<td><a href="${pageContext.request.contextPath}/deleteDriver/${driver.id}">Delete driver</a></td>
+			<td><a href="<c:url value="/editDriver/${driver.id}"/>">Edit driver</a></td>
+			<td><a href="<c:url value="/deleteDriver/${driver.id}"/>">Delete driver</a></td>
 		</tr>
 		</c:forEach>
 	</table>
-	<button class = "table-edit-button" name = "openOrCloseForm" onclick = "showForm()">Add new driver</button>
+	<button class = "table-edit-button" name = "openOrCloseForm" onclick = "showForm('driverform')">Add new driver</button>
 	<c:set var = "hidden" value = ""/>
-	<c:if test = "${empty visible}"><c:set var = "hidden" value = "display:none;"/></c:if>
+	<c:if test = "${empty visibledriver}"><c:set var = "hidden" value = "display:none;"/></c:if>
 	<c:url value="/addNewDriver" var = "addDriver"/>
-	<form:form id = "form" action="${addDriver}" method="POST" style = "${hidden}">
+	<form:form id = "driverform" action="${addDriver}" method="POST" style = "${hidden}">
 		<br>
 		<label>Login</label>
 		<input type="text" name="login" value="${user.login}"/>
@@ -68,6 +68,8 @@
 			<td>Capacity(tons)</td>
 			<td>Status</td>
 			<td>Current location</td>
+			<td>Edit</td>
+			<td>Delete</td>
 		</tr>
 		<c:forEach var="car" items="${carsList}">
 		<tr>
@@ -78,9 +80,43 @@
 			<c:if test = "${car.isWorking}"><c:set var = "status" value = "Normal"/></c:if>
 			<td>${status}</td>
 			<td>${car.location}</td>
+			<td><a href="<c:url value="/editCar/${car.registrationId}"/>">Edit Car</a></td>
+			<td><a href="<c:url value="/deleteCar/${car.registrationId}"/>">Delete Car</a></td>
 		</tr>
 		</c:forEach>
 	</table>
+	<button class = "table-edit-button" name = "openOrCloseForm" onclick = "showForm('carform')">Add new car</button>
+	<c:set var = "hiddencar" value = ""/>
+	<c:if test = "${empty visiblecar}"><c:set var = "hiddencar" value = "display:none;"/></c:if>
+	<c:url value="/addNewCar" var = "addCar"/>
+	<form:form id = "carform" action="${addCar}" method="POST" style = "${hiddencar}">
+		<br>
+		<label>Registration ID</label>
+		<input type="text" name="registrationId" value="${car.registrationId}"/>
+		<span class = "error">${error_registrationId}</span>
+		<span class = "error">${error_uniqueCarId}</span>
+		<br>
+		<label>Shift length</label>
+		<input type="text" name="shift" value="${car.shiftLength}"/>
+		<span class = "error">${error_shiftLength}</span>
+		<br>
+		<label>Capacity in tons</label>
+		<input type="text" name="capacity" value="${car.capacityTons}"/>
+		<span class = "error">${error_capacityTons}</span>
+		<br>
+		<label>Status</label>
+		<select name = "isWorking">
+			<option value = "true" ${car.isWorking || empty car ? 'selected' : ''}>Normal</option>
+			<option value = "false" ${!car.isWorking && not empty car ? 'selected' : ''}>Broken</option>
+		</select>
+		<br>
+		<!-- change to select -->
+		<label>Current location</label>
+		<input type="text" name="location" value="${car.location}"/>
+		<span class = "error">${error_location}</span>
+		<br>
+		<input type="submit" value="Add car">
+	</form:form>
 	</div>
 </body>
 </html>

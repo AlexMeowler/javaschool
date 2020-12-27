@@ -12,11 +12,9 @@ import org.retal.service.HibernateSessionFactory;
 import org.springframework.stereotype.Component;
 
 @Component
-public class UserDAO implements DAO<User>
-{
+public class UserDAO implements DAO<User> {
 	@Override
-	public void add(User user)
-	{
+	public void add(User user) {
 		log.info("Attempt to add user: name='" + user.getLogin() + "', role='" + user.getRole() + "'");
 		Session session = HibernateSessionFactory.getSessionFactory().openSession();
 		Transaction transaction = session.beginTransaction();
@@ -25,63 +23,61 @@ public class UserDAO implements DAO<User>
 		transaction.commit();
 		session.close();
 	}
-	
+
 	@Override
 	@Transactional
-	public User read(int id)
-	{
+	public User read(Object... keys) {
+		// add checking for keys
 		Session session = HibernateSessionFactory.getSessionFactory().openSession();
+		Integer id = (Integer)keys[0];
 		User user = session.get(User.class, id);
 		String info = user.getUserInfo() != null ? user.getUserInfo().toString() : "null";
 		log.info("for user id='" + user.getId() + "' user info = " + info);
 		session.close();
 		return user;
 	}
-	
+
 	@Override
 	@Transactional
-	public User find(String... args) //check arguments
+	public User find(String... args) // check arguments
 	{
 		Session session = HibernateSessionFactory.getSessionFactory().openSession();
 		String query = String.format("SELECT * FROM USERS WHERE login= '%s'", args[0]);
 		List<User> users = session.createNativeQuery(query, User.class).getResultList();
+		session.close();
 		return users.size() == 1 ? users.get(0) : null;
 	}
-	
+
 	@Override
 	@Transactional
-	public List<User> readAll()
-	{
-		
+	public List<User> readAll() {
+
 		Session session = HibernateSessionFactory.getSessionFactory().openSession();
 		List<User> users = session.createNativeQuery("SELECT * FROM USERS", User.class).getResultList();
-		for(User u : users)
-		{
+		for (User u : users) {
 			String info = u.getUserInfo() != null ? u.getUserInfo().toString() : "null";
 			log.info("for user id='" + u.getId() + "' user info = " + info);
 		}
 		session.close();
 		return users;
 	}
-	
+
 	@Transactional
-	public List<User> readAllWithRole(String role)
-	{
+	public List<User> readAllWithRole(String role) {
 		role = role.toLowerCase();
 		Session session = HibernateSessionFactory.getSessionFactory().openSession();
-		List<User> users = session.createNativeQuery("SELECT * FROM USERS WHERE role = '" + role + "'", User.class).getResultList();
-		for(User u : users)
-		{
+		List<User> users = session.createNativeQuery("SELECT * FROM USERS WHERE role = '" + role + "'", User.class)
+				.getResultList();
+		for (User u : users) {
 			log.info(role + " found: id='" + u.getId() + "'");
 		}
 		session.close();
 		return users;
 	}
-	
+
 	@Override
-	public void update(User newUser)
-	{
-		log.info("Editing user");
+	public void update(User newUser) {
+		log.info("Finishing editing user");
 		Session session = HibernateSessionFactory.getSessionFactory().openSession();
 		Transaction transaction = session.beginTransaction();
 		session.update(newUser);
@@ -89,10 +85,9 @@ public class UserDAO implements DAO<User>
 		transaction.commit();
 		session.close();
 	}
-	
+
 	@Override
-	public void delete(User user)
-	{
+	public void delete(User user) {
 		log.info("Attempt to delete user: " + user.toString() + "'");
 		Session session = HibernateSessionFactory.getSessionFactory().openSession();
 		Transaction transaction = session.beginTransaction();
@@ -101,10 +96,9 @@ public class UserDAO implements DAO<User>
 		transaction.commit();
 		session.close();
 	}
-	
+
 	@Override
-	public void deleteById(int id)
-	{
+	public void deleteById(int id) {
 		log.info("Attempt to delete user: id='" + id + "'");
 		Session session = HibernateSessionFactory.getSessionFactory().openSession();
 		Transaction transaction = session.beginTransaction();
@@ -115,6 +109,6 @@ public class UserDAO implements DAO<User>
 		transaction.commit();
 		session.close();
 	}
-	
+
 	private static final Logger log = Logger.getLogger(UserDAO.class);
 }

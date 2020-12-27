@@ -10,20 +10,17 @@ import org.springframework.context.annotation.ScopedProxyMode;
 
 @Component
 @Scope(scopeName = "session", proxyMode = ScopedProxyMode.TARGET_CLASS)
-public class SessionInfo 
-{
-	public User getCurrentUser()
-	{
-		if(user == null)
-		{
+public class SessionInfo {
+	public User getCurrentUser() {
+		if (user == null) {
 			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 			user = userDAO.find(auth.getName());
 		}
 		return user;
 	}
-	
+
 	private User user;
-	
+
 	@Autowired
 	private UserDAO userDAO;
 }

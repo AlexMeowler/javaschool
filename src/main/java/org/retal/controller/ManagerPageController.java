@@ -10,12 +10,14 @@ import org.retal.domain.SessionInfo;
 import org.retal.domain.User;
 import org.retal.domain.UserInfo;
 import org.retal.domain.UserRole;
-import org.retal.service.UserEditor;
-import org.retal.service.UserEditorValidator;
+import org.retal.service.CarService;
+import org.retal.service.UserService;
+import org.retal.service.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -24,86 +26,79 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
 @Controller
-public class ManagerPageController 
-{
+public class ManagerPageController {
 	@RequestMapping(value = "/managerPage", method = RequestMethod.GET)
-	public String getManagerPage(Model model)
-	{
-		BindingResult result = (BindingResult)model.asMap().get(BindingResult.MODEL_KEY_PREFIX + "user");
-		Map<String, String> errors = UserEditorValidator.convertErrorsToHashMap(result);
+	public String getManagerPage(Model model) {
+		BindingResult userResult = (BindingResult) model.asMap().get(BindingResult.MODEL_KEY_PREFIX + "user");
+		Map<String, String> errors = UserValidator.convertErrorsToHashMap(userResult);
+		model.addAllAttributes(errors);
+		BindingResult carResult = (BindingResult) model.asMap().get(BindingResult.MODEL_KEY_PREFIX + "car");
+		errors = UserValidator.convertErrorsToHashMap(carResult);
 		model.addAllAttributes(errors);
 		User user = sessionInfo.getCurrentUser();
 		UserInfo userInfo = user.getUserInfo();
 		model.addAttribute("current_user_name", userInfo.getName() + " " + userInfo.getSurname());
-		List<User> users = userEditor.getAllDrivers();
+		List<User> users = userService.getAllDrivers();
 		model.addAttribute("driverList", users);
-		List<Car> cars = carDAO.readAll();
+		List<Car> cars = carService.getAllCars();
 		model.addAttribute("carsList", cars);
 		return "managerPage";
 	}
-	
+
 	@RequestMapping(value = "/addNewDriver", method = RequestMethod.POST)
 	public RedirectView addNewDriver(User user, UserInfo userInfo, RedirectAttributes redir,
-			BindingResult bindingResult, @RequestParam(name = "password") String password)
-	{
+			BindingResult bindingResult, @RequestParam(name = "password") String password) {
 		log.info("Attempt to add new driver");
 		RedirectView redirectView = new RedirectView("/managerPage", true);
-		redir.addFlashAttribute("visible", "true");
+		redir.addFlashAttribute("visibledriver", "true");
 		userInfo.setUser(user);
 		user.setRole(UserRole.DRIVER.toString().toLowerCase());
 		user.setUserInfo(userInfo);
-		userEditor.addNewUser(user, bindingResult, password);
-		if(bindingResult.hasErrors())
-		{
+		userService.addNewUser(user, bindingResult, password);
+		if (bindingResult.hasErrors()) {
 			redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + "user", bindingResult);
 			redir.addFlashAttribute("user", user);
 		}
 		return redirectView;
 	}
-	
+
 	@RequestMapping(value = "/deleteDriver/{id}")
-	public RedirectView delete(@PathVariable Integer id, RedirectAttributes redir)
-	{
+	public RedirectView deleteDriver(@PathVariable Integer id, RedirectAttributes redir) {
 		RedirectView redirectView = new RedirectView("/managerPage", true);
-		User user = userEditor.getUser(id);
-		String url403 = userEditor.delete(user);
-		if(!url403.isEmpty())
-		{
+		User user = userService.getUser(id);
+		String url403 = userService.deleteUser(user);
+		if (!url403.isEmpty()) {
 			String param = sessionInfo.getCurrentUser().getLogin();
 			redirectView.setUrl(url403 + "/" + param);
 		}
 		return redirectView;
 	}
-	
+
 	@RequestMapping(value = "/editDriver/{id}")
-	public RedirectView edit(@PathVariable Integer id, RedirectAttributes redir)
-	{
+	public RedirectView editDriver(@PathVariable Integer id, RedirectAttributes redir) {
 		RedirectView redirectView = new RedirectView("/editDriver", true);
-		redir.addFlashAttribute("user", userEditor.getUser(id));
+		redir.addFlashAttribute("user", userService.getUser(id));
 		redir.addFlashAttribute("we", sessionInfo.getCurrentUser());
 		return redirectView;
 	}
-	
+
 	@RequestMapping(value = "/editDriver", method = RequestMethod.GET)
-	public String editForm(Model model)
-	{
-		BindingResult result = (BindingResult)model.asMap().get(BindingResult.MODEL_KEY_PREFIX + "user");
-		Map<String, String> errors = UserEditorValidator.convertErrorsToHashMap(result);
+	public String driverEditForm(Model model) {
+		BindingResult result = (BindingResult) model.asMap().get(BindingResult.MODEL_KEY_PREFIX + "user");
+		Map<String, String> errors = UserValidator.convertErrorsToHashMap(result);
 		model.addAllAttributes(errors);
 		model.addAttribute("editUser", "/submitEditedDriver");
 		return "editUser";
 	}
-	
-	@RequestMapping(value = "/submitEditedDriver",  method = RequestMethod.POST)
-	public RedirectView finishEditing(User user, BindingResult bindingResult, UserInfo userInfo, 
-			@RequestParam(name = "password") String password, RedirectAttributes redir)
-	{
+
+	@RequestMapping(value = "/submitEditedDriver", method = RequestMethod.POST)
+	public RedirectView finishDriverEditing(User user, BindingResult bindingResult, UserInfo userInfo,
+			@RequestParam(name = "password") String password, RedirectAttributes redir) {
 		RedirectView redirectView = new RedirectView("/managerPage", true);
 		user.setRole(UserRole.DRIVER.toString().toLowerCase());
 		user.setUserInfo(userInfo);
-		userEditor.updateUser(user, bindingResult, password);
-		if(bindingResult.hasErrors())
-		{
+		userService.updateUser(user, bindingResult, password);
+		if (bindingResult.hasErrors()) {
 			redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + "user", bindingResult);
 			redir.addFlashAttribute("user", user);
 			redirectView.setUrl("/editDriver");
@@ -111,14 +106,65 @@ public class ManagerPageController
 		return redirectView;
 	}
 	
+	@RequestMapping(value = "/addNewCar", method = RequestMethod.POST)
+	public RedirectView addNewCar(Car car, BindingResult bindingResult, 
+			RedirectAttributes redir, @RequestParam(name = "capacity") String capacity,
+			@RequestParam(name = "shift") String shiftLength) {
+		RedirectView redirectView = new RedirectView("/managerPage", true);
+		redir.addFlashAttribute("visiblecar", "true");
+		carService.addNewCar(car, bindingResult, capacity, shiftLength);
+		if (bindingResult.hasErrors()) {
+			redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + "car", bindingResult);
+			redir.addFlashAttribute("car", car);
+		}
+		return redirectView;
+	}
+	
+	@RequestMapping(value = "/deleteCar/{id}")
+	public RedirectView deleteCar(@PathVariable String id, RedirectAttributes redir) {
+		RedirectView redirectView = new RedirectView("/managerPage", true);
+		Car car = carService.getCar(id);
+		carService.deleteCar(car);
+		return redirectView;
+	}
+	
+	@RequestMapping(value = "/editCar/{id}")
+	public RedirectView editCar(@PathVariable String id, RedirectAttributes redir) {
+		RedirectView redirectView = new RedirectView("/editCar", true);
+		redir.addFlashAttribute("car", carService.getCar(id));
+		return redirectView;
+	}
+
+	@RequestMapping(value = "/editCar", method = RequestMethod.GET)
+	public String carEditForm(Model model) {
+		BindingResult result = (BindingResult) model.asMap().get(BindingResult.MODEL_KEY_PREFIX + "car");
+		Map<String, String> errors = UserValidator.convertErrorsToHashMap(result);
+		model.addAllAttributes(errors);
+		return "editCar";
+	}
+	
+	@RequestMapping(value = "/submitEditedCar", method = RequestMethod.POST)
+	public RedirectView finishCarEditing(Car car, BindingResult bindingResult,
+			RedirectAttributes redir, @RequestParam(name = "capacity") String capacity,
+			@RequestParam(name = "shift") String shiftLength) {
+		RedirectView redirectView = new RedirectView("/managerPage", true);
+		carService.updateCar(car, bindingResult, capacity, shiftLength);
+		if (bindingResult.hasErrors()) {
+			redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + "car", bindingResult);
+			redir.addFlashAttribute("car", car);
+			redirectView.setUrl("/editCar");
+		}
+		return redirectView;
+	}
+
 	@Autowired
 	private SessionInfo sessionInfo;
-	
+
 	@Autowired
-	private UserEditor userEditor;
-	
-	@Autowired 
-	private CarDAO carDAO;
-	
+	private UserService userService;
+
+	@Autowired
+	private CarService carService;
+
 	private static final Logger log = Logger.getLogger(ManagerPageController.class);
 }

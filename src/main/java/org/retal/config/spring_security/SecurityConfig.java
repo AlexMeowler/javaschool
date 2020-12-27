@@ -18,51 +18,39 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true)
 @ComponentScan(basePackages = "org.retal")
-public class SecurityConfig extends WebSecurityConfigurerAdapter
-{
-	
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
 	@Autowired
-	public void registerGlobalAuthentication(AuthenticationManagerBuilder auth) throws Exception
-	{
+	public void registerGlobalAuthentication(AuthenticationManagerBuilder auth) throws Exception {
+		// need to rethink
 		MessageDigestPasswordEncoder encoder = new MessageDigestPasswordEncoder("sha-512");
 		encoder.setEncodeHashAsBase64(true);
 		auth.userDetailsService(authService).passwordEncoder(encoder);
-		
+
 	}
-	
+
 	@Override
-	protected void configure(HttpSecurity http) throws Exception
-	{
+	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests().antMatchers("/static/*", "/home", "/", "/403").permitAll()
 			.antMatchers("/spring_auth").anonymous()
 			.antMatchers("/adminPage", "/addNewUser", "/deleteUser/*").hasAuthority(UserRole.ADMIN.toString())
-			.antMatchers("/managerPage", "/deleteDriver/*", "/editUser").hasAnyAuthority(UserRole.MANAGER.toString(), UserRole.ADMIN.toString())
+			.antMatchers("/managerPage", "/deleteDriver/*", "/editUser", "/addNewCar", "/deleteCar/*", "/editCar").hasAnyAuthority(UserRole.MANAGER.toString(), UserRole.ADMIN.toString())
 			.antMatchers("/driverPage").hasAnyAuthority(UserRole.DRIVER.toString(), UserRole.ADMIN.toString())
 			.anyRequest().authenticated()
-			.and().exceptionHandling().authenticationEntryPoint(authEntryPointAndAccessDeniedHandler)
-			.accessDeniedHandler(authEntryPointAndAccessDeniedHandler);
-		http.formLogin()
-			.loginPage("/home")
-			.loginProcessingUrl("/spring_auth")
-			.successHandler(authSuccessHandler)
-			.failureUrl("/spring_auth?error")
-			.usernameParameter("j_login")
-			.passwordParameter("j_password")
-			.permitAll();
-		http.logout()
-			.permitAll()
-			.logoutUrl("/logout") //URL trigger for log out
-			.logoutSuccessUrl("/spring_auth?logout")
-			.invalidateHttpSession(true)
-			.deleteCookies("JSESSIONID");
+			.and().exceptionHandling().authenticationEntryPoint(authEntryPointAndAccessDeniedHandler).accessDeniedHandler(authEntryPointAndAccessDeniedHandler);
+		http.formLogin().loginPage("/home").loginProcessingUrl("/spring_auth").successHandler(authSuccessHandler)
+				.failureUrl("/spring_auth?error").usernameParameter("j_login").passwordParameter("j_password")
+				.permitAll();
+		http.logout().permitAll().logoutUrl("/logout") // URL trigger for log out
+				.logoutSuccessUrl("/spring_auth?logout").invalidateHttpSession(true).deleteCookies("JSESSIONID");
 	}
-	
+
 	@Autowired
 	private UserAuthorizationService authService;
-	
+
 	@Autowired
 	private AuthenticationSuccessHandler authSuccessHandler;
-	
+
 	@Autowired
 	private Error403Handler authEntryPointAndAccessDeniedHandler;
 }

@@ -1,10 +1,10 @@
 # Logiweb
 Java School Public Repository
 
-# VERSION 0.0.6
+# VERSION 0.0.6.1
 
-Added "Edit" options for users with input validation. 
+Added adding, editing and deleting for cars.
 
 # TODO
 
-Add functions to create and edit cars, add data validation for cars.
+Sonar analysis, code refactoring. Start to think on orders realization.

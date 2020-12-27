@@ -12,7 +12,7 @@
 <body>
 	<jsp:include page="menu.jsp"/>
 	<div class="container main-body">
-	<form:form id = "form" action="${pageContext.request.contextPath}${editUser}" method="POST">
+	<form:form id = "form" action="<c:url value="${editUser}"/>" method="POST">
 		<br>
 		<input type="text" name="id" value="${user.id}" hidden = "true"/>
 		<label>Login</label>

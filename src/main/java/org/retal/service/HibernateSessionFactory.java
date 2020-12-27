@@ -11,35 +11,28 @@ import org.retal.domain.Car;
 import org.retal.domain.User;
 import org.retal.domain.UserInfo;
 
-public class HibernateSessionFactory 
-{
-	private HibernateSessionFactory()
-	{
-		
+public class HibernateSessionFactory {
+	private HibernateSessionFactory() {
+
 	}
-	
-	public static SessionFactory getSessionFactory()
-	{
-		if(sessionFactory == null)
-		{
+
+	public static SessionFactory getSessionFactory() {
+		if (sessionFactory == null) {
 			Configuration config = new Configuration();
 			Properties properties = new Properties();
-			try 
-			{
+			try {
 				properties.load(HibernateSessionFactory.class.getResourceAsStream("/db.properties"));
-			} 
-			catch (IOException e) 
-			{
+			} catch (IOException e) {
 				e.printStackTrace();
 			}
 			config.configure().addProperties(properties);
-			config.addAnnotatedClass(User.class).addAnnotatedClass(UserInfo.class)
-			.addAnnotatedClass(Car.class);
-			ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder().applySettings(config.getProperties()).build();
+			config.addAnnotatedClass(User.class).addAnnotatedClass(UserInfo.class).addAnnotatedClass(Car.class);
+			ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder().applySettings(config.getProperties())
+					.build();
 			sessionFactory = config.buildSessionFactory(serviceRegistry);
 		}
 		return sessionFactory;
 	}
-	
+
 	private static SessionFactory sessionFactory = null;
 }

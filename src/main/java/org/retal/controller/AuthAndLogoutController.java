@@ -10,32 +10,27 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
 @Controller
-public class AuthAndLogoutController 
-{
-	
+public class AuthAndLogoutController {
+
 	@RequestMapping(value = "/spring_auth", method = RequestMethod.GET)
 	public RedirectView logInAuthGet(@RequestParam(value = "error", required = false) String error,
-	        				@RequestParam(value = "logout", required = false) String logout, RedirectAttributes redir)
-	{
+			@RequestParam(value = "logout", required = false) String logout, RedirectAttributes redir) {
 		RedirectView redirectView = new RedirectView("/home", true);
-		if(error != null)
-		{
+		if (error != null) {
 			log.info("auth fail");
 			redir.addFlashAttribute("message", "Invalid login or password");
 		}
-		if(logout != null)
-		{
+		if (logout != null) {
 			log.info("logout success");
 			redir.addFlashAttribute("message", "Logged out succesfully");
 		}
 		return redirectView;
 	}
-	
+
 	@RequestMapping(value = "/logout", method = RequestMethod.POST)
-	public void logOut(Model model)
-	{
+	public void logOut(Model model) {
 		log.info("logout attempt");
 	}
-	
+
 	private static final Logger log = Logger.getLogger(AuthAndLogoutController.class);
 }

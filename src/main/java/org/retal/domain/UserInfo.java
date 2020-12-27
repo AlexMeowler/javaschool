@@ -18,106 +18,90 @@ import org.hibernate.annotations.ColumnDefault;
 
 @Entity
 @Table(name = "user_info")
-public class UserInfo 
-{
+public class UserInfo {
 	@Id
 	@Column(name = "id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
-	
+
 	@Column(name = "name")
 	@NotEmpty(message = "Please enter name")
 	private String name;
-	
+
 	@Column(name = "surname")
 	@NotEmpty(message = "Please enter surname")
 	private String surname;
-	
+
 	@Column(name = "hours_worked_month")
 	private Integer hoursWorked = 0;
-	
+
 	@Column(name = "status")
 	private String status;
-	
+
 	@Column(name = "current_city")
 	private String currentCity;
-	
+
 	@OneToOne(mappedBy = "userInfo", cascade = CascadeType.ALL)
-    @PrimaryKeyJoinColumn
+	@PrimaryKeyJoinColumn
 	private User user;
-	
-	public int getId()
-	{
+
+	public int getId() {
 		return id;
 	}
-	
-	public void setId(int id)
-	{
+
+	public void setId(int id) {
 		this.id = id;
 	}
-	
-	public String getName()
-	{
+
+	public String getName() {
 		return name;
 	}
-	
-	public void setName(String name)
-	{
+
+	public void setName(String name) {
 		this.name = name;
 	}
-	
-	public String getSurname()
-	{
+
+	public String getSurname() {
 		return surname;
 	}
-	
-	public void setSurname(String surname)
-	{
+
+	public void setSurname(String surname) {
 		this.surname = surname;
 	}
-	
-	public User getUser()
-	{
+
+	public User getUser() {
 		return user;
 	}
-	
-	public void setUser(User user)
-	{
+
+	public void setUser(User user) {
 		this.user = user;
 	}
-	
-	public Integer getHoursWorked()
-	{
+
+	public Integer getHoursWorked() {
 		return hoursWorked;
 	}
-	
-	public void setHoursWorked(Integer hoursWorked)
-	{
+
+	public void setHoursWorked(Integer hoursWorked) {
 		this.hoursWorked = hoursWorked;
 	}
-	
-	public String getStatus()
-	{
+
+	public String getStatus() {
 		return status;
 	}
-	
-	public void setStatus(String status)
-	{
+
+	public void setStatus(String status) {
 		this.status = status;
 	}
-	
-	public String getCurrentCity()
-	{
+
+	public String getCurrentCity() {
 		return currentCity;
 	}
-	
-	public void setCurrentCity(String currentCity)
-	{
+
+	public void setCurrentCity(String currentCity) {
 		this.currentCity = currentCity;
 	}
-	
-	public String toString()
-	{
+
+	public String toString() {
 		String owner = user != null ? user.toString() : "null";
 		return "UserInfo [owner = " + owner + ", name = " + name + ", surname = " + surname + "]";
 	}

@@ -3,7 +3,7 @@
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 <nav class = "navbar navbar-expand-lg fixed-top">
-		<a class="navbar-brand" href="${pageContext.request.contextPath}/home">Home</a>
+		<a class="navbar-brand" href="<c:url value="/home"/>">Home</a>
 		<sec:authorize access = "isAuthenticated()">
 		<c:url value="/logout" var = "logoutURL"/>
 		<form:form style="margin-block-end: 0" id="logout" action="${logoutURL}" method="POST">
@@ -15,9 +15,9 @@
 		</button>
 		<div id="navbarSupportedContent" class="collapse navbar-collapse">
 			<ul class = "navbar-nav mr-4">
-				<li class="navitem"><a class = "nav-link" href="${pageContext.request.contextPath}/adminPage">Administrator page</a></li>
-				<li class="navitem"><a class = "nav-link" href="${pageContext.request.contextPath}/managerPage">Manager page</a></li>
-				<li class="navitem"><a class = "nav-link" href="${pageContext.request.contextPath}/driverPage">Driver page</a></li>
+				<li class="navitem"><a class = "nav-link" href="<c:url value="/adminPage"/>">Administrator page</a></li>
+				<li class="navitem"><a class = "nav-link" href="<c:url value="/managerPage"/>">Manager page</a></li>
+				<li class="navitem"><a class = "nav-link" href="<c:url value="/driverPage"/>">Driver page</a></li>
 			</ul>
 		</div>
 </nav>

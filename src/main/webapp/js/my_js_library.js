@@ -1,6 +1,6 @@
-function showForm()
+function showForm(target)
 		{
-			var elem = document.getElementById("form").style.display;
+			var elem = document.getElementById(target).style.display;
 			if(elem == "none")
 			{
 				elem = "";	
@@ -9,5 +9,5 @@ function showForm()
 			{
 				elem = "none";	
 			}
-			document.getElementById("form").style["display"] = elem;
+			document.getElementById(target).style["display"] = elem;
 		}

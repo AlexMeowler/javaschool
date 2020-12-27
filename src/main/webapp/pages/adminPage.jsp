@@ -37,12 +37,12 @@
 			<td>${user.userInfo.hoursWorked}</td>
 			<td>${user.userInfo.status}</td>
 			<td>${user.userInfo.currentCity}</td>
-			<td><a href="${pageContext.request.contextPath}/editUser/${user.id}">Edit user</a></td>
-			<td><a href="${pageContext.request.contextPath}/deleteUser/${user.id}">Delete user</a></td>
+			<td><a href="<c:url value="/editUser/${user.id}"/>">Edit user</a></td>
+			<td><a href="<c:url value="/deleteUser/${user.id}"/>">Delete user</a></td>
 		</tr>
 		</c:forEach>
 	</table>
-	<button class = "table-edit-button" name = "openOrCloseForm" onclick = "showForm()">Add new user</button>
+	<button class = "table-edit-button" name = "openOrCloseForm" onclick = "showForm('form')">Add new user</button>
 	<c:set var = "hidden" value = ""/>
 	<c:if test = "${empty visible}"><c:set var = "hidden" value = "display:none;"/></c:if>
 	<c:url value="/addNewUser" var = "addUser"/>
