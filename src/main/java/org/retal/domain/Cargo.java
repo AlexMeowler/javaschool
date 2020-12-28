@@ -8,9 +8,24 @@ import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import org.retal.dto.CargoDTO;
+
 @Entity
 @Table(name="cargo")
 public class Cargo {
+	
+	public Cargo() {
+		
+	}
+	
+	public Cargo(CargoDTO cargoDTO) {
+		setId(cargoDTO.getId());
+		setName(cargoDTO.getName());
+		setMass(cargoDTO.getMass());
+		setStatus(cargoDTO.getStatus());
+		setPoint(cargoDTO.getPoint());
+		setDescription(cargoDTO.getDescription());
+	}
 	
 	@Id
 	@Column(name = "id")
@@ -28,6 +43,9 @@ public class Cargo {
 	
 	@OneToOne(mappedBy="cargo")
 	private RoutePoint point;
+	
+	@Column(name="description")
+	private String description;
 	
 	public int getId() {
 		return id;
@@ -67,5 +85,13 @@ public class Cargo {
 	
 	public void setPoint(RoutePoint point) {
 		this.point = point;
+	}
+	
+	public String getDescription() {
+		return description;
+	}
+	
+	public void setDescription(String description) {
+		this.description = description;
 	}
 }

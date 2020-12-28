@@ -5,6 +5,8 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.retal.domain.*;
+import org.retal.domain.enums.CargoStatus;
+import org.retal.dto.CargoDTO;
 import org.retal.dto.CityDTO;
 import org.retal.dto.UserDTO;
 import org.retal.dto.UserInfoDTO;
@@ -44,7 +46,6 @@ public class AdminPageController {
 	@PostMapping(value = "/addNewUser")
 	public RedirectView addNewUser(UserDTO userDTO, BindingResult bindingResult, 
 			UserInfoDTO userInfoDTO, CityDTO cityDTO, RedirectAttributes redir) {
-		log.info("Attempt to add new user");
 		RedirectView redirectView = new RedirectView(ADMIN_PAGE, true);
 		redir.addFlashAttribute("visible", "true");
 		User user = new User(userDTO);
@@ -100,6 +101,21 @@ public class AdminPageController {
 			redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + "user", bindingResult);
 			redir.addFlashAttribute("user", user);
 			redirectView.setUrl("/editUser");
+		}
+		return redirectView;
+	}
+	
+	@PostMapping(value = "/addNewCargo")
+	public RedirectView addNewCargo(CargoDTO cargoDTO, BindingResult bindingResult, 
+							RedirectAttributes redir) {
+		RedirectView redirectView = new RedirectView(ADMIN_PAGE, true);
+		redir.addFlashAttribute("visiblecargo", "true");
+		Cargo cargo = new Cargo(cargoDTO);
+		cargo.setStatus(CargoStatus.PREPARED.toString().toLowerCase());
+		cargoAndOrdersService.addNewCargo(cargo, bindingResult);
+		if (bindingResult.hasErrors()) {
+			redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + "cargo", bindingResult);
+			redir.addFlashAttribute("cargo", cargo);
 		}
 		return redirectView;
 	}

@@ -1,6 +1,6 @@
 package org.retal.config.spring_security;
 
-import org.retal.domain.UserRole;
+import org.retal.domain.enums.UserRole;
 import org.retal.service.UserAuthorizationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;

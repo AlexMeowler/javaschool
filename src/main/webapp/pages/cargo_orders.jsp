@@ -23,6 +23,7 @@
 			<th scope="col">Cargo name</th>
 			<th scope="col">Cargo weight(kg)</th>
 			<th scope="col">Cargo status</th>
+			<th scope="col">Description</th>
 		</tr>
 		<c:forEach var="cargo" items="${cargoList}">
 		<tr>
@@ -30,6 +31,7 @@
 			<td>${cargo.name}</td>
 			<td>${cargo.mass}</td>
 			<td>${cargo.status}</td>
+			<td>${cargo.description}</td>
 		</tr>
 		</c:forEach>
 	</table>

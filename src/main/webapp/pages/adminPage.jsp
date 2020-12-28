@@ -45,11 +45,11 @@
 		</tr>
 		</c:forEach>
 	</table>
-	<button class = "table-edit-button" name = "openOrCloseForm" onclick = "showForm('form')">Add new user</button>
+	<button class = "table-edit-button" name = "openOrCloseForm" onclick = "showForm('formuser')">Add new user</button>
 	<c:set var = "hidden" value = ""/>
 	<c:if test = "${empty visible}"><c:set var = "hidden" value = "display:none;"/></c:if>
 	<c:url value="/addNewUser" var = "addUser"/>
-	<form:form id = "form" action="${addUser}" method="POST" style = "${hidden}">
+	<form:form id = "formuser" action="${addUser}" method="POST" style = "${hidden}">
 		<br>
 		<label>Login</label>
 		<input type="text" name="login" value="${user.login}"/>
@@ -100,6 +100,7 @@
 			<th scope="col">Cargo name</th>
 			<th scope="col">Cargo weight(kg)</th>
 			<th scope="col">Cargo status</th>
+			<th scope="col">Description</th>
 		</tr>
 		<c:forEach var="cargo" items="${cargoList}">
 		<tr>
@@ -107,9 +108,28 @@
 			<td>${cargo.name}</td>
 			<td>${cargo.mass}</td>
 			<td>${cargo.status}</td>
+			<td>${cargo.description}</td>
 		</tr>
 		</c:forEach>
 	</table>	
+	<button class = "table-edit-button" name = "openOrCloseForm" onclick = "showForm('formcargo')">Add new cargo</button>
+	<c:set var = "hiddencargo" value = ""/>
+	<c:if test = "${empty visiblecargo}"><c:set var = "hiddencargo" value = "display:none;"/></c:if>
+	<c:url value="/addNewCargo" var = "addCargo"/>
+	<form:form id = "formcargo" action="${addCargo}" method="POST" style = "${hiddencargo}">
+		<br>
+		<label>Name</label>
+		<input type="text" name="name" value="${cargo.name}"/>
+		<br>
+		<label>Weight (kg)</label>
+		<input type="text" name="mass"/>
+		<span class = "error">${error_mass}</span>
+		<br>
+		<label>Description</label>
+		<input type="text" name="description"/>
+		<br>
+		<input type="submit" value="Add cargo">
+	</form:form>
 	</div>
 </body>
 </html>

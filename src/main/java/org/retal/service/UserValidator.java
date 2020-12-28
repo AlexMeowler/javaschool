@@ -7,9 +7,9 @@ import java.util.Set;
 import javax.validation.ConstraintViolation;
 
 import org.apache.log4j.Logger;
-import org.retal.domain.DriverStatus;
 import org.retal.domain.User;
 import org.retal.domain.UserInfo;
+import org.retal.domain.enums.DriverStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;

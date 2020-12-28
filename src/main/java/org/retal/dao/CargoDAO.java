@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.retal.domain.Cargo;
 import org.retal.service.HibernateSessionFactory;
 import org.springframework.stereotype.Component;
@@ -12,9 +13,14 @@ import org.springframework.stereotype.Component;
 public class CargoDAO implements DAO<Cargo> {
 
 	@Override
-	public void add(Cargo t) {
-		// TODO Auto-generated method stub
-		
+	public void add(Cargo cargo) {
+		log.info("Attempt to add cargo: name='" + cargo.getName() + "', mass='" + cargo.getMass() + "'");
+		Session session = HibernateSessionFactory.getSessionFactory().openSession();
+		Transaction transaction = session.beginTransaction();
+		session.save(cargo);
+		session.flush();
+		transaction.commit();
+		session.close();
 	}
 
 	@Override

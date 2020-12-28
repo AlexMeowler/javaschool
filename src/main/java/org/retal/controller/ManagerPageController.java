@@ -9,7 +9,7 @@ import org.retal.domain.City;
 import org.retal.domain.SessionInfo;
 import org.retal.domain.User;
 import org.retal.domain.UserInfo;
-import org.retal.domain.UserRole;
+import org.retal.domain.enums.UserRole;
 import org.retal.dto.CarDTO;
 import org.retal.dto.CityDTO;
 import org.retal.dto.UserDTO;
