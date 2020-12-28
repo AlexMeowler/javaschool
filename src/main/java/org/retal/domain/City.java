@@ -30,6 +30,9 @@ public class City {
 	@OneToMany(mappedBy="currentCity")
 	private Set<UserInfo> userInfos;
 	
+	@OneToMany(mappedBy="location")
+	private Set<Car> cars;
+	
 	public String getCurrentCity() {
 		return currentCity;
 	}
@@ -44,5 +47,13 @@ public class City {
 	
 	public void setUserInfos(Set<UserInfo> userInfos) {
 		this.userInfos = userInfos;
+	}
+	
+	public Set<Car> getCars() {
+		return cars;
+	}
+	
+	public void setCars(Set<Car> cars ) {
+		this.cars = cars;
 	}
 }

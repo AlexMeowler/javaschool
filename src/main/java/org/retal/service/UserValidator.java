@@ -63,7 +63,7 @@ public class UserValidator implements Validator {
 			String message = "Invalid status";
 			errors.reject(property, message);
 		}
-		// city validation
+		// TODO city validation
 	}
 
 	public static Map<String, String> convertErrorsToHashMap(BindingResult bindingResult) {

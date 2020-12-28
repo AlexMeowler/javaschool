@@ -33,8 +33,9 @@ public class Car {
 	@Column(name = "is_working")
 	private Boolean isWorking;
 
-	@Column(name = "location")
-	private String location;
+	@ManyToOne
+	@JoinColumn(name="location", nullable = false)
+	private City location;
 
 	public String getRegistrationId() {
 		return registrationId;
@@ -68,11 +69,11 @@ public class Car {
 		isWorking = flag;
 	}
 
-	public String getLocation() {
+	public City getLocation() {
 		return location;
 	}
 
-	public void setLocation(String location) {
+	public void setLocation(City location) {
 		this.location = location;
 	}
 }

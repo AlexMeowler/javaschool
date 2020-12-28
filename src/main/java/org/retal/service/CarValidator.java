@@ -43,6 +43,7 @@ public class CarValidator implements Validator {
 			log.info(property + " : " + message);
 			errors.reject(property, message);
 		}
+		// TODO city validation
 	}
 	
 	@Autowired

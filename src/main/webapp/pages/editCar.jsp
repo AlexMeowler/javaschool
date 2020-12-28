@@ -34,9 +34,12 @@
 			<option value = "false" ${!car.isWorking && not empty car ? 'selected' : ''}>Broken</option>
 		</select>
 		<br>
-		<!-- change to select -->
 		<label>Current location</label>
-		<input type="text" name="location" value="${car.location}"/>
+		<select name = "currentCity">
+			<c:forEach var="city" items="${cityList}">
+				<option value = "${city.currentCity}" ${car.location.currentCity == city.currentCity ? 'selected' : ''}>${city.currentCity}</option>
+			</c:forEach>
+		</select>
 		<span class = "error">${error_location}</span>
 		<br>
 		<input type="submit" value="Finish editing car">

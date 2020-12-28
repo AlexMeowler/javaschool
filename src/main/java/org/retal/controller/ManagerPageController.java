@@ -11,6 +11,7 @@ import org.retal.domain.User;
 import org.retal.domain.UserInfo;
 import org.retal.domain.UserRole;
 import org.retal.dto.CarDTO;
+import org.retal.dto.CityDTO;
 import org.retal.dto.UserDTO;
 import org.retal.dto.UserInfoDTO;
 import org.retal.service.CarService;
@@ -53,13 +54,15 @@ public class ManagerPageController {
 
 	@PostMapping(value = "/addNewDriver")
 	public RedirectView addNewDriver(UserDTO userDTO, UserInfoDTO userInfoDTO, 
-			RedirectAttributes redir,BindingResult bindingResult) {
+			CityDTO cityDTO, RedirectAttributes redir,BindingResult bindingResult) {
 		log.info("Attempt to add new driver");
 		RedirectView redirectView = new RedirectView(MANAGER_PAGE, true);
 		redir.addFlashAttribute("visibledriver", "true");
 		User user = new User(userDTO);
 		UserInfo userInfo = new UserInfo(userInfoDTO);
+		City city = new City(cityDTO);
 		user.setRole(UserRole.DRIVER.toString().toLowerCase());
+		userInfo.setCurrentCity(city);
 		user.setUserInfo(userInfo);
 		userService.addNewUser(user, bindingResult, userDTO.getPassword());
 		if (bindingResult.hasErrors()) {
@@ -102,11 +105,13 @@ public class ManagerPageController {
 
 	@PostMapping(value = "/submitEditedDriver")
 	public RedirectView finishDriverEditing(UserDTO userDTO, BindingResult bindingResult, 
-			UserInfoDTO userInfoDTO, RedirectAttributes redir) {
+			UserInfoDTO userInfoDTO, CityDTO cityDTO, RedirectAttributes redir) {
 		RedirectView redirectView = new RedirectView(MANAGER_PAGE, true);
 		User user = new User(userDTO);
 		UserInfo userInfo = new UserInfo(userInfoDTO);
+		City city = new City(cityDTO);
 		user.setRole(UserRole.DRIVER.toString().toLowerCase());
+		userInfo.setCurrentCity(city);
 		user.setUserInfo(userInfo);
 		userService.updateUser(user, bindingResult, userDTO.getPassword());
 		if (bindingResult.hasErrors()) {
@@ -118,12 +123,14 @@ public class ManagerPageController {
 	}
 	
 	@PostMapping(value = "/addNewCar")
-	public RedirectView addNewCar(CarDTO carDTO, BindingResult bindingResult, 
+	public RedirectView addNewCar(CarDTO carDTO, BindingResult bindingResult, CityDTO cityDTO, 
 			RedirectAttributes redir, @RequestParam(name = "capacity") String capacity,
 			@RequestParam(name = "shift") String shiftLength) {
 		RedirectView redirectView = new RedirectView(MANAGER_PAGE, true);
 		redir.addFlashAttribute("visiblecar", "true");
 		Car car = new Car(carDTO);
+		City city = new City(cityDTO);
+		car.setLocation(city);
 		carService.addNewCar(car, bindingResult, capacity, shiftLength);
 		if (bindingResult.hasErrors()) {
 			redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + "car", bindingResult);
@@ -153,15 +160,19 @@ public class ManagerPageController {
 		BindingResult result = (BindingResult) model.asMap().get(BindingResult.MODEL_KEY_PREFIX + "car");
 		Map<String, String> errors = UserValidator.convertErrorsToHashMap(result);
 		model.addAllAttributes(errors);
+		List<City> cities = cityService.getAllCities();
+		model.addAttribute("cityList", cities);
 		return "editCar";
 	}
 	
 	@PostMapping(value = "/submitEditedCar")
 	public RedirectView finishCarEditing(CarDTO carDTO, BindingResult bindingResult,
 				RedirectAttributes redir, @RequestParam(name = "capacity") String capacity,
-				@RequestParam(name = "shift") String shiftLength) {
+				@RequestParam(name = "shift") String shiftLength, CityDTO cityDTO) {
 		RedirectView redirectView = new RedirectView(MANAGER_PAGE, true);
 		Car car = new Car(carDTO);
+		City city = new City(cityDTO);
+		car.setLocation(city);
 		carService.updateCar(car, bindingResult, capacity, shiftLength);
 		if (bindingResult.hasErrors()) {
 			redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + "car", bindingResult);
