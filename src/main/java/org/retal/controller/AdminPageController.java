@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.retal.domain.*;
+import org.retal.dto.CityDTO;
 import org.retal.dto.UserDTO;
 import org.retal.dto.UserInfoDTO;
 import org.retal.service.CityService;
@@ -40,12 +41,14 @@ public class AdminPageController {
 
 	@PostMapping(value = "/addNewUser")
 	public RedirectView addNewUser(UserDTO userDTO, BindingResult bindingResult, 
-			UserInfoDTO userInfoDTO, RedirectAttributes redir) {
+			UserInfoDTO userInfoDTO, CityDTO cityDTO, RedirectAttributes redir) {
 		log.info("Attempt to add new user");
 		RedirectView redirectView = new RedirectView(ADMIN_PAGE, true);
 		redir.addFlashAttribute("visible", "true");
 		User user = new User(userDTO);
 		UserInfo userInfo = new UserInfo(userInfoDTO);
+		City currentCity = new City(cityDTO);
+		userInfo.setCurrentCity(currentCity);
 		user.setUserInfo(userInfo);
 		userService.addNewUser(user, bindingResult, userDTO.getPassword());
 		if (bindingResult.hasErrors()) {
@@ -83,10 +86,12 @@ public class AdminPageController {
 
 	@PostMapping(value = "/submitEditedUser")
 	public RedirectView finishEditing(UserDTO userDTO, BindingResult bindingResult, 
-			UserInfoDTO userInfoDTO, RedirectAttributes redir) {
+			UserInfoDTO userInfoDTO, CityDTO cityDTO, RedirectAttributes redir) {
 		RedirectView redirectView = new RedirectView(ADMIN_PAGE, true);
 		User user = new User(userDTO);
 		UserInfo userInfo = new UserInfo(userInfoDTO);
+		City currentCity = new City(cityDTO);
+		userInfo.setCurrentCity(currentCity);
 		user.setUserInfo(userInfo);
 		userService.updateUser(user, bindingResult, userDTO.getPassword());
 		if (bindingResult.hasErrors()) {

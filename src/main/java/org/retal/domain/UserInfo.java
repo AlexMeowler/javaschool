@@ -6,6 +6,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
@@ -50,9 +52,9 @@ public class UserInfo {
 	@Column(name = "status")
 	private String status;
 
-	@Column(name = "current_city")
-	@NotEmpty(message = "Please enter city")
-	private String currentCity;
+	@ManyToOne
+	@JoinColumn(name="current_city", nullable = false)
+	private City currentCity;
 
 	@OneToOne(mappedBy = "userInfo", cascade = CascadeType.ALL)
 	@PrimaryKeyJoinColumn
@@ -106,11 +108,11 @@ public class UserInfo {
 		this.status = status;
 	}
 
-	public String getCurrentCity() {
+	public City getCurrentCity() {
 		return currentCity;
 	}
 
-	public void setCurrentCity(String currentCity) {
+	public void setCurrentCity(City currentCity) {
 		this.currentCity = currentCity;
 	}
 

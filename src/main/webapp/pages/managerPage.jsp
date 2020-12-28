@@ -37,7 +37,7 @@
 			<td>${driver.userInfo.surname}</td>
 			<td>${driver.userInfo.hoursWorked}</td>
 			<td>${driver.userInfo.status}</td>
-			<td>${driver.userInfo.currentCity}</td>
+			<td>${driver.userInfo.currentCity.currentCity}</td>
 			<td><a href="<c:url value="/editDriver/${driver.id}"/>">Edit driver</a></td>
 			<td><a href="<c:url value="/deleteDriver/${driver.id}"/>">Delete driver</a></td>
 		</tr>
@@ -76,7 +76,7 @@
 		<label>City</label>
 		<select name = "currentCity">
 			<c:forEach var="city" items="${cityList}">
-				<option value = "${city.city}" ${user.userInfo.currentCity == city.city ? 'selected' : ''}>${city.city}</option>
+				<option value = "${city.currentCity}" ${user.userInfo.currentCity.currentCity == city.currentCity ? 'selected' : ''}>${city.currentCity}</option>
 			</c:forEach>
 		</select>
 		<span class = "error">${error_currentCity}</span>

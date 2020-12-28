@@ -54,7 +54,7 @@
 		<label>City</label>
 		<select name = "currentCity">
 			<c:forEach var="city" items="${cityList}">
-				<option value = "${city.city}" ${user.userInfo.currentCity == city.city ? 'selected' : ''}>${city.city}</option>
+				<option value = "${city.currentCity}" ${user.userInfo.currentCity.currentCity == city.currentCity ? 'selected' : ''}>${city.currentCity}</option>
 			</c:forEach>
 		</select>
 		<span class = "error">${error_currentCity}</span>

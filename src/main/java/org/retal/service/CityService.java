@@ -20,7 +20,7 @@ public class CityService {
 			String line;
 			while((line = reader.readLine()) != null) {
 				City city = new City();
-				city.setCity(line);
+				city.setCurrentCity(line);
 				cityDAO.add(city);
 			}
 			reader.close();

@@ -39,7 +39,7 @@
 			<td>${user.role}</td>
 			<td>${user.userInfo.hoursWorked}</td>
 			<td>${user.userInfo.status}</td>
-			<td>${user.userInfo.currentCity}</td>
+			<td>${user.userInfo.currentCity.currentCity}</td>
 			<td><a href="<c:url value="/editUser/${user.id}"/>">Edit user</a></td>
 			<td><a href="<c:url value="/deleteUser/${user.id}"/>">Delete user</a></td>
 		</tr>
@@ -85,7 +85,7 @@
 		<label>City</label>
 		<select name = "currentCity">
 			<c:forEach var="city" items="${cityList}">
-				<option value = "${city.city}" ${user.userInfo.currentCity == city.city ? 'selected' : ''}>${city.city}</option>
+				<option value = "${city.currentCity}" ${user.userInfo.currentCity.currentCity == city.currentCity ? 'selected' : ''}>${city.currentCity}</option>
 			</c:forEach>
 		</select>
 		<span class = "error">${error_currentCity}</span>

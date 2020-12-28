@@ -8,7 +8,6 @@ import org.apache.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.retal.domain.City;
-import org.retal.domain.User;
 import org.retal.service.HibernateSessionFactory;
 import org.springframework.stereotype.Component;
 
@@ -17,7 +16,7 @@ public class CityDAO implements DAO<City> {
 
 	@Override
 	public void add(City city) {
-		log.info("Attempt to add city '" + city.getCity() + "'");
+		log.info("Attempt to add city '" + city.getCurrentCity() + "'");
 		Session session = HibernateSessionFactory.getSessionFactory().openSession();
 		Transaction transaction = session.beginTransaction();
 		session.saveOrUpdate(city);
