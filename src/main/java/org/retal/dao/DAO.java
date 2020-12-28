@@ -15,5 +15,5 @@ public interface DAO<T> {
 
 	public void delete(T t);
 
-	public void update(T a);
+	public void update(T t);
 }

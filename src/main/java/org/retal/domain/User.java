@@ -25,6 +25,7 @@ public class User {
 		setPassword(userDTO.getPassword());
 		setRole(userDTO.getRole());
 	}
+	
 	@Id
 	@Column(name = "id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

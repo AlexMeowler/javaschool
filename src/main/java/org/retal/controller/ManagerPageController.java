@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.retal.domain.Car;
+import org.retal.domain.City;
 import org.retal.domain.SessionInfo;
 import org.retal.domain.User;
 import org.retal.domain.UserInfo;
@@ -13,6 +14,7 @@ import org.retal.dto.CarDTO;
 import org.retal.dto.UserDTO;
 import org.retal.dto.UserInfoDTO;
 import org.retal.service.CarService;
+import org.retal.service.CityService;
 import org.retal.service.UserService;
 import org.retal.service.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +46,8 @@ public class ManagerPageController {
 		model.addAttribute("driverList", users);
 		List<Car> cars = carService.getAllCars();
 		model.addAttribute("carsList", cars);
+		List<City> cities = cityService.getAllCities();
+		model.addAttribute("cityList", cities);
 		return "managerPage";
 	}
 
@@ -91,6 +95,8 @@ public class ManagerPageController {
 		Map<String, String> errors = UserValidator.convertErrorsToHashMap(result);
 		model.addAllAttributes(errors);
 		model.addAttribute("editUser", "/submitEditedDriver");
+		List<City> cities = cityService.getAllCities();
+		model.addAttribute("cityList", cities);
 		return "editUser";
 	}
 
@@ -138,6 +144,7 @@ public class ManagerPageController {
 	public RedirectView editCar(@PathVariable String id, RedirectAttributes redir) {
 		RedirectView redirectView = new RedirectView("/editCar", true);
 		redir.addFlashAttribute("car", carService.getCar(id));
+		
 		return redirectView;
 	}
 
@@ -172,6 +179,9 @@ public class ManagerPageController {
 
 	@Autowired
 	private CarService carService;
+	
+	@Autowired 
+	private CityService cityService;
 	
 	private static final String MANAGER_PAGE = "/managerPage";
 

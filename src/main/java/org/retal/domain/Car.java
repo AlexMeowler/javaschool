@@ -19,6 +19,7 @@ public class Car {
 		setIsWorking(carDTO.getIsWorking());
 		setLocation(carDTO.getLocation());
 	}
+	
 	@Id
 	@Column(name = "registration_id")
 	private String registrationId;

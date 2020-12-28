@@ -30,6 +30,7 @@ public class UserInfo {
 		setStatus(userInfoDTO.getStatus());
 		setCurrentCity(userInfoDTO.getCurrentCity());
 	}
+	
 	@Id
 	@Column(name = "id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

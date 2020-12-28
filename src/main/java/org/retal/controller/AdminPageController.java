@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 import org.retal.domain.*;
 import org.retal.dto.UserDTO;
 import org.retal.dto.UserInfoDTO;
+import org.retal.service.CityService;
 import org.retal.service.UserService;
 import org.retal.service.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,8 +31,10 @@ public class AdminPageController {
 			log.info(e.getKey() + ":" + e.getValue());
 		}
 		model.addAllAttributes(errors);
-		List<User> users = userEditor.getAllUsers();
+		List<User> users = userService.getAllUsers();
 		model.addAttribute("userList", users);
+		List<City> cities = cityService.getAllCities();
+		model.addAttribute("cityList", cities);
 		return "adminPage";
 	}
 
@@ -44,7 +47,7 @@ public class AdminPageController {
 		User user = new User(userDTO);
 		UserInfo userInfo = new UserInfo(userInfoDTO);
 		user.setUserInfo(userInfo);
-		userEditor.addNewUser(user, bindingResult, userDTO.getPassword());
+		userService.addNewUser(user, bindingResult, userDTO.getPassword());
 		if (bindingResult.hasErrors()) {
 			redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + "user", bindingResult);
 			redir.addFlashAttribute("user", user);
@@ -55,14 +58,14 @@ public class AdminPageController {
 	@GetMapping(value = "/deleteUser/{id}")
 	public RedirectView delete(@PathVariable Integer id, RedirectAttributes redir) {
 		RedirectView redirectView = new RedirectView(ADMIN_PAGE, true);
-		userEditor.deleteUser(id);
+		userService.deleteUser(id);
 		return redirectView;
 	}
 
 	@GetMapping(value = "/editUser/{id}")
 	public RedirectView edit(@PathVariable Integer id, RedirectAttributes redir) {
 		RedirectView redirectView = new RedirectView("/editUser", true);
-		redir.addFlashAttribute("user", userEditor.getUser(id));
+		redir.addFlashAttribute("user", userService.getUser(id));
 		redir.addFlashAttribute("we", sessionInfo.getCurrentUser());
 		return redirectView;
 	}
@@ -73,6 +76,8 @@ public class AdminPageController {
 		Map<String, String> errors = UserValidator.convertErrorsToHashMap(result);
 		model.addAllAttributes(errors);
 		model.addAttribute("editUser", "/submitEditedUser");
+		List<City> cities = cityService.getAllCities();
+		model.addAttribute("cityList", cities);
 		return "editUser";
 	}
 
@@ -83,7 +88,7 @@ public class AdminPageController {
 		User user = new User(userDTO);
 		UserInfo userInfo = new UserInfo(userInfoDTO);
 		user.setUserInfo(userInfo);
-		userEditor.updateUser(user, bindingResult, userDTO.getPassword());
+		userService.updateUser(user, bindingResult, userDTO.getPassword());
 		if (bindingResult.hasErrors()) {
 			redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + "user", bindingResult);
 			redir.addFlashAttribute("user", user);
@@ -93,10 +98,13 @@ public class AdminPageController {
 	}
 
 	@Autowired
-	private UserService userEditor;
+	private UserService userService;
 
 	@Autowired
 	private SessionInfo sessionInfo;
+	
+	@Autowired
+	private CityService cityService;
 	
 	private static final String ADMIN_PAGE = "/adminPage";
 

@@ -52,7 +52,11 @@
 		</select>
 		<br>
 		<label>City</label>
-		<input type="text" name="currentCity" value="${user.userInfo.currentCity}"/>
+		<select name = "currentCity">
+			<c:forEach var="city" items="${cityList}">
+				<option value = "${city.city}" ${user.userInfo.currentCity == city.city ? 'selected' : ''}>${city.city}</option>
+			</c:forEach>
+		</select>
 		<span class = "error">${error_currentCity}</span>
 		<br>
 		<input type="submit" value="Finish editing user">
