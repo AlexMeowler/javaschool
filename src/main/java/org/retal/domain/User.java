@@ -24,6 +24,7 @@ public class User {
 		setLogin(userDTO.getLogin());
 		setPassword(userDTO.getPassword());
 		setRole(userDTO.getRole());
+		setUserInfo(userDTO.getUserInfo());
 	}
 	
 	@Id

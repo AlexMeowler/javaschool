@@ -18,6 +18,7 @@ public class Car {
 		setCapacityTons(carDTO.getCapacityTons());
 		setIsWorking(carDTO.getIsWorking());
 		setLocation(carDTO.getLocation());
+		setOrder(carDTO.getOrder());
 	}
 	
 	@Id
@@ -36,6 +37,9 @@ public class Car {
 	@ManyToOne
 	@JoinColumn(name="location", nullable = false)
 	private City location;
+	
+	@OneToOne(mappedBy="car")
+	private Order order;
 
 	public String getRegistrationId() {
 		return registrationId;
@@ -75,5 +79,13 @@ public class Car {
 
 	public void setLocation(City location) {
 		this.location = location;
+	}
+	
+	public Order getOrder() {
+		return order;
+	}
+	
+	public void setOrder(Order order) {
+		this.order = order;
 	}
 }

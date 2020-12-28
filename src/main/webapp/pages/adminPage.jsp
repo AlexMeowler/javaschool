@@ -91,8 +91,25 @@
 		<span class = "error">${error_currentCity}</span>
 		<br>
 		<input type="submit" value="Add user">
-	</form:form>	
+	</form:form>
+	<p>Cargo list:</p>
+	<table>
+		<caption hidden="true">Cargo list</caption>
+		<tr>
+			<th scope="col">Cargo ID</th>
+			<th scope="col">Cargo name</th>
+			<th scope="col">Cargo weight(kg)</th>
+			<th scope="col">Cargo status</th>
+		</tr>
+		<c:forEach var="cargo" items="${cargoList}">
+		<tr>
+			<td>${cargo.id}</td>
+			<td>${cargo.name}</td>
+			<td>${cargo.mass}</td>
+			<td>${cargo.status}</td>
+		</tr>
+		</c:forEach>
+	</table>	
 	</div>
-	
 </body>
 </html>

@@ -42,7 +42,6 @@ public class CarDAO implements DAO<Car> {
 	@Override
 	@Transactional
 	public List<Car> readAll() {
-
 		Session session = HibernateSessionFactory.getSessionFactory().openSession();
 		List<Car> cars = session.createNativeQuery("SELECT * FROM CARS", Car.class).getResultList();
 		log.info(cars.size() + " cars retrieved");

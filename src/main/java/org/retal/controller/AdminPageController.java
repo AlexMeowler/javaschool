@@ -8,6 +8,7 @@ import org.retal.domain.*;
 import org.retal.dto.CityDTO;
 import org.retal.dto.UserDTO;
 import org.retal.dto.UserInfoDTO;
+import org.retal.service.CargoAndOrdersService;
 import org.retal.service.CityService;
 import org.retal.service.UserService;
 import org.retal.service.UserValidator;
@@ -36,6 +37,7 @@ public class AdminPageController {
 		model.addAttribute("userList", users);
 		List<City> cities = cityService.getAllCities();
 		model.addAttribute("cityList", cities);
+		model.addAttribute("cargoList", cargoAndOrdersService.getAllCargo());
 		return "adminPage";
 	}
 
@@ -110,6 +112,9 @@ public class AdminPageController {
 	
 	@Autowired
 	private CityService cityService;
+	
+	@Autowired
+	private CargoAndOrdersService cargoAndOrdersService;
 	
 	private static final String ADMIN_PAGE = "/adminPage";
 

@@ -15,9 +15,17 @@
 		</button>
 		<div id="navbarSupportedContent" class="collapse navbar-collapse">
 			<ul class = "navbar-nav mr-4">
+				<!-- role based links display -->
+				<sec:authorize access = "hasAuthority('ADMIN')">
 				<li class="navitem"><a class = "nav-link" href="<c:url value="/adminPage"/>">Administrator page</a></li>
+				</sec:authorize>
+				<sec:authorize access = "hasAnyAuthority('MANAGER', 'ADMIN')">
 				<li class="navitem"><a class = "nav-link" href="<c:url value="/managerPage"/>">Manager page</a></li>
+				<li class="navitem"><a class = "nav-link" href="<c:url value="/cargoAndOrders"/>">Cargo &amp; Orders</a></li>
+				</sec:authorize>
+				<sec:authorize access = "hasAnyAuthority('DRIVER', 'ADMIN')">
 				<li class="navitem"><a class = "nav-link" href="<c:url value="/driverPage"/>">Driver page</a></li>
+				</sec:authorize>
 			</ul>
 		</div>
 </nav>

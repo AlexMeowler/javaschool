@@ -21,6 +21,8 @@ public class City {
 	public City(CityDTO cityDTO) {
 		setCurrentCity(cityDTO.getCurrentCity());
 		setUserInfos(cityDTO.getUserInfos());
+		setCars(cityDTO.getCars());
+		setPoints(cityDTO.getPoints());
 	}
 	
 	@Id
@@ -32,6 +34,9 @@ public class City {
 	
 	@OneToMany(mappedBy="location")
 	private Set<Car> cars;
+	
+	@OneToMany(mappedBy="city")
+	private Set<RoutePoint> points;
 	
 	public String getCurrentCity() {
 		return currentCity;
@@ -55,5 +60,13 @@ public class City {
 	
 	public void setCars(Set<Car> cars ) {
 		this.cars = cars;
+	}
+	
+	public Set<RoutePoint> getPoints() {
+		return points;
+	}
+	
+	public void setPoints(Set<RoutePoint> points) {
+		this.points = points;
 	}
 }
