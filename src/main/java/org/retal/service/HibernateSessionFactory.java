@@ -11,6 +11,7 @@ import org.hibernate.service.ServiceRegistry;
 import org.retal.domain.Car;
 import org.retal.domain.Cargo;
 import org.retal.domain.City;
+import org.retal.domain.CityDistance;
 import org.retal.domain.RoutePoint;
 import org.retal.domain.User;
 import org.retal.domain.UserInfo;
@@ -32,7 +33,8 @@ public class HibernateSessionFactory {
 			}
 			config.configure().addProperties(properties);
 			config.addAnnotatedClass(User.class).addAnnotatedClass(UserInfo.class).addAnnotatedClass(Car.class)
-			.addAnnotatedClass(City.class).addAnnotatedClass(Cargo.class).addAnnotatedClass(RoutePoint.class).addAnnotatedClass(Order.class);
+			.addAnnotatedClass(City.class).addAnnotatedClass(Cargo.class).addAnnotatedClass(RoutePoint.class)
+			.addAnnotatedClass(Order.class).addAnnotatedClass(CityDistance.class);
 			ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder().applySettings(config.getProperties())
 					.build();
 			sessionFactory = config.buildSessionFactory(serviceRegistry);

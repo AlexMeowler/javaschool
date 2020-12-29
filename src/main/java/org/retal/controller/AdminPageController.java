@@ -42,6 +42,14 @@ public class AdminPageController {
 		model.addAttribute("cargoList", cargoAndOrdersService.getAllCargo());
 		return "adminPage";
 	}
+	
+	@PostMapping(value = "/addCityInfo")
+	public RedirectView addCityInfo() {
+		RedirectView redirectView = new RedirectView(ADMIN_PAGE, true);
+		cityService.addCitiesFromFile();
+		cityService.addDistancesFromFile();
+		return redirectView;
+	}
 
 	@PostMapping(value = "/addNewUser")
 	public RedirectView addNewUser(UserDTO userDTO, BindingResult bindingResult, 

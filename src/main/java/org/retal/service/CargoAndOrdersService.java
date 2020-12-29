@@ -4,8 +4,6 @@ import java.util.List;
 
 import org.retal.dao.CargoDAO;
 import org.retal.domain.Cargo;
-import org.retal.domain.User;
-import org.retal.service.UserService.UserWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;

@@ -1,4 +1,6 @@
 nondev/
 target/*
 src/main/resources/db.properties
+src/main/resources/citynames.txt
+src/main/resources/graph.txt
 scan.bat
