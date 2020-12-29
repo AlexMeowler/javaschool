@@ -38,6 +38,7 @@ public class CityDAO implements DAO<City> {
 		Session session = HibernateSessionFactory.getSessionFactory().openSession();
 		List<City> cities = session.createNativeQuery("SELECT * FROM map_country_cities", City.class).getResultList();
 		session.close();
+		log.info("Retrieved " + cities.size() + " cities");
 		return cities;
 	}
 

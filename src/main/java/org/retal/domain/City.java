@@ -10,6 +10,8 @@ import javax.persistence.Table;
 
 import org.retal.dto.CityDTO;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "map_country_cities")
 public class City {
@@ -30,12 +32,15 @@ public class City {
 	private String currentCity;
 	
 	@OneToMany(mappedBy="currentCity")
+	@JsonIgnore
 	private Set<UserInfo> userInfos;
 	
 	@OneToMany(mappedBy="location")
+	@JsonIgnore
 	private Set<Car> cars;
 	
 	@OneToMany(mappedBy="city")
+	@JsonIgnore
 	private Set<RoutePoint> points;
 	
 	public String getCurrentCity() {
