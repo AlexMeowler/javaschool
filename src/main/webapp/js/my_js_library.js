@@ -8,7 +8,7 @@ function showForm(target) {
 	document.getElementById(target).style["display"] = elem;
 		}
 
-var counter = 0;
+var counter = 0; //TODO make it on jsp page
 
 function addRow() {
 	var request = new XMLHttpRequest();
@@ -21,6 +21,14 @@ function addRow() {
 		var cargo = parsed[1];
 		var options_city = '';
 		var options_cargo = '';
+		var selectedCityOptions = [];
+		var selectedCargoOptions = [];
+		var selectedStatusOptions = [];
+		for(var i = 0; i < counter; i++) {
+			selectedCityOptions.push(document.getElementById("city" + i).selectedIndex);
+			selectedCargoOptions.push(document.getElementById("cargo" + i).selectedIndex);
+			selectedStatusOptions.push(document.getElementById("status" + i).selectedIndex);
+		}
 		for(var i = 0; i < cities.length; i++) {
 			options_city += "<option value = \"" + cities[i].currentCity + "\">" + cities[i].currentCity + "</option>";
 		}
@@ -30,21 +38,26 @@ function addRow() {
 		document.getElementById('rows').innerHTML = document.getElementById('rows').innerHTML 
 		+ "<div id = \"div" + counter + "\">" 
 		+ "<label>City</label>"
-		+ "<select name = \"currentCity[" + counter + "]\">"  
+		+ "<select id = \"city" + counter + "\" name = \"list[" + counter + "].cityName\">"  
 		+ options_city 
 		+ "</select>" 
 		+ "<label>Cargo</label>" 
-		+ "<select name =\"cargoId[" + counter + "]\">"   
+		+ "<select id = \"cargo" + counter + "\" name =\"list[" + counter + "].cargoId\">"   
 		+ options_cargo
 		+ "</select>"
 		+ "<label>Status</label>" 
-		+ "<select name = \"isLoading[" + counter + "]\">" 
+		+ "<select id = \"status" + counter + "\" name = \"list[" + counter + "].isLoading\">" 
 		+	"<option value = \"true\">Load</option>" 
 		+	"<option value = \"false\">Drop</option>"  
 		+ "</select>"
 		+ "<a id=\"a" + counter + "\" href=\"javascript: deleteRow(" + counter + ");\">Delete this row </a>"
 		+ "<br>"
 		+ "</div>";
+		for(var i = 0; i < counter; i++) {
+			document.getElementById("city" + i).options[selectedCityOptions[i]].selected = true;
+			document.getElementById("cargo" + i).options[selectedCargoOptions[i]].selected = true;
+			document.getElementById("status" + i).options[selectedStatusOptions[i]].selected = true;
+		}
 		counter++;
 		return true;
 	};

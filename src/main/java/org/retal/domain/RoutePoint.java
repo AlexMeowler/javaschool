@@ -14,6 +14,8 @@ import javax.persistence.Table;
 @Table(name="route_points")
 public class RoutePoint {
 	
+	public RoutePoint() {}
+	
 	@Id
 	@Column(name = "id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
