@@ -34,6 +34,7 @@ public class CargoAndOrdersPageController {
 		UserInfo userInfo = user.getUserInfo();
 		model.addAttribute("current_user_name", userInfo.getName() + " " + userInfo.getSurname());
 		model.addAttribute("cargoList", cargoAndOrdersService.getAllCargo());
+		model.addAttribute("ordersList", cargoAndOrdersService.getAllOrders());
 		model.addAttribute("cityList", cityService.getAllCities());
 		return "cargo_orders";
 	}
@@ -50,15 +51,9 @@ public class CargoAndOrdersPageController {
 								RedirectAttributes redir) {
 		RedirectView redirectView = new RedirectView("/cargoAndOrders", true);
 		redir.addFlashAttribute("visible", "true");
-		log.info("List size = " + list.getList().size());
-		for(RoutePointDTO rp : list.getList()) {
-			String text = rp.getIsLoading() != null ? rp.getIsLoading().toString() : "null";
-			log.info("isLoading = " + text);
-			text = rp.getCargoId() != null ? rp.getCargoId().toString() : "null";
-			log.info("cargoId = " + text);
-			text = rp.getCityName() != null ? rp.getCityName().toString() : "null";
-			log.info("cityName = " + text);
-		}
+		List<RoutePoint> points = cargoAndOrdersService.mapRoutePointDTOsToEntities(list.getList());
+		log.info("Mapped " + points.size() + " DTOs to entities");
+		cargoAndOrdersService.createOrderWithRoutePoints(points);
 		//userService.addNewUser(user, bindingResult, userDTO.getPassword());
 		/*if (bindingResult.hasErrors()) {
 			redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + "user", bindingResult);

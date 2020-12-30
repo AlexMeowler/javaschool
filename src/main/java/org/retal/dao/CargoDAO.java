@@ -25,8 +25,13 @@ public class CargoDAO implements DAO<Cargo> {
 
 	@Override
 	public Cargo read(Object... keys) {
-		// TODO Auto-generated method stub
-		return null;
+		// TODO key validation
+		Integer id = (Integer)keys[0];
+		Session session = HibernateSessionFactory.getSessionFactory().openSession();
+		Cargo cargo = session.get(Cargo.class, id);
+		session.close();
+		// TODO logging
+		return cargo;
 	}
 	
 	@Override
@@ -36,12 +41,6 @@ public class CargoDAO implements DAO<Cargo> {
 		log.info(cargos.size() + " cargos retrieved");
 		session.close();
 		return cargos;
-	}
-
-	@Override
-	public Cargo find(String... args) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override

@@ -74,4 +74,6 @@ public class City {
 	public void setPoints(Set<RoutePoint> points) {
 		this.points = points;
 	}
+	
+	//TODO toString
 }

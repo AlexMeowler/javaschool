@@ -27,8 +27,14 @@ public class CityDAO implements DAO<City> {
 
 	@Override
 	public City read(Object... keys) {
-		// TODO Auto-generated method stub
-		return null;
+		// TODO key validation
+		String cityName = (String)keys[0];
+		Session session = HibernateSessionFactory.getSessionFactory().openSession();
+		City city = session.get(City.class, cityName);
+		session.close();
+		String text = city != null ? "'" + city.getCurrentCity() + "'" : "not";
+		log.info("City " + text + " found");
+		return city;
 	}
 	
 	@Override
@@ -40,12 +46,6 @@ public class CityDAO implements DAO<City> {
 		session.close();
 		log.info("Retrieved " + cities.size() + " cities");
 		return cities;
-	}
-
-	@Override
-	public City find(String... args) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override

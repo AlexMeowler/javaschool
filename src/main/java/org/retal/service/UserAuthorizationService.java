@@ -18,7 +18,7 @@ public class UserAuthorizationService implements UserDetailsService {
 
 	@Override
 	public UserDetails loadUserByUsername(String username) {
-		User user = userDAO.find(username);
+		User user = userDAO.findUser(username);
 		if (user == null) {
 			log.info("User " + username + " not found");
 			throw new UsernameNotFoundException("User not found");

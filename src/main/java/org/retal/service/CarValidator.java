@@ -2,7 +2,6 @@ package org.retal.service;
 
 import org.apache.log4j.Logger;
 import org.retal.domain.Car;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.Errors;
@@ -46,6 +45,5 @@ public class CarValidator implements Validator {
 		// TODO city validation
 	}
 	
-	@Autowired
 	private static final Logger log = Logger.getLogger(CarValidator.class);
 }

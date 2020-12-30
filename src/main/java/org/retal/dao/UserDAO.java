@@ -27,7 +27,7 @@ public class UserDAO implements DAO<User> {
 	@Override
 	@Transactional
 	public User read(Object... keys) {
-		// add checking for keys
+		// TODO add checking for keys
 		Session session = HibernateSessionFactory.getSessionFactory().openSession();
 		Integer id = (Integer)keys[0];
 		User user = session.get(User.class, id);
@@ -41,12 +41,11 @@ public class UserDAO implements DAO<User> {
 		return user;
 	}
 
-	@Override
 	@Transactional
-	public User find(String... args) // check arguments
+	public User findUser(String username) // check arguments
 	{
 		Session session = HibernateSessionFactory.getSessionFactory().openSession();
-		String query = String.format("SELECT * FROM USERS WHERE login= '%s'", args[0]);
+		String query = String.format("SELECT * FROM USERS WHERE login= '%s'", username);
 		List<User> users = session.createNativeQuery(query, User.class).getResultList();
 		session.close();
 		return users.size() == 1 ? users.get(0) : null;

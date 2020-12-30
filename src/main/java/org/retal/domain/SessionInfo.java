@@ -14,7 +14,7 @@ public class SessionInfo {
 	public User getCurrentUser() {
 		if (user == null) {
 			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-			user = userDAO.find(auth.getName());
+			user = userDAO.findUser(auth.getName());
 		}
 		return user;
 	}

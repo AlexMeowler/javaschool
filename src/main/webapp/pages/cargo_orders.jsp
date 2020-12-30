@@ -44,6 +44,7 @@
 			<th scope="col">Assigned car</th>
 			<th scope="col">Route</th>
 			<th scope="col">Assigned drivers</th>
+			<th scope="col">Assigned cargo</th>
 		</tr>
 		<c:forEach var="order" items="${ordersList}">
 		<tr>
@@ -56,6 +57,7 @@
 			<td>*under construction*</td>
 			<!-- TODO -->
 			<td>*under construction*</td>
+			<td><c:forEach var="cargo" items="${order.cargo}">${cargo.id}: ${cargo.name}<br></c:forEach></td>
 		</tr>
 		</c:forEach>
 	</table>

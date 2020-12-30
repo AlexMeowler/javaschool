@@ -7,7 +7,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -32,8 +31,8 @@ public class RoutePoint {
 	@Column(name="isLoading")
 	private Boolean isLoading;
 	
-	@OneToOne
-	@JoinColumn(name="cargo_id", referencedColumnName = "id")
+	@ManyToOne
+	@JoinColumn(name="cargo_id", nullable = false)
 	private Cargo cargo;
 	
 	public int getId() {
@@ -75,4 +74,6 @@ public class RoutePoint {
 	public void setCargo(Cargo cargo) {
 		this.cargo = cargo;
 	}
+	
+	//TODO toString
 }

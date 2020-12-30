@@ -36,7 +36,7 @@ public class UserService {
 			log.info(property + " : " + message);
 			bindingResult.reject(property, message);
 		}
-		if (userDAO.find(user.getLogin()) != null) {
+		if (userDAO.findUser(user.getLogin()) != null) {
 			bindingResult.reject("unique", "Login must be unique");
 		}
 		if (!bindingResult.hasErrors()) {
@@ -63,7 +63,7 @@ public class UserService {
 
 	public String updateUser(User updatedUser, BindingResult bindingResult, String password) {
 		userValidator.validate(new UserWrapper(updatedUser, password), bindingResult);
-		User correlationDB = userDAO.find(updatedUser.getLogin());
+		User correlationDB = userDAO.findUser(updatedUser.getLogin());
 		if ((correlationDB != null) && (correlationDB.getId() != updatedUser.getId())) {
 			bindingResult.reject("unique", "New login must be unique");
 		}

@@ -1,14 +1,18 @@
 package org.retal.domain;
 
+import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.retal.dto.CargoDTO;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name="cargo")
@@ -23,7 +27,7 @@ public class Cargo {
 		setName(cargoDTO.getName());
 		setMass(cargoDTO.getMass());
 		setStatus(cargoDTO.getStatus());
-		setPoint(cargoDTO.getPoint());
+		setPoint(cargoDTO.getPoints());
 		setDescription(cargoDTO.getDescription());
 	}
 	
@@ -41,8 +45,9 @@ public class Cargo {
 	@Column(name="status")
 	private String status;
 	
-	@OneToOne(mappedBy="cargo")
-	private RoutePoint point;
+	@OneToMany(mappedBy="cargo")
+	@JsonIgnore
+	private Set<RoutePoint> points;
 	
 	@Column(name="description")
 	private String description;
@@ -79,12 +84,12 @@ public class Cargo {
 		this.status = status;
 	}
 	
-	public RoutePoint getPoint() {
-		return point;
+	public Set<RoutePoint> getPoints() {
+		return points;
 	}
 	
-	public void setPoint(RoutePoint point) {
-		this.point = point;
+	public void setPoint(Set<RoutePoint> points) {
+		this.points = points;
 	}
 	
 	public String getDescription() {
@@ -94,4 +99,20 @@ public class Cargo {
 	public void setDescription(String description) {
 		this.description = description;
 	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if(o instanceof Cargo) {
+			return this.id == ((Cargo)o).getId();
+		} else {
+			return false;
+		}
+	}
+	
+	@Override 
+	public int hashCode() {
+		return id;
+	}
+	
+	//TODO toString
 }

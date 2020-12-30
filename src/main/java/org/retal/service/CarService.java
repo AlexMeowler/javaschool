@@ -24,7 +24,7 @@ public class CarService {
 
 	public void addNewCar(Car car, BindingResult bindingResult, String capacity, String shiftlength) {
 		doInitialDataValidation(car, bindingResult, capacity, shiftlength);
-		Car correlationDB = carDAO.find(car.getRegistrationId());
+		Car correlationDB = carDAO.findCar(car.getRegistrationId());
 		if (correlationDB != null) {
 			bindingResult.reject("uniqueCarId", "Car ID must be unique");
 		}

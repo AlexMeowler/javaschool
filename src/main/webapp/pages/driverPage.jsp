@@ -8,6 +8,7 @@
 	<title>Driver page</title>
 	<link rel="stylesheet" type="text/css" href="<c:url value="static/bootstrap.min.css"/>">
 	<link rel="stylesheet" type="text/css" href="<c:url value="static/menu.css"/>">
+	<link rel="stylesheet" type="text/css" href="<c:url value="static/main.css"/>">
 	<script type="text/javascript" src = "<c:url value="js/my_js_library.js"/>"></script>
 </head>
 <body>

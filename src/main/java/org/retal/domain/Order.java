@@ -11,7 +11,13 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
+/**
+ * 
+ * Entity for orders
+ *
+ */
 @Entity
 @Table(name="orders")
 public class Order {
@@ -29,7 +35,10 @@ public class Order {
 	private Car car;
 	
 	@OneToMany(mappedBy="order")
-	private Set<RoutePoint> points; 
+	private Set<RoutePoint> points;
+	
+	@Transient
+	private Set<Cargo> cargo;
 	
 	public int getId() {
 		return id;
@@ -62,4 +71,14 @@ public class Order {
 	public void setPoints(Set<RoutePoint> points) {
 		this.points = points;
 	}
+	
+	public Set<Cargo> getCargo() {
+		return cargo;
+	}
+	
+	public void setCargo(Set<Cargo> cargo) {
+		this.cargo = cargo;
+	}
+	
+	//TODO toString
 }

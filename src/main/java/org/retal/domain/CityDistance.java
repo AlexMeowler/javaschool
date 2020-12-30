@@ -80,10 +80,12 @@ public class CityDistance {
 		@Override
 		public int hashCode() {
 			int hash = 0;
-			for(int x : cityA.chars().toArray()) {
-				hash += x;
+			for(int i = 0; i < cityA.chars().toArray().length; i++) {
+				hash += cityA.chars().toArray()[i] * (i + 1);
 			}
 			return hash;
 		}
 	}
+	
+	//TODO toString
 }

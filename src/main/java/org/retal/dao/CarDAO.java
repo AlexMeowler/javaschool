@@ -49,9 +49,9 @@ public class CarDAO implements DAO<Car> {
 		return cars;
 	}
 
-	@Override
+
 	@Transactional
-	public Car find(String... args) // check arguments
+	public Car findCar(String... args) // check arguments
 	{
 		Session session = HibernateSessionFactory.getSessionFactory().openSession();
 		String query = String.format("SELECT * FROM CARS WHERE registration_id= '%s'", args[0]);

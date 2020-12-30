@@ -1,6 +1,12 @@
 package org.retal.domain;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 
 import org.retal.dto.CarDTO;
 
@@ -88,4 +94,5 @@ public class Car {
 	public void setOrder(Order order) {
 		this.order = order;
 	}
+	//TODO toString
 }

@@ -29,12 +29,6 @@ public class CityDistanceDAO implements DAO<CityDistance> {
 	}
 
 	@Override
-	public CityDistance find(String... args) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public void delete(CityDistance t) {
 		// TODO Auto-generated method stub
 		
