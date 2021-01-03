@@ -19,6 +19,16 @@
 	<form:form action="${addCityInfo}" method="POST">
 		<input type="submit" value="Add city information to database">
 	</form:form>
+	<br>
+	<c:url value="/addDriverInfo" var = "addDriverInfo"/>
+	<form:form action="${addDriverInfo}" method="POST">
+		<input type="submit" value="Add drivers information to database">
+	</form:form>
+	<br>
+	<c:url value="/addCarsInfo" var = "addCarsInfo"/>
+	<form:form action="${addCarsInfo}" method="POST">
+		<input type="submit" value="Add cars information to database">
+	</form:form>
 	<p>Here is user list:</p>
 	<table>
 		<caption hidden="true">User list</caption>

@@ -4,8 +4,8 @@ import org.retal.domain.RoutePoint;
 
 public class RoutePointDTO extends RoutePoint {
 	
-	public Integer cargoId;
-	public String cityName;
+	private Integer cargoId;
+	private String cityName;
 	
 	public Integer getCargoId() {
 		return cargoId;

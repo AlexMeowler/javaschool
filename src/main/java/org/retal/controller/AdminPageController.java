@@ -10,6 +10,7 @@ import org.retal.dto.CargoDTO;
 import org.retal.dto.CityDTO;
 import org.retal.dto.UserDTO;
 import org.retal.dto.UserInfoDTO;
+import org.retal.service.CarService;
 import org.retal.service.CargoAndOrdersService;
 import org.retal.service.CityService;
 import org.retal.service.UserService;
@@ -48,6 +49,20 @@ public class AdminPageController {
 		RedirectView redirectView = new RedirectView(ADMIN_PAGE, true);
 		cityService.addCitiesFromFile();
 		cityService.addDistancesFromFile();
+		return redirectView;
+	}
+	
+	@PostMapping(value = "/addDriverInfo")
+	public RedirectView addDriverInfo() {
+		RedirectView redirectView = new RedirectView(ADMIN_PAGE, true);
+		userService.addDriversFromFile();
+		return redirectView;
+	}
+	
+	@PostMapping(value = "/addCarsInfo")
+	public RedirectView addCarsInfo() {
+		RedirectView redirectView = new RedirectView(ADMIN_PAGE, true);
+		carService.generateCarForEachCity();
 		return redirectView;
 	}
 
@@ -136,6 +151,9 @@ public class AdminPageController {
 	
 	@Autowired
 	private CityService cityService;
+	
+	@Autowired
+	private CarService carService;
 	
 	@Autowired
 	private CargoAndOrdersService cargoAndOrdersService;

@@ -1,11 +1,17 @@
 package org.retal.service;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.retal.dao.UserDAO;
+import org.retal.domain.City;
 import org.retal.domain.SessionInfo;
 import org.retal.domain.User;
+import org.retal.domain.UserInfo;
+import org.retal.domain.enums.DriverStatus;
 import org.retal.domain.enums.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -95,6 +101,35 @@ public class UserService {
 		boolean isAdmin = caller.getRole().equalsIgnoreCase(UserRole.ADMIN.toString());
 		return hasHigherRank || isAdmin;
 	}
+	
+	public void addDriversFromFile() {
+		try {
+			BufferedReader namesReader = new BufferedReader(new InputStreamReader(UserService.class.getResourceAsStream("/names.txt")));
+			BufferedReader surnamesReader = new BufferedReader(new InputStreamReader(UserService.class.getResourceAsStream("/surnames.txt")));
+			String name, surname;
+			List<City> cities = cityService.getAllCities();
+			int i = 0;
+			while(i < cities.size() && (name = namesReader.readLine()) != null && (surname = surnamesReader.readLine()) != null) {
+				User user = new User();
+				UserInfo userInfo = new UserInfo();
+				String login = "d" + name.substring(0, 3) + surname.substring(0, 3);
+				user.setLogin(login);
+				user.setPassword(login);
+				user.setRole(UserRole.DRIVER.toString().toLowerCase());
+				user.setUserInfo(userInfo);
+				userInfo.setName(name);
+				userInfo.setSurname(surname);
+				userInfo.setStatus(DriverStatus.ON_SHIFT.toString().toLowerCase());
+				userInfo.setCurrentCity(cities.get(i));
+				userDAO.add(user);
+				i++;
+			}
+			namesReader.close();
+			surnamesReader.close();
+		} catch (IOException e) {
+			log.error("File names.txt or surnames.txt not found");
+		}
+	}
 
 	@Autowired
 	private UserDAO userDAO;
@@ -105,6 +140,9 @@ public class UserService {
 	@Autowired
 	@Qualifier("userValidator")
 	private Validator userValidator;
+	
+	@Autowired
+	private CityService cityService;
 
 	private static final Logger log = Logger.getLogger(UserService.class);
 

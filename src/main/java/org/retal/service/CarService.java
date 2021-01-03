@@ -1,10 +1,12 @@
 package org.retal.service;
 
 import java.util.List;
+import java.util.Random;
 
 import org.apache.log4j.Logger;
 import org.retal.dao.CarDAO;
 import org.retal.domain.Car;
+import org.retal.domain.City;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -63,8 +65,27 @@ public class CarService {
 		carValidator.validate(car, bindingResult);
 	}
 
+	public void generateCarForEachCity() {
+		List<City> cities = cityService.getAllCities();
+		Random rand = new Random();
+		for(City c : cities) {
+			Car car = new Car();
+			car.setIsWorking(true);
+			car.setLocation(c);
+			car.setCapacityTons((float)(1 + rand.nextInt(41) * 1.0 / 10));
+			String registrationLetters = c.getCurrentCity().substring(0, 2).toUpperCase();
+			String registrationNumber = "" + (10000 + rand.nextInt(90000));
+			car.setRegistrationId(registrationLetters + registrationNumber);
+			car.setShiftLength(6 + rand.nextInt(10));
+			carDAO.add(car);
+		}
+	}
+
 	@Autowired
 	private CarDAO carDAO;
+	
+	@Autowired
+	private CityService cityService;
 	
 	@Autowired
 	@Qualifier("carValidator")
