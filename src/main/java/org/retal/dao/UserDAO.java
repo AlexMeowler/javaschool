@@ -54,7 +54,6 @@ public class UserDAO implements DAO<User> {
 	@Override
 	@Transactional
 	public List<User> readAll() {
-
 		Session session = HibernateSessionFactory.getSessionFactory().openSession();
 		List<User> users = session.createNativeQuery("SELECT * FROM USERS", User.class).getResultList();
 		for (User u : users) {

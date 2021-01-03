@@ -1,9 +1,12 @@
 package org.retal.dao;
 
+import java.util.List;
+
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.retal.domain.CityDistance;
+import org.retal.domain.User;
 import org.retal.service.HibernateSessionFactory;
 import org.springframework.stereotype.Component;
 
@@ -26,6 +29,17 @@ public class CityDistanceDAO implements DAO<CityDistance> {
 	public CityDistance read(Object... keys) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	@Override
+	public List<CityDistance> readAll() {
+		Session session = HibernateSessionFactory.getSessionFactory().openSession();
+		List<CityDistance> distances = session.createNativeQuery("SELECT * FROM map_country_distance", CityDistance.class).getResultList();
+		for (CityDistance cd : distances) {
+			log.info("distance between " + cd.getCityA() + " and " + cd.getCityB() + " = " + cd.getDistance());
+		}
+		session.close();
+		return distances;
 	}
 
 	@Override

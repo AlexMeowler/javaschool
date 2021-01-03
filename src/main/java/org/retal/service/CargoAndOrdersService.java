@@ -1,6 +1,7 @@
 package org.retal.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -13,10 +14,12 @@ import org.hibernate.Transaction;
 import org.retal.dao.CarDAO;
 import org.retal.dao.CargoDAO;
 import org.retal.dao.CityDAO;
+import org.retal.dao.CityDistanceDAO;
 import org.retal.dao.OrderDAO;
 import org.retal.dao.RoutePointDAO;
 import org.retal.domain.Cargo;
 import org.retal.domain.City;
+import org.retal.domain.CityDistance;
 import org.retal.domain.Car;
 import org.retal.domain.Order;
 import org.retal.domain.RoutePoint;
@@ -56,10 +59,12 @@ public class CargoAndOrdersService {
 	
 	public void createOrderWithRoutePoints(List<RoutePoint> list) {
 		//TODO validate route points
+		List<CityDistance> distances = cityDistanceDAO.readAll();
+		List<City> cities = cityDAO.readAll();
 		Session session = HibernateSessionFactory.getSessionFactory().openSession();
 		Set<RoutePoint> points = new HashSet<>(list);
 		Order order = new Order();
-		Object[] carAndPath = findAppropriateCarAndCalculatePath(list, session);
+		Object[] carAndPath = findAppropriateCarAndCalculatePath(list, distances, cities, session);
 		/*order.setCar(); //FIXME
 		order.setPoints(points);
 		order.setIsCompleted(false);
@@ -80,13 +85,82 @@ public class CargoAndOrdersService {
 		return ;
 	}
 	
-	public Object[] findAppropriateCarAndCalculatePath(List<RoutePoint> list, Session session) {
+	public Object[] findAppropriateCarAndCalculatePath(List<RoutePoint> list, List<CityDistance> distances, List<City> cities, Session session) {
 		log.info("Searching for cars and paths...");
-		Set<City> allCities = new HashSet<>();
+		Set<City> allRoutePointCities = new HashSet<>();
+		List<String> cityNames = new ArrayList<>();
+		for(City city : cities) {
+			cityNames.add(city.getCurrentCity());
+			log.debug("Added city name " + city.getCurrentCity());
+		}
+		log.debug("Mapped city names");
 		for(RoutePoint rp : list) {
-			allCities.add(rp.getCity());
+			allRoutePointCities.add(rp.getCity());
+		}
+		for(RoutePoint rp: list) {
 			if(rp.getIsLoading()) {
 				// build matrix
+				log.debug("Trying to build matrix");
+				int n = distances.size();
+				int[][] bigMatrix = new int[n][n];
+				for(int i = 0; i < n; i++) {
+					for(int j = 0; j < n; j++) {
+						bigMatrix[i][j] = Integer.MAX_VALUE / 2;
+					}
+				}
+				log.debug("Built base of big matrix");
+				for(CityDistance cd : distances) {
+					int i = cityNames.indexOf(cd.getCityA());
+					int j = cityNames.indexOf(cd.getCityB());
+					bigMatrix[i][j] = cd.getDistance();
+					bigMatrix[j][i] = cd.getDistance();
+				}
+				log.debug("Filled big matrix");
+				List<City> rpCities = new ArrayList<>(allRoutePointCities);
+				n = rpCities.size();
+				int[][] matrix = new int[n][n];
+				for(int i = 0; i < n; i++) {
+					for(int j = 0; j < n; j++) {
+						matrix[i][j] = Integer.MAX_VALUE / 2;
+					}
+				}
+				log.debug("Built base of small matrix, n = " + n);
+				for(int i = 0; i < n; i++) {
+					for(int j = i + 1; j < n; j++) {
+						int k = cityNames.indexOf(rpCities.get(i).getCurrentCity());
+						int m = cityNames.indexOf(rpCities.get(j).getCurrentCity());
+						log.debug("k = " + k + "; m = " + m);
+						if(bigMatrix[k][m] != Integer.MAX_VALUE / 2) {
+							matrix[i][j] = bigMatrix[k][m];
+							matrix[j][i] = bigMatrix[k][m];
+						} else {
+							List<Integer> route = new ArrayList<>();
+							log.info("Trying to calulate path between " + rpCities.get(i).getCurrentCity() + " and " + rpCities.get(j).getCurrentCity());
+							int value = getShortestPath(bigMatrix, route, k, m);	
+							matrix[i][j] = value;
+							matrix[j][i] = value;
+							String path = "";
+							for(Integer x : route) {
+								path += x + " ";
+							}
+							log.debug(path);
+						}
+					}
+				}
+				for(int i = 0; i < n; i++) {
+					String s = "";
+					for(int j = 0; j < n; j++) {
+						s += matrix[i][j] + " ";
+					}
+					log.debug(s);
+				}
+				log.info("Calculating optimized route...");
+				List<String> paths = findOptimizedRoute(matrix, rpCities.indexOf(rp.getCity()));
+				String p = "";
+				for(String s : paths) {
+					p += s + " ";
+				}
+				log.debug(p);
 			}
 		}
 		Set<City> startCities = new HashSet<>();
@@ -95,7 +169,7 @@ public class CargoAndOrdersService {
 				startCities.add(rp.getCity());
 			}
 		}
-		for(City city : allCities) {
+		for(City city : allRoutePointCities) {
 			session.persist(city);
 			for(Car car : city.getCars()) {
 				log.info(car.toString());
@@ -105,23 +179,35 @@ public class CargoAndOrdersService {
 		return null;
 	}
 	
-	public List<String> findOptimizedRoute(int[][] matr) {
+	public List<String> findOptimizedRoute(int[][] m, int from) {
 		final int MAX = Integer.MAX_VALUE / 2;
-		/*final int eps = 100000;
-		int[][] m = new int[n + 1][];
+		final int eps = 100000;
+		/*int[][] m = new int[n + 1][];
 		m[0] = new int[] { MAX, 20, 18, 12, 8, 0 };
 		m[1] = new int[] { 5, MAX, 14, 7, 11, 0 };
 		m[2] = new int[] { 12, 18, MAX, 6, 11, 0 };
 		m[3] = new int[] { 11, 17, 11, MAX, 12, 0 };
 		m[4] = new int[] { 5, 5, 5, 5, MAX, 0 };
 		m[5] = new int[] { 0, 0, 0, 0, 0, 0 };*/
-		n = matr.length;
+		n = m.length;
+		int[][] matr = new int[n][n];
+		for(int i = 0; i < n; i++) {
+			for(int j = 0; j < n; j++) {
+				matr[i][j] = m[i][j];
+			}
+		}
+		for(int i = 0; i < n; i++) {
+			if(i != from) {
+				matr[i][from] = 0;
+			}
+		}
 		Map<String, Integer> matrix = new HashMap<>();
 		for(int i = 0; i < matr.length; i++) {
 			for(int j = 0; j < matr[i].length; j++) {
 				matrix.put(i + "," + j, matr[i][j]);
 			}
 		}
+		printMatrix(matrix, MAX, eps);
 		TSPTree tree = new TSPTree("root", 0, matrix);
 		TSPTree currentLeave = tree;
 		boolean startFromPointTwo = true;
@@ -226,6 +312,7 @@ public class CargoAndOrdersService {
 			matrixCopy.remove(n + "," + maxJ);
 			TSPTree leaveExclude = new TSPTree(maxI + "-" + maxJ, est, matrixCopy);
 			currentLeave.addChild(leaveExclude);
+			printMatrix(matrixCopy, MAX, eps);
 			// 10
 			matrixCopy = matrix;
 			matrix = leaveExclude.getMatrix();
@@ -285,6 +372,7 @@ public class CargoAndOrdersService {
 			currentLeave = result;
 			startFromPointTwo = result.getName().contains("*");
 		} while(countNotNullElements(result.getMatrix()) != 4);
+		log.debug("Calculation finished");
 		String s = getLastElement(result.getMatrix());
 		TSPTree lastElem = new TSPTree(s, result.getValue(), null);
 		result.addChild(lastElem);
@@ -303,6 +391,11 @@ public class CargoAndOrdersService {
 			}
 		}
 		TSPTree start = null;
+		for(TSPTree t : routes) {
+			if(t.getName().split("-")[0].equals("0")) {
+				start = t;
+			}
+		}
 		List<String> path = new ArrayList<>();
 		routes.remove(start);
 		path.add(start.getName().split("-")[0]);
@@ -337,18 +430,19 @@ public class CargoAndOrdersService {
 		boolean emptyLine;
 		for (int i = 0; i < matr.length; i++) {
 			emptyLine = true;
+			String s = "";
 			for (int j = 0; j < matr[i].length; j++) {
 				String txt = Math.abs(matr[i][j] - MAX) < eps ? "(" + i + "," + j + ")M" : "(" + i + "," + j + ")" + matr[i][j];
 				if(matr[i][j] != -1) {
 					emptyLine = false;
-					System.out.print(txt + " ");
+					s += txt + " ";
 				}
 			}
 			if(!emptyLine) {
-				System.out.println();
+				log.debug(s);
 			}
 		}
-		System.out.println("---------------");
+		log.debug("---------------");
 	}
 	
 	private void findNextLeave(TSPTree root) {
@@ -390,9 +484,56 @@ public class CargoAndOrdersService {
 		}
 	}
 	
+	public int getShortestPath(int[][] matr, List<Integer> result, int from, int to) {
+		int n = matr.length;
+		final int MAX = Integer.MAX_VALUE / 2;
+		/*int[][] matr = new int[6][];
+		matr[0] = new int[] {MAX, 7, 9, MAX, MAX, 14};
+		matr[1] = new int[] {7, MAX, 10, 15, MAX, MAX};
+		matr[2] = new int[] {9, 10, MAX, 11, MAX, 2};
+		matr[3] = new int[] {MAX, 15, 11, MAX, 6, MAX};
+		matr[4] = new int[] {MAX, MAX, MAX, 6, MAX, 9};
+		matr[5] = new int[] {14, MAX, 2, MAX, 9, MAX};*/
+		int[] weights = new int[n];
+		boolean[] visited = new boolean[n];
+		Arrays.fill(weights, MAX);
+		weights[from] = 0;
+		boolean allVisited = false;
+		while(!allVisited) {
+			int min = MAX;
+			int current = 0;
+			for(int i = 0; i < n; i++) {
+				if(!visited[i] && weights[i] < min) {
+					min = weights[i];
+					current = i;
+				}
+			}
+			for(int i = 1; i < n; i++) {
+				if(matr[current][i] != MAX) {
+					weights[i] = Math.min(weights[i], weights[current] + matr[current][i]);
+				}
+			}
+			visited[current] = true;
+			allVisited = true;
+			for(boolean flag : visited) {
+				allVisited &= flag;
+			}
+		}
+		int current = to;
+		while(current != from) {
+			for(int i = 0; i < n; i++) {
+				 if(weights[current] - matr[i][current] == weights[i]) {
+					 result.add(current);
+					 current = i;
+				 }
+			}
+		}
+		return weights[to];
+	}
+	
 	private TSPTree result;
 	private int depth;
-	private int MAX_CITIES;
+	private int MAX_CITIES = 50;
 	private int n;
 	
 	@Autowired
@@ -400,6 +541,9 @@ public class CargoAndOrdersService {
 	
 	@Autowired
 	private CityDAO cityDAO;
+	
+	@Autowired
+	private CityDistanceDAO cityDistanceDAO;
 	
 	@Autowired
 	private CarDAO carDAO;
