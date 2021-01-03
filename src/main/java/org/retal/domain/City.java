@@ -4,6 +4,7 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -73,6 +74,25 @@ public class City {
 	
 	public void setPoints(Set<RoutePoint> points) {
 		this.points = points;
+	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if(o instanceof City) {
+			return currentCity.equals(((City)o).getCurrentCity());
+		} else {
+			return false;
+		}
+	}
+	
+	@Override 
+	public int hashCode() {
+		int hash = 0;
+		char[] chars = currentCity.toCharArray();
+		for(int i = 0; i < chars.length; i++) {
+			hash += chars[i] * (i + 1);
+		}
+		return hash;
 	}
 	
 	//TODO toString

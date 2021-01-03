@@ -94,5 +94,8 @@ public class Car {
 	public void setOrder(Order order) {
 		this.order = order;
 	}
-	//TODO toString
+	
+	public String toString() {
+		return "Car ID = " + registrationId + "; capactity = " + capacityTons + "; location = " + location.getCurrentCity();
+	}
 }
