@@ -37,6 +37,9 @@ public class Order {
 	@OneToMany(mappedBy="order")
 	private Set<RoutePoint> points;
 	
+	@Column(name="route")
+	private String route;
+	
 	@Transient
 	private Set<Cargo> cargo;
 	
@@ -70,6 +73,14 @@ public class Order {
 	
 	public void setPoints(Set<RoutePoint> points) {
 		this.points = points;
+	}
+	
+	public String getRoute() {
+		return route;
+	}
+	
+	public void setRoute(String route) {
+		this.route = route;
 	}
 	
 	public Set<Cargo> getCargo() {

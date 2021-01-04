@@ -2,6 +2,7 @@ package org.retal.service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -64,7 +65,7 @@ public class CargoAndOrdersService {
 		Session session = HibernateSessionFactory.getSessionFactory().openSession();
 		Set<RoutePoint> points = new HashSet<>(list);
 		Order order = new Order();
-		Object[] carAndPath = findAppropriateCarAndCalculatePath(list, distances, cities, session);
+		Object[] carAndPath = findAppropriateCarAndDriverAndCalculatePath(list, distances, cities, session);
 		/*order.setCar(); //FIXME
 		order.setPoints(points);
 		order.setIsCompleted(false);
@@ -85,7 +86,8 @@ public class CargoAndOrdersService {
 		return ;
 	}
 	
-	public Object[] findAppropriateCarAndCalculatePath(List<RoutePoint> list, List<CityDistance> distances, List<City> cities, Session session) {
+	public Object[] findAppropriateCarAndDriverAndCalculatePath(List<RoutePoint> list, List<CityDistance> distances, List<City> cities, Session session) {
+		//TODO drivers?
 		log.info("Searching for cars and paths...");
 		Set<City> allRoutePointCities = new HashSet<>();
 		List<String> cityNames = new ArrayList<>();
@@ -94,92 +96,161 @@ public class CargoAndOrdersService {
 			log.debug("Added city name " + city.getCurrentCity());
 		}
 		log.debug("Mapped city names");
+		List<Integer> loadingCities = new ArrayList<>();
+		List<Integer> unloadingCities = new ArrayList<>();
 		for(RoutePoint rp : list) {
 			allRoutePointCities.add(rp.getCity());
 		}
-		for(RoutePoint rp: list) {
-			if(rp.getIsLoading()) {
-				// build matrix
-				log.debug("Trying to build matrix");
-				int n = distances.size();
-				int[][] bigMatrix = new int[n][n];
-				for(int i = 0; i < n; i++) {
-					for(int j = 0; j < n; j++) {
-						bigMatrix[i][j] = Integer.MAX_VALUE / 2;
-					}
-				}
-				log.debug("Built base of big matrix");
-				for(CityDistance cd : distances) {
-					int i = cityNames.indexOf(cd.getCityA());
-					int j = cityNames.indexOf(cd.getCityB());
-					bigMatrix[i][j] = cd.getDistance();
-					bigMatrix[j][i] = cd.getDistance();
-				}
-				log.debug("Filled big matrix");
-				List<City> rpCities = new ArrayList<>(allRoutePointCities);
-				n = rpCities.size();
-				int[][] matrix = new int[n][n];
-				for(int i = 0; i < n; i++) {
-					for(int j = 0; j < n; j++) {
-						matrix[i][j] = Integer.MAX_VALUE / 2;
-					}
-				}
-				log.debug("Built base of small matrix, n = " + n);
-				for(int i = 0; i < n; i++) {
-					for(int j = i + 1; j < n; j++) {
-						int k = cityNames.indexOf(rpCities.get(i).getCurrentCity());
-						int m = cityNames.indexOf(rpCities.get(j).getCurrentCity());
-						log.debug("k = " + k + "; m = " + m);
-						if(bigMatrix[k][m] != Integer.MAX_VALUE / 2) {
-							matrix[i][j] = bigMatrix[k][m];
-							matrix[j][i] = bigMatrix[k][m];
-						} else {
-							List<Integer> route = new ArrayList<>();
-							log.info("Trying to calulate path between " + rpCities.get(i).getCurrentCity() + " and " + rpCities.get(j).getCurrentCity());
-							int value = getShortestPath(bigMatrix, route, k, m);	
-							matrix[i][j] = value;
-							matrix[j][i] = value;
-							String path = "";
-							for(Integer x : route) {
-								path += x + " ";
-							}
-							log.debug(path);
-						}
-					}
-				}
-				for(int i = 0; i < n; i++) {
-					String s = "";
-					for(int j = 0; j < n; j++) {
-						s += matrix[i][j] + " ";
-					}
-					log.debug(s);
-				}
-				log.info("Calculating optimized route...");
-				List<String> paths = findOptimizedRoute(matrix, rpCities.indexOf(rp.getCity()));
-				String p = "";
-				for(String s : paths) {
-					p += s + " ";
-				}
-				log.debug(p);
-			}
-		}
-		Set<City> startCities = new HashSet<>();
+		List<City> rpCities = new ArrayList<>(allRoutePointCities);
 		for(RoutePoint rp : list) {
 			if(rp.getIsLoading()) {
-				startCities.add(rp.getCity());
+				for(RoutePoint rp2 : list) {
+					if(!rp2.getIsLoading() && rp2.getCargo().getId() == rp.getCargo().getId()) {
+						loadingCities.add(rpCities.indexOf(rp.getCity()));
+						unloadingCities.add(rpCities.indexOf(rp2.getCity()));
+					}
+				}
 			}
 		}
+		String t = "";
+		for(City c : rpCities) {
+			t += c.getCurrentCity() + " ";
+		}
+		log.debug(t);
+		log.debug(loadingCities.toString());
+		log.debug(unloadingCities.toString());
+		Map<String, Integer> optimalRoutes = new HashMap<>();
+		for(RoutePoint rp: list) {
+			if(rp.getIsLoading()) {
+				int loadIndex = loadingCities.indexOf(rpCities.indexOf(rp.getCity()));
+				int unloadIndex = unloadingCities.indexOf(rpCities.indexOf(rp.getCity()));
+				if(loadIndex == -1 || unloadIndex == -1) {
+					// build matrix
+					int n = cities.size();
+					int[][] bigMatrix = new int[n][n];
+					for(int i = 0; i < n; i++) {
+						for(int j = 0; j < n; j++) {
+							bigMatrix[i][j] = Integer.MAX_VALUE / 2;
+						}
+					}
+					for(CityDistance cd : distances) {
+						int i = cityNames.indexOf(cd.getCityA());
+						int j = cityNames.indexOf(cd.getCityB());
+						bigMatrix[i][j] = cd.getDistance();
+						bigMatrix[j][i] = cd.getDistance();
+					}
+					log.debug("Filled big matrix");
+					n = rpCities.size();
+					int[][] matrix = new int[n][n];
+					for(int i = 0; i < n; i++) {
+						for(int j = 0; j < n; j++) {
+							matrix[i][j] = Integer.MAX_VALUE / 2;
+						}
+					}
+					for(int i = 0; i < n; i++) {
+						for(int j = i + 1; j < n; j++) {
+							int k = cityNames.indexOf(rpCities.get(i).getCurrentCity());
+							int m = cityNames.indexOf(rpCities.get(j).getCurrentCity());
+							if(bigMatrix[k][m] != Integer.MAX_VALUE / 2) {
+								matrix[i][j] = bigMatrix[k][m];
+								matrix[j][i] = bigMatrix[k][m];
+							} else {
+								List<Integer> route = new ArrayList<>();
+								log.info("Trying to calulate path between " + rpCities.get(i).getCurrentCity() + " and " + rpCities.get(j).getCurrentCity());
+								int value = getShortestPath(bigMatrix, route, k, m);	
+								matrix[i][j] = value;
+								matrix[j][i] = value;
+								String path = "";
+								for(Integer x : route) {
+									path += x + " ";
+								}
+								log.debug(path);
+							}
+						}
+					}
+					/*log.info("Calculating optimized route (leaves and borders algo)...");
+					List<String> paths = findOptimizedRoute(matrix, rpCities.indexOf(rp.getCity()));
+					String p = "";
+					//removing last element because TSP is not enclosed here
+					paths.remove(paths.size() - 1);
+					for(String s : paths) {
+						p += rpCities.get(Integer.parseInt(s)).getCurrentCity() + " ";
+					}
+					int length = 0;
+					for(int i = 0; i < paths.size() - 1; i++) {
+						length += matrix[Integer.parseInt(paths.get(i))][Integer.parseInt(paths.get(i + 1))];
+					}
+					log.debug("Suggested route - " + p + "; it's length - " + length);
+					optimalRoutes.put(p, length);*/
+					log.info("Calculating optimized route (annealing algorithm)...");
+					int[] annealingPaths = findOptimalPathUsingAnnealingImitation(matrix, ANNEALING_START_TEMPERAURE, ANNEALING_END_TEMPERATURE, rpCities.indexOf(rp.getCity()), loadingCities, unloadingCities);
+					String p = "";
+					int length = 0;
+					for(int x : annealingPaths) {
+						p += rpCities.get(x).getCurrentCity() + " ";
+					}
+					length = 0;
+					for(int i = 0; i < annealingPaths.length - 1; i++) {
+						length += matrix[annealingPaths[i]][annealingPaths[i + 1]];
+					}
+					log.debug("Suggested route - " + p + "; it's length - " + length);
+					optimalRoutes.put(p, length);
+				} else {
+					//FIXME ?
+					log.debug("Cycle detected; could not use annealing algorithm");
+					optimalRoutes.put("Could not find optimal route", Integer.MAX_VALUE);
+				}
+			}
+		}
+		String shortestPath = "";
+		int shortestPathLength = Integer.MAX_VALUE;
+		for(Map.Entry<String, Integer> e : optimalRoutes.entrySet()) {
+			if(e.getValue() < shortestPathLength) {
+				shortestPath = e.getKey();
+				shortestPathLength = e.getValue();
+			}
+		}
+		
+		float requiredCapacity = 0;
+		for(String s : shortestPath.split(" ")) {
+			for(City city : allRoutePointCities) {
+				if(city.getCurrentCity().equals(s)) {
+					session.persist(city);
+					for(RoutePoint rp : city.getPoints()) {
+						int sign = rp.getIsLoading() ? 1 : -1;
+						requiredCapacity = requiredCapacity + sign * rp.getCargo().getMass();
+					}
+					log.debug("Required capacity - " + requiredCapacity);
+					session.detach(city);
+					break;
+				}
+			}
+		}
+		//TODO it has to be for all cities
+		String firstCity = shortestPath.split(" ")[0];
+		Car selectedCar = null;
 		for(City city : allRoutePointCities) {
-			session.persist(city);
-			for(Car car : city.getCars()) {
-				log.info(car.toString());
+			if(city.getCurrentCity().equals(firstCity)) {
+				session.persist(city);
+				for(Car car : city.getCars()) {
+					if(car.getCapacityTons() > (requiredCapacity / 1000)) {
+						selectedCar = car;
+						break;
+					}
+				}
+				session.detach(city);
+				String debugMessage = selectedCar != null ? "Selected car " + selectedCar.toString() : "Car not selected";
+				log.debug(debugMessage);
+				break;
 			}
-			session.detach(city);
 		}
-		return null;
+		shortestPath = shortestPath.replace(" ", "-");
+		shortestPath = shortestPath.substring(0, shortestPath.length() - 1);
+		log.debug("Selected car and route - " + shortestPath + "; " + selectedCar.toString());
+		return new Object[] {selectedCar, shortestPath};
 	}
 	
-	public List<String> findOptimizedRoute(int[][] m, int from) {
+	/*public List<String> findOptimizedRoute(int[][] m, int from) {
 		final int MAX = Integer.MAX_VALUE / 2;
 		final int eps = 100000;
 		/*int[][] m = new int[n + 1][];
@@ -188,7 +259,7 @@ public class CargoAndOrdersService {
 		m[2] = new int[] { 12, 18, MAX, 6, 11, 0 };
 		m[3] = new int[] { 11, 17, 11, MAX, 12, 0 };
 		m[4] = new int[] { 5, 5, 5, 5, MAX, 0 };
-		m[5] = new int[] { 0, 0, 0, 0, 0, 0 };*/
+		m[5] = new int[] { 0, 0, 0, 0, 0, 0 };
 		n = m.length;
 		int[][] matr = new int[n][n];
 		for(int i = 0; i < n; i++) {
@@ -251,6 +322,8 @@ public class CargoAndOrdersService {
 						}
 					}
 				}
+				log.debug(5);
+				printMatrix(matrix, MAX, eps);
 				// 6
 				for (int i = 0; i < n; i++) {
 					Hk += matrix.get(n + "," + i) + matrix.get(i + "," + n);
@@ -293,6 +366,8 @@ public class CargoAndOrdersService {
 					}
 				}
 			}
+			log.debug(8);
+			printMatrix(estimation, MAX, eps);
 			// 9
 			currentLeave.setMatrix(matrix);
 			Map<String, Integer> matrixCopy = new HashMap<>();
@@ -312,6 +387,7 @@ public class CargoAndOrdersService {
 			matrixCopy.remove(n + "," + maxJ);
 			TSPTree leaveExclude = new TSPTree(maxI + "-" + maxJ, est, matrixCopy);
 			currentLeave.addChild(leaveExclude);
+			log.debug(9);
 			printMatrix(matrixCopy, MAX, eps);
 			// 10
 			matrixCopy = matrix;
@@ -362,6 +438,8 @@ public class CargoAndOrdersService {
 				}
 			}
 			leaveExclude.setValue(leaveExclude.getParent().getValue() + Hk);
+			log.debug(10);
+			printMatrix(matrix, MAX, eps);
 			//11
 			matrixCopy.put(maxI + "," + maxJ, MAX);
 			TSPTree leaveInclude = new TSPTree(maxI + "*-" + maxJ + "*", tree.getValue() + est, matrixCopy);
@@ -371,34 +449,44 @@ public class CargoAndOrdersService {
 			findNextLeave(tree);
 			currentLeave = result;
 			startFromPointTwo = result.getName().contains("*");
-		} while(countNotNullElements(result.getMatrix()) != 4);
-		log.debug("Calculation finished");
+		} while(countRemainingElements(result.getMatrix()) > 4);
+		log.debug("TSP: Calculation finished.Retrieving path...");
 		String s = getLastElement(result.getMatrix());
 		TSPTree lastElem = new TSPTree(s, result.getValue(), null);
 		result.addChild(lastElem);
 		depth = 0;
 		getDeepestElement(tree, 0);
+		log.debug("TSP: Deepest element found");
 		TSPTree pointer = result;
 		List<TSPTree> routes = new ArrayList<>();
 		while(pointer.getParent() != null) {
 			routes.add(pointer);
 			pointer = pointer.getParent();
 		}
+		log.debug("TSP: Tree scanned");
 		for(int i = 0; i < routes.size(); i++) {
 			if(routes.get(i).getName().contains("*")) {
 				routes.remove(i);
 				i--;
 			}
 		}
+		log.debug("TSP: Removed excluded leaves");
+		String treeText = "";
+		for(TSPTree t : routes) {
+			treeText += t.getName() + " ";
+		}
+		log.debug(treeText);
 		TSPTree start = null;
 		for(TSPTree t : routes) {
-			if(t.getName().split("-")[0].equals("0")) {
+			if(t.getName().split("-")[0].equals("" + from)) {
 				start = t;
 			}
 		}
+		log.debug(start.getName());
 		List<String> path = new ArrayList<>();
 		routes.remove(start);
 		path.add(start.getName().split("-")[0]);
+		log.debug("TSP: Beginning to reconstructing path");
 		while(routes.size() != 0) {
 			for(TSPTree t : routes) {
 				if(start.getName().split("-")[1].equals(t.getName().split("-")[0])) {
@@ -407,6 +495,7 @@ public class CargoAndOrdersService {
 					break;
 				}
 			}
+			log.debug(start.getName());
 			routes.remove(start);
 		}
 		path.add(start.getName().split("-")[1]);
@@ -457,10 +546,10 @@ public class CargoAndOrdersService {
 		}
 	}
 	
-	private int countNotNullElements(Map<String, Integer> map) {
+	private int countRemainingElements(Map<String, Integer> map) {
 		int counter = 0;
 		for(Map.Entry<String, Integer> e : map.entrySet()) {
-			counter = e.getValue() != null ? counter + 1 : counter;
+			counter = e.getValue() != null && e.getValue() != Integer.MAX_VALUE ? counter + 1 : counter;
 		}
 		return counter;
 	}
@@ -482,7 +571,7 @@ public class CargoAndOrdersService {
 		for(TSPTree t : root.getChildren()) {
 			getDeepestElement(t, depth + 1);
 		}
-	}
+	}*/
 	
 	public int getShortestPath(int[][] matr, List<Integer> result, int from, int to) {
 		int n = matr.length;
@@ -519,6 +608,7 @@ public class CargoAndOrdersService {
 				allVisited &= flag;
 			}
 		}
+		log.debug("Dijkstra: visited all cities; distance is " + weights[to]);
 		int current = to;
 		while(current != from) {
 			for(int i = 0; i < n; i++) {
@@ -531,10 +621,131 @@ public class CargoAndOrdersService {
 		return weights[to];
 	}
 	
-	private TSPTree result;
-	private int depth;
-	private int MAX_CITIES = 50;
-	private int n;
+	public int[] findOptimalPathUsingAnnealingImitation(int[][] matr, double initialTemperature, double endTemperature, int from, List<Integer> loadingCities, List<Integer> unloadingCities) {
+		int n = matr.length;
+		List<Integer> routeList = new ArrayList<>();
+		for(int i = 0; i < n; i++) {
+			routeList.add(i);
+		}
+		Collections.shuffle(routeList);
+		int valueIndex = routeList.indexOf(from);
+		routeList.set(valueIndex, routeList.get(0));
+		routeList.set(0, from);
+		Object[] obj = routeList.toArray();
+		int[] route = new int[n];
+		for(int i = 0; i < n; i++) {
+			route[i] = (Integer)obj[i];
+		}
+		double currentTemperature = initialTemperature;
+		int currentEnergy = calculateEnergy(route, matr);
+		int k = 1;
+		while(currentTemperature > endTemperature) {
+			int[] routeCandidate = generateCandidate(route, from, loadingCities, unloadingCities);
+			int candidateEnergy = calculateEnergy(routeCandidate, matr);
+			if(candidateEnergy < currentEnergy) {
+				currentEnergy = candidateEnergy;
+				route = routeCandidate;
+			} else {
+				double p = getTranstionProbability(candidateEnergy - currentEnergy, currentTemperature);
+				if(makeTransit(p)) {
+					currentEnergy = candidateEnergy;
+					route = routeCandidate;
+				}
+			}
+			currentTemperature = decreaseTemperature(initialTemperature, k);
+			//log.debug("k = " + k + "; T = " + currentTemperature);
+			k++;
+		}
+		return route;
+	}
+	
+	private int calculateEnergy(int[] route, int[][] matr) {
+		int n = route.length;
+		int E = 0;
+		for(int i = 0; i < n - 1; i++) {
+			E += matr[i][i + 1];
+		}
+		return E;
+	}
+	
+	private int[] generateCandidate(int[] previousState, int from, List<Integer> loadingCities, List<Integer> unloadingCities) {
+		/*int n = previousState.length;
+		Random rand = new Random();
+		int i, j;
+		do {
+			i = rand.nextInt(n);
+			j = rand.nextInt(n);
+		} while( i == j);
+		int a, b;
+		Integer[] copy;
+		Integer[] prevState = new Integer[n];
+		int[] newState = Arrays.copyOf(previousState, previousState.length);
+		for(int k = 0; k < n; k++) {
+			prevState[k] = previousState[k];
+		}
+		if(i < j) {
+			copy = Arrays.copyOfRange(prevState, i, j);
+			a = i;
+			b = j;
+		} else {
+			copy = Arrays.copyOfRange(prevState, j, i);
+			a = j;
+			b = i;
+		}
+		List<Integer> reversed = Arrays.asList(copy);
+		Collections.reverse(reversed);
+		for(int k = a; k < b; k++) {
+			newState[k] = reversed.get(k - a);
+		}
+		int val = 0;
+		for(int k = 0; k < n; k++) {
+			if(newState[k] == from) {
+				val = newState[0];
+				newState[0] = from;
+				newState[k] = val;
+				break;
+			}
+		}
+		
+		return newState;*/
+		int n = previousState.length;
+		List<Integer> state = new ArrayList<>();
+		for(int i = 0; i < n ; i++) {
+			state.add(previousState[i]);
+		}
+		int[] newState = new int[n];
+		boolean sequenceCorrect = false;
+		while(!sequenceCorrect) {
+			Collections.shuffle(state);
+			state.set(state.indexOf(from), state.get(0));
+			state.set(0, from);
+			sequenceCorrect = true;
+			for(int i = 0; i < loadingCities.size(); i++) {
+				sequenceCorrect &= state.indexOf(loadingCities.get(i)) < state.indexOf(unloadingCities.get(i));
+			}
+		}
+		for(int i = 0; i < n; i++) {
+			newState[i] = state.get(i);
+		}
+		return newState;
+	}
+	
+	private double getTranstionProbability(int energy, double temperature) {
+		//return Math.exp(-energy / temperature);
+		return 1 / (1 + Math.exp(energy / temperature));
+	}
+	
+	private boolean makeTransit(double probability) {
+		return Math.random() <= probability;
+	}
+	
+	private double decreaseTemperature(double initialTemperature, int k) {
+		//return initialTemperature * 0.1 / k;
+		return initialTemperature / Math.log(1 + k);
+	}
+	
+	private static final int ANNEALING_START_TEMPERAURE = 1000;
+	private static final int ANNEALING_END_TEMPERATURE = 76;
 	
 	@Autowired
 	private CargoDAO cargoDAO;
