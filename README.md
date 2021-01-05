@@ -1,10 +1,10 @@
 # Logiweb
 Java School Public Repository
 
-# VERSION 0.0.6.2
+# VERSION 0.0.8
 
-Removed usage of deprecated methods. Used SonarQube to improve code style. Had to add DTO layer for processing data from HTML forms, because SonarQube stated that using @Entity annotated classes straight as parameters is severe security problem.
+Added route calculation for orders, using annealing imitation algorithm with some logistic restrictions. Added mapping for drivers and orders. Solved cycle problem (or at least I think so). Still have to add driver selection, validation, and then I can start working on driver page and move towards finishing the project.
 
 # TODO
 
-Start to think on orders realization.
+Implement driver selection, validation, driver page, etc etc

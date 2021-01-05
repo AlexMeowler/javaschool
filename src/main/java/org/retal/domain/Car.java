@@ -2,6 +2,7 @@ package org.retal.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -46,6 +47,9 @@ public class Car {
 	
 	@OneToOne(mappedBy="car")
 	private Order order;
+	
+	@OneToOne(mappedBy="car", fetch = FetchType.EAGER)
+	private UserInfo driver;
 
 	public String getRegistrationId() {
 		return registrationId;
@@ -93,6 +97,14 @@ public class Car {
 	
 	public void setOrder(Order order) {
 		this.order = order;
+	}
+	
+	public UserInfo getDriver() {
+		return driver;
+	}
+	
+	public void setDriver(UserInfo driver) {
+		this.driver = driver;
 	}
 	
 	public String toString() {

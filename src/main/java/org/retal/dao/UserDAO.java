@@ -33,9 +33,9 @@ public class UserDAO implements DAO<User> {
 		User user = session.get(User.class, id);
 		if(user != null) {
 			String info = user.getUserInfo() != null ? user.getUserInfo().toString() : "null";
-			log.info("for user id='" + user.getId() + "' user info = " + info);
+			log.debug("for user id='" + user.getId() + "' user info = " + info);
 		} else {
-			log.info("user not found");
+			log.debug("user not found");
 		}
 		session.close();
 		return user;
@@ -58,7 +58,7 @@ public class UserDAO implements DAO<User> {
 		List<User> users = session.createNativeQuery("SELECT * FROM USERS", User.class).getResultList();
 		for (User u : users) {
 			String info = u.getUserInfo() != null ? u.getUserInfo().toString() : "null";
-			log.info("for user id='" + u.getId() + "' user info = " + info);
+			log.debug("for user id='" + u.getId() + "' user info = " + info);
 		}
 		session.close();
 		return users;
@@ -71,7 +71,7 @@ public class UserDAO implements DAO<User> {
 		List<User> users = session.createNativeQuery("SELECT * FROM USERS WHERE role = '" + role + "'", User.class)
 				.getResultList();
 		for (User u : users) {
-			log.info(role + " found: id='" + u.getId() + "'");
+			log.debug(role + " found: id='" + u.getId() + "'");
 		}
 		session.close();
 		return users;

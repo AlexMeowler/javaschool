@@ -71,6 +71,9 @@ function deleteRow(x) {
 		document.getElementById("a" + i).setAttribute("href", "javascript: deleteRow(" + (i - 1) + ")");
 		document.getElementById("a" + i).setAttribute("id", "a" + (i - 1));
 		document.getElementById("div" + i).setAttribute("id", "div" + (i - 1));
+		document.getElementById("city" + i).setAttribute("id", "city" + (i - 1));
+		document.getElementById("cargo" + i).setAttribute("id", "cargo" + (i - 1));
+		document.getElementById("status" + i).setAttribute("id", "status" + (i - 1));
 	}
 	counter--;
 }

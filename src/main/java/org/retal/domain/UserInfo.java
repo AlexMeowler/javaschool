@@ -3,6 +3,7 @@ package org.retal.domain;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -51,14 +52,22 @@ public class UserInfo {
 
 	@Column(name = "status")
 	private String status;
+	
+	@OneToOne
+	@JoinColumn(name = "car_id", referencedColumnName = "registration_id")
+	private Car car;
 
 	@ManyToOne
 	@JoinColumn(name="current_city", nullable = false)
 	private City currentCity;
 
-	@OneToOne(mappedBy = "userInfo", cascade = CascadeType.ALL)
+	@OneToOne(mappedBy = "userInfo", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@PrimaryKeyJoinColumn
 	private User user;
+	
+	@ManyToOne
+	@JoinColumn(name="order_id")
+	private Order order;
 
 	public int getId() {
 		return id;
@@ -114,6 +123,22 @@ public class UserInfo {
 
 	public void setCurrentCity(City currentCity) {
 		this.currentCity = currentCity;
+	}
+	
+	public Car getCar() {
+		return car;
+	}
+
+	public void setCar(Car car) {
+		this.car = car;
+	}
+	
+	public Order getOrder() {
+		return order;
+	}
+
+	public void setOrder(Order order) {
+		this.order = order;
 	}
 
 	public String toString() {

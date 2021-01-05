@@ -42,7 +42,7 @@ public class User {
 	@Column(name = "role")
 	private String role;
 
-	@OneToOne(orphanRemoval = true, cascade = CascadeType.ALL)
+	@OneToOne(orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@MapsId
 	@JoinColumn(name = "id")
 	private UserInfo userInfo;

@@ -4,6 +4,7 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -39,6 +40,9 @@ public class Order {
 	
 	@Column(name="route")
 	private String route;
+	
+	@OneToMany(mappedBy="order", fetch = FetchType.EAGER)
+	private Set<UserInfo> driverInfo;
 	
 	@Transient
 	private Set<Cargo> cargo;
