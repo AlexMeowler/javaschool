@@ -70,9 +70,8 @@ public class UserDAO implements DAO<User> {
 		Session session = HibernateSessionFactory.getSessionFactory().openSession();
 		List<User> users = session.createNativeQuery("SELECT * FROM USERS WHERE role = '" + role + "'", User.class)
 				.getResultList();
-		for (User u : users) {
-			log.debug(role + " found: id='" + u.getId() + "'");
-		}
+		
+		log.debug("Retrieved " + users.size() + " users with role '" + role + "'");
 		session.close();
 		return users;
 	}

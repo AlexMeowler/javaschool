@@ -108,6 +108,6 @@ public class Car {
 	}
 	
 	public String toString() {
-		return "Car ID = " + registrationId + "; capactity = " + capacityTons + "; location = " + location.getCurrentCity();
+		return "Car ID = " + registrationId + "; capactity = " + capacityTons + "; location = " + location.getCurrentCity() + "; shift length = " + shiftLength;
 	}
 }

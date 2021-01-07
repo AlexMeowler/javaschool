@@ -76,7 +76,7 @@ public class CarService {
 			String registrationLetters = c.getCurrentCity().substring(0, 2).toUpperCase();
 			String registrationNumber = "" + (10000 + rand.nextInt(90000));
 			car.setRegistrationId(registrationLetters + registrationNumber);
-			car.setShiftLength(6 + rand.nextInt(10));
+			car.setShiftLength(12 + rand.nextInt(13));
 			carDAO.add(car);
 		}
 	}
