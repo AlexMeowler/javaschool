@@ -1,6 +1,7 @@
 package org.retal.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.retal.domain.City;
@@ -15,6 +16,7 @@ import org.retal.dto.UserDTO;
 import org.retal.dto.UserInfoDTO;
 import org.retal.service.CargoAndOrdersService;
 import org.retal.service.CityService;
+import org.retal.service.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -30,6 +32,12 @@ public class CargoAndOrdersPageController {
 	
 	@GetMapping(value="/cargoAndOrders")
 	public String getCargoAndOrdersPage(Model model) {
+		BindingResult result = (BindingResult) model.asMap().get(BindingResult.MODEL_KEY_PREFIX + "routePoints");
+		Map<String, String> errors = UserValidator.convertErrorsToHashMap(result);
+		for (Map.Entry<String, String> e : errors.entrySet()) {
+			log.info(e.getKey() + ":" + e.getValue());
+		}
+		model.addAllAttributes(errors);
 		User user = sessionInfo.getCurrentUser();
 		UserInfo userInfo = user.getUserInfo();
 		model.addAttribute("current_user_name", userInfo.getName() + " " + userInfo.getSurname());
@@ -47,18 +55,16 @@ public class CargoAndOrdersPageController {
 	}
 	
 	@PostMapping(value = "/addNewOrder")
-	public RedirectView addNewUser(RoutePointListWrapper list, BindingResult bindingResult, 
+	public RedirectView addNewOrder(RoutePointListWrapper list, BindingResult bindingResult, 
 								RedirectAttributes redir) {
 		RedirectView redirectView = new RedirectView("/cargoAndOrders", true);
 		redir.addFlashAttribute("visible", "true");
-		List<RoutePoint> points = cargoAndOrdersService.mapRoutePointDTOsToEntities(list.getList());
-		log.info("Mapped " + points.size() + " DTOs to entities");
-		cargoAndOrdersService.createOrderWithRoutePoints(points);
-		//userService.addNewUser(user, bindingResult, userDTO.getPassword());
-		/*if (bindingResult.hasErrors()) {
-			redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + "user", bindingResult);
-			redir.addFlashAttribute("user", user);
-		}*/
+		cargoAndOrdersService.createOrderWithRoutePoints(list, bindingResult);
+		if (bindingResult.hasErrors()) {
+			redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + "routePoints", bindingResult);
+			redir.addFlashAttribute("counter_value", list.getList().size());
+			redir.addFlashAttribute("routePoints", list.getList());//FIXME for each
+		}
 		return redirectView;
 	}
 	

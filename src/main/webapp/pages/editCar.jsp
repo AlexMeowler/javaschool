@@ -33,6 +33,7 @@
 			<option value = "true" ${car.isWorking || empty car ? 'selected' : ''}>Normal</option>
 			<option value = "false" ${!car.isWorking && not empty car ? 'selected' : ''}>Broken</option>
 		</select>
+		<span class = "error">${error_isWorking}</span>
 		<br>
 		<label>Current location</label>
 		<select name = "currentCity">

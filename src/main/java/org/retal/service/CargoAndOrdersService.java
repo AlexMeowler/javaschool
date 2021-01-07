@@ -32,14 +32,17 @@ import org.retal.domain.UserInfo;
 import org.retal.domain.enums.DriverStatus;
 import org.retal.domain.enums.UserRole;
 import org.retal.dto.RoutePointDTO;
+import org.retal.dto.RoutePointListWrapper;
 import org.retal.service.data_structures.TSPTree;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.Validator;
 
 @Service
 public class CargoAndOrdersService {
-	//TODO Cargo and Order Validation
+	//TODO Order Validation
 	public List<Cargo> getAllCargo() {
 		return cargoDAO.readAll();
 	}
@@ -48,9 +51,17 @@ public class CargoAndOrdersService {
 		return orderDAO.readAll();
 	}
 	
-	public void addNewCargo(Cargo cargo, BindingResult bindingResult) {
-		//validation
-		cargoDAO.add(cargo);
+	public void addNewCargo(Cargo cargo, BindingResult bindingResult, String weight) {
+		try {
+			Integer weightInt = Integer.parseInt(weight);
+			cargo.setMass(weightInt);
+		} catch (NumberFormatException e) {
+			bindingResult.reject("mass", "Cargo weight length must be non-negative integer");
+		}
+		cargoValidator.validate(cargo, bindingResult);
+		if(!bindingResult.hasErrors()) {
+			cargoDAO.add(cargo);
+		}
 	}
 	
 	public List<RoutePoint> mapRoutePointDTOsToEntities(List<RoutePointDTO> list) {
@@ -65,32 +76,38 @@ public class CargoAndOrdersService {
 		return entityList;
 	}
 	
-	public void createOrderWithRoutePoints(List<RoutePoint> list) {
+	public void createOrderWithRoutePoints(RoutePointListWrapper wrapper, BindingResult bindingResult) {
 		//TODO validate route points
-		List<CityDistance> distances = cityDistanceDAO.readAll();
-		List<City> cities = cityDAO.readAll();
-		Session session = HibernateSessionFactory.getSessionFactory().openSession();
-		Set<RoutePoint> points = new HashSet<>(list);
-		Order order = new Order();
-		Object[] carAndPath = findAppropriateCarAndDriversAndCalculatePath(list, distances, cities, session);
-		/*order.setCar(); //FIXME
-		order.setPoints(points);
-		order.setIsCompleted(false);
-		Transaction transaction = session.beginTransaction();
-		orderDAO.setSession(session);
-		routePointDAO.setSession(session);
-		orderDAO.add(order);
-		transaction.commit();
-		transaction = session.beginTransaction();
-		for(RoutePoint rp : points) {
-			rp.setOrder(order);
-			routePointDAO.add(rp);
+		routePointsValidator.validate(wrapper, bindingResult);
+		if(!bindingResult.hasErrors()) {
+			List<RoutePoint> list = mapRoutePointDTOsToEntities(wrapper.getList());
+			log.info("Mapped " + list.size() + " DTOs to entities");
+			List<CityDistance> distances = cityDistanceDAO.readAll();
+			List<City> cities = cityDAO.readAll();
+			Session session = HibernateSessionFactory.getSessionFactory().openSession();
+			Set<RoutePoint> points = new HashSet<>(list);
+			Order order = new Order();
+			Object[] carAndDriversAndPath = findAppropriateCarAndDriversAndCalculatePath(list, distances, cities, session);
+			/*order.setCar((Car)carAndDriversAndPath[0]);
+			order.setPoints(points);
+			order.setIsCompleted(false);
+			if(!bindingResult.hasErrors() ) {
+				Transaction transaction = session.beginTransaction();
+				orderDAO.setSession(session);
+				routePointDAO.setSession(session);
+				orderDAO.add(order);
+				transaction.commit();
+				transaction = session.beginTransaction();
+				for(RoutePoint rp : points) {
+					rp.setOrder(order);
+					routePointDAO.add(rp);
+				}
+				transaction.commit();
+				orderDAO.setSession(null);
+				routePointDAO.setSession(null);
+			}*/
+			session.close();
 		}
-		transaction.commit();
-		orderDAO.setSession(null);
-		routePointDAO.setSession(null);*/
-		session.close();
-		return ;
 	}
 	
 	public Object[] findAppropriateCarAndDriversAndCalculatePath(List<RoutePoint> list, 
@@ -99,11 +116,7 @@ public class CargoAndOrdersService {
 		//TODO code refactoring
 		log.info("Searching for cars and paths...");
 		Set<City> allRoutePointCities = new HashSet<>();
-		List<String> cityNames = new ArrayList<>();
-		for(City city : cities) {
-			cityNames.add(city.getCurrentCity());
-			log.debug("Added city name " + city.getCurrentCity());
-		}
+		List<String> cityNames = cities.stream().map(c -> c.getCurrentCity()).collect(Collectors.toList());
 		log.debug("Mapped city names");
 		List<Integer> loadingCities = new ArrayList<>();
 		List<Integer> unloadingCities = new ArrayList<>();
@@ -241,7 +254,7 @@ public class CargoAndOrdersService {
 		//Car and drivers selection
 		Car selectedCar = null;
 		List<User> drivers = null;
-		for(City city : allRoutePointCities) {
+		for(City city : rpCities) {
 			if(city.getCurrentCity().equals(firstCity)) {
 				session.persist(city);
 				for(Car car : city.getCars()) {
@@ -260,7 +273,7 @@ public class CargoAndOrdersService {
 		String driversMessage = drivers != null ? drivers.toString() : "null";
 		String carMessage = selectedCar != null ? selectedCar.toString() : "null";
 		log.debug("Selected drivers, car and route - " + driversMessage + "; " + carMessage + "; " + shortestPath);
-		return new Object[] {drivers, selectedCar, shortestPath};
+		return new Object[] {selectedCar, drivers, shortestPath};
 	}
 	
 	public int getShortestPath(int[][] matr, List<Integer> result, int from, int to) {
@@ -655,6 +668,14 @@ public class CargoAndOrdersService {
 	
 	@Autowired
 	private RoutePointDAO routePointDAO;
+	
+	@Autowired
+	@Qualifier("cargoValidator")
+	private Validator cargoValidator;
+	
+	@Autowired
+	@Qualifier("routePointsValidator")
+	private Validator routePointsValidator;
 	
 	private static final Logger log = Logger.getLogger(CargoAndOrdersService.class);
 }

@@ -92,9 +92,10 @@
 		<label>Status</label>
 		<select name = "status">
 			<option value = "resting" ${user.userInfo.status == 'resting' ? 'selected' : ''}>Resting</option>
-			<option value = "on_shift" ${user.userInfo.status == 'on_shift' ? 'selected' : ''}>On shift</option>
+			<option value = "on shift" ${user.userInfo.status == 'on shift' ? 'selected' : ''}>On shift</option>
 			<option value = "driving" ${user.userInfo.status == 'driving' ? 'selected' : ''}>Driving</option>
 		</select>
+		<span class = "error">${error_status}</span>
 		<br>
 		<label>City</label>
 		<select name = "currentCity">
@@ -134,6 +135,7 @@
 		<br>
 		<label>Name</label>
 		<input type="text" name="name" value="${cargo.name}"/>
+		<span class = "error">${error_name}</span>
 		<br>
 		<label>Weight (kg)</label>
 		<input type="text" name="mass"/>
@@ -141,6 +143,7 @@
 		<br>
 		<label>Description</label>
 		<input type="text" name="description"/>
+		<span class = "error">${error_description}</span>
 		<br>
 		<input type="submit" value="Add cargo">
 	</form:form>

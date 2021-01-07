@@ -47,9 +47,10 @@
 		<label>Status</label>
 		<select name = "status">
 			<option value = "resting" ${user.userInfo.status == 'resting' ? 'selected' : ''}>Resting</option>
-			<option value = "on_shift" ${user.userInfo.status == 'on_shift' ? 'selected' : ''}>On shift</option>
+			<option value = "on shift" ${user.userInfo.status == 'on shift' ? 'selected' : ''}>On shift</option>
 			<option value = "driving" ${user.userInfo.status == 'driving' ? 'selected' : ''}>Driving</option>
 		</select>
+		<span class = "error">${error_status}</span>
 		<br>
 		<label>City</label>
 		<select name = "currentCity">

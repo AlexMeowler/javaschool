@@ -8,7 +8,7 @@ function showForm(target) {
 	document.getElementById(target).style["display"] = elem;
 		}
 
-var counter = 0; //TODO make it on jsp page
+//var counter = 0; 
 
 function addRow() {
 	var request = new XMLHttpRequest();
@@ -37,19 +37,19 @@ function addRow() {
 		}
 		document.getElementById('rows').innerHTML = document.getElementById('rows').innerHTML 
 		+ "<div id = \"div" + counter + "\">" 
-		+ "<label>City</label>"
+		+ "<label>City</label> "
 		+ "<select id = \"city" + counter + "\" name = \"list[" + counter + "].cityName\">"  
 		+ options_city 
-		+ "</select>" 
-		+ "<label>Cargo</label>" 
+		+ "</select> " 
+		+ "<label>Cargo</label> " 
 		+ "<select id = \"cargo" + counter + "\" name =\"list[" + counter + "].cargoId\">"   
 		+ options_cargo
-		+ "</select>"
-		+ "<label>Status</label>" 
+		+ "</select> "
+		+ "<label>Status</label> " 
 		+ "<select id = \"status" + counter + "\" name = \"list[" + counter + "].isLoading\">" 
 		+	"<option value = \"true\">Load</option>" 
 		+	"<option value = \"false\">Drop</option>"  
-		+ "</select>"
+		+ "</select> "
 		+ "<a id=\"a" + counter + "\" href=\"javascript: deleteRow(" + counter + ");\">Delete this row </a>"
 		+ "<br>"
 		+ "</div>";

@@ -9,6 +9,8 @@
 	<link rel="stylesheet" type="text/css" href="<c:url value="static/bootstrap.min.css"/>">
 	<link rel="stylesheet" type="text/css" href="<c:url value="static/menu.css"/>">
 	<link rel="stylesheet" type="text/css" href="<c:url value="static/main.css"/>">
+	<c:if test = "${empty counter_value}"><c:set var = "counter_value" value = "0"/></c:if>
+	<script>var counter = ${counter_value}</script>
 	<script type="text/javascript" src = "<c:url value="static/my_js_library.js"/>"></script>
 </head>
 <body>
@@ -66,8 +68,34 @@
 	<c:if test = "${empty visible}"><c:set var = "hidden" value = "display:none;"/></c:if>
 	<c:url value="/addNewOrder" var = "addOrder"/>
 	<form:form id = "formorder" action="${addOrder}" method="POST" style = "${hidden}">
+		<span class = "error">${error_globalCity}</span>
+		<br>
+		<span class = "error">${error_globalCargo}</span>
 		<br>
 		<div id="rows">
+			<c:forEach var="routePoint" items="${routePoints}" varStatus = "i">
+				<div id="div${i.index}">
+					<label>City</label>
+					<select id="city${i.index}" name="list[${i.index}].cityName">
+						<c:forEach var="city" items="${cityList}">
+							<option value = "${city.currentCity}" ${routePoint.cityName == city.currentCity ? 'selected' : ''}>${city.currentCity}</option>
+						</c:forEach>
+					</select>
+					<label>Cargo</label>
+					<select id="cargo${i.index}" name="list[${i.index}].cargoId">
+						<c:forEach var="cargo" items="${cargoList}">
+							<option value = "${cargo.id}" ${routePoint.cargoId == cargo.id ? 'selected' : ''}>${cargo.id}: ${cargo.name}</option>
+						</c:forEach>
+					</select>
+					<label>Status</label>
+					<select id="status${i.index}" name="list[${i.index}].isLoading">
+						<option value="true" ${routePoint.isLoading ? 'selected' : ''}>Load</option>
+						<option value="false" ${!routePoint.isLoading ? 'selected' : ''}>Drop</option>
+					</select>
+					<a id="a${i.index}" href="javascript: deleteRow(${i.index});">Delete this row</a>
+					<span class = "error">${routePoint.error}</span>
+				</div>
+			</c:forEach>
 		</div>
 		<button type="button" class = "table-edit-button" name = "addRoutePoint" onclick = "addRow()">Add route point</button>
 		<br>

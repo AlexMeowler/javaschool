@@ -66,6 +66,7 @@ public class ManagerPageController {
 		user.setUserInfo(userInfo);
 		userService.addNewUser(user, bindingResult, userDTO.getPassword());
 		if (bindingResult.hasErrors()) {
+			log.warn("There were validation errors at adding new driver");
 			redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + "user", bindingResult);
 			redir.addFlashAttribute("user", user);
 		}
@@ -115,6 +116,7 @@ public class ManagerPageController {
 		user.setUserInfo(userInfo);
 		userService.updateUser(user, bindingResult, userDTO.getPassword());
 		if (bindingResult.hasErrors()) {
+			log.warn("There were validation errors at editing driver");
 			redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + "user", bindingResult);
 			redir.addFlashAttribute("user", user);
 			redirectView.setUrl("/editDriver");
@@ -133,6 +135,7 @@ public class ManagerPageController {
 		car.setLocation(city);
 		carService.addNewCar(car, bindingResult, capacity, shiftLength);
 		if (bindingResult.hasErrors()) {
+			log.warn("There were validation errors at adding new car");
 			redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + "car", bindingResult);
 			redir.addFlashAttribute("car", car);
 		}
@@ -151,7 +154,6 @@ public class ManagerPageController {
 	public RedirectView editCar(@PathVariable String id, RedirectAttributes redir) {
 		RedirectView redirectView = new RedirectView("/editCar", true);
 		redir.addFlashAttribute("car", carService.getCar(id));
-		
 		return redirectView;
 	}
 
@@ -175,6 +177,7 @@ public class ManagerPageController {
 		car.setLocation(city);
 		carService.updateCar(car, bindingResult, capacity, shiftLength);
 		if (bindingResult.hasErrors()) {
+			log.warn("There were validation errors at editing car");
 			redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + "car", bindingResult);
 			redir.addFlashAttribute("car", car);
 			redirectView.setUrl("/editCar");

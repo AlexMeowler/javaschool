@@ -6,6 +6,7 @@ public class RoutePointDTO extends RoutePoint {
 	
 	private Integer cargoId;
 	private String cityName;
+	private String error;
 	
 	public Integer getCargoId() {
 		return cargoId;
@@ -21,5 +22,13 @@ public class RoutePointDTO extends RoutePoint {
 	
 	public void setCityName(String cityName) {
 		this.cityName = cityName;
+	}
+	
+	public String getError() {
+		return error;
+	}
+	
+	public void setError(String error) {
+		this.error = error;
 	}
 }

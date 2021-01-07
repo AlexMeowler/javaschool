@@ -1,10 +1,10 @@
 # Logiweb
 Java School Public Repository
 
-# VERSION 0.8.0
+# VERSION 0.8.1
 
-Added route calculation for orders, using annealing imitation algorithm with some logistic restrictions. Added mapping for drivers and orders. Solved cycle problem (or at least I think so). Still have to add driver selection, validation, and then I can start working on driver page and move towards finishing the project.
+Improved validation; implemented validation for orders creation. Orders saving still commented due to tests of algorithms.
 
 # TODO
 
-Implement driver selection, validation, driver page, etc etc
+Uncomment orders, save routes and driver list, make sure everything works, start working on driver page

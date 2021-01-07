@@ -23,6 +23,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
@@ -79,6 +80,7 @@ public class AdminPageController {
 		user.setUserInfo(userInfo);
 		userService.addNewUser(user, bindingResult, userDTO.getPassword());
 		if (bindingResult.hasErrors()) {
+			log.warn("There were validation errors at adding new user");
 			redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + "user", bindingResult);
 			redir.addFlashAttribute("user", user);
 		}
@@ -122,6 +124,7 @@ public class AdminPageController {
 		user.setUserInfo(userInfo);
 		userService.updateUser(user, bindingResult, userDTO.getPassword());
 		if (bindingResult.hasErrors()) {
+			log.warn("There were validation errors at editing user");
 			redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + "user", bindingResult);
 			redir.addFlashAttribute("user", user);
 			redirectView.setUrl("/editUser");
@@ -131,13 +134,14 @@ public class AdminPageController {
 	
 	@PostMapping(value = "/addNewCargo")
 	public RedirectView addNewCargo(CargoDTO cargoDTO, BindingResult bindingResult, 
-							RedirectAttributes redir) {
+							RedirectAttributes redir, @RequestParam(name = "mass") String weight) {
 		RedirectView redirectView = new RedirectView(ADMIN_PAGE, true);
 		redir.addFlashAttribute("visiblecargo", "true");
 		Cargo cargo = new Cargo(cargoDTO);
 		cargo.setStatus(CargoStatus.PREPARED.toString().toLowerCase());
-		cargoAndOrdersService.addNewCargo(cargo, bindingResult);
+		cargoAndOrdersService.addNewCargo(cargo, bindingResult, weight);
 		if (bindingResult.hasErrors()) {
+			log.warn("There were validation errors at adding new cargo");
 			redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + "cargo", bindingResult);
 			redir.addFlashAttribute("cargo", cargo);
 		}

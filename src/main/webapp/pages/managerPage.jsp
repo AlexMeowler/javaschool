@@ -72,6 +72,7 @@
 			<option value = "on_shift" ${user.userInfo.status == 'on_shift' ? 'selected' : ''}>On shift</option>
 			<option value = "driving" ${user.userInfo.status == 'driving' ? 'selected' : ''}>Driving</option>
 		</select>
+		<span class = "error">${error_status}</span>
 		<br>
 		<label>City</label>
 		<select name = "currentCity">
@@ -134,6 +135,7 @@
 			<option value = "true" ${car.isWorking || empty car ? 'selected' : ''}>Normal</option>
 			<option value = "false" ${!car.isWorking && not empty car ? 'selected' : ''}>Broken</option>
 		</select>
+		<span class = "error">${error_isWorking}</span>
 		<br>
 		<label>Current location</label>
 		<select name = "currentCity">
