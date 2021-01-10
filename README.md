@@ -1,10 +1,10 @@
 # Logiweb
 Java School Public Repository
 
-# VERSION 0.8.3
+# VERSION 0.8.4
 
-Started working on driver page. Now there is shown assigned car, order, list of co-drivers etc. Driver can change their status.
+Can now move between cities.
 
 # TODO
 
-Add ways of changing location and picking/dropping cargo.
+Add buttons to picking/dropping cargo. Validation for choices.

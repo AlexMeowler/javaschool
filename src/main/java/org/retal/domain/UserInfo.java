@@ -53,6 +53,9 @@ public class UserInfo {
 	@Column(name = "status")
 	private String status;
 	
+	@Column(name = "hours_drived")
+	private Integer hoursDrived;
+	
 	@OneToOne
 	@JoinColumn(name = "car_id", referencedColumnName = "registration_id")
 	private Car car;
@@ -115,6 +118,14 @@ public class UserInfo {
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+	
+	public Integer getHoursDrived() {
+		return hoursDrived;
+	}
+
+	public void setHoursDrived(Integer hoursDrived) {
+		this.hoursDrived = hoursDrived;
 	}
 
 	public City getCurrentCity() {

@@ -31,7 +31,7 @@ public class Order {
 	@Column(name="isCompleted")
 	private Boolean isCompleted;
 	
-	@OneToOne
+	@OneToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name="car_id", referencedColumnName="registration_id")
 	private Car car;
 	

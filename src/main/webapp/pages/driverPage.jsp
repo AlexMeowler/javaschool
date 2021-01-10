@@ -16,6 +16,7 @@
 	<div class="container main-body">
 	Welcome, driver ${user.userInfo.name} ${user.userInfo.surname}!<br>
 	You are currently located in ${user.userInfo.currentCity.currentCity}.<br>
+	In this month you worked ${user.userInfo.hoursWorked} of 176 hours.<br>
 	Your status is &quot;${user.userInfo.status}&quot;.
 	<table>
 		<tr>
@@ -48,7 +49,7 @@
 			<c:if test = "${order.isCompleted}"><c:set var = "status" value = "Completed"/></c:if>
 			<td>${status}</td>
 			<td>${order.car.registrationId}</td>
-			<td><c:forEach var="route" items="${routeList}"><br></c:forEach></td>
+			<td><c:forEach var="route" items="${routeList}">${route}<br></c:forEach></td>
 			<td><c:forEach var="cargo" items="${order.cargo}">${cargo.id}: ${cargo.name} (${cargo.description})<br></c:forEach></td>
 		</tr>
 	</table>
@@ -56,6 +57,18 @@
 	<c:forEach var="driver" items="${order.drivers}">
 		<c:if test = "${driver.id != user.id}">${driver.userInfo.name} ${driver.userInfo.surname} (${driver.id})<br></c:if>
 	</c:forEach>
+	<c:if test="${empty user.userInfo.hoursDrived or user.userInfo.hoursDrived + nextHopLength <= order.car.shiftLength}">
+		<c:if test="${nextHopLength != -1}">
+			<p>Next city on your route is ${nextHop}, it should take about ${nextHopLength} hours to reach it. 
+			<a href="<c:url value="/changeLocation/${nextHop}"/>">Change location</a></p>
+		</c:if>
+		<c:if test="${nextHopLength == -1}">
+			<p>No next route point available.</p>
+		</c:if>
+	</c:if>
+	<c:if test="${not empty user.userInfo.hoursDrived and user.userInfo.hoursDrived + nextHopLength > order.car.shiftLength}">
+		<p>Car shift length limit exceeded, you can't drive any further</p>
+	</c:if>
 	</c:if>
 	</div>
 </body>

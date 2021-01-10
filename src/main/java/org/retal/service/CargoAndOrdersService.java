@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
@@ -300,7 +301,21 @@ public class CargoAndOrdersService {
 		return new Object[] {selectedCar, selectedDrivers, shortestPath, requiredCapacity};
 	}
 	
-	public int getShortestPath(int[][] matr, List<Integer> result, int from, int to) {
+	public int lengthBetweenTwoCities(String cityA, String cityB) {
+		List<City> cities = cityDAO.readAll();
+		List<String> cityNames = cities.stream().map(c -> c.getCurrentCity()).collect(Collectors.toList());
+		int n = cities.size();
+		int[][] bigMatrix = buildMatrix(n);
+		List<CityDistance> distances = cityDistanceDAO.readAll();
+		fillMatrixWithDefaultCityDistances(bigMatrix, distances, cityNames);
+		List<City> inputCities = Stream.of(cityDAO.read(cityA), cityDAO.read(cityB)).collect(Collectors.toList());
+		n = inputCities.size();
+		int[][] matrix = buildMatrix(n);
+		resolvePathsForMatrix(matrix, bigMatrix, cityNames, inputCities);
+		return matrix[0][1];
+	}
+	
+	private int getShortestPath(int[][] matr, List<Integer> result, int from, int to) {
 		int n = matr.length;
 		final int MAX = Integer.MAX_VALUE / 2;
 		/*int[][] matr = new int[6][];
@@ -671,7 +686,7 @@ public class CargoAndOrdersService {
 	private static final int ANNEALING_START_TEMPERAURE = 1000;
 	private static final int ANNEALING_END_TEMPERATURE = 76;
 	private static final int MONTH_HOURS_LIMIT = 176;
-	private static final int AVERAGE_CAR_SPEED = 80;
+	public static final int AVERAGE_CAR_SPEED = 80;
 	
 	@Autowired
 	private CargoDAO cargoDAO;

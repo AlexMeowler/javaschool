@@ -35,9 +35,7 @@ public class CityDistanceDAO implements DAO<CityDistance> {
 	public List<CityDistance> readAll() {
 		Session session = HibernateSessionFactory.getSessionFactory().openSession();
 		List<CityDistance> distances = session.createNativeQuery("SELECT * FROM map_country_distance", CityDistance.class).getResultList();
-		for (CityDistance cd : distances) {
-			log.info("distance between " + cd.getCityA() + " and " + cd.getCityB() + " = " + cd.getDistance());
-		}
+		log.info("retrieved " + distances.size() + " distances");
 		session.close();
 		return distances;
 	}

@@ -3,12 +3,13 @@ package org.retal.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.retal.dao.OrderDAO;
 import org.retal.domain.Order;
 import org.retal.domain.SessionInfo;
 import org.retal.domain.User;
-import org.retal.domain.UserInfo;
 import org.retal.domain.enums.DriverStatus;
+import org.retal.service.CargoAndOrdersService;
 import org.retal.service.DriverService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -33,17 +34,36 @@ public class DriverPageController {
 		}
 		model.addAttribute("statuses", statuses);
 		List<String> routeList = new ArrayList<>();
-		for(String s : order.getRoute().split(";")) {
-			routeList.add(s);
+		String nextHop = null;
+		int nextHopLength = -1;
+		String[] cities = order.getRoute().split(";");
+		String userCity = user.getUserInfo().getCurrentCity().getCurrentCity();
+		for(int i = 0; i < cities.length; i++) {
+			routeList.add(cities[i]);
+			if(nextHop == null && i > 0 && cities[i - 1].equalsIgnoreCase(userCity)) {
+				nextHop = cities[i];
+				nextHopLength = cargoAndOrdersService.lengthBetweenTwoCities(userCity, cities[i]);
+			}
 		}
+		log.debug(nextHop + "; " + nextHopLength);
+		nextHopLength = (int)Math.round((double)nextHopLength / CargoAndOrdersService.AVERAGE_CAR_SPEED);
 		model.addAttribute("routeList", routeList);
+		model.addAttribute("nextHop", nextHop);
+		model.addAttribute("nextHopLength", nextHopLength);
 		return "driverPage";
 	}
 	
 	@GetMapping(value = "/changeStatus/{status}")
-	public RedirectView changeStatus(@PathVariable String status, RedirectAttributes redir) {
+	public RedirectView changeStatus(@PathVariable String status) {
 		RedirectView redirectView = new RedirectView("/driverPage", true);
 		driverService.changeStatus(status);
+		return redirectView;
+	}
+	
+	@GetMapping(value = "/changeLocation/{city}")
+	public RedirectView changeLocation(@PathVariable String city) {
+		RedirectView redirectView = new RedirectView("/driverPage", true);
+		driverService.changeLocation(city);
 		return redirectView;
 	}
 	
@@ -54,5 +74,10 @@ public class DriverPageController {
 	private DriverService driverService;	
 	
 	@Autowired
-	private OrderDAO orderDAO;	
+	private CargoAndOrdersService cargoAndOrdersService;
+	
+	@Autowired
+	private OrderDAO orderDAO;
+	
+	private static final Logger log = Logger.getLogger(DriverPageController.class);
 }
