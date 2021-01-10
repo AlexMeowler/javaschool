@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.retal.domain.Cargo;
 import org.retal.domain.City;
 import org.retal.domain.RoutePoint;
 import org.retal.domain.SessionInfo;
@@ -51,7 +52,15 @@ public class CargoAndOrdersPageController {
 	@GetMapping(value="/getCityAndCargoInfo")
 	@ResponseBody
 	public List[] getAllCities() {
-		return new List[] {cityService.getAllCities(), cargoAndOrdersService.getAllCargo()};
+		List<Cargo> cargo = cargoAndOrdersService.getAllCargo();
+		for(int i = 0; i < cargo.size(); i++) {
+			log.debug(cargo.get(i).getName() + "; " + cargo.get(i).getPoints().size());
+			if(cargo.get(i).getPoints().size() != 0) {
+				cargo.remove(i);
+				i--;
+			}
+		}
+		return new List[] {cityService.getAllCities(), cargo};
 	}
 	
 	@PostMapping(value = "/addNewOrder")

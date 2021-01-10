@@ -51,14 +51,12 @@
 		<c:forEach var="order" items="${ordersList}">
 		<tr>
 			<td>${order.id}</td>
-			<!-- TODO user friendly -->
-			<td>${order.isCompleted}</td>
-			<!-- TODO -->
-			<td>*under construction*</td>
-			<!-- TODO -->
-			<td>*under construction*</td>
-			<!-- TODO -->
-			<td>*under construction*</td>
+			<c:set var = "status" value = "Not completed"/>
+			<c:if test = "${order.isCompleted}"><c:set var = "status" value = "Completed"/></c:if>
+			<td>${status}</td>
+			<td>${order.car.registrationId}</td>
+			<td>${order.route}</td>
+			<td><c:forEach var="driver" items="${order.drivers}">${driver.userInfo.name} ${driver.userInfo.surname} (${driver.id})<br></c:forEach></td>
 			<td><c:forEach var="cargo" items="${order.cargo}">${cargo.id}: ${cargo.name}<br></c:forEach></td>
 		</tr>
 		</c:forEach>
@@ -68,9 +66,9 @@
 	<c:if test = "${empty visible}"><c:set var = "hidden" value = "display:none;"/></c:if>
 	<c:url value="/addNewOrder" var = "addOrder"/>
 	<form:form id = "formorder" action="${addOrder}" method="POST" style = "${hidden}">
-		<span class = "error">${error_globalCity}</span>
+		<span class = "error">${error_globalCity} ${error_globalCargo}</span>
 		<br>
-		<span class = "error">${error_globalCargo}</span>
+		<span class = "error">${error_emptyInput} ${error_globalCar} ${error_globalDrivers}</span>
 		<br>
 		<div id="rows">
 			<c:forEach var="routePoint" items="${routePoints}" varStatus = "i">

@@ -33,21 +33,27 @@ public class RoutePointsValidator implements Validator {
 		log.info("Validating route points");
 		RoutePointListWrapper wrapper = (RoutePointListWrapper)target;
 		List<RoutePointDTO> points = wrapper.getList();
+		if(points.size() == 0) {
+			errors.reject("emptyInput", "Please add route points.");
+		}
 		for(int i = 0; i < points.size(); i++) {
 			RoutePointDTO rp = points.get(i);
-			if(cityDAO.read(rp.getCityName()) == null) {
-				rp.setError("Invalid value(s). Please don't try to change page code");
+			Cargo cargo = cargoDAO.read(rp.getCargoId());
+			if(cityDAO.read(rp.getCityName()) == null || cargo == null || 
+											rp.getIsLoading() == null) {
+				rp.setError("Invalid value(s). Please don't try to change page code.");
+				errors.reject("codeChange", "Page code has been changed.");
 			}
-			if(cargoDAO.read(rp.getCargoId()) == null) {
-				rp.setError("Invalid value(s). Please don't try to change page code");
-			}
-			if (rp.getIsLoading() == null) {
-				rp.setError("Invalid value(s). Please don't try to change page code");
+			if(cargo != null && cargo.getPoints().size() != 0) {
+				rp.setError("Can't select cargo from other order. Please don't try to change page code.");
+				errors.reject("codeChange", "Can't select cargo from other order.");
 			}
 		}
 		if(!errors.hasErrors()) {
-			Map<Integer, Integer[]> cargoEntries = new HashMap<>(); 
+			// this is for rule 'every cargo is loaded in A and dropped in B' 
 			//Integer[0] - rank, load +1 unload -1; Integer[1] - total encounters, must be 2
+			Map<Integer, Integer[]> cargoEntries = new HashMap<>(); 
+			//Set<String> - to avoid dropping and loading of one cargo in the same city
 			Map<Integer, Set<String>> cargoCitiesEntries = new HashMap<>();
 			for(RoutePointDTO rp : points) {
 				Integer cargo = rp.getCargoId();
@@ -59,7 +65,7 @@ public class RoutePointsValidator implements Validator {
 					if(!cargoCitiesEntries.get(cargo).contains(rp.getCityName())) {
 						cargoCitiesEntries.get(cargo).add(rp.getCityName());
 					} else {
-						errors.reject("globalCity", "Sorry, but we don't do logistics within the same city");
+						errors.reject("globalCity", "Sorry, but we don't do logistics within the same city.");
 					}
 				} else {
 					cargoEntries.put(cargo, new Integer[] {sign , 1});
@@ -75,7 +81,7 @@ public class RoutePointsValidator implements Validator {
 				allCargosAreLoadingAndUnloading &= values[0] == 0 && values[1] == 2;
 			}
 			if(!allCargosAreLoadingAndUnloading) {
-				errors.reject("globalCargo", "All cargo must be loaded somewhere and unloaded somewhere else");
+				errors.reject("globalCargo", "All cargo must be loaded somewhere and unloaded somewhere else.");
 			}
 		}
 	}

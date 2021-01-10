@@ -105,5 +105,19 @@ public class User {
 		}
 	}
 	
+	@Override
+	public int hashCode() {
+		return id;
+	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if(o instanceof User) {
+			return ((User)o).id == this.id;
+		} else {
+			return false;
+		}
+	}
+	
 	private static final Logger log = Logger.getLogger(User.class);
 }

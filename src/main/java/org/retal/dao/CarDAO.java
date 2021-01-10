@@ -73,7 +73,7 @@ public class CarDAO implements DAO<Car> {
 
 	@Override
 	public void update(Car car) {
-		log.info("Finishing editing car");
+		log.info("Updating car");
 		Session session = HibernateSessionFactory.getSessionFactory().openSession();
 		Transaction transaction = session.beginTransaction();
 		session.update(car);

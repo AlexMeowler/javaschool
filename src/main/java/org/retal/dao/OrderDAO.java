@@ -7,8 +7,10 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
 import org.retal.domain.Cargo;
+import org.retal.domain.User;
 import org.retal.domain.Order;
 import org.retal.domain.RoutePoint;
+import org.retal.domain.enums.UserRole;
 import org.retal.service.HibernateSessionFactory;
 import org.springframework.stereotype.Component;
 
@@ -40,6 +42,8 @@ public class OrderDAO implements DAO<Order> {
 	public List<Order> readAll() {
 		Session session = HibernateSessionFactory.getSessionFactory().openSession();
 		List<Order> orders = session.createNativeQuery("SELECT * FROM ORDERS", Order.class).getResultList();
+		List<User> drivers = session.createNativeQuery("SELECT * FROM USERS WHERE role = '" 
+							+ UserRole.DRIVER.toString().toLowerCase() + "'", User.class).getResultList();
 		log.info(orders.size() + " orders retrieved");
 		for(Order o : orders) {
 			Set<Cargo> cargo = new HashSet<>();
@@ -47,6 +51,14 @@ public class OrderDAO implements DAO<Order> {
 				cargo.add(rp.getCargo());
 			}
 			o.setCargo(cargo);
+			Set<User> assignedDrivers = new HashSet<>();
+			for(User driver : drivers) {
+				Order order = driver.getUserInfo().getOrder();
+				if(order != null && order.getId() == o.getId()) {
+					assignedDrivers.add(driver);
+				}
+			}
+			o.setDrivers(assignedDrivers);
 			//log.info("Added to set " + cargo.size() + " cargo units for order " + o.getId());
 		}
 		session.close();

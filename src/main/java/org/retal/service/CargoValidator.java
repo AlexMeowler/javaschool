@@ -34,7 +34,7 @@ public class CargoValidator implements Validator {
 		}
 		Integer weight = cargo.getMass();
 		if (weight != null && weight < 0) {
-			throwError(errors, "mass", "Cargo weight length must non-negative integer");
+			throwError(errors, "mass", "Cargo weight length must non-negative integer.");
 		}
 	}
 	

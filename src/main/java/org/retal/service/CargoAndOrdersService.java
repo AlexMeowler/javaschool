@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -28,12 +27,10 @@ import org.retal.domain.Car;
 import org.retal.domain.Order;
 import org.retal.domain.RoutePoint;
 import org.retal.domain.User;
-import org.retal.domain.UserInfo;
 import org.retal.domain.enums.DriverStatus;
 import org.retal.domain.enums.UserRole;
 import org.retal.dto.RoutePointDTO;
 import org.retal.dto.RoutePointListWrapper;
-import org.retal.service.data_structures.TSPTree;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -77,7 +74,6 @@ public class CargoAndOrdersService {
 	}
 	
 	public void createOrderWithRoutePoints(RoutePointListWrapper wrapper, BindingResult bindingResult) {
-		//TODO validate route points
 		routePointsValidator.validate(wrapper, bindingResult);
 		if(!bindingResult.hasErrors()) {
 			List<RoutePoint> list = mapRoutePointDTOsToEntities(wrapper.getList());
@@ -86,18 +82,45 @@ public class CargoAndOrdersService {
 			List<City> cities = cityDAO.readAll();
 			Session session = HibernateSessionFactory.getSessionFactory().openSession();
 			Set<RoutePoint> points = new HashSet<>(list);
-			Order order = new Order();
 			Object[] carAndDriversAndPath = findAppropriateCarAndDriversAndCalculatePath(list, distances, cities, session);
-			/*order.setCar((Car)carAndDriversAndPath[0]);
-			order.setPoints(points);
-			order.setIsCompleted(false);
-			if(!bindingResult.hasErrors() ) {
+			session.close();
+			Car selectedCar = (Car)carAndDriversAndPath[0];
+			@SuppressWarnings("unchecked")
+			List<User> drivers = (List<User>)carAndDriversAndPath[1];
+			String route = (String)carAndDriversAndPath[2];
+			Float requiredCapacity = (Float)carAndDriversAndPath[3];
+			// i don't know if this will ever be triggered because if way hadn't been calculated
+			// then algorithm would have been in an infinite loop
+			if(route == null || route.isEmpty()) {
+				bindingResult.reject("globalRoute", "Could not calculate route.");
+			} else {
+				if(selectedCar == null) {
+					bindingResult.reject("globalCar", "Could not select car. Please make sure there is"
+							+ "working car in " + route.split(" ")[0] + " which has capacity of "
+							+ requiredCapacity + " tons.");
+				}
+				if(drivers == null) {
+					bindingResult.reject("globalDrivers", "Could not select drivers. Please make sure there are"
+							+ "available drivers on route " + route.replace(";", "->") + ".");
+				}
+			}	
+			if(!bindingResult.hasErrors()) {
+				session = HibernateSessionFactory.getSessionFactory().openSession();
+				Order order = new Order();
+				order.setCar(selectedCar);
+				order.setPoints(points);
+				order.setRoute(route.replace(";", "<br>"));
+				order.setIsCompleted(false);
 				Transaction transaction = session.beginTransaction();
 				orderDAO.setSession(session);
-				routePointDAO.setSession(session);
 				orderDAO.add(order);
 				transaction.commit();
 				transaction = session.beginTransaction();
+				for(User driver : drivers) {
+					driver.getUserInfo().setOrder(order);
+					userDAO.update(driver);
+				}
+				routePointDAO.setSession(session);
 				for(RoutePoint rp : points) {
 					rp.setOrder(order);
 					routePointDAO.add(rp);
@@ -105,8 +128,8 @@ public class CargoAndOrdersService {
 				transaction.commit();
 				orderDAO.setSession(null);
 				routePointDAO.setSession(null);
-			}*/
-			session.close();
+				session.close();
+			}
 		}
 	}
 	
@@ -253,14 +276,15 @@ public class CargoAndOrdersService {
 		String firstCity = shortestPath.split(" ")[0];
 		//Car and drivers selection
 		Car selectedCar = null;
-		List<User> drivers = null;
+		List<User> selectedDrivers = null;
 		for(City city : rpCities) {
 			if(city.getCurrentCity().equals(firstCity)) {
 				session.persist(city);
 				for(Car car : city.getCars()) {
-					drivers = tryToAssignDriversForOrder(shortestPath, shortestPathMatrix, rpCities, car, session);
-					if(car.getCapacityTons() >= requiredCapacity && drivers != null) {
+					List<User> drivers = tryToAssignDriversForOrder(shortestPath, shortestPathMatrix, rpCities, car, session);
+					if(car.getIsWorking() && car.getCapacityTons() >= requiredCapacity && drivers != null) {
 						selectedCar = car;
+						selectedDrivers = drivers;
 						break;
 					}
 				}
@@ -270,10 +294,10 @@ public class CargoAndOrdersService {
 		}
 		shortestPath = shortestPath.replace(" ", ";");
 		shortestPath = shortestPath.substring(0, shortestPath.length() - 1);
-		String driversMessage = drivers != null ? drivers.toString() : "null";
+		String driversMessage = selectedDrivers != null ? selectedDrivers.toString() : "null";
 		String carMessage = selectedCar != null ? selectedCar.toString() : "null";
 		log.debug("Selected drivers, car and route - " + driversMessage + "; " + carMessage + "; " + shortestPath);
-		return new Object[] {selectedCar, drivers, shortestPath};
+		return new Object[] {selectedCar, selectedDrivers, shortestPath, requiredCapacity};
 	}
 	
 	public int getShortestPath(int[][] matr, List<Integer> result, int from, int to) {

@@ -1,10 +1,10 @@
 # Logiweb
 Java School Public Repository
 
-# VERSION 0.8.1
+# VERSION 0.8.2
 
-Improved validation; implemented validation for orders creation. Orders saving still commented due to tests of algorithms.
+Orders are now processed correctly. Now options show only unassigned cargo. Validation additionally checks for attempt of adding already assigned cargo to new order via page code change.
 
 # TODO
 
-Uncomment orders, save routes and driver list, make sure everything works, start working on driver page
+Start working on driver page
