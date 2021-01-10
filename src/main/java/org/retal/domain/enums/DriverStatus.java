@@ -5,8 +5,14 @@ public enum DriverStatus {
 	ON_SHIFT {
 		@Override
 		public String toString() {
-			return "ON SHIFT";
+			return super.toString().replace("_", " ");
 		}
 	}, 
-	DRIVING;
+	DRIVING,
+	LOADING_AND_UNLOADING_CARGO {
+		@Override
+		public String toString() {
+			return super.toString().replace("_", " ");
+		}
+	};
 }

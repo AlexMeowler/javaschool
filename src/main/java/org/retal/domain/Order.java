@@ -35,7 +35,7 @@ public class Order {
 	@JoinColumn(name="car_id", referencedColumnName="registration_id")
 	private Car car;
 	
-	@OneToMany(mappedBy="order")
+	@OneToMany(mappedBy="order", fetch = FetchType.EAGER)
 	private Set<RoutePoint> points;
 	
 	@Column(name="route")

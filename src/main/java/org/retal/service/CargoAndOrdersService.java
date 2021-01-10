@@ -109,7 +109,7 @@ public class CargoAndOrdersService {
 				Order order = new Order();
 				order.setCar(selectedCar);
 				order.setPoints(points);
-				order.setRoute(route.replace(";", "<br>"));
+				order.setRoute(route);
 				order.setIsCompleted(false);
 				Transaction transaction = session.beginTransaction();
 				orderDAO.setSession(session);
@@ -282,7 +282,7 @@ public class CargoAndOrdersService {
 				session.persist(city);
 				for(Car car : city.getCars()) {
 					List<User> drivers = tryToAssignDriversForOrder(shortestPath, shortestPathMatrix, rpCities, car, session);
-					if(car.getIsWorking() && car.getCapacityTons() >= requiredCapacity && drivers != null) {
+					if(car.getOrder() == null &&  car.getIsWorking() && car.getCapacityTons() >= requiredCapacity && drivers != null) {
 						selectedCar = car;
 						selectedDrivers = drivers;
 						break;
@@ -663,8 +663,9 @@ public class CargoAndOrdersService {
 	private boolean isDriverCapable(User user) {
 		boolean isDriver = user.getRole().equalsIgnoreCase(UserRole.DRIVER.toString());
 		boolean isOnShift = user.getUserInfo().getStatus().equalsIgnoreCase(DriverStatus.ON_SHIFT.toString());
+		boolean hasAssignedOrder = user.getUserInfo().getOrder() != null;
 		//TODO month checking
-		return isDriver && isOnShift;
+		return isDriver && isOnShift && !hasAssignedOrder;
 	}
 	
 	private static final int ANNEALING_START_TEMPERAURE = 1000;

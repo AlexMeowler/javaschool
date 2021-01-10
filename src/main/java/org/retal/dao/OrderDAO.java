@@ -35,7 +35,33 @@ public class OrderDAO implements DAO<Order> {
 	@Override
 	public Order read(Object... keys) {
 		// TODO Auto-generated method stub
-		return null;
+		Integer id = (Integer)keys[0];
+		Session session = HibernateSessionFactory.getSessionFactory().openSession();
+		List<Order> orders = session.createNativeQuery("SELECT * FROM ORDERS WHERE id='" + id + "'", Order.class).getResultList();
+		List<User> drivers = session.createNativeQuery("SELECT * FROM USERS WHERE role = '" 
+				+ UserRole.DRIVER.toString().toLowerCase() + "'", User.class).getResultList();
+		session.close();
+		if(orders.size() == 1) {
+			Order o = orders.get(0);
+			Set<Cargo> cargo = new HashSet<>();
+			for(RoutePoint rp : o.getPoints()) {
+				cargo.add(rp.getCargo());
+			}
+			o.setCargo(cargo);
+			Set<User> assignedDrivers = new HashSet<>();
+			for(User driver : drivers) {
+				Order order = driver.getUserInfo().getOrder();
+				//TODO equals
+				if(order != null && order.getId() == o.getId()) {
+					assignedDrivers.add(driver);
+				}
+			}
+			o.setDrivers(assignedDrivers);
+			return o;
+		} else {
+			return null;
+		}
+		
 	}
 	
 	@Override
@@ -54,6 +80,7 @@ public class OrderDAO implements DAO<Order> {
 			Set<User> assignedDrivers = new HashSet<>();
 			for(User driver : drivers) {
 				Order order = driver.getUserInfo().getOrder();
+				//TODO equals
 				if(order != null && order.getId() == o.getId()) {
 					assignedDrivers.add(driver);
 				}

@@ -1,10 +1,10 @@
 # Logiweb
 Java School Public Repository
 
-# VERSION 0.8.2
+# VERSION 0.8.3
 
-Orders are now processed correctly. Now options show only unassigned cargo. Validation additionally checks for attempt of adding already assigned cargo to new order via page code change.
+Started working on driver page. Now there is shown assigned car, order, list of co-drivers etc. Driver can change their status.
 
 # TODO
 
-Start working on driver page
+Add ways of changing location and picking/dropping cargo.

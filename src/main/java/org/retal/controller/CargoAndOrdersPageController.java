@@ -54,7 +54,6 @@ public class CargoAndOrdersPageController {
 	public List[] getAllCities() {
 		List<Cargo> cargo = cargoAndOrdersService.getAllCargo();
 		for(int i = 0; i < cargo.size(); i++) {
-			log.debug(cargo.get(i).getName() + "; " + cargo.get(i).getPoints().size());
 			if(cargo.get(i).getPoints().size() != 0) {
 				cargo.remove(i);
 				i--;
