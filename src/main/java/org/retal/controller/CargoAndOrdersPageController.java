@@ -71,7 +71,7 @@ public class CargoAndOrdersPageController {
 		if (bindingResult.hasErrors()) {
 			redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + "routePoints", bindingResult);
 			redir.addFlashAttribute("counter_value", list.getList().size());
-			redir.addFlashAttribute("routePoints", list.getList());//FIXME for each
+			redir.addFlashAttribute("routePoints", list.getList());
 		}
 		return redirectView;
 	}

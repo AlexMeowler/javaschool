@@ -45,7 +45,7 @@
 			<th scope="col">Status</th>
 			<th scope="col">Assigned car</th>
 			<th scope="col">Route</th>
-			<th scope="col">Assigned drivers</th>
+			<th scope="col">Currently assigned drivers</th>
 			<th scope="col">Assigned cargo</th>
 		</tr>
 		<c:forEach var="order" items="${ordersList}">
@@ -54,9 +54,17 @@
 			<c:set var = "status" value = "Not completed"/>
 			<c:if test = "${order.isCompleted}"><c:set var = "status" value = "Completed"/></c:if>
 			<td>${status}</td>
-			<td>${order.car.registrationId}</td>
+			<td>
+				<c:if test="${not empty order.car}">${order.car.registrationId}</c:if>
+				<c:if test="${empty order.car}">-</c:if>
+			</td>
 			<td>${order.route}</td>
-			<td><c:forEach var="driver" items="${order.drivers}">${driver.userInfo.name} ${driver.userInfo.surname} (${driver.id})<br></c:forEach></td>
+			<td>
+				<c:if test="${not empty order.driverInfo}">
+					<c:forEach var="driverInfo" items="${order.driverInfo}">${driverInfo.name} ${driverInfo.surname} (${driverInfo.user.id})<br></c:forEach>
+				</c:if>
+				<c:if test="${empty order.driverInfo}">-</c:if>
+			</td>
 			<td><c:forEach var="cargo" items="${order.cargo}">${cargo.id}: ${cargo.name}<br></c:forEach></td>
 		</tr>
 		</c:forEach>

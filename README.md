@@ -1,10 +1,10 @@
 # Logiweb
 Java School Public Repository
 
-# VERSION 0.8.4
+# VERSION 0.8.5
 
-Can now move between cities.
+Now drivers can 'move' and 'deliver' orders. Further tests required.
 
 # TODO
 
-Add buttons to picking/dropping cargo. Validation for choices.
+Last business logic detail remaining - ability to reassign car to orders.

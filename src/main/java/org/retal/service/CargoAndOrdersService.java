@@ -14,7 +14,6 @@ import java.util.stream.Stream;
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import org.retal.dao.CarDAO;
 import org.retal.dao.CargoDAO;
 import org.retal.dao.CityDAO;
 import org.retal.dao.CityDistanceDAO;
@@ -27,7 +26,10 @@ import org.retal.domain.CityDistance;
 import org.retal.domain.Car;
 import org.retal.domain.Order;
 import org.retal.domain.RoutePoint;
+import org.retal.domain.SessionInfo;
 import org.retal.domain.User;
+import org.retal.domain.UserInfo;
+import org.retal.domain.enums.CargoStatus;
 import org.retal.domain.enums.DriverStatus;
 import org.retal.domain.enums.UserRole;
 import org.retal.dto.RoutePointDTO;
@@ -60,6 +62,72 @@ public class CargoAndOrdersService {
 		if(!bindingResult.hasErrors()) {
 			cargoDAO.add(cargo);
 		}
+	}
+	
+	public boolean updateCargoAndCheckOrderCompletion(Integer id, BindingResult bindingResult) {
+		Cargo cargo = cargoDAO.read(id);
+		User user = sessionInfo.getCurrentUser();
+		Order order = orderDAO.read(user.getUserInfo().getOrder().getId());
+		if(cargo == null) {
+			bindingResult.reject("globalCargo", "Cargo not found");
+			log.warn("Cargo not found");
+		} else {
+			if(!order.getCargo().contains(cargo)) {
+				bindingResult.reject("globalCargo", "Attempt to change unassigned to your current"
+											+ " order cargo. Please don't try to cahnge page code");
+				log.warn("Attempt to access unassigned cargo");
+			}
+		}
+		if(!bindingResult.hasErrors()) {
+			CargoStatus status = CargoStatus.valueOf(cargo.getStatus().toUpperCase());
+			switch(status) {
+			case PREPARED:
+				status = CargoStatus.LOADED;
+				break;
+			case LOADED:
+				status = CargoStatus.UNLOADED;
+				break;
+			case UNLOADED:
+			default:
+				break;
+			}
+			String newStatus = status.toString().toLowerCase();
+			log.info("Cargo id=" + cargo.getId() + ": changed status from " + cargo.getStatus() + " to " + newStatus);
+			cargo.setStatus(newStatus);
+			cargoDAO.update(cargo);
+			return checkOrderForCompletion(order);
+		}
+		return false;
+	}
+	
+	private boolean checkOrderForCompletion(Order order) {
+		boolean isCompleted = true;
+		order = orderDAO.read(order.getId());
+		for(Cargo c : order.getCargo()) {
+			log.debug(c.getStatus());
+			isCompleted &= c.getStatus().equalsIgnoreCase(CargoStatus.UNLOADED.toString());
+		}
+		if(isCompleted) {
+			for(UserInfo driverInfo : order.getDriverInfo()) {
+				log.debug(driverInfo.getUser().toString());
+				driverInfo.setOrder(null);
+				driverInfo.setCar(null);
+				driverInfo.setHoursDrived(null);
+				userDAO.update(driverInfo.getUser());
+			}
+			order.setIsCompleted(isCompleted);
+			order.setCar(null);
+			Session session = HibernateSessionFactory.getSessionFactory().openSession();
+			Transaction transaction = session.beginTransaction();
+			orderDAO.setSession(session);
+			orderDAO.update(order);
+			orderDAO.setSession(null);
+			session.flush();
+			transaction.commit();
+			session.close();
+			sessionInfo.refreshUser();
+		}
+		return isCompleted;
 	}
 	
 	public List<RoutePoint> mapRoutePointDTOsToEntities(List<RoutePointDTO> list) {
@@ -97,7 +165,7 @@ public class CargoAndOrdersService {
 			} else {
 				if(selectedCar == null) {
 					bindingResult.reject("globalCar", "Could not select car. Please make sure there is"
-							+ "working car in " + route.split(" ")[0] + " which has capacity of "
+							+ " working car in " + route.split(";")[0] + " which has capacity of "
 							+ requiredCapacity + " tons.");
 				}
 				if(drivers == null) {
@@ -698,9 +766,6 @@ public class CargoAndOrdersService {
 	private CityDistanceDAO cityDistanceDAO;
 	
 	@Autowired
-	private CarDAO carDAO;
-	
-	@Autowired
 	private OrderDAO orderDAO;
 	
 	@Autowired
@@ -716,6 +781,9 @@ public class CargoAndOrdersService {
 	@Autowired
 	@Qualifier("routePointsValidator")
 	private Validator routePointsValidator;
+	
+	@Autowired
+	private SessionInfo sessionInfo;
 	
 	private static final Logger log = Logger.getLogger(CargoAndOrdersService.class);
 }

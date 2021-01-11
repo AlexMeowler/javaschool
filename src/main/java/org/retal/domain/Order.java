@@ -47,8 +47,8 @@ public class Order {
 	@Transient
 	private Set<Cargo> cargo;
 	
-	@Transient
-	private Set<User> drivers;
+	//@Transient
+	//private Set<User> drivers;
 	
 	public int getId() {
 		return id;
@@ -90,6 +90,14 @@ public class Order {
 		this.route = route;
 	}
 	
+	public Set<UserInfo> getDriverInfo() {
+		return driverInfo;
+	}
+	
+	public void setDriverInfo(Set<UserInfo> driverInfo) {
+		this.driverInfo = driverInfo;
+	}
+	
 	public Set<Cargo> getCargo() {
 		return cargo;
 	}
@@ -98,13 +106,13 @@ public class Order {
 		this.cargo = cargo;
 	}
 	
-	public Set<User> getDrivers() {
+	/*public Set<User> getDrivers() {
 		return drivers;
 	}
 	
 	public void setDrivers(Set<User> drivers) {
 		this.drivers = drivers;
-	}
+	}*/
 	
 	//TODO toString
 }

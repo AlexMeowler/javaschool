@@ -38,8 +38,6 @@ public class OrderDAO implements DAO<Order> {
 		Integer id = (Integer)keys[0];
 		Session session = HibernateSessionFactory.getSessionFactory().openSession();
 		List<Order> orders = session.createNativeQuery("SELECT * FROM ORDERS WHERE id='" + id + "'", Order.class).getResultList();
-		List<User> drivers = session.createNativeQuery("SELECT * FROM USERS WHERE role = '" 
-				+ UserRole.DRIVER.toString().toLowerCase() + "'", User.class).getResultList();
 		session.close();
 		if(orders.size() == 1) {
 			Order o = orders.get(0);
@@ -48,15 +46,6 @@ public class OrderDAO implements DAO<Order> {
 				cargo.add(rp.getCargo());
 			}
 			o.setCargo(cargo);
-			Set<User> assignedDrivers = new HashSet<>();
-			for(User driver : drivers) {
-				Order order = driver.getUserInfo().getOrder();
-				//TODO equals
-				if(order != null && order.getId() == o.getId()) {
-					assignedDrivers.add(driver);
-				}
-			}
-			o.setDrivers(assignedDrivers);
 			return o;
 		} else {
 			return null;
@@ -68,8 +57,6 @@ public class OrderDAO implements DAO<Order> {
 	public List<Order> readAll() {
 		Session session = HibernateSessionFactory.getSessionFactory().openSession();
 		List<Order> orders = session.createNativeQuery("SELECT * FROM ORDERS", Order.class).getResultList();
-		List<User> drivers = session.createNativeQuery("SELECT * FROM USERS WHERE role = '" 
-							+ UserRole.DRIVER.toString().toLowerCase() + "'", User.class).getResultList();
 		log.info(orders.size() + " orders retrieved");
 		for(Order o : orders) {
 			Set<Cargo> cargo = new HashSet<>();
@@ -77,15 +64,6 @@ public class OrderDAO implements DAO<Order> {
 				cargo.add(rp.getCargo());
 			}
 			o.setCargo(cargo);
-			Set<User> assignedDrivers = new HashSet<>();
-			for(User driver : drivers) {
-				Order order = driver.getUserInfo().getOrder();
-				//TODO equals
-				if(order != null && order.getId() == o.getId()) {
-					assignedDrivers.add(driver);
-				}
-			}
-			o.setDrivers(assignedDrivers);
 			//log.info("Added to set " + cargo.size() + " cargo units for order " + o.getId());
 		}
 		session.close();
@@ -100,7 +78,12 @@ public class OrderDAO implements DAO<Order> {
 
 	@Override
 	public void update(Order t) {
-		// TODO Auto-generated method stub
+		if(session == null) {
+			log.error("Session is null");
+			return ;
+		}
+		log.info("Updating order"); //TODO with ToString
+		session.update(t);
 		
 	}
 	

@@ -29,7 +29,8 @@
 		</td>
 		</tr>
 	</table>
-	Your ID is ${user.id}.
+	<span class="error">${error_argument}${error_car}</span><br>
+	Your ID is ${user.id}.<br>
 	<c:set var = "orderText" value = "No orders assigned"/>
 	<c:if test = "${not empty order}"><c:set var = "orderText" value = "Currently assigned order:"/></c:if>
 	${orderText}
@@ -48,27 +49,73 @@
 			<c:set var = "status" value = "Not completed"/>
 			<c:if test = "${order.isCompleted}"><c:set var = "status" value = "Completed"/></c:if>
 			<td>${status}</td>
-			<td>${order.car.registrationId}</td>
+			<td>
+				<c:if test="${not empty order.car}">${order.car.registrationId}</c:if>
+				<c:if test="${empty order.car}">-</c:if>
+			</td>
 			<td><c:forEach var="route" items="${routeList}">${route}<br></c:forEach></td>
 			<td><c:forEach var="cargo" items="${order.cargo}">${cargo.id}: ${cargo.name} (${cargo.description})<br></c:forEach></td>
 		</tr>
 	</table>
-	<p>Your co-drivers for this order:</p>
-	<c:forEach var="driver" items="${order.drivers}">
-		<c:if test = "${driver.id != user.id}">${driver.userInfo.name} ${driver.userInfo.surname} (${driver.id})<br></c:if>
-	</c:forEach>
+	<p>Your co-drivers for this order:<br>
+	<c:set var = "otherDrivers" value = "false"/>
+	<c:if test="${not empty order.driverInfo}">
+		<c:forEach var="driverInfo" items="${order.driverInfo}">
+			<c:if test = "${driverInfo.user.id ne user.id}">
+				<c:set var = "otherDrivers" value = "true"/>
+				${driverInfo.name} ${driverInfo.surname} (${driverInfo.user.id})<br>
+			</c:if>
+		</c:forEach>
+	</c:if>
+	<c:if test="${not otherDrivers}">
+		No other drivers were assigned.
+	</c:if>
+	</p>
 	<c:if test="${empty user.userInfo.hoursDrived or user.userInfo.hoursDrived + nextHopLength <= order.car.shiftLength}">
-		<c:if test="${nextHopLength != -1}">
+		<c:if test="${not empty nextHop}">
 			<p>Next city on your route is ${nextHop}, it should take about ${nextHopLength} hours to reach it. 
 			<a href="<c:url value="/changeLocation/${nextHop}"/>">Change location</a></p>
 		</c:if>
-		<c:if test="${nextHopLength == -1}">
+		<c:if test="${empty nextHop}">
 			<p>No next route point available.</p>
 		</c:if>
 	</c:if>
 	<c:if test="${not empty user.userInfo.hoursDrived and user.userInfo.hoursDrived + nextHopLength > order.car.shiftLength}">
-		<p>Car shift length limit exceeded, you can't drive any further</p>
+		<p>Car shift length limit exceeded, you can't drive any further. You can end shift now, but remember, after that you will be
+		<b>unassigned from the order</b>.<br>Please, <b>do not end shift before you unload cargo</b> which destination point is your current location.
+		</p>
 	</c:if>
+	<span class="error">${error_city}</span><br>
+	<p>Cargo management menu:<br>Please, remember: changes to cargo status <b>can't be undone</b></p>
+	<table>
+		<caption hidden="true">Cargo menu</caption>
+		<tr>
+			<th scope="col">ID &amp; Name</th>
+			<th scope="col">Description</th>
+			<th scope="col">Status</th>
+			<th scope="col">Action</th>
+		</tr>
+		<c:forEach var="cargo" items="${order.cargo}">
+			<tr>
+				<td>${cargo.id}: ${cargo.name}</td>
+				<td>${cargo.description}</td>
+				<td>${cargo.status}</td>
+				<td>
+					<c:set var = "hrefText" value = "${null}"/>
+					<c:if test="${cargo.status eq 'prepared'}">
+						<c:set var = "hrefText" value = "Load"/>	
+					</c:if>
+					<c:if test="${cargo.status eq 'loaded'}">
+						<c:set var = "hrefText" value = "Unload"/>	
+					</c:if>
+					<c:if test="${not empty hrefText}">
+						<a href="<c:url value="/updateCargo/${cargo.id}"/>">${hrefText}</a>
+					</c:if>
+				</td>
+			</tr>
+		</c:forEach>
+	</table>
+	<span class = "error">${error_globalCargo}</span><br>
 	</c:if>
 	</div>
 </body>

@@ -51,8 +51,12 @@ public class CargoDAO implements DAO<Cargo> {
 
 	@Override
 	public void update(Cargo t) {
-		// TODO Auto-generated method stub
-		
+		Session session = HibernateSessionFactory.getSessionFactory().openSession();
+		Transaction transaction = session.beginTransaction();
+		session.update(t);
+		session.flush();
+		transaction.commit();
+		session.close();
 	}
 	
 	private static final Logger log = Logger.getLogger(CargoDAO.class);
