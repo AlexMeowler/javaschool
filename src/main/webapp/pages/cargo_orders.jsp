@@ -47,6 +47,7 @@
 			<th scope="col">Route</th>
 			<th scope="col">Currently assigned drivers</th>
 			<th scope="col">Assigned cargo</th>
+			<th scope="col">Action</th>
 		</tr>
 		<c:forEach var="order" items="${ordersList}">
 		<tr>
@@ -66,6 +67,17 @@
 				<c:if test="${empty order.driverInfo}">-</c:if>
 			</td>
 			<td><c:forEach var="cargo" items="${order.cargo}">${cargo.id}: ${cargo.name}<br></c:forEach></td>
+			<td>
+				<c:if test="${!order.isCompleted}">
+					<a id="order_a${order.id}" href="javascript: getCarList(${order.id});">Reassign car</a>
+					<select id="order_select${order.id}" style="display: none;"></select><br>
+					<a id="order_submit${order.id}" href="javascript: submitCar(${order.id});" style="display: none;">Change car</a><br>
+					<span class="error" id="order_error${order.id}"></span>
+				</c:if>
+				<c:if test="${order.isCompleted}">
+					-
+				</c:if>
+			</td>
 		</tr>
 		</c:forEach>
 	</table>

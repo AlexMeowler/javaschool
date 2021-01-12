@@ -1,7 +1,5 @@
 package org.retal.service;
 
-import java.util.Arrays;
-
 import org.apache.log4j.Logger;
 import org.retal.dao.CarDAO;
 import org.retal.dao.CityDAO;

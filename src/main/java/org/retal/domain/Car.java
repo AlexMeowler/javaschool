@@ -11,6 +11,8 @@ import javax.persistence.Table;
 
 import org.retal.dto.CarDTO;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "cars")
 public class Car {
@@ -43,12 +45,15 @@ public class Car {
 
 	@ManyToOne
 	@JoinColumn(name="location", nullable = false)
+	@JsonIgnore
 	private City location;
 	
 	@OneToOne(mappedBy="car")
+	@JsonIgnore
 	private Order order;
 	
 	@OneToOne(mappedBy="car", fetch = FetchType.EAGER)
+	@JsonIgnore
 	private UserInfo driver;
 
 	public String getRegistrationId() {

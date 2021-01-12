@@ -6,9 +6,8 @@ function showForm(target) {
 		elem = "none";	
 	}
 	document.getElementById(target).style["display"] = elem;
-		}
+}
 
-//var counter = 0; 
 
 function addRow() {
 	var request = new XMLHttpRequest();
@@ -76,4 +75,47 @@ function deleteRow(x) {
 		document.getElementById("status" + i).setAttribute("id", "status" + (i - 1));
 	}
 	counter--;
+}
+
+function getCarList(x) {
+	var request = new XMLHttpRequest();
+	request.open('GET', "/logiweb/getCarsForOrder/" + x);
+	request.responseType = 'json';
+	request.onload = function() {
+		if(request.response != null) {
+			var text = JSON.stringify(request.response);
+			var cars = JSON.parse(text);
+			var options_cars = '';
+			for(var i = 0; i < cars.length; i++) {
+				options_cars += "<option value = \"" + cars[i].registrationId + "\">" + cars[i].registrationId + " (capacity " + cars[i].capacityTons + " tons, shift length " + cars[i].shiftLength + ")" + "</option>";
+			}
+			if(cars.length != 0) {
+				document.getElementById('order_select' + x).innerHTML = options_cars;
+				document.getElementById('order_select' + x).style.display = 'inline';
+				document.getElementById('order_a' + x).style.display = 'none';
+				document.getElementById('order_submit' + x).style.display = 'inline';
+			}
+			return true;
+		} else {
+			return false;
+		}
+	};
+	request.send();
+}
+
+function submitCar(x) {
+	var request = new XMLHttpRequest();
+	var a = document.getElementById("order_select" + x).value;
+	request.open('GET', "/logiweb/changeCarForOrder/" + x + "_" + a);
+	request.responseType = 'text';
+	request.onload = function() {
+		if(request.response == '') {
+			location.reload();
+			return true;
+		} else {
+			document.getElementById('order_error' + x).innerHTML = request.response;
+			return false;
+		}
+	};
+	request.send();
 }

@@ -51,6 +51,21 @@ public class CargoAndOrdersService {
 		return orderDAO.readAll();
 	}
 	
+	public Order getOrder(Integer primaryKey) {
+		return orderDAO.read(primaryKey);
+	}
+	
+	public void updateOrder(Order order) {
+		Session session = HibernateSessionFactory.getSessionFactory().openSession();
+		Transaction transaction = session.beginTransaction();
+		orderDAO.setSession(session);
+		orderDAO.update(order);
+		orderDAO.setSession(null);
+		session.flush();
+		transaction.commit();
+		session.close();
+	}
+	
 	public void addNewCargo(Cargo cargo, BindingResult bindingResult, String weight) {
 		try {
 			Integer weightInt = Integer.parseInt(weight);
@@ -117,6 +132,7 @@ public class CargoAndOrdersService {
 			}
 			order.setIsCompleted(isCompleted);
 			order.setCar(null);
+			order.setRequiredShiftLength(null);
 			Session session = HibernateSessionFactory.getSessionFactory().openSession();
 			Transaction transaction = session.beginTransaction();
 			orderDAO.setSession(session);
@@ -170,7 +186,7 @@ public class CargoAndOrdersService {
 				}
 				if(drivers == null) {
 					bindingResult.reject("globalDrivers", "Could not select drivers. Please make sure there are"
-							+ "available drivers on route " + route.replace(";", "->") + ".");
+							+ " available drivers on route " + route.replace(";", "->") + ".");
 				}
 			}	
 			if(!bindingResult.hasErrors()) {
@@ -180,6 +196,7 @@ public class CargoAndOrdersService {
 				order.setPoints(points);
 				order.setRoute(route);
 				order.setIsCompleted(false);
+				order.setRequiredCapacity(requiredCapacity);
 				Transaction transaction = session.beginTransaction();
 				orderDAO.setSession(session);
 				orderDAO.add(order);

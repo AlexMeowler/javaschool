@@ -4,17 +4,14 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.retal.domain.Car;
 import org.retal.domain.Cargo;
-import org.retal.domain.City;
-import org.retal.domain.RoutePoint;
+import org.retal.domain.Order;
 import org.retal.domain.SessionInfo;
 import org.retal.domain.User;
 import org.retal.domain.UserInfo;
-import org.retal.dto.CityDTO;
-import org.retal.dto.RoutePointDTO;
 import org.retal.dto.RoutePointListWrapper;
-import org.retal.dto.UserDTO;
-import org.retal.dto.UserInfoDTO;
+import org.retal.service.CarService;
 import org.retal.service.CargoAndOrdersService;
 import org.retal.service.CityService;
 import org.retal.service.UserValidator;
@@ -23,7 +20,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
@@ -62,6 +61,42 @@ public class CargoAndOrdersPageController {
 		return new List[] {cityService.getAllCities(), cargo};
 	}
 	
+	@GetMapping(value="/getCarsForOrder/{id}")
+	@ResponseBody
+	public List<Car> getAvailableCarsForOrder(@PathVariable Integer id) {
+		return carService.getAllAvailableCarsForOrderId(id);
+	}
+	
+	@GetMapping(value="/changeCarForOrder/{data}")
+	@ResponseBody
+	public String changeCarForOrder(@PathVariable String data) {
+		Car car = null;
+		Order order  = null;
+		String errorMessage = "";
+		try {
+			log.debug(data);
+			String[] input = data.split("_");
+			Integer id = Integer.parseInt(input[0]);
+			log.debug(id);
+			order = cargoAndOrdersService.getOrder(id);
+			car = carService.getCar(input[1]);
+		} catch(Exception e) {
+			errorMessage = "Invalid argument, please don't try to change page code.";
+		}
+		log.debug(car == null);
+		log.debug(order == null);
+		if(car == null || order == null || order.getIsCompleted()) {
+			errorMessage = "Invalid argument, please don't try to change page code.";
+		}
+		if(errorMessage.isEmpty()) {
+			order.setCar(car);
+			cargoAndOrdersService.updateOrder(order);
+			return null;
+		} else {
+			return errorMessage;
+		}
+	}
+	
 	@PostMapping(value = "/addNewOrder")
 	public RedirectView addNewOrder(RoutePointListWrapper list, BindingResult bindingResult, 
 								RedirectAttributes redir) {
@@ -84,6 +119,9 @@ public class CargoAndOrdersPageController {
 	
 	@Autowired
 	private CityService cityService;
+	
+	@Autowired
+	private CarService carService;
 	
 	private static final Logger log = Logger.getLogger(CargoAndOrdersPageController.class);
 }

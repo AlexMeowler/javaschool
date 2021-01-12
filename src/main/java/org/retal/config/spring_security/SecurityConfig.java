@@ -30,7 +30,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.antMatchers("/spring_auth").anonymous()
 			.antMatchers("static/my_js_library.js").authenticated()
 			.antMatchers("/adminPage", "/addNewUser", "/deleteUser/*").hasAuthority(UserRole.ADMIN.toString())
-			.antMatchers("/managerPage", "/deleteDriver/*", "/editUser", "/addNewCar", "/deleteCar/*", "/editCar", "/cargoAndOrders").hasAnyAuthority(UserRole.MANAGER.toString(), UserRole.ADMIN.toString())
+			.antMatchers("/managerPage", "/deleteDriver/*", "/editUser", "/addNewCar", "/deleteCar/*", "/editCar", "/cargoAndOrders", "/getCityAndCargoInfo", "/getCarsForOrder/*", "/changeCarForOrder/*").hasAnyAuthority(UserRole.MANAGER.toString(), UserRole.ADMIN.toString())
 			.antMatchers("/driverPage", "/changeStatus/*", "/changeLocation/*", "/updateCargo/*").hasAnyAuthority(UserRole.DRIVER.toString(), UserRole.ADMIN.toString())
 			.anyRequest().authenticated()
 			.and().exceptionHandling().authenticationEntryPoint(authEntryPointAndAccessDeniedHandler).accessDeniedHandler(authEntryPointAndAccessDeniedHandler);

@@ -2,11 +2,14 @@ package org.retal.service;
 
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 import org.apache.log4j.Logger;
 import org.retal.dao.CarDAO;
+import org.retal.dao.OrderDAO;
 import org.retal.domain.Car;
 import org.retal.domain.City;
+import org.retal.domain.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -41,8 +44,7 @@ public class CarService {
 	
 	public void updateCar(Car car, BindingResult bindingResult, String capacity, 
 							String shiftlength) {
-		//logging
-		log.info("Attempt to update car");
+		log.info("Attempt to update car ID = " + car.getRegistrationId());
 		doInitialDataValidation(car, bindingResult, capacity, shiftlength);
 		if(!bindingResult.hasErrors()) {
 			carDAO.update(car);
@@ -80,9 +82,25 @@ public class CarService {
 			carDAO.add(car);
 		}
 	}
+	
+	public List<Car> getAllAvailableCarsForOrderId(Integer id) {
+		Order order = orderDAO.read(id);
+		List<Car> availableCars = carDAO.readAll().stream()
+				.filter(c -> c.getIsWorking())
+				.filter(c -> c.getOrder() == null)
+				.filter(c -> c.getCapacityTons() >= order.getRequiredCapacity())
+				.filter(c -> c.getLocation().equals(order.getCar().getLocation()))
+				.filter(c -> c.getShiftLength() >= order.getRequiredShiftLength())
+				.collect(Collectors.toList());
+		log.debug(availableCars.size() + " cars are fit for order ID=" + order.getId());
+		return !order.getIsCompleted() ? availableCars : null;
+	}
 
 	@Autowired
 	private CarDAO carDAO;
+	
+	@Autowired
+	private OrderDAO orderDAO;
 	
 	@Autowired
 	private CityService cityService;

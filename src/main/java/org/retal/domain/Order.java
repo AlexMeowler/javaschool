@@ -47,8 +47,11 @@ public class Order {
 	@Transient
 	private Set<Cargo> cargo;
 	
-	//@Transient
-	//private Set<User> drivers;
+	@Column(name="required_capacity")
+	private Float requiredCapacity;
+	
+	@Column(name="required_shift_length")
+	private Integer requiredShiftLength;
 	
 	public int getId() {
 		return id;
@@ -106,13 +109,21 @@ public class Order {
 		this.cargo = cargo;
 	}
 	
-	/*public Set<User> getDrivers() {
-		return drivers;
+	public Float getRequiredCapacity() {
+		return requiredCapacity;
 	}
 	
-	public void setDrivers(Set<User> drivers) {
-		this.drivers = drivers;
-	}*/
+	public void setRequiredCapacity(Float requiredCapacity) {
+		this.requiredCapacity = requiredCapacity;
+	}
+	
+	public Integer getRequiredShiftLength() {
+		return requiredShiftLength;
+	}
+	
+	public void setRequiredShiftLength(Integer requiredShiftLength) {
+		this.requiredShiftLength = requiredShiftLength;
+	}
 	
 	//TODO toString
 }
