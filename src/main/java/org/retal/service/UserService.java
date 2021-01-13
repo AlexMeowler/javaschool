@@ -120,7 +120,7 @@ public class UserService {
 				userInfo.setName(name);
 				userInfo.setSurname(surname);
 				userInfo.setStatus(DriverStatus.ON_SHIFT.toString().toLowerCase());
-				userInfo.setCurrentCity(cities.get(i));
+				userInfo.setCity(cities.get(i));
 				userDAO.add(user);
 				i++;
 			}

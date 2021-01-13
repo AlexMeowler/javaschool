@@ -1,6 +1,5 @@
 package org.retal.domain;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -75,6 +74,21 @@ public class RoutePoint {
 	
 	public void setCargo(Cargo cargo) {
 		this.cargo = cargo;
+	}
+	
+	@Override
+	public int hashCode() {
+		return id;
+	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if(o instanceof RoutePoint) {
+			RoutePoint rp = (RoutePoint)o;
+			return this.id == rp.id;
+		} else {
+			return false;
+		}
 	}
 	
 	//TODO toString

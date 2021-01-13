@@ -58,12 +58,12 @@ public class UserValidator implements Validator {
 		DriverStatus[] statuses = DriverStatus.values();
 		boolean statusValid = false;
 		for(DriverStatus status : statuses) {
-			statusValid |= status.toString().equalsIgnoreCase(userInfo.getStatus());
+			statusValid |= status.toString().replace(" ", "_").equalsIgnoreCase(userInfo.getStatus());
 		}
 		if(!statusValid) {
 			throwError(errors, "status", "Invalid status. Please don't try to change page code");
 		}
-		if(cityDAO.read(userInfo.getCurrentCity().getCurrentCity()) == null) {
+		if(cityDAO.read(userInfo.getCity().getCurrentCity()) == null) {
 			throwError(errors, "currentCity", "Invalid value. Please don't try to change page code");
 		}
 	}

@@ -1,7 +1,6 @@
 package org.retal.dao;
 
 import java.util.List;
-
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -30,7 +29,6 @@ public class CargoDAO implements DAO<Cargo> {
 		Session session = HibernateSessionFactory.getSessionFactory().openSession();
 		Cargo cargo = session.get(Cargo.class, id);
 		session.close();
-		// TODO logging
 		return cargo;
 	}
 	

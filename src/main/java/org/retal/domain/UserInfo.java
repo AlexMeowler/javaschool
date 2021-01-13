@@ -31,7 +31,7 @@ public class UserInfo {
 		setSurname(userInfoDTO.getSurname());
 		setHoursWorked(userInfoDTO.getHoursWorked());
 		setStatus(userInfoDTO.getStatus());
-		setCurrentCity(userInfoDTO.getCurrentCity());
+		setCity(userInfoDTO.getCity());
 	}
 	
 	@Id
@@ -62,7 +62,7 @@ public class UserInfo {
 
 	@ManyToOne
 	@JoinColumn(name="current_city", nullable = false)
-	private City currentCity;
+	private City city;
 
 	@OneToOne(mappedBy = "userInfo", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@PrimaryKeyJoinColumn
@@ -128,12 +128,12 @@ public class UserInfo {
 		this.hoursDrived = hoursDrived;
 	}
 
-	public City getCurrentCity() {
-		return currentCity;
+	public City getCity() {
+		return city;
 	}
 
-	public void setCurrentCity(City currentCity) {
-		this.currentCity = currentCity;
+	public void setCity(City city) {
+		this.city = city;
 	}
 	
 	public Car getCar() {

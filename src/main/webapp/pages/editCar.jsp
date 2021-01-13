@@ -17,32 +17,41 @@
 	<c:url value="/submitEditedCar" var="submit"/>
 	<form:form id = "form" action="${submit}" method="POST">
 		<br>
-		<label>Car ${car.registrationId}</label>
-		<input type="text" name="registrationId" value="${car.registrationId}" hidden="hidden"/>
-		<br>
-		<label>Shift length</label>
-		<input type="text" name="shift" value="${car.shiftLength}"/>
-		<span class = "error">${error_shiftLength}</span>
-		<br>
-		<label>Capacity in tons</label>
-		<input type="text" name="capacity" value="${car.capacityTons}"/>
-		<span class = "error">${error_capacityTons}</span>
-		<br>
-		<label>Status</label>
-		<select name = "isWorking">
-			<option value = "true" ${car.isWorking || empty car ? 'selected' : ''}>Normal</option>
-			<option value = "false" ${!car.isWorking && not empty car ? 'selected' : ''}>Broken</option>
-		</select>
-		<span class = "error">${error_isWorking}</span>
-		<br>
-		<label>Current location</label>
-		<select name = "currentCity">
-			<c:forEach var="city" items="${cityList}">
-				<option value = "${city.currentCity}" ${car.location.currentCity == city.currentCity ? 'selected' : ''}>${city.currentCity}</option>
-			</c:forEach>
-		</select>
-		<span class = "error">${error_location}</span>
-		<br>
+		<table>
+			<tr>
+				<td><label>Car ${car.registrationId}</label></td>
+				<td><input type="text" name="registrationId" value="${car.registrationId}" hidden="hidden"/></td>
+			</tr>
+			<tr>
+				<td><label>Shift length</label></td>
+				<td><input type="text" name="shift" value="${car.shiftLength}"/></td>
+				<td><span class = "error">${error_shiftLength}</span></td>
+			</tr>
+			<tr>
+				<td><label>Capacity in tons</label></td>
+				<td><input type="text" name="capacity" value="${car.capacityTons}"/></td>
+				<td><span class = "error">${error_capacityTons}</span></td>
+			</tr>
+			<tr>
+				<td><label>Status</label></td>
+				<td><select name = "isWorking">
+						<option value = "true" ${car.isWorking || empty car ? 'selected' : ''}>Normal</option>
+						<option value = "false" ${!car.isWorking && not empty car ? 'selected' : ''}>Broken</option>
+					</select>
+				</td>
+				<td><span class = "error">${error_isWorking}</span></td>
+			</tr>
+			<tr>
+				<td><label>Current location</label></td>
+				<td><select name = "currentCity">
+						<c:forEach var="city" items="${cityList}">
+							<option value = "${city.currentCity}" ${car.location.currentCity == city.currentCity ? 'selected' : ''}>${city.currentCity}</option>
+						</c:forEach>
+					</select>
+				</td>
+				<td><span class = "error">${error_location}</span></td>
+			</tr>
+		</table>
 		<input type="submit" value="Finish editing car">
 	</form:form>	
 	</div>

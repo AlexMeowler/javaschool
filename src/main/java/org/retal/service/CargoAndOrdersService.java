@@ -2,7 +2,9 @@ package org.retal.service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -42,7 +44,7 @@ import org.springframework.validation.Validator;
 
 @Service
 public class CargoAndOrdersService {
-	//TODO Order Validation
+
 	public List<Cargo> getAllCargo() {
 		return cargoDAO.readAll();
 	}
@@ -290,7 +292,6 @@ public class CargoAndOrdersService {
 			}
 		}
 		if(optimalRoutes.size() == 0) {
-			//TODO all routes are the same length, next criteria should be the availability of car and driver
 			log.debug("Did not find optimal route without cycles");
 			for(RoutePoint rp: list) {
 				if(rp.getIsLoading()) {
@@ -361,22 +362,28 @@ public class CargoAndOrdersService {
 		log.debug("Required capacity - " + requiredCapacity + " tons");
 		String firstCity = shortestPath.split(" ")[0];
 		//Car and drivers selection
-		Car selectedCar = null;
-		List<User> selectedDrivers = null;
+		List<Car> selectedCarList = new ArrayList<>();
+		List<List<User>> selectedDriversList = new ArrayList<>();
 		for(City city : rpCities) {
 			if(city.getCurrentCity().equals(firstCity)) {
 				session.persist(city);
 				for(Car car : city.getCars()) {
 					List<User> drivers = tryToAssignDriversForOrder(shortestPath, shortestPathMatrix, rpCities, car, session);
 					if(car.getOrder() == null &&  car.getIsWorking() && car.getCapacityTons() >= requiredCapacity && drivers != null) {
-						selectedCar = car;
-						selectedDrivers = drivers;
+						selectedCarList.add(car);
+						selectedDriversList.add(drivers);
 						break;
 					}
 				}
 				session.detach(city);
 				break;
 			}
+		}
+		log.debug("Matching cars: " + selectedCarList.toString());
+		Car selectedCar = selectedCarList.stream().min((a, b) -> (int)(a.getCapacityTons() - b.getCapacityTons())).orElse(null);
+		List<User> selectedDrivers = null;
+		if(selectedCar != null) {
+			selectedDrivers = selectedDriversList.get(selectedCarList.indexOf(selectedCar));
 		}
 		shortestPath = shortestPath.replace(" ", ";");
 		shortestPath = shortestPath.substring(0, shortestPath.length() - 1);
@@ -403,13 +410,6 @@ public class CargoAndOrdersService {
 	private int getShortestPath(int[][] matr, List<Integer> result, int from, int to) {
 		int n = matr.length;
 		final int MAX = Integer.MAX_VALUE / 2;
-		/*int[][] matr = new int[6][];
-		matr[0] = new int[] {MAX, 7, 9, MAX, MAX, 14};
-		matr[1] = new int[] {7, MAX, 10, 15, MAX, MAX};
-		matr[2] = new int[] {9, 10, MAX, 11, MAX, 2};
-		matr[3] = new int[] {MAX, 15, 11, MAX, 6, MAX};
-		matr[4] = new int[] {MAX, MAX, MAX, 6, MAX, 9};
-		matr[5] = new int[] {14, MAX, 2, MAX, 9, MAX};*/
 		int[] weights = new int[n];
 		boolean[] visited = new boolean[n];
 		Arrays.fill(weights, MAX);
@@ -718,7 +718,9 @@ public class CargoAndOrdersService {
 		int selectedDriverCity = 0;
 		int hoursAtDriving = 0;
 		List<User> driversChain = new ArrayList<>();
-		User driver;// = drivers.get(selectedDriverCity).get(counters[selectedDriverCity]);
+		List<Calendar> calendarChain = new ArrayList<>();
+		User driver;
+		Calendar calendar = new GregorianCalendar();
 		while(currentCityIndex != n - 1 && counters[0] < drivers.get(0).size()) {
 			log.debug(driversChain.toString());
 			if(counters[selectedDriverCity] < drivers.get(selectedDriverCity).size()) {
@@ -732,6 +734,8 @@ public class CargoAndOrdersService {
 					}
 				}
 				driversChain.remove(driversChain.size() - 1);
+				calendarChain.remove(calendarChain.size() - 1);
+				calendar = calendarChain.get(calendarChain.size() - 1);
 				counters[selectedDriverCity]++;
 				for(int i = selectedDriverCity + 1; i < counters.length; i++) {
 					counters[i] = 0;
@@ -742,15 +746,23 @@ public class CargoAndOrdersService {
 			log.debug(hoursToNextCity);
 			hoursAtDriving += hoursToNextCity;
 			log.debug(hoursAtDriving);
-			boolean hasTime = driver.getUserInfo().getHoursWorked() + hoursAtDriving <= MONTH_HOURS_LIMIT;
+			Calendar copy = (Calendar) calendar.clone();
+			copy.add(Calendar.HOUR_OF_DAY, hoursToNextCity);
+			int hoursWorked = driver.getUserInfo().getHoursWorked();
+			if(copy.get(Calendar.MONTH) != calendar.get(Calendar.MONTH)) {
+				hoursWorked = hoursToNextCity - (24 - calendar.get(Calendar.HOUR_OF_DAY));
+			}
+			calendar = copy;
+			boolean hasTime = hoursWorked + hoursAtDriving <= MONTH_HOURS_LIMIT;
 			boolean isCarShiftLengthCapacityReached = hoursAtDriving >= selectedCar.getShiftLength();
 			log.debug(hasTime + ";" + isCarShiftLengthCapacityReached);
 			if(hasTime && !isCarShiftLengthCapacityReached) {
 				currentCityIndex++;
 				driversChain.add(driver);
+				calendarChain.add(calendar);
 			} else {
+				hoursAtDriving = 0;
 				if(selectedDriverCity != currentCityIndex) {
-					hoursAtDriving = 0;
 					selectedDriverCity = currentCityIndex;
 				} else {
 					counters[selectedDriverCity]++;

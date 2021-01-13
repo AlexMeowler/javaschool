@@ -46,7 +46,7 @@ public class DriverService {
 				driver.getUserInfo().setCar(null);
 				break;
 			case RESTING:
-				String userCity = driver.getUserInfo().getCurrentCity().getCurrentCity();
+				String userCity = driver.getUserInfo().getCity().getCurrentCity();
 				String[] cities = driver.getUserInfo().getOrder().getRoute().split(";");
 				int index = -1;
 				for(int i = 0; i < cities.length - 1; i++) {
@@ -80,7 +80,7 @@ public class DriverService {
 	
 	public void changeLocation(String city, BindingResult bindingResult) {
 		User driver = sessionInfo.getCurrentUser();
-		String userCity = driver.getUserInfo().getCurrentCity().getCurrentCity();
+		String userCity = driver.getUserInfo().getCity().getCurrentCity();
 		String[] cities = driver.getUserInfo().getOrder().getRoute().split(";");
 		int index = -1;
 		for(int i = 0; i < cities.length - 1; i++) {
@@ -97,10 +97,10 @@ public class DriverService {
 			hoursDrived = length;
 		}
 		Integer hoursWorked = driver.getUserInfo().getHoursWorked() + length;
-		if(index != -1 && hoursDrived < driver.getUserInfo().getOrder().getCar().getShiftLength()) {
+		if(index != -1 && hoursDrived <= driver.getUserInfo().getOrder().getCar().getShiftLength()) {
 			changeStatus(DriverStatus.DRIVING.toString(), bindingResult);
 			City newCity = cityDAO.read(city);
-			driver.getUserInfo().setCurrentCity(newCity);
+			driver.getUserInfo().setCity(newCity);
 			driver.getUserInfo().setHoursWorked(hoursWorked);
 			//FIXME month checking
 			driver.getUserInfo().setHoursDrived(hoursDrived);

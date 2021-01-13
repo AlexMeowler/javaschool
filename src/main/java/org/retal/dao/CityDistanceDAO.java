@@ -6,7 +6,6 @@ import org.apache.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.retal.domain.CityDistance;
-import org.retal.domain.User;
 import org.retal.service.HibernateSessionFactory;
 import org.springframework.stereotype.Component;
 

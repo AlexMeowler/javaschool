@@ -40,7 +40,7 @@ public class DriverPageController {
 			String nextHop = null;
 			int nextHopLength = -1;
 			String[] cities = order.getRoute().split(";");
-			String userCity = user.getUserInfo().getCurrentCity().getCurrentCity();
+			String userCity = user.getUserInfo().getCity().getCurrentCity();
 			for(int i = 0; i < cities.length; i++) {
 				routeList.add(cities[i]);
 				if(nextHop == null && i > 0 && cities[i - 1].equalsIgnoreCase(userCity)) {

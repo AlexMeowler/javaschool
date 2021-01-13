@@ -76,7 +76,7 @@ public class AdminPageController {
 		User user = new User(userDTO);
 		UserInfo userInfo = new UserInfo(userInfoDTO);
 		City currentCity = new City(cityDTO);
-		userInfo.setCurrentCity(currentCity);
+		userInfo.setCity(currentCity);
 		user.setUserInfo(userInfo);
 		userService.addNewUser(user, bindingResult, userDTO.getPassword());
 		if (bindingResult.hasErrors()) {
@@ -120,7 +120,7 @@ public class AdminPageController {
 		User user = new User(userDTO);
 		UserInfo userInfo = new UserInfo(userInfoDTO);
 		City currentCity = new City(cityDTO);
-		userInfo.setCurrentCity(currentCity);
+		userInfo.setCity(currentCity);
 		user.setUserInfo(userInfo);
 		userService.updateUser(user, bindingResult, userDTO.getPassword());
 		if (bindingResult.hasErrors()) {

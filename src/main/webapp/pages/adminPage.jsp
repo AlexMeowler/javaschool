@@ -30,7 +30,7 @@
 		<input type="submit" value="Add cars information to database">
 	</form:form>
 	<p>Here is user list:</p>
-	<table>
+	<table class="info-table">
 		<caption hidden="true">User list</caption>
 		<tr>
 			<th scope="col">ID</th>
@@ -53,7 +53,7 @@
 			<td>${user.role}</td>
 			<td>${user.userInfo.hoursWorked}</td>
 			<td>${user.userInfo.status}</td>
-			<td>${user.userInfo.currentCity.currentCity}</td>
+			<td>${user.userInfo.city.currentCity}</td>
 			<td><a href="<c:url value="/editUser/${user.id}"/>">Edit user</a></td>
 			<td><a href="<c:url value="/deleteUser/${user.id}"/>">Delete user</a></td>
 		</tr>
@@ -65,50 +65,64 @@
 	<c:url value="/addNewUser" var = "addUser"/>
 	<form:form id = "formuser" action="${addUser}" method="POST" style = "${hidden}">
 		<br>
-		<label>Login</label>
-		<input type="text" name="login" value="${user.login}"/>
-		<span class = "error">${error_login}</span>
-		<span class = "error">${error_unique}</span>
-		<br>
-		<label>Password</label>
-		<input type="password" name="password"/>
-		<span class = "error">${error_realPassword}</span>
-		<br>
-		<label>Role</label>
-		<select name = "role">
-			<option value = "admin" ${user.role == 'admin' ? 'selected' : ''}>Administrator</option>
-			<option value = "manager" ${user.role == 'manager' ? 'selected' : ''}>Manager</option>
-			<option value = "driver" ${user.role == 'driver' ? 'selected' : ''}>Driver</option>
-		</select>
-		<br>
-		<label>Name</label>
-		<input type="text" name="name" value="${user.userInfo.name}"/>
-		<span class = "error">${error_name}</span>
-		<br>
-		<label>Surname</label>
-		<input type="text" name="surname" value="${user.userInfo.surname}"/>
-		<span class = "error">${error_surname}</span>
-		<br>
-		<label>Status</label>
-		<select name = "status">
-			<option value = "resting" ${user.userInfo.status == 'resting' ? 'selected' : ''}>Resting</option>
-			<option value = "on shift" ${user.userInfo.status == 'on shift' ? 'selected' : ''}>On shift</option>
-			<option value = "driving" ${user.userInfo.status == 'driving' ? 'selected' : ''}>Driving</option>
-		</select>
-		<span class = "error">${error_status}</span>
-		<br>
-		<label>City</label>
-		<select name = "currentCity">
-			<c:forEach var="city" items="${cityList}">
-				<option value = "${city.currentCity}" ${user.userInfo.currentCity.currentCity == city.currentCity ? 'selected' : ''}>${city.currentCity}</option>
-			</c:forEach>
-		</select>
-		<span class = "error">${error_currentCity}</span>
-		<br>
+		<table>
+		<tr>
+			<td><label>Login</label></td>
+			<td><input type="text" name="login" value="${user.login}"/></td>
+			<td>
+				<span class = "error">${error_login}</span>
+				<span class = "error">${error_unique}</span>
+			</td>
+		</tr>
+		<tr>
+			<td><label>Password</label></td>
+			<td><input type="password" name="password"/></td>
+			<td><span class = "error">${error_realPassword}</span></td>
+		</tr>
+		<tr>
+			<td><label>Role</label></td>
+			<td><select name = "role">
+					<option value = "admin" ${user.role == 'admin' ? 'selected' : ''}>Administrator</option>
+					<option value = "manager" ${user.role == 'manager' ? 'selected' : ''}>Manager</option>
+					<option value = "driver" ${user.role == 'driver' ? 'selected' : ''}>Driver</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td><label>Name</label></td>
+			<td><input type="text" name="name" value="${user.userInfo.name}"/></td>
+			<td><span class = "error">${error_name}</span></td>
+		</tr>
+		<tr>
+			<td><label>Surname</label></td>
+			<td><input type="text" name="surname" value="${user.userInfo.surname}"/></td>
+			<td><span class = "error">${error_surname}</span></td>
+		</tr>
+		<tr>
+			<td><label>Status</label></td>
+			<td><select name = "status">
+					<option value = "resting" ${user.userInfo.status == 'resting' ? 'selected' : ''}>Resting</option>
+					<option value = "on shift" ${user.userInfo.status == 'on shift' ? 'selected' : ''}>On shift</option>
+					<option value = "driving" ${user.userInfo.status == 'driving' ? 'selected' : ''}>Driving</option>
+				</select>
+			</td>
+			<td><span class = "error">${error_status}</span></td>
+		</tr>
+		<tr>
+			<td><label>City</label></td>
+			<td><select name = "currentCity">
+					<c:forEach var="city" items="${cityList}">
+						<option value = "${city.currentCity}" ${user.userInfo.city.currentCity == city.currentCity ? 'selected' : ''}>${city.currentCity}</option>
+					</c:forEach>
+				</select>
+			</td>
+			<td><span class = "error">${error_currentCity}</span></td>
+		</tr>
+		</table>
 		<input type="submit" value="Add user">
 	</form:form>
 	<p>Cargo list:</p>
-	<table>
+	<table class="info-table">
 		<caption hidden="true">Cargo list</caption>
 		<tr>
 			<th scope="col">Cargo ID</th>
@@ -133,18 +147,23 @@
 	<c:url value="/addNewCargo" var = "addCargo"/>
 	<form:form id = "formcargo" action="${addCargo}" method="POST" style = "${hiddencargo}">
 		<br>
-		<label>Name</label>
-		<input type="text" name="name" value="${cargo.name}"/>
-		<span class = "error">${error_name}</span>
-		<br>
-		<label>Weight (kg)</label>
-		<input type="text" name="mass"/>
-		<span class = "error">${error_mass}</span>
-		<br>
-		<label>Description</label>
-		<input type="text" name="description"/>
-		<span class = "error">${error_description}</span>
-		<br>
+		<table>
+		<tr>
+			<td><label>Name</label></td>
+			<td><input type="text" name="name" value="${cargo.name}"/></td>
+			<td><span class = "error">${error_name}</span></td>
+		</tr>
+		<tr>
+			<td><label>Weight (kg)</label></td>
+			<td><input type="text" name="mass"/></td>
+			<td><span class = "error">${error_mass}</span></td>
+		</tr>
+		<tr>
+			<td><label>Description</label></td>
+			<td><input type="text" name="description"/></td>
+			<td><span class = "error">${error_description}</span></td>
+		</tr>
+		</table>
 		<input type="submit" value="Add cargo">
 	</form:form>
 	</div>

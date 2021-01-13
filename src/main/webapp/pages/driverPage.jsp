@@ -15,7 +15,7 @@
 	<jsp:include page="menu.jsp"/>
 	<div class="container main-body">
 	Welcome, driver ${user.userInfo.name} ${user.userInfo.surname}!<br>
-	You are currently located in ${user.userInfo.currentCity.currentCity}.<br>
+	You are currently located in ${user.userInfo.city.currentCity}.<br>
 	In this month you worked ${user.userInfo.hoursWorked} of 176 hours.<br>
 	Your status is &quot;${user.userInfo.status}&quot;.
 	<table>
@@ -54,7 +54,22 @@
 				<c:if test="${empty order.car}">-</c:if>
 			</td>
 			<td><c:forEach var="route" items="${routeList}">${route}<br></c:forEach></td>
-			<td><c:forEach var="cargo" items="${order.cargo}">${cargo.id}: ${cargo.name} (${cargo.description})<br></c:forEach></td>
+			<td>
+				<c:forEach var="cargo" items="${order.cargo}">
+					<c:set var = "iter" value = "${cargo.points.iterator()}"/>
+					<c:set var = "pointA" value = "${iter.next()}"/>
+					<c:set var = "pointB" value = "${iter.next()}"/>
+					<c:if test="${pointA.isLoading}">
+						<c:set var = "cityFrom" value = "${pointA.city.currentCity}"/>
+						<c:set var = "cityTo" value = "${pointB.city.currentCity}"/>
+					</c:if>
+					<c:if test="${pointB.isLoading}">
+						<c:set var = "cityFrom" value = "${pointB.city.currentCity}"/>
+						<c:set var = "cityTo" value = "${pointA.city.currentCity}"/>
+					</c:if>
+					${cargo.id}: ${cargo.name} (${cityFrom} - ${cityTo})<br>
+				</c:forEach>
+			</td>
 		</tr>
 	</table>
 	<p>Your co-drivers for this order:<br>

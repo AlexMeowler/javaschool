@@ -24,7 +24,7 @@ public class CarValidator implements Validator {
 		log.info("Validating car");
 		Car car = (Car)target;
 		String id = car.getRegistrationId();
-		if (id.length() != 7 && !id.matches("[A-Z]{2}\\d{5}")) {
+		if (!id.matches("[A-Z]{2}\\d{5}")) {
 			throwError(errors, "registrationId", "ID must have form of XXYYYYY, where X is A-Z letter and Y is 0-9 digit");
 		}
 		Integer shiftLength = car.getShiftLength();
@@ -38,7 +38,6 @@ public class CarValidator implements Validator {
 		if (car.getIsWorking() == null) {
 			throwError(errors, "isWorking", "Invalid value. Please don't try to change page code");
 		}
-		// TODO city validation
 		if(cityDAO.read(car.getLocation().getCurrentCity()) == null) {
 			throwError(errors, "location", "Invalid value. Please don't try to change page code");
 		}

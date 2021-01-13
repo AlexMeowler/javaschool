@@ -18,7 +18,7 @@
 	<div class="container main-body">
 	<p>Welcome, manager ${current_user_name}!</p>
 	<p>Cargo list:</p>
-	<table>
+	<table class="info-table">
 		<caption hidden="true">Cargo list</caption>
 		<tr>
 			<th scope="col">Cargo ID</th>
@@ -38,7 +38,7 @@
 		</c:forEach>
 	</table>
 	<p>Orders list:</p>
-	<table>
+	<table class="info-table">
 		<caption hidden="true">Orders list</caption>
 		<tr>
 			<th scope="col">Order ID</th>
@@ -66,7 +66,22 @@
 				</c:if>
 				<c:if test="${empty order.driverInfo}">-</c:if>
 			</td>
-			<td><c:forEach var="cargo" items="${order.cargo}">${cargo.id}: ${cargo.name}<br></c:forEach></td>
+			<td>
+				<c:forEach var="cargo" items="${order.cargo}">
+					<c:set var = "iter" value = "${cargo.points.iterator()}"/>
+					<c:set var = "pointA" value = "${iter.next()}"/>
+					<c:set var = "pointB" value = "${iter.next()}"/>
+					<c:if test="${pointA.isLoading}">
+						<c:set var = "cityFrom" value = "${pointA.city.currentCity}"/>
+						<c:set var = "cityTo" value = "${pointB.city.currentCity}"/>
+					</c:if>
+					<c:if test="${pointB.isLoading}">
+						<c:set var = "cityFrom" value = "${pointB.city.currentCity}"/>
+						<c:set var = "cityTo" value = "${pointA.city.currentCity}"/>
+					</c:if>
+					${cargo.id}: ${cargo.name} (${cityFrom} - ${cityTo})<br>
+				</c:forEach>
+			</td>
 			<td>
 				<c:if test="${!order.isCompleted}">
 					<a id="order_a${order.id}" href="javascript: getCarList(${order.id});">Reassign car</a>

@@ -56,10 +56,6 @@ public class UserDAO implements DAO<User> {
 	public List<User> readAll() {
 		Session session = HibernateSessionFactory.getSessionFactory().openSession();
 		List<User> users = session.createNativeQuery("SELECT * FROM USERS", User.class).getResultList();
-		for (User u : users) {
-			String info = u.getUserInfo() != null ? u.getUserInfo().toString() : "null";
-			log.debug("for user id='" + u.getId() + "' user info = " + info);
-		}
 		session.close();
 		return users;
 	}

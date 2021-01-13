@@ -62,7 +62,7 @@ public class ManagerPageController {
 		UserInfo userInfo = new UserInfo(userInfoDTO);
 		City city = new City(cityDTO);
 		user.setRole(UserRole.DRIVER.toString().toLowerCase());
-		userInfo.setCurrentCity(city);
+		userInfo.setCity(city);
 		user.setUserInfo(userInfo);
 		userService.addNewUser(user, bindingResult, userDTO.getPassword());
 		if (bindingResult.hasErrors()) {
@@ -112,7 +112,7 @@ public class ManagerPageController {
 		UserInfo userInfo = new UserInfo(userInfoDTO);
 		City city = new City(cityDTO);
 		user.setRole(UserRole.DRIVER.toString().toLowerCase());
-		userInfo.setCurrentCity(city);
+		userInfo.setCity(city);
 		user.setUserInfo(userInfo);
 		userService.updateUser(user, bindingResult, userDTO.getPassword());
 		if (bindingResult.hasErrors()) {

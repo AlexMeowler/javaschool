@@ -112,6 +112,26 @@ public class Car {
 		this.driver = driver;
 	}
 	
+	@Override
+	public int hashCode() {
+		int hash = 0;
+		for(int i = 0; i < registrationId.length(); i++) {
+			hash += (i + 1) * registrationId.charAt(i);
+		}
+		return hash;
+	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if(o instanceof Car) {
+			Car car = (Car) o;
+			return this.registrationId.equals(car.registrationId);
+		} else {
+			return false;
+		}
+	}
+	
+	@Override
 	public String toString() {
 		return "Car ID = " + registrationId + "; capactity = " + capacityTons + "; location = " + location.getCurrentCity() + "; shift length = " + shiftLength;
 	}

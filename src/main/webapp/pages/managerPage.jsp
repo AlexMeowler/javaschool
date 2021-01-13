@@ -16,7 +16,7 @@
 	<div class="container main-body">
 	<p>Welcome, manager ${current_user_name}!</p>
 	<p>Drivers list:</p>
-	<table>
+	<table class="info-table">
 		<caption hidden="true">Drivers list</caption>
 		<tr>
 			<th scope="col">ID</th>
@@ -37,7 +37,7 @@
 			<td>${driver.userInfo.surname}</td>
 			<td>${driver.userInfo.hoursWorked}</td>
 			<td>${driver.userInfo.status}</td>
-			<td>${driver.userInfo.currentCity.currentCity}</td>
+			<td>${driver.userInfo.city.currentCity}</td>
 			<td><a href="<c:url value="/editDriver/${driver.id}"/>">Edit driver</a></td>
 			<td><a href="<c:url value="/deleteDriver/${driver.id}"/>">Delete driver</a></td>
 		</tr>
@@ -49,44 +49,56 @@
 	<c:url value="/addNewDriver" var = "addDriver"/>
 	<form:form id = "driverform" action="${addDriver}" method="POST" style = "${hidden}">
 		<br>
-		<label>Login</label>
-		<input type="text" name="login" value="${user.login}"/>
-		<span class = "error">${error_login}</span>
-		<span class = "error">${error_unique}</span>
-		<br>
-		<label>Password</label>
-		<input type="password" name="password"/>
-		<span class = "error">${error_realPassword}</span>
-		<br>
-		<label>Name</label>
-		<input type="text" name="name" value="${user.userInfo.name}"/>
-		<span class = "error">${error_name}</span>
-		<br>
-		<label>Surname</label>
-		<input type="text" name="surname" value="${user.userInfo.surname}"/>
-		<span class = "error">${error_surname}</span>
-		<br>
-		<label>Status</label>
-		<select name = "status">
-			<option value = "resting" ${user.userInfo.status == 'resting' ? 'selected' : ''}>Resting</option>
-			<option value = "on_shift" ${user.userInfo.status == 'on_shift' ? 'selected' : ''}>On shift</option>
-			<option value = "driving" ${user.userInfo.status == 'driving' ? 'selected' : ''}>Driving</option>
-		</select>
-		<span class = "error">${error_status}</span>
-		<br>
-		<label>City</label>
-		<select name = "currentCity">
-			<c:forEach var="city" items="${cityList}">
-				<option value = "${city.currentCity}" ${user.userInfo.currentCity.currentCity == city.currentCity ? 'selected' : ''}>${city.currentCity}</option>
-			</c:forEach>
-		</select>
-		<span class = "error">${error_currentCity}</span>
-		<br>
+		<table>
+		<tr>
+			<td><label>Login</label></td>
+			<td><input type="text" name="login" value="${user.login}"/></td>
+			<td>
+				<span class = "error">${error_login}</span>
+				<span class = "error">${error_unique}</span>
+			</td>
+		</tr>
+		<tr>
+			<td><label>Password</label></td>
+			<td><input type="password" name="password"/></td>
+			<td><span class = "error">${error_realPassword}</span></td>
+		</tr>
+		<tr>
+			<td><label>Name</label></td>
+			<td><input type="text" name="name" value="${user.userInfo.name}"/></td>
+			<td><span class = "error">${error_name}</span></td>
+		</tr>
+		<tr>
+			<td><label>Surname</label></td>
+			<td><input type="text" name="surname" value="${user.userInfo.surname}"/></td>
+			<td><span class = "error">${error_surname}</span></td>
+		</tr>
+		<tr>
+			<td><label>Status</label></td>
+			<td><select name = "status">
+					<option value = "resting" ${user.userInfo.status == 'resting' ? 'selected' : ''}>Resting</option>
+					<option value = "on shift" ${user.userInfo.status == 'on shift' ? 'selected' : ''}>On shift</option>
+					<option value = "driving" ${user.userInfo.status == 'driving' ? 'selected' : ''}>Driving</option>
+				</select>
+			</td>
+			<td><span class = "error">${error_status}</span></td>
+		</tr>
+		<tr>
+			<td><label>City</label></td>
+			<td><select name = "currentCity">
+					<c:forEach var="city" items="${cityList}">
+						<option value = "${city.currentCity}" ${user.userInfo.city.currentCity == city.currentCity ? 'selected' : ''}>${city.currentCity}</option>
+					</c:forEach>
+				</select>
+			</td>
+			<td><span class = "error">${error_currentCity}</span></td>
+		</tr>
+		</table>
 		<input type="submit" value="Add driver">
 	</form:form>
 	<br><br><br>
 	<p>Cars list:</p>
-	<table>
+	<table class="info-table">
 		<caption hidden="true">Cars list</caption>
 		<tr>
 			<th scope="col">Registration ID</th>
@@ -117,34 +129,45 @@
 	<c:url value="/addNewCar" var = "addCar"/>
 	<form:form id = "carform" action="${addCar}" method="POST" style = "${hiddencar}">
 		<br>
-		<label>Registration ID</label>
-		<input type="text" name="registrationId" value="${car.registrationId}"/>
-		<span class = "error">${error_registrationId}</span>
-		<span class = "error">${error_uniqueCarId}</span>
-		<br>
-		<label>Shift length</label>
-		<input type="text" name="shift" value="${car.shiftLength}"/>
-		<span class = "error">${error_shiftLength}</span>
-		<br>
-		<label>Capacity in tons</label>
-		<input type="text" name="capacity" value="${car.capacityTons}"/>
-		<span class = "error">${error_capacityTons}</span>
-		<br>
-		<label>Status</label>
-		<select name = "isWorking">
-			<option value = "true" ${car.isWorking || empty car ? 'selected' : ''}>Normal</option>
-			<option value = "false" ${!car.isWorking && not empty car ? 'selected' : ''}>Broken</option>
-		</select>
-		<span class = "error">${error_isWorking}</span>
-		<br>
-		<label>Current location</label>
-		<select name = "currentCity">
-			<c:forEach var="city" items="${cityList}">
-				<option value = "${city.currentCity}" ${car.location.currentCity == city.currentCity ? 'selected' : ''}>${city.currentCity}</option>
-			</c:forEach>
-		</select>
-		<span class = "error">${error_location}</span>
-		<br>
+		<table>
+			<tr>
+				<td><label>Registration ID</label></td>
+				<td><input type="text" name="registrationId" value="${car.registrationId}"/></td>
+				<td>
+					<span class = "error">${error_registrationId}</span>
+					<span class = "error">${error_uniqueCarId}</span>
+				</td>
+			</tr>
+			<tr>
+				<td><label>Shift length</label></td>
+				<td><input type="text" name="shift" value="${car.shiftLength}"/></td>
+				<td><span class = "error">${error_shiftLength}</span></td>
+			</tr>
+			<tr>
+				<td><label>Capacity in tons</label></td>
+				<td><input type="text" name="capacity" value="${car.capacityTons}"/></td>
+				<td><span class = "error">${error_capacityTons}</span></td>
+			</tr>
+			<tr>
+				<td><label>Status</label></td>
+				<td><select name = "isWorking">
+						<option value = "true" ${car.isWorking || empty car ? 'selected' : ''}>Normal</option>
+						<option value = "false" ${!car.isWorking && not empty car ? 'selected' : ''}>Broken</option>
+					</select>
+				</td>
+				<td><span class = "error">${error_isWorking}</span></td>
+			</tr>
+			<tr>
+				<td><label>Current location</label></td>
+				<td><select name = "currentCity">
+						<c:forEach var="city" items="${cityList}">
+							<option value = "${city.currentCity}" ${car.location.currentCity == city.currentCity ? 'selected' : ''}>${city.currentCity}</option>
+						</c:forEach>
+					</select>
+				</td>
+				<td><span class = "error">${error_location}</span></td>
+			</tr>
+		</table>
 		<input type="submit" value="Add car">
 	</form:form>
 	</div>

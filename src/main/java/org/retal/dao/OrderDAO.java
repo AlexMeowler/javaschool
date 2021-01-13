@@ -7,10 +7,8 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
 import org.retal.domain.Cargo;
-import org.retal.domain.User;
 import org.retal.domain.Order;
 import org.retal.domain.RoutePoint;
-import org.retal.domain.enums.UserRole;
 import org.retal.service.HibernateSessionFactory;
 import org.springframework.stereotype.Component;
 
