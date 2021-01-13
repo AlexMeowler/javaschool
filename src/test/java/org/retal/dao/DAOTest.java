@@ -1,19 +1,13 @@
-package javaschool;
+package org.retal.dao;
 
 import static org.junit.Assert.assertEquals;
 
-import org.apache.log4j.Logger;
-import org.hibernate.Session;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.retal.config.spring.RootConfig;
 import org.retal.config.spring.WebConfig;
-import org.retal.dao.CityDAO;
-import org.retal.dao.UserDAO;
 import org.retal.domain.City;
 import org.retal.domain.User;
 import org.retal.domain.UserInfo;
