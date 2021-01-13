@@ -1,10 +1,10 @@
 # Logiweb
 Java School Public Repository
 
-# VERSION 0.8.7
+# VERSION 0.9.0
 
-Month change now should be accounted when assigning drivers. Some front-end updates. Minor bug fixes.
+Added first two JUnit tests :) Took some time to set everything up, but now it should be not too difficult to write tests.
 
 # TODO
 
-I don't know. Tests? Documentation? Code refactoring?
+I don't know. Front-end? Tests? Documentation? Code refactoring?

@@ -18,6 +18,7 @@ import org.retal.domain.UserInfo;
 import org.retal.domain.Order;
 
 public class HibernateSessionFactory {
+	
 	private HibernateSessionFactory() {
 
 	}

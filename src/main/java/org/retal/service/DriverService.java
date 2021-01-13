@@ -31,7 +31,7 @@ public class DriverService {
 			case DRIVING:
 				if(driver.getUserInfo().getOrder() != null) {
 					Car car = driver.getUserInfo().getOrder().getCar();
-					if(car.getDriver() == null || car.getDriver().getId() != driver.getId()) {
+					if(car.getDriver() == null || car.getDriver().getId() == driver.getId()) {
 						driver.getUserInfo().setCar(car);
 					} else {
 						bindingResult.reject("car", "Could not select car, assigned car is being drived by someone else.");
@@ -64,6 +64,7 @@ public class DriverService {
 				}
 				if(index != -1 && hoursDrived > driver.getUserInfo().getOrder().getCar().getShiftLength()) {
 					driver.getUserInfo().setOrder(null);
+					driver.getUserInfo().setHoursDrived(null);
 				}
 				driver.getUserInfo().setCar(null);
 				break;
