@@ -17,7 +17,7 @@
 	<c:url value="${editUser}" var = "edit"/>
 	<form:form id = "form" action="${edit}" method="POST">
 		<br>
-		<table>
+		<table class="form-table">
 		<tr>
 			<td><input type="text" name="id" value="${user.id}" hidden = "true"/></td>
 		</tr>

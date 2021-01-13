@@ -29,6 +29,7 @@
 	<form:form action="${addCarsInfo}" method="POST">
 		<input type="submit" value="Add cars information to database">
 	</form:form>
+	<br>
 	<p>Here is user list:</p>
 	<table class="info-table">
 		<caption hidden="true">User list</caption>
@@ -65,7 +66,7 @@
 	<c:url value="/addNewUser" var = "addUser"/>
 	<form:form id = "formuser" action="${addUser}" method="POST" style = "${hidden}">
 		<br>
-		<table>
+		<table class="form-table">
 		<tr>
 			<td><label>Login</label></td>
 			<td><input type="text" name="login" value="${user.login}"/></td>
@@ -147,7 +148,7 @@
 	<c:url value="/addNewCargo" var = "addCargo"/>
 	<form:form id = "formcargo" action="${addCargo}" method="POST" style = "${hiddencargo}">
 		<br>
-		<table>
+		<table class="form-table">
 		<tr>
 			<td><label>Name</label></td>
 			<td><input type="text" name="name" value="${cargo.name}"/></td>

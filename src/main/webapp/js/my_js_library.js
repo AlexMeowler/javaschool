@@ -35,23 +35,22 @@ function addRow() {
 			options_cargo += "<option value = \"" + cargo[i].id + "\"" + ">" + cargo[i].id + ": " + cargo[i].name + "</option>" 
 		}
 		document.getElementById('rows').innerHTML = document.getElementById('rows').innerHTML 
-		+ "<div id = \"div" + counter + "\">" 
-		+ "<label>City</label> "
-		+ "<select id = \"city" + counter + "\" name = \"list[" + counter + "].cityName\">"  
+		+ "<tr id = \"div" + counter + "\">" 
+		+ "<td><label>City</label></td>"
+		+ "<td><select id = \"city" + counter + "\" name = \"list[" + counter + "].cityName\">"  
 		+ options_city 
-		+ "</select> " 
-		+ "<label>Cargo</label> " 
-		+ "<select id = \"cargo" + counter + "\" name =\"list[" + counter + "].cargoId\">"   
+		+ "</select><td>" 
+		+ "<td><label>Cargo</label></td>" 
+		+ "<td><select id = \"cargo" + counter + "\" name =\"list[" + counter + "].cargoId\">"   
 		+ options_cargo
-		+ "</select> "
-		+ "<label>Status</label> " 
-		+ "<select id = \"status" + counter + "\" name = \"list[" + counter + "].isLoading\">" 
+		+ "</select></td>"
+		+ "<td><label>Status</label></td>" 
+		+ "<td><select id = \"status" + counter + "\" name = \"list[" + counter + "].isLoading\">" 
 		+	"<option value = \"true\">Load</option>" 
 		+	"<option value = \"false\">Drop</option>"  
-		+ "</select> "
-		+ "<a id=\"a" + counter + "\" href=\"javascript: deleteRow(" + counter + ");\">Delete this row </a>"
-		+ "<br>"
-		+ "</div>";
+		+ "</select></td>"
+		+ "<td><a id=\"a" + counter + "\" href=\"javascript: deleteRow(" + counter + ");\">Delete this row </a></td>"
+		+ "</tr>";
 		for(var i = 0; i < counter; i++) {
 			document.getElementById("city" + i).options[selectedCityOptions[i]].selected = true;
 			document.getElementById("cargo" + i).options[selectedCargoOptions[i]].selected = true;

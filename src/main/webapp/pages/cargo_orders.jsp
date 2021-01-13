@@ -105,31 +105,37 @@
 		<br>
 		<span class = "error">${error_emptyInput} ${error_globalCar} ${error_globalDrivers}</span>
 		<br>
-		<div id="rows">
+		<table id="rows" class="form-table">
 			<c:forEach var="routePoint" items="${routePoints}" varStatus = "i">
-				<div id="div${i.index}">
-					<label>City</label>
-					<select id="city${i.index}" name="list[${i.index}].cityName">
-						<c:forEach var="city" items="${cityList}">
-							<option value = "${city.currentCity}" ${routePoint.cityName == city.currentCity ? 'selected' : ''}>${city.currentCity}</option>
-						</c:forEach>
-					</select>
-					<label>Cargo</label>
-					<select id="cargo${i.index}" name="list[${i.index}].cargoId">
-						<c:forEach var="cargo" items="${cargoList}">
-							<option value = "${cargo.id}" ${routePoint.cargoId == cargo.id ? 'selected' : ''}>${cargo.id}: ${cargo.name}</option>
-						</c:forEach>
-					</select>
-					<label>Status</label>
-					<select id="status${i.index}" name="list[${i.index}].isLoading">
-						<option value="true" ${routePoint.isLoading ? 'selected' : ''}>Load</option>
-						<option value="false" ${!routePoint.isLoading ? 'selected' : ''}>Drop</option>
-					</select>
-					<a id="a${i.index}" href="javascript: deleteRow(${i.index});">Delete this row</a>
-					<span class = "error">${routePoint.error}</span>
-				</div>
+				<tr id="div${i.index}">
+					<td><label>City</label></td>
+					<td>
+						<select id="city${i.index}" name="list[${i.index}].cityName">
+							<c:forEach var="city" items="${cityList}">
+								<option value = "${city.currentCity}" ${routePoint.cityName == city.currentCity ? 'selected' : ''}>${city.currentCity}</option>
+							</c:forEach>
+						</select>
+					</td>
+					<td><label>Cargo</label></td>
+					<td>
+						<select id="cargo${i.index}" name="list[${i.index}].cargoId">
+							<c:forEach var="cargo" items="${cargoList}">
+								<option value = "${cargo.id}" ${routePoint.cargoId == cargo.id ? 'selected' : ''}>${cargo.id}: ${cargo.name}</option>
+							</c:forEach>
+						</select>
+					</td>
+					<td><label>Status</label></td>
+					<td>
+						<select id="status${i.index}" name="list[${i.index}].isLoading">
+							<option value="true" ${routePoint.isLoading ? 'selected' : ''}>Load</option>
+							<option value="false" ${!routePoint.isLoading ? 'selected' : ''}>Drop</option>
+						</select>
+					</td>
+					<td><a id="a${i.index}" href="javascript: deleteRow(${i.index});">Delete this row</a></td>
+					<td><span class = "error">${routePoint.error}</span></td>
+				</tr>
 			</c:forEach>
-		</div>
+		</table>
 		<button type="button" class = "table-edit-button" name = "addRoutePoint" onclick = "addRow()">Add route point</button>
 		<br>
 		<br>

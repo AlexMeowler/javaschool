@@ -130,6 +130,13 @@ public class UserService {
 			log.error("File names.txt or surnames.txt not found");
 		}
 	}
+	
+	public void setUsersWorkedHoursToZero() {
+		for(User u : userDAO.readAll()) {
+			u.getUserInfo().setHoursWorked(0);
+			userDAO.update(u);
+		}
+	}
 
 	@Autowired
 	private UserDAO userDAO;

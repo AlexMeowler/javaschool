@@ -49,7 +49,7 @@
 	<c:url value="/addNewDriver" var = "addDriver"/>
 	<form:form id = "driverform" action="${addDriver}" method="POST" style = "${hidden}">
 		<br>
-		<table>
+		<table class="form-table">
 		<tr>
 			<td><label>Login</label></td>
 			<td><input type="text" name="login" value="${user.login}"/></td>
@@ -129,7 +129,7 @@
 	<c:url value="/addNewCar" var = "addCar"/>
 	<form:form id = "carform" action="${addCar}" method="POST" style = "${hiddencar}">
 		<br>
-		<table>
+		<table class="form-table">
 			<tr>
 				<td><label>Registration ID</label></td>
 				<td><input type="text" name="registrationId" value="${car.registrationId}"/></td>

@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
-import org.retal.dao.CarDAO;
 import org.retal.domain.*;
 import org.retal.domain.enums.CargoStatus;
 import org.retal.dto.CargoDTO;

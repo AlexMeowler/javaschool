@@ -17,7 +17,7 @@
 	<c:url value="/submitEditedCar" var="submit"/>
 	<form:form id = "form" action="${submit}" method="POST">
 		<br>
-		<table>
+		<table class="form-table">
 			<tr>
 				<td><label>Car ${car.registrationId}</label></td>
 				<td><input type="text" name="registrationId" value="${car.registrationId}" hidden="hidden"/></td>
