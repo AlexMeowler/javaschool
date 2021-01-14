@@ -28,6 +28,9 @@ public class CityDAO implements DAO<City> {
 	@Override
 	public City read(Object... keys) {
 		// TODO key validation
+		if(!(keys[0] instanceof String)) {
+			throw new IllegalArgumentException("Key must be String");
+		}
 		String cityName = (String)keys[0];
 		Session session = HibernateSessionFactory.getSessionFactory().openSession();
 		City city = session.get(City.class, cityName);
@@ -50,14 +53,12 @@ public class CityDAO implements DAO<City> {
 
 	@Override
 	public void delete(City t) {
-		// TODO Auto-generated method stub
-		
+		throw new MethodUndefinedException();
 	}
 
 	@Override
 	public void update(City a) {
-		// TODO Auto-generated method stub
-		
+		throw new MethodUndefinedException();
 	}
 	
 	private static final Logger log = Logger.getLogger(CityDAO.class);

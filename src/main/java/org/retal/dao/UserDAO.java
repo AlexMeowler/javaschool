@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class UserDAO implements DAO<User> {
+	
 	@Override
 	public void add(User user) {
 		log.info("Attempt to add user: name='" + user.getLogin() + "', role='" + user.getRole() + "'");
@@ -27,13 +28,14 @@ public class UserDAO implements DAO<User> {
 	@Override
 	@Transactional
 	public User read(Object... keys) {
-		// TODO add checking for keys
+		if(!(keys[0] instanceof Integer)) {
+			throw new IllegalArgumentException("Key must be Integer");
+		}
 		Session session = HibernateSessionFactory.getSessionFactory().openSession();
 		Integer id = (Integer)keys[0];
 		User user = session.get(User.class, id);
 		if(user != null) {
-			String info = user.getUserInfo() != null ? user.getUserInfo().toString() : "null";
-			log.debug("for user id='" + user.getId() + "' user info = " + info);
+			log.debug("for user id='" + user.getId() + "' user info = " + user.getUserInfo().toString());
 		} else {
 			log.debug("user not found");
 		}
