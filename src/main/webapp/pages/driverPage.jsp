@@ -97,11 +97,11 @@
 	</c:if>
 	<c:if test="${not empty user.userInfo.hoursDrived and user.userInfo.hoursDrived + nextHopLength > order.car.shiftLength}">
 		<p>Car shift length limit exceeded, you can't drive any further. You can end shift now, but remember, after that you will be
-		<b>unassigned from the order</b>.<br>Please, <b>do not end shift before you unload cargo</b> which destination point is your current location.
+		<strong>unassigned from the order</strong>.<br>Please, <strong>do not end shift before you unload cargo</strong> which destination point is your current location.
 		</p>
 	</c:if>
 	<span class="error">${error_city}</span><br>
-	<p>Cargo management menu:<br>Please, remember: changes to cargo status <b>can't be undone</b></p>
+	<p>Cargo management menu:<br>Please, remember: changes to cargo status <strong>can't be undone</strong></p>
 	<table>
 		<caption hidden="true">Cargo menu</caption>
 		<tr>

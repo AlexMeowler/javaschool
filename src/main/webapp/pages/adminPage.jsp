@@ -15,7 +15,7 @@
 	<jsp:include page="menu.jsp"/>
 	<div class="container main-body">
 	<p>Welcome, administrator <sec:authentication property="principal.username" />!</p>
-	<c:url value="/addCityInfo" var = "addCityInfo"/>
+	<!--<c:url value="/addCityInfo" var = "addCityInfo"/>
 	<form:form action="${addCityInfo}" method="POST">
 		<input type="submit" value="Add city information to database">
 	</form:form>
@@ -28,7 +28,7 @@
 	<c:url value="/addCarsInfo" var = "addCarsInfo"/>
 	<form:form action="${addCarsInfo}" method="POST">
 		<input type="submit" value="Add cars information to database">
-	</form:form>
+	</form:form> -->
 	<br>
 	<p>Here is user list:</p>
 	<table class="info-table">

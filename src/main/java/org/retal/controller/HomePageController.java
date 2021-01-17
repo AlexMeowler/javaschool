@@ -8,16 +8,23 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class HomePageController {
 
-	@GetMapping(value = "/")
-	public String getHomeFromBlankPath(Model model) {
-		return "redirect:/home";
-	}
+  private static final Logger log = Logger.getLogger(HomePageController.class);
 
-	@GetMapping("/home")
-	public String getHome(Model model) {
-		log.info("Redirected to home page");
-		return "home";
-	}
+  /**
+   * Method for redirecting to "/home" page from default "/" address.
+   * @see HomePageController#getHome(Model)
+   */
+  @GetMapping(value = "/")
+  public String getHomeFromBlankPath(Model model) {
+    return "redirect:/home";
+  }
 
-	private static final Logger log = Logger.getLogger(HomePageController.class);
+  /**
+   * Method responsible for showing the home page of web application.
+   */
+  @GetMapping("/home")
+  public String getHome(Model model) {
+    log.info("Redirected to home page");
+    return "home";
+  }
 }

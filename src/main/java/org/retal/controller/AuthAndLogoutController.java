@@ -9,28 +9,41 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
+/**
+ * Controller class for logging in and out.
+ * 
+ * @author Alexander Retivov
+ *
+ */
 @Controller
 public class AuthAndLogoutController {
 
-	@GetMapping(value = "/spring_auth")
-	public RedirectView logInAuthGet(@RequestParam(value = "error", required = false) String error,
-			@RequestParam(value = "logout", required = false) String logout, RedirectAttributes redir) {
-		RedirectView redirectView = new RedirectView("/home", true);
-		if (error != null) {
-			log.info("auth fail");
-			redir.addFlashAttribute("message", "Invalid login or password");
-		}
-		if (logout != null) {
-			log.info("logout success");
-			redir.addFlashAttribute("message", "Logged out succesfully");
-		}
-		return redirectView;
-	}
+  private static final Logger log = Logger.getLogger(AuthAndLogoutController.class);
 
-	@PostMapping(value = "/logout")
-	public void logOut(Model model) {
-		log.info("logout attempt");
-	}
+  /**
+   * Method responsible for calling Spring Security authentication procedures. Redirects to home
+   * page with flags for both invalid credentials and loggin out successfully.
+   */
+  @GetMapping(value = "/spring_auth")
+  public RedirectView logInAuthGet(@RequestParam(value = "error", required = false) String error,
+      @RequestParam(value = "logout", required = false) String logout, RedirectAttributes redir) {
+    if (error != null) {
+      log.info("auth fail");
+      redir.addFlashAttribute("message", "Invalid login or password");
+    }
+    if (logout != null) {
+      log.info("logout success");
+      redir.addFlashAttribute("message", "Logged out succesfully");
+    }
+    RedirectView redirectView = new RedirectView("/home", true);
+    return redirectView;
+  }
 
-	private static final Logger log = Logger.getLogger(AuthAndLogoutController.class);
+  /**
+   * Method responsible for logging out using Spring Security.
+   */
+  @PostMapping(value = "/logout")
+  public void logOut(Model model) {
+    log.info("logout attempt");
+  }
 }

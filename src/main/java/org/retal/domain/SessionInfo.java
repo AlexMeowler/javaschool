@@ -3,31 +3,53 @@ package org.retal.domain;
 import org.retal.dao.UserDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-import org.springframework.context.annotation.ScopedProxyMode;
 
+/**
+ * Class containing {@linkplain org.retal.domain.User User} object which refers to currently logged
+ * in user.
+ * 
+ * @author Alexander Retivov
+ *
+ */
 @Component
 @Scope(scopeName = "session", proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class SessionInfo {
-	
-	public User getCurrentUser() {
-		if (user == null) {
-			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-			user = userDAO.findUser(auth.getName());
-		}
-		return user;
-	}
-	
-	public void refreshUser() {
-		if (user != null) {
-			user = userDAO.read(user.getId());
-		}
-	}
 
-	private User user;
+  private User user;
 
-	@Autowired
-	private UserDAO userDAO;
+  private UserDAO userDAO;
+
+  @Autowired
+  public SessionInfo(UserDAO userDAO) {
+    this.userDAO = userDAO;
+  }
+
+  /**
+   * Method for getting {@linkplain org.retal.domain.User User} object of logged in user, based on
+   * session info.
+   * 
+   * @return user {@linkplain org.retal.domain.User User} who is associated with the session.
+   */
+  public User getCurrentUser() {
+    if (user == null) {
+      Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+      user = userDAO.findUser(auth.getName());
+    }
+    return user;
+  }
+
+  /**
+   * Updates user information by re-reading entity from database. If no
+   * {@linkplain org.retal.domain.User User} if associated with this class instance, then nothing
+   * will happen.
+   */
+  public void refreshUser() {
+    if (user != null) {
+      user = userDAO.read(user.getId());
+    }
+  }
 }

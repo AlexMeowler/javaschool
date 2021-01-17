@@ -12,148 +12,151 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
-import javax.validation.constraints.*;
-
+import javax.validation.constraints.NotEmpty;
 import org.retal.dto.UserInfoDTO;
 
 @Entity
 @Table(name = "user_info")
 public class UserInfo {
-	
-	public UserInfo() {
-		
-	}
-	
-	public UserInfo(UserInfoDTO userInfoDTO)
-	{
-		setId(userInfoDTO.getId());
-		setName(userInfoDTO.getName());
-		setSurname(userInfoDTO.getSurname());
-		setHoursWorked(userInfoDTO.getHoursWorked());
-		setStatus(userInfoDTO.getStatus());
-		setCity(userInfoDTO.getCity());
-	}
-	
-	@Id
-	@Column(name = "id")
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
 
-	@Column(name = "name")
-	@NotEmpty(message = "Please enter name")
-	private String name;
+  public UserInfo() {
 
-	@Column(name = "surname")
-	@NotEmpty(message = "Please enter surname")
-	private String surname;
+  }
 
-	@Column(name = "hours_worked_month")
-	private Integer hoursWorked = 0;
+  /**
+   * Constructor for mapping user information DTO object to user information entity.
+   * 
+   * @param userInfoDTO an instance of {@linkplain org.retal.dto.UserInfoDTO UserInfoDTO}
+   */
+  public UserInfo(UserInfoDTO userInfoDTO) {
+    setId(userInfoDTO.getId());
+    setName(userInfoDTO.getName());
+    setSurname(userInfoDTO.getSurname());
+    setHoursWorked(userInfoDTO.getHoursWorked());
+    setStatus(userInfoDTO.getStatus());
+    setCity(userInfoDTO.getCity());
+  }
 
-	@Column(name = "status")
-	private String status;
-	
-	@Column(name = "hours_drived")
-	private Integer hoursDrived;
-	
-	@OneToOne
-	@JoinColumn(name = "car_id", referencedColumnName = "registration_id")
-	private Car car;
+  @Id
+  @Column(name = "id")
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private int id;
 
-	@ManyToOne
-	@JoinColumn(name="current_city", nullable = false)
-	private City city;
+  @Column(name = "name")
+  @NotEmpty(message = "Please enter name")
+  private String name;
 
-	@OneToOne(mappedBy = "userInfo", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-	@PrimaryKeyJoinColumn
-	private User user;
-	
-	@ManyToOne
-	@JoinColumn(name="order_id")
-	private Order order;
+  @Column(name = "surname")
+  @NotEmpty(message = "Please enter surname")
+  private String surname;
 
-	public int getId() {
-		return id;
-	}
+  @Column(name = "hours_worked_month")
+  private Integer hoursWorked = 0;
 
-	public void setId(int id) {
-		this.id = id;
-	}
+  @Column(name = "status")
+  private String status;
 
-	public String getName() {
-		return name;
-	}
+  @Column(name = "hours_drived")
+  private Integer hoursDrived;
 
-	public void setName(String name) {
-		this.name = name;
-	}
+  @OneToOne
+  @JoinColumn(name = "car_id", referencedColumnName = "registration_id")
+  private Car car;
 
-	public String getSurname() {
-		return surname;
-	}
+  @ManyToOne
+  @JoinColumn(name = "current_city", nullable = false)
+  private City city;
 
-	public void setSurname(String surname) {
-		this.surname = surname;
-	}
+  @OneToOne(mappedBy = "userInfo", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+  @PrimaryKeyJoinColumn
+  private User user;
 
-	public User getUser() {
-		return user;
-	}
+  @ManyToOne
+  @JoinColumn(name = "order_id")
+  private Order order;
 
-	public void setUser(User user) {
-		this.user = user;
-	}
+  public int getId() {
+    return id;
+  }
 
-	public Integer getHoursWorked() {
-		return hoursWorked;
-	}
+  public void setId(int id) {
+    this.id = id;
+  }
 
-	public void setHoursWorked(Integer hoursWorked) {
-		this.hoursWorked = hoursWorked;
-	}
+  public String getName() {
+    return name;
+  }
 
-	public String getStatus() {
-		return status;
-	}
+  public void setName(String name) {
+    this.name = name;
+  }
 
-	public void setStatus(String status) {
-		this.status = status;
-	}
-	
-	public Integer getHoursDrived() {
-		return hoursDrived;
-	}
+  public String getSurname() {
+    return surname;
+  }
 
-	public void setHoursDrived(Integer hoursDrived) {
-		this.hoursDrived = hoursDrived;
-	}
+  public void setSurname(String surname) {
+    this.surname = surname;
+  }
 
-	public City getCity() {
-		return city;
-	}
+  public User getUser() {
+    return user;
+  }
 
-	public void setCity(City city) {
-		this.city = city;
-	}
-	
-	public Car getCar() {
-		return car;
-	}
+  public void setUser(User user) {
+    this.user = user;
+  }
 
-	public void setCar(Car car) {
-		this.car = car;
-	}
-	
-	public Order getOrder() {
-		return order;
-	}
+  public Integer getHoursWorked() {
+    return hoursWorked;
+  }
 
-	public void setOrder(Order order) {
-		this.order = order;
-	}
+  public void setHoursWorked(Integer hoursWorked) {
+    this.hoursWorked = hoursWorked;
+  }
 
-	public String toString() {
-		String owner = user != null ? user.toString() : "null";
-		return "UserInfo [owner = " + owner + ", name = " + name + ", surname = " + surname + "]";
-	}
+  public String getStatus() {
+    return status;
+  }
+
+  public void setStatus(String status) {
+    this.status = status;
+  }
+
+  public Integer getHoursDrived() {
+    return hoursDrived;
+  }
+
+  public void setHoursDrived(Integer hoursDrived) {
+    this.hoursDrived = hoursDrived;
+  }
+
+  public City getCity() {
+    return city;
+  }
+
+  public void setCity(City city) {
+    this.city = city;
+  }
+
+  public Car getCar() {
+    return car;
+  }
+
+  public void setCar(Car car) {
+    this.car = car;
+  }
+
+  public Order getOrder() {
+    return order;
+  }
+
+  public void setOrder(Order order) {
+    this.order = order;
+  }
+
+  public String toString() {
+    String owner = user != null ? user.toString() : "null";
+    return "UserInfo [owner = " + owner + ", name = " + name + ", surname = " + surname + "]";
+  }
 }
