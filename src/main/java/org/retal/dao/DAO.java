@@ -21,7 +21,7 @@ public interface DAO<T> {
   /**
    * Reads entity from database using its primary key (composite keys are supported). If no entity
    * found with given primary key, null is returned. It is recommended to validate keys input with
-   * {@link DAO#validatePrimaryKeys(Object...)}, since they are given as
+   * {@link DAO#validatePrimaryKeys(Class[], Object...)}, since they are given as
    * {@linkplain java.lang.Object Object} instances.
    * 
    * @param keys set of primary keys for identifying entity

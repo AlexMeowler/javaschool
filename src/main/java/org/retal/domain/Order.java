@@ -21,6 +21,8 @@ import javax.persistence.Transient;
 @Entity
 @Table(name = "orders")
 public class Order {
+  
+  public static final String ROUTE_DELIMETER = ";";
 
   @Id
   @Column(name = "id")

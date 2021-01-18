@@ -28,8 +28,9 @@
 	<c:url value="/addCarsInfo" var = "addCarsInfo"/>
 	<form:form action="${addCarsInfo}" method="POST">
 		<input type="submit" value="Add cars information to database">
-	</form:form> -->
-	<br>
+	</form:form> 
+	<br> -->
+	<span class = "error">${error_userDeletionFailed}</span>
 	<p>Here is user list:</p>
 	<table class="info-table">
 		<caption hidden="true">User list</caption>
@@ -63,6 +64,7 @@
 	<button class = "table-edit-button" name = "openOrCloseForm" onclick = "showForm('formuser')">Add new user</button>
 	<c:set var = "hidden" value = ""/>
 	<c:if test = "${empty visible}"><c:set var = "hidden" value = "display:none;"/></c:if>
+	<br><span class = "error">${error_userMaliciousInput}</span>
 	<c:url value="/addNewUser" var = "addUser"/>
 	<form:form id = "formuser" action="${addUser}" method="POST" style = "${hidden}">
 		<br>
@@ -92,12 +94,12 @@
 		<tr>
 			<td><label>Name</label></td>
 			<td><input type="text" name="name" value="${user.userInfo.name}"/></td>
-			<td><span class = "error">${error_name}</span></td>
+			<td><span class = "error">${error_name} ${error_noDigitsName}</span></td>
 		</tr>
 		<tr>
 			<td><label>Surname</label></td>
 			<td><input type="text" name="surname" value="${user.userInfo.surname}"/></td>
-			<td><span class = "error">${error_surname}</span></td>
+			<td><span class = "error">${error_surname} ${error_noDigitsSurname}</span></td>
 		</tr>
 		<tr>
 			<td><label>Status</label></td>
@@ -146,6 +148,7 @@
 	<c:set var = "hiddencargo" value = ""/>
 	<c:if test = "${empty visiblecargo}"><c:set var = "hiddencargo" value = "display:none;"/></c:if>
 	<c:url value="/addNewCargo" var = "addCargo"/>
+	<br><span class = "error">${error_cargoMaliciousInput}</span>
 	<form:form id = "formcargo" action="${addCargo}" method="POST" style = "${hiddencargo}">
 		<br>
 		<table class="form-table">
@@ -167,6 +170,7 @@
 		</table>
 		<input type="submit" value="Add cargo">
 	</form:form>
+	<div class="footer"></div>
 	</div>
 </body>
 </html>

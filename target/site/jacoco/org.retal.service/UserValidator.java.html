@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UserValidator.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Logiweb Service</a> &gt; <a href="index.source.html" class="el_package">org.retal.service</a> &gt; <span class="el_source">UserValidator.java</span></div><h1>UserValidator.java</h1><pre class="source lang-java linenums">package org.retal.service;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.regex.Pattern;
+import javax.validation.ConstraintViolation;
+import org.apache.log4j.Logger;
+import org.retal.dao.CityDAO;
+import org.retal.domain.User;
+import org.retal.domain.UserInfo;
+import org.retal.domain.enums.DriverStatus;
+import org.retal.dto.UserWrapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.Errors;
+import org.springframework.validation.ObjectError;
+import org.springframework.validation.Validator;
+
+@Service
+public class UserValidator implements Validator {
+
+<span class="fc" id="L24">  private static final Logger log = Logger.getLogger(UserValidator.class);</span>
+
+  private javax.validation.Validator validator;
+
+  private CityDAO cityDAO;
+
+  public static final String MALICIOUS_REGEX =
+      &quot;(\\W+)|(create)|(drop)|(table)|(add)|(database)|(select)|&quot;
+          + &quot;(where)|(join)|(or)|(and)|(alter)|(update)&quot;;
+
+  @Autowired
+<span class="fc" id="L35">  public UserValidator(javax.validation.Validator validator, CityDAO cityDAO) {</span>
+<span class="fc" id="L36">    this.validator = validator;</span>
+<span class="fc" id="L37">    this.cityDAO = cityDAO;</span>
+<span class="fc" id="L38">  }</span>
+
+  @Override
+  public boolean supports(Class&lt;?&gt; clazz) {
+<span class="nc" id="L42">    return UserWrapper.class.isAssignableFrom(clazz);</span>
+  }
+
+  @Override
+  public void validate(Object target, Errors errors) {
+<span class="nc" id="L47">    log.info(&quot;Validating user&quot;);</span>
+<span class="nc" id="L48">    UserWrapper wrapper = (UserWrapper) target;</span>
+<span class="nc" id="L49">    User user = wrapper.getUser();</span>
+<span class="nc" id="L50">    Set&lt;ConstraintViolation&lt;Object&gt;&gt; validates = validator.validate(user);</span>
+<span class="nc bnc" id="L51" title="All 2 branches missed.">    for (ConstraintViolation&lt;Object&gt; violation : validates) {</span>
+<span class="nc" id="L52">      String propertyPath = violation.getPropertyPath().toString();</span>
+<span class="nc" id="L53">      String message = violation.getMessage();</span>
+<span class="nc" id="L54">      throwError(errors, propertyPath, message);</span>
+<span class="nc" id="L55">    }</span>
+<span class="nc" id="L56">    log.info(&quot;Validating user info&quot;);</span>
+<span class="nc" id="L57">    UserInfo userInfo = user.getUserInfo();</span>
+<span class="nc" id="L58">    validates = validator.validate(userInfo);</span>
+<span class="nc bnc" id="L59" title="All 2 branches missed.">    for (ConstraintViolation&lt;Object&gt; violation : validates) {</span>
+<span class="nc" id="L60">      String propertyPath = violation.getPropertyPath().toString();</span>
+<span class="nc" id="L61">      String message = violation.getMessage();</span>
+<span class="nc" id="L62">      throwError(errors, propertyPath, message);</span>
+<span class="nc" id="L63">    }</span>
+<span class="nc" id="L64">    Pattern digits = Pattern.compile(&quot;\\d+&quot;);</span>
+<span class="nc bnc" id="L65" title="All 2 branches missed.">    if (digits.matcher(userInfo.getName()).find()) {</span>
+<span class="nc" id="L66">      throwError(errors, &quot;noDigitsName&quot;, &quot;Name must not contain digits.&quot;);</span>
+    }
+<span class="nc bnc" id="L68" title="All 2 branches missed.">    if (digits.matcher(userInfo.getSurname()).find()) {</span>
+<span class="nc" id="L69">      throwError(errors, &quot;noDigitsSurname&quot;, &quot;Surname must not contain digits.&quot;);</span>
+    }
+<span class="nc" id="L71">    String maliciousInputMessage = checkForMaliciousInput(user.getLogin());</span>
+<span class="nc" id="L72">    maliciousInputMessage =</span>
+<span class="nc" id="L73">        setIfEmpty(maliciousInputMessage, checkForMaliciousInput(userInfo.getName()));</span>
+<span class="nc" id="L74">    maliciousInputMessage =</span>
+<span class="nc" id="L75">        setIfEmpty(maliciousInputMessage, checkForMaliciousInput(userInfo.getSurname()));</span>
+<span class="nc" id="L76">    String password = wrapper.getPassword();</span>
+<span class="nc" id="L77">    maliciousInputMessage = setIfEmpty(maliciousInputMessage, checkForMaliciousInput(password));</span>
+<span class="nc bnc" id="L78" title="All 4 branches missed.">    if (password.length() &lt; 6 &amp;&amp; !password.isEmpty()) {</span>
+<span class="nc" id="L79">      String property = &quot;realPassword&quot;;</span>
+<span class="nc" id="L80">      String message = &quot;Password must have at least 6 characters.&quot;;</span>
+<span class="nc" id="L81">      errors.reject(property, message);</span>
+<span class="nc" id="L82">      throwError(errors, &quot;realPassword&quot;, &quot;Password must have at least 6 characters.&quot;);</span>
+    }
+<span class="nc" id="L84">    DriverStatus[] statuses = DriverStatus.values();</span>
+<span class="nc" id="L85">    boolean statusValid = false;</span>
+<span class="nc bnc" id="L86" title="All 2 branches missed.">    for (DriverStatus status : statuses) {</span>
+<span class="nc" id="L87">      statusValid |= status.toString().replace(&quot;_&quot;, &quot; &quot;).equalsIgnoreCase(userInfo.getStatus());</span>
+    }
+<span class="nc bnc" id="L89" title="All 2 branches missed.">    if (!statusValid) {</span>
+<span class="nc" id="L90">      throwError(errors, &quot;status&quot;, &quot;Invalid status. Please don't try to change page code&quot;);</span>
+    }
+<span class="nc bnc" id="L92" title="All 2 branches missed.">    if (cityDAO.read(userInfo.getCity().getCurrentCity()) == null) {</span>
+<span class="nc" id="L93">      throwError(errors, &quot;currentCity&quot;, &quot;Invalid value. Please don't try to change page code&quot;);</span>
+    }
+<span class="nc bnc" id="L95" title="All 2 branches missed.">    if (!maliciousInputMessage.isEmpty()) {</span>
+<span class="nc" id="L96">      throwError(errors, &quot;userMaliciousInput&quot;, maliciousInputMessage);</span>
+    }
+<span class="nc" id="L98">  }</span>
+
+  /**
+   * Checks given string for malicious input (SQL injections, HTML injections, &amp;lt;script&amp;gt;
+   * injections.
+   * 
+   * @param input input string to be validated
+   * @return empty string if validation successful, string with message error if forbidden
+   *         characters detected
+   */
+  public static String checkForMaliciousInput(String input) {
+<span class="nc" id="L109">    Pattern maliciousMatcher = Pattern.compile(MALICIOUS_REGEX);</span>
+<span class="nc" id="L110">    String message = &quot;&quot;;</span>
+<span class="nc bnc" id="L111" title="All 2 branches missed.">    if (maliciousMatcher.matcher(input.toLowerCase()).find()) {</span>
+<span class="nc" id="L112">      message = &quot;No special characters and SQL syntax words allowed&quot;;</span>
+    }
+<span class="nc" id="L114">    return message;</span>
+  }
+
+  private String setIfEmpty(String givenString, String givenResult) {
+<span class="nc bnc" id="L118" title="All 2 branches missed.">    if (givenString.isEmpty()) {</span>
+<span class="nc" id="L119">      return givenResult;</span>
+    } else {
+<span class="nc" id="L121">      return givenString;</span>
+    }
+  }
+
+  private void throwError(Errors errors, String property, String message) {
+<span class="nc" id="L126">    log.debug(property + &quot; : &quot; + message);</span>
+<span class="nc" id="L127">    errors.reject(property, message);</span>
+<span class="nc" id="L128">  }</span>
+
+  /**
+   * Converts errors from {@linkplain org.springframework.validation.BindingResult BindingResult} to
+   * map. For every error code a special prefix &quot;error_&quot; is added. For example: &quot;name:too short&quot; is
+   * converted to &quot;error_name:too short&quot;. Used for view part of application, to show different
+   * validation errors.
+   * 
+   * @param bindingResult object containing validation errors for conversion.
+   * @return &lt;code&gt;Map&amp;lt;String, String&amp;gt;&lt;/code&gt; of converted errors.
+   */
+  public static Map&lt;String, String&gt; convertErrorsToHashMap(BindingResult bindingResult) {
+<span class="nc" id="L140">    Map&lt;String, String&gt; map = new HashMap&lt;&gt;();</span>
+<span class="nc bnc" id="L141" title="All 2 branches missed.">    if (bindingResult != null) {</span>
+<span class="nc bnc" id="L142" title="All 2 branches missed.">      for (ObjectError o : bindingResult.getAllErrors()) {</span>
+<span class="nc" id="L143">        map.put(&quot;error_&quot; + o.getCode(), o.getDefaultMessage());</span>
+<span class="nc" id="L144">        log.debug(o.getCode() + &quot;:&quot; + o.getDefaultMessage());</span>
+<span class="nc" id="L145">      }</span>
+    }
+<span class="nc" id="L147">    return map;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

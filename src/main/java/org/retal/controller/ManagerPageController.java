@@ -42,7 +42,7 @@ public class ManagerPageController {
   private static final String MANAGER_PAGE = "/managerPage";
 
   private static final Logger log = Logger.getLogger(ManagerPageController.class);
-  
+
   /**
    * Creates an instance of this class using constructor-based dependency injection.
    */
@@ -111,11 +111,14 @@ public class ManagerPageController {
   @GetMapping(value = "/deleteDriver/{id}")
   public RedirectView deleteDriver(@PathVariable Integer id, RedirectAttributes redir) {
     RedirectView redirectView = new RedirectView(MANAGER_PAGE, true);
-    User user = userService.getUser(id);
-    String url403 = userService.deleteUser(user);
-    if (!url403.isEmpty()) {
+    String url403 = userService.deleteUser(id);
+    if (!url403.isEmpty() && !url403.equals(UserService.DELETION_UPDATION_ERROR)) {
       String param = sessionInfo.getCurrentUser().getLogin();
       redirectView.setUrl(url403 + "/" + param);
+    }
+    if (url403.equals(UserService.DELETION_UPDATION_ERROR)) {
+      redir.addFlashAttribute("error_userDeletionFailed",
+          "Could not delete driver due to assigned order or being driving car");
     }
     return redirectView;
   }
@@ -203,7 +206,10 @@ public class ManagerPageController {
   public RedirectView deleteCar(@PathVariable String id, RedirectAttributes redir) {
     RedirectView redirectView = new RedirectView(MANAGER_PAGE, true);
     Car car = carService.getCar(id);
-    carService.deleteCar(car);
+    if (!carService.deleteCar(car)) {
+      redir.addFlashAttribute("error_carDeletionFailed",
+          "Could not delete car due to assigned order or being driver by someone");
+    }
     return redirectView;
   }
 

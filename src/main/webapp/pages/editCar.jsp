@@ -21,6 +21,7 @@
 			<tr>
 				<td><label>Car ${car.registrationId}</label></td>
 				<td><input type="text" name="registrationId" value="${car.registrationId}" hidden="hidden"/></td>
+				<td><span class = "error">${error_carUnavailable}</span></td>
 			</tr>
 			<tr>
 				<td><label>Shift length</label></td>
@@ -53,7 +54,8 @@
 			</tr>
 		</table>
 		<input type="submit" value="Finish editing car">
-	</form:form>	
+	</form:form>
+	<div class="footer"></div>	
 	</div>
 </body>
 </html>

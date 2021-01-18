@@ -15,10 +15,14 @@
 	<jsp:include page="menu.jsp"/>
 	<div class="container main-body">
 	Welcome, driver ${user.userInfo.name} ${user.userInfo.surname}!<br>
-	You are currently located in ${user.userInfo.city.currentCity}.<br>
-	In this month you worked ${user.userInfo.hoursWorked} of 176 hours.<br>
-	Your status is &quot;${user.userInfo.status}&quot;.
+	You are currently located in <strong>${user.userInfo.city.currentCity}</strong>.<br>
+	In this month you worked <strong>${user.userInfo.hoursWorked}</strong> of <strong>176</strong> hours.<br>
+	Your status is <strong>&quot;${user.userInfo.status}&quot;</strong>.
 	<table>
+		<caption hidden="true">Status table</caption>
+		<tr hidden="true">
+			<th scope="col" hidden="true">Status bar</th>
+		</tr>
 		<tr>
 		<td>
 			<c:forEach var="status" items="${statuses}">
@@ -29,13 +33,15 @@
 		</td>
 		</tr>
 	</table>
-	<span class="error">${error_argument}${error_car}</span><br>
+	<c:if test="${not empty error_argument or not empty error_car}">
+		<span class="error">${error_argument}${error_car}</span><br>
+	</c:if>
 	Your ID is ${user.id}.<br>
 	<c:set var = "orderText" value = "No orders assigned"/>
 	<c:if test = "${not empty order}"><c:set var = "orderText" value = "Currently assigned order:"/></c:if>
 	${orderText}
 	<c:if test = "${not empty order}">
-	<table>
+	<table class ="info-table">
 		<caption hidden="true">Order info</caption>
 		<tr>
 			<th scope="col">Order ID</th>
@@ -67,7 +73,7 @@
 						<c:set var = "cityFrom" value = "${pointB.city.currentCity}"/>
 						<c:set var = "cityTo" value = "${pointA.city.currentCity}"/>
 					</c:if>
-					${cargo.id}: ${cargo.name} (${cityFrom} - ${cityTo})<br>
+					${cargo.id}: ${cargo.name} (To deliver from <strong>${cityFrom}</strong> to <strong>${cityTo}</strong>)<br>
 				</c:forEach>
 			</td>
 		</tr>
@@ -100,9 +106,17 @@
 		<strong>unassigned from the order</strong>.<br>Please, <strong>do not end shift before you unload cargo</strong> which destination point is your current location.
 		</p>
 	</c:if>
-	<span class="error">${error_city}</span><br>
+	<c:if test="${not empty error_city}">
+		<span class="error">${error_city}</span><br>
+	</c:if>
+	<c:if test="${not empty error_cityNotMatching}">
+		<span class = "error">${error_cityNotMatching}</span><br>
+	</c:if>
+	<c:if test="${not empty error_globalCargo}">
+		<span class = "error">${error_globalCargo}</span><br>
+	</c:if>
 	<p>Cargo management menu:<br>Please, remember: changes to cargo status <strong>can't be undone</strong></p>
-	<table>
+	<table class="info-table">
 		<caption hidden="true">Cargo menu</caption>
 		<tr>
 			<th scope="col">ID &amp; Name</th>
@@ -130,8 +144,8 @@
 			</tr>
 		</c:forEach>
 	</table>
-	<span class = "error">${error_globalCargo}</span><br>
 	</c:if>
+	<div class="footer"></div>
 	</div>
 </body>
 </html>

@@ -46,7 +46,7 @@ public class Cargo {
   private int id;
 
   @Column(name = "name")
-  @NotEmpty(message = "Please enter cargo name")
+  @NotEmpty(message = "Please enter cargo name.")
   private String name;
 
   @Column(name = "mass_kg")
@@ -60,7 +60,7 @@ public class Cargo {
   private Set<RoutePoint> points;
 
   @Column(name = "description")
-  @NotEmpty(message = "Please enter cargo description")
+  @NotEmpty(message = "Please enter cargo description.")
   private String description;
 
   public int getId() {

@@ -112,6 +112,24 @@ public class CargoAndOrdersService {
   }
 
   /**
+   * Checks if order has been started by drivers. Order is considered started if both statements
+   * below are true:<br>
+   * 1) it is not completed 2) car assigned has already moved from starting city or cargo has been
+   * already loaded to that car
+   * 
+   * @param order order to check
+   * @return true if order has been started, false otherwise
+   */
+  public boolean isOrderStarted(Order order) {
+    boolean cargoChanged = false;
+    for (Cargo cargo : order.getCargo()) {
+      cargoChanged |= !cargo.getStatus().equalsIgnoreCase(CargoStatus.PREPARED.toString());
+    }
+    return !order.getIsCompleted() && (!order.getCar().getLocation().getCurrentCity()
+        .equals(order.getRoute().split(Order.ROUTE_DELIMETER)[0]) || cargoChanged);
+  }
+
+  /**
    * Attempts to change order's assigned car to another.
    * 
    * @param data input query matching pattern "A_B" where A is car's registration ID and B is order
@@ -203,27 +221,31 @@ public class CargoAndOrdersService {
             + " order cargo. Please don't try to cahnge page code");
         log.warn("Attempt to access unassigned cargo");
       }
-      // FIXME cargo city check
+
     }
     if (!bindingResult.hasErrors()) {
       CargoStatus status = CargoStatus.valueOf(cargo.getStatus().toUpperCase());
       switch (status) {
         case PREPARED:
           status = CargoStatus.LOADED;
+          checkCityMatch(cargo, true, bindingResult);
           break;
         case LOADED:
+          checkCityMatch(cargo, false, bindingResult);
           status = CargoStatus.UNLOADED;
           break;
         case UNLOADED:
         default:
           break;
       }
-      String newStatus = status.toString().toLowerCase();
-      log.info("Cargo id=" + cargo.getId() + ": changed status from " + cargo.getStatus() + " to "
-          + newStatus);
-      cargo.setStatus(newStatus);
-      cargoDAO.update(cargo);
-      return checkOrderForCompletion(order);
+      if (!bindingResult.hasErrors()) {
+        String newStatus = status.toString().toLowerCase();
+        log.info("Cargo id=" + cargo.getId() + ": changed status from " + cargo.getStatus() + " to "
+            + newStatus);
+        cargo.setStatus(newStatus);
+        cargoDAO.update(cargo);
+        return checkOrderForCompletion(order);
+      }
     }
     return false;
   }
@@ -263,6 +285,25 @@ public class CargoAndOrdersService {
       sessionInfo.refreshUser();
     }
     return isCompleted;
+  }
+
+  /**
+   * Checks if city where the driver is matches the city to load/unload cargo.
+   * 
+   * @param cargo {@linkplain org.retal.domain.Cargo Cargo} to be loaded/unloaded
+   * @param isLoading true if we are looking for match between city of load and current location,
+   *        false if we are looking for match between city of unload and current location
+   * @param bindingResult object to store validation errors
+   */
+  private void checkCityMatch(Cargo cargo, boolean isLoading, BindingResult bindingResult) {
+    User driver = sessionInfo.getCurrentUser();
+    RoutePoint point = cargo.getPoints().stream().filter(c -> c.getIsLoading().equals(isLoading))
+        .collect(Collectors.toList()).get(0);
+    if (!point.getCity().equals(driver.getUserInfo().getCity())) {
+      String action = isLoading ? "load" : "unload";
+      bindingResult.reject("cityNotMatching", "You must be in " + point.getCity().getCurrentCity()
+          + " to " + action + " cargo \"" + cargo.getName() + "\"");
+    }
   }
 
   /**
@@ -320,12 +361,14 @@ public class CargoAndOrdersService {
         if (selectedCar == null) {
           bindingResult.reject("globalCar",
               "Could not select car. Please make sure there is" + " working car in "
-                  + route.split(";")[0] + " which has capacity of " + requiredCapacity + " tons.");
+                  + route.split(Order.ROUTE_DELIMETER)[0] + " which has capacity of "
+                  + requiredCapacity + " tons.");
         }
         if (drivers == null) {
           bindingResult.reject("globalDrivers",
               "Could not select drivers. Please make sure there are"
-                  + " available drivers on route " + route.replace(";", "->") + ".");
+                  + " available drivers on route " + route.replace(Order.ROUTE_DELIMETER, "->")
+                  + ".");
         }
       }
       if (!bindingResult.hasErrors()) {
@@ -336,6 +379,7 @@ public class CargoAndOrdersService {
         order.setRoute(route);
         order.setIsCompleted(false);
         order.setRequiredCapacity(requiredCapacity);
+        order.setRequiredShiftLength(selectedCar.getShiftLength());
         Transaction transaction = session.beginTransaction();
         orderDAO.setSession(session);
         orderDAO.add(order);
@@ -360,7 +404,7 @@ public class CargoAndOrdersService {
 
   /**
    * Calculates optimal path and attempts to select car and drivers to complete the order. Optimal
-   * path calculating is basically solving the "Traveling Salesman Problem" with additional
+   * path calculation is basically solving the "Traveling Salesman Problem" with additional
    * restrictions, such as:<br>
    * City of unloading for cargo X can not be visited before city of loading for cargo X; <br>
    * Only loading cities can be starting points; <br>
@@ -387,7 +431,6 @@ public class CargoAndOrdersService {
    */
   public Object[] findAppropriateCarAndDriversAndCalculatePath(List<RoutePoint> list,
       List<CityDistance> distances, List<City> cities, Session session) {
-    // TODO code refactoring
     log.info("Searching for cars and paths...");
     Set<City> allRoutePointCities = new HashSet<>();
     List<String> cityNames =
@@ -571,7 +614,7 @@ public class CargoAndOrdersService {
     if (selectedCar != null) {
       selectedDrivers = selectedDriversList.get(selectedCarList.indexOf(selectedCar));
     }
-    shortestPath = shortestPath.replace(" ", ";");
+    shortestPath = shortestPath.replace(" ", Order.ROUTE_DELIMETER);
     shortestPath = shortestPath.substring(0, shortestPath.length() - 1);
     String driversMessage = selectedDrivers != null ? selectedDrivers.toString() : "null";
     String carMessage = selectedCar != null ? selectedCar.toString() : "null";
@@ -809,7 +852,7 @@ public class CargoAndOrdersService {
    * @param unloadingCities list of unloading cities
    * @param cycleDetected flag which indicates if cycle detected. Used to alter generation
    *        conditions for cycled case.
-   * @return
+   * @return new route state
    */
   private int[] generateCandidate(int[] previousState, int n, int from, List<Integer> loadingCities,
       List<Integer> unloadingCities, boolean cycleDetected) {

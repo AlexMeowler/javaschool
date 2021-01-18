@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CargoDAO.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Logiweb Service</a> &gt; <a href="index.source.html" class="el_package">org.retal.dao</a> &gt; <span class="el_source">CargoDAO.java</span></div><h1>CargoDAO.java</h1><pre class="source lang-java linenums">package org.retal.dao;
+
+import java.util.List;
+import org.apache.log4j.Logger;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.retal.domain.Cargo;
+import org.retal.domain.HibernateSessionFactory;
+import org.springframework.stereotype.Component;
+
+@Component
+<span class="fc" id="L12">public class CargoDAO implements DAO&lt;Cargo&gt; {</span>
+
+<span class="fc" id="L14">  private static final Logger log = Logger.getLogger(CargoDAO.class);</span>
+
+  @Override
+  public void add(Cargo cargo) {
+<span class="nc" id="L18">    log.info(</span>
+<span class="nc" id="L19">        &quot;Attempt to add cargo: name='&quot; + cargo.getName() + &quot;', mass='&quot; + cargo.getMass() + &quot;'&quot;);</span>
+<span class="nc" id="L20">    Session session = HibernateSessionFactory.getSessionFactory().openSession();</span>
+<span class="nc" id="L21">    Transaction transaction = session.beginTransaction();</span>
+<span class="nc" id="L22">    session.save(cargo);</span>
+<span class="nc" id="L23">    session.flush();</span>
+<span class="nc" id="L24">    transaction.commit();</span>
+<span class="nc" id="L25">    session.close();</span>
+<span class="nc" id="L26">  }</span>
+
+  @Override
+  public Cargo read(Object... keys) {
+<span class="nc" id="L30">    validatePrimaryKeys(new Class&lt;?&gt;[] {Integer.class}, keys);</span>
+<span class="nc" id="L31">    Integer id = (Integer) keys[0];</span>
+<span class="nc" id="L32">    Session session = HibernateSessionFactory.getSessionFactory().openSession();</span>
+<span class="nc" id="L33">    Cargo cargo = session.get(Cargo.class, id);</span>
+<span class="nc" id="L34">    session.close();</span>
+<span class="nc" id="L35">    return cargo;</span>
+  }
+
+  @Override
+  public List&lt;Cargo&gt; readAll() {
+<span class="nc" id="L40">    Session session = HibernateSessionFactory.getSessionFactory().openSession();</span>
+<span class="nc" id="L41">    List&lt;Cargo&gt; cargos =</span>
+<span class="nc" id="L42">        session.createNativeQuery(&quot;SELECT * FROM CARGO&quot;, Cargo.class).getResultList();</span>
+<span class="nc" id="L43">    log.info(cargos.size() + &quot; cargos retrieved&quot;);</span>
+<span class="nc" id="L44">    session.close();</span>
+<span class="nc" id="L45">    return cargos;</span>
+  }
+
+  @Override
+  public void delete(Cargo t) {
+    // TODO Auto-generated method stub
+
+<span class="nc" id="L52">  }</span>
+
+  @Override
+  public void update(Cargo t) {
+<span class="nc" id="L56">    Session session = HibernateSessionFactory.getSessionFactory().openSession();</span>
+<span class="nc" id="L57">    Transaction transaction = session.beginTransaction();</span>
+<span class="nc" id="L58">    session.update(t);</span>
+<span class="nc" id="L59">    session.flush();</span>
+<span class="nc" id="L60">    transaction.commit();</span>
+<span class="nc" id="L61">    session.close();</span>
+<span class="nc" id="L62">  }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

@@ -152,9 +152,13 @@ public class AdminPageController {
    * @see org.retal.domain.User
    */
   @GetMapping(value = "/deleteUser/{id}")
-  public RedirectView delete(@PathVariable Integer id) {
+  public RedirectView delete(@PathVariable Integer id, RedirectAttributes redir) {
     RedirectView redirectView = new RedirectView(ADMIN_PAGE, true);
-    userService.deleteUser(id);
+    String answer = userService.deleteUser(id);
+    if (answer.equals(UserService.DELETION_UPDATION_ERROR)) {
+      redir.addFlashAttribute("error_userDeletionFailed",
+          "Could not delete user due to assigned order or being driving car");
+    }
     return redirectView;
   }
 

@@ -47,7 +47,7 @@ public class User {
   private int id;
 
   @Column(name = "login")
-  @Size(min = 5, max = 25, message = "Login must have at least 5 and at most 25 characters")
+  @Size(min = 5, max = 25, message = "Login must have at least 5 and at most 25 characters.")
   private String login;
 
   @Column(name = "password")

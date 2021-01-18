@@ -1,6 +1,7 @@
 nondev/
 sql_backup/
 target/*
+!target/site/
 src/main/resources/db.properties
 src/main/resources/citynames.txt
 src/main/resources/graph.txt
@@ -9,4 +10,4 @@ src/main/resources/surnames.txt
 scan.bat
 .checkstyle
 .classpath
-.prject
+.project

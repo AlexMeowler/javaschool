@@ -43,11 +43,11 @@ public class UserInfo {
   private int id;
 
   @Column(name = "name")
-  @NotEmpty(message = "Please enter name")
+  @NotEmpty(message = "Please enter name.")
   private String name;
 
   @Column(name = "surname")
-  @NotEmpty(message = "Please enter surname")
+  @NotEmpty(message = "Please enter surname.")
   private String surname;
 
   @Column(name = "hours_worked_month")

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>OrderDAO.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Logiweb Service</a> &gt; <a href="index.source.html" class="el_package">org.retal.dao</a> &gt; <span class="el_source">OrderDAO.java</span></div><h1>OrderDAO.java</h1><pre class="source lang-java linenums">package org.retal.dao;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import org.apache.log4j.Logger;
+import org.hibernate.Session;
+import org.retal.domain.Cargo;
+import org.retal.domain.HibernateSessionFactory;
+import org.retal.domain.Order;
+import org.retal.domain.RoutePoint;
+import org.springframework.stereotype.Component;
+
+/**
+ * Since {@link Order} class is in One-To-Many relationship with {@link RoutePoint}, it is required
+ * to create {@link Session} and call {@link #setSession(Session)} before working with this DAO.
+ * After session is closed, {@link #setSession(Session)} with {@code null} argument should be
+ * called.
+ */
+@Component
+<span class="fc" id="L21">public class OrderDAO implements DAO&lt;Order&gt; {</span>
+  
+  private Session session;
+
+<span class="fc" id="L25">  private static final Logger log = Logger.getLogger(OrderDAO.class);</span>
+  
+  @Override
+  public void add(Order t) {
+<span class="nc bnc" id="L29" title="All 2 branches missed.">    if (session == null) {</span>
+<span class="nc" id="L30">      log.error(&quot;Session is null&quot;);</span>
+<span class="nc" id="L31">      return;</span>
+    }
+<span class="nc" id="L33">    log.info(&quot;Attempt to add order&quot;); // TODO with ToString</span>
+<span class="nc" id="L34">    session.save(t);</span>
+<span class="nc" id="L35">  }</span>
+
+  @Override
+  public Order read(Object... keys) {
+<span class="nc" id="L39">    validatePrimaryKeys(new Class&lt;?&gt;[] {Integer.class}, keys);</span>
+<span class="nc" id="L40">    Integer id = (Integer) keys[0];</span>
+<span class="nc" id="L41">    Session session = HibernateSessionFactory.getSessionFactory().openSession();</span>
+<span class="nc" id="L42">    List&lt;Order&gt; orders =</span>
+<span class="nc" id="L43">        session.createNativeQuery(&quot;SELECT * FROM ORDERS WHERE id='&quot; + id + &quot;'&quot;, Order.class)</span>
+<span class="nc" id="L44">            .getResultList();</span>
+<span class="nc" id="L45">    session.close();</span>
+<span class="nc bnc" id="L46" title="All 2 branches missed.">    if (orders.size() == 1) {</span>
+<span class="nc" id="L47">      Order o = orders.get(0);</span>
+<span class="nc" id="L48">      Set&lt;Cargo&gt; cargo = new HashSet&lt;&gt;();</span>
+<span class="nc bnc" id="L49" title="All 2 branches missed.">      for (RoutePoint rp : o.getPoints()) {</span>
+<span class="nc" id="L50">        cargo.add(rp.getCargo());</span>
+<span class="nc" id="L51">      }</span>
+<span class="nc" id="L52">      o.setCargo(cargo);</span>
+<span class="nc" id="L53">      return o;</span>
+    } else {
+<span class="nc" id="L55">      return null;</span>
+    }
+
+  }
+
+  @Override
+  public List&lt;Order&gt; readAll() {
+<span class="nc" id="L62">    Session session = HibernateSessionFactory.getSessionFactory().openSession();</span>
+<span class="nc" id="L63">    List&lt;Order&gt; orders =</span>
+<span class="nc" id="L64">        session.createNativeQuery(&quot;SELECT * FROM ORDERS&quot;, Order.class).getResultList();</span>
+<span class="nc" id="L65">    log.info(orders.size() + &quot; orders retrieved&quot;);</span>
+<span class="nc bnc" id="L66" title="All 2 branches missed.">    for (Order o : orders) {</span>
+<span class="nc" id="L67">      Set&lt;Cargo&gt; cargo = new HashSet&lt;&gt;();</span>
+<span class="nc bnc" id="L68" title="All 2 branches missed.">      for (RoutePoint rp : o.getPoints()) {</span>
+<span class="nc" id="L69">        cargo.add(rp.getCargo());</span>
+<span class="nc" id="L70">      }</span>
+<span class="nc" id="L71">      o.setCargo(cargo);</span>
+<span class="nc" id="L72">    }</span>
+<span class="nc" id="L73">    session.close();</span>
+<span class="nc" id="L74">    return orders;</span>
+  }
+
+  @Override
+  public void delete(Order t) {
+    // TODO Auto-generated method stub
+
+<span class="nc" id="L81">  }</span>
+
+  @Override
+  public void update(Order t) {
+<span class="nc bnc" id="L85" title="All 2 branches missed.">    if (session == null) {</span>
+<span class="nc" id="L86">      log.error(&quot;Session is null&quot;);</span>
+<span class="nc" id="L87">      return;</span>
+    }
+<span class="nc" id="L89">    log.info(&quot;Updating order&quot;); // TODO with ToString</span>
+<span class="nc" id="L90">    session.update(t);</span>
+
+<span class="nc" id="L92">  }</span>
+
+  public void setSession(Session session) {
+<span class="nc" id="L95">    this.session = session;</span>
+<span class="nc" id="L96">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

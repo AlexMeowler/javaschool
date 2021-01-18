@@ -3,6 +3,7 @@ package org.retal.service;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 import javax.validation.ConstraintViolation;
 import org.apache.log4j.Logger;
 import org.retal.dao.CityDAO;
@@ -25,6 +26,10 @@ public class UserValidator implements Validator {
   private javax.validation.Validator validator;
 
   private CityDAO cityDAO;
+
+  public static final String MALICIOUS_REGEX =
+      "(\\W+)|(create)|(drop)|(table)|(add)|(database)|(select)|"
+          + "(where)|(join)|(or)|(and)|(alter)|(update)";
 
   @Autowired
   public UserValidator(javax.validation.Validator validator, CityDAO cityDAO) {
@@ -56,13 +61,25 @@ public class UserValidator implements Validator {
       String message = violation.getMessage();
       throwError(errors, propertyPath, message);
     }
-    // FIXME add special characters checking
+    Pattern digits = Pattern.compile("\\d+");
+    if (digits.matcher(userInfo.getName()).find()) {
+      throwError(errors, "noDigitsName", "Name must not contain digits.");
+    }
+    if (digits.matcher(userInfo.getSurname()).find()) {
+      throwError(errors, "noDigitsSurname", "Surname must not contain digits.");
+    }
+    String maliciousInputMessage = checkForMaliciousInput(user.getLogin());
+    maliciousInputMessage =
+        setIfEmpty(maliciousInputMessage, checkForMaliciousInput(userInfo.getName()));
+    maliciousInputMessage =
+        setIfEmpty(maliciousInputMessage, checkForMaliciousInput(userInfo.getSurname()));
     String password = wrapper.getPassword();
+    maliciousInputMessage = setIfEmpty(maliciousInputMessage, checkForMaliciousInput(password));
     if (password.length() < 6 && !password.isEmpty()) {
       String property = "realPassword";
-      String message = "Password must have at least 6 characters";
+      String message = "Password must have at least 6 characters.";
       errors.reject(property, message);
-      throwError(errors, "realPassword", "Password must have at least 6 characters");
+      throwError(errors, "realPassword", "Password must have at least 6 characters.");
     }
     DriverStatus[] statuses = DriverStatus.values();
     boolean statusValid = false;
@@ -74,6 +91,34 @@ public class UserValidator implements Validator {
     }
     if (cityDAO.read(userInfo.getCity().getCurrentCity()) == null) {
       throwError(errors, "currentCity", "Invalid value. Please don't try to change page code");
+    }
+    if (!maliciousInputMessage.isEmpty()) {
+      throwError(errors, "userMaliciousInput", maliciousInputMessage);
+    }
+  }
+
+  /**
+   * Checks given string for malicious input (SQL injections, HTML injections, &lt;script&gt;
+   * injections.
+   * 
+   * @param input input string to be validated
+   * @return empty string if validation successful, string with message error if forbidden
+   *         characters detected
+   */
+  public static String checkForMaliciousInput(String input) {
+    Pattern maliciousMatcher = Pattern.compile(MALICIOUS_REGEX);
+    String message = "";
+    if (maliciousMatcher.matcher(input.toLowerCase()).find()) {
+      message = "No special characters and SQL syntax words allowed";
+    }
+    return message;
+  }
+
+  private String setIfEmpty(String givenString, String givenResult) {
+    if (givenString.isEmpty()) {
+      return givenResult;
+    } else {
+      return givenString;
     }
   }
 

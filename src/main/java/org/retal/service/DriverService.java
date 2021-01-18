@@ -6,6 +6,7 @@ import org.retal.dao.CityDAO;
 import org.retal.dao.UserDAO;
 import org.retal.domain.Car;
 import org.retal.domain.City;
+import org.retal.domain.Order;
 import org.retal.domain.SessionInfo;
 import org.retal.domain.User;
 import org.retal.domain.enums.DriverStatus;
@@ -111,7 +112,7 @@ public class DriverService {
   public void changeLocation(String city, BindingResult bindingResult) {
     User driver = sessionInfo.getCurrentUser();
     String userCity = driver.getUserInfo().getCity().getCurrentCity();
-    String[] cities = driver.getUserInfo().getOrder().getRoute().split(";");
+    String[] cities = driver.getUserInfo().getOrder().getRoute().split(Order.ROUTE_DELIMETER);
     int index = -1;
     for (int i = 0; i < cities.length - 1; i++) {
       if (cities[i + 1].equalsIgnoreCase(city) && cities[i].equalsIgnoreCase(userCity)) {
@@ -148,7 +149,7 @@ public class DriverService {
 
   private void unassignDriverIfPossible(User driver) {
     String userCity = driver.getUserInfo().getCity().getCurrentCity();
-    String[] cities = driver.getUserInfo().getOrder().getRoute().split(";");
+    String[] cities = driver.getUserInfo().getOrder().getRoute().split(Order.ROUTE_DELIMETER);
     int index = -1;
     for (int i = 0; i < cities.length - 1; i++) {
       if (cities[i].equalsIgnoreCase(userCity)) {

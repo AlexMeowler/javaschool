@@ -38,6 +38,8 @@ public class UserService {
 
   private static final Logger log = Logger.getLogger(UserService.class);
 
+  public static final String DELETION_UPDATION_ERROR = "ERROR";
+
   /**
    * Creates an instance of this class using constructor-based dependency injection.
    */
@@ -90,9 +92,9 @@ public class UserService {
    * 
    * @param id ID of user to be deleted
    */
-  public void deleteUser(int id) {
+  public String deleteUser(int id) {
     User target = userDAO.read(id);
-    deleteUser(target);
+    return deleteUser(target);
   }
 
   /**
@@ -103,13 +105,14 @@ public class UserService {
    *         <b>target</b> user
    */
   public String deleteUser(User target) {
-    // FIXME check if possible
     User caller = sessionInfo.getCurrentUser();
     String redirect = "";
     if (userHasRightsToEditOrDeleteUser(caller, target)) {
       UserInfo userInfo = target.getUserInfo();
       if (userInfo.getCar() == null && userInfo.getOrder() == null) {
         userDAO.delete(target);
+      } else {
+        redirect = DELETION_UPDATION_ERROR;
       }
     } else {
       log.warn("Attempt to delete user without sufficient permissions");
@@ -136,6 +139,11 @@ public class UserService {
     User caller = sessionInfo.getCurrentUser();
     String redirect = "";
     User target = userDAO.read(updatedUser.getId());
+    UserInfo userInfo = target.getUserInfo();
+    if (userInfo.getOrder() != null || userInfo.getCar() != null) {
+      bindingResult.reject("userUnavailable",
+          "User could not be updated due to assigned order or being driving car");
+    }
     if (!bindingResult.hasErrors() && userHasRightsToEditOrDeleteUser(caller, target)) {
       if (password.isEmpty()) {
         User copy = userDAO.read(updatedUser.getId());
@@ -218,5 +226,5 @@ public class UserService {
     }
   }
 
-  
+
 }

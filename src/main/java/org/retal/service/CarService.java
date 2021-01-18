@@ -79,12 +79,15 @@ public class CarService {
    * Deletes car from database. Can not delete car if it's assigned to order.
    * 
    * @param car car {@linkplain org.retal.domain.Car Car} to be deleted
+   * @return true if deletion was successful, false otherwise
    */
-  public void deleteCar(Car car) {
-    // FIXME
+  public boolean deleteCar(Car car) {
+    boolean status = false;
     if (car.getOrder() == null && car.getDriver() == null) {
+      status = true;
       carDAO.delete(car);
     }
+    return status;
   }
 
   /**
@@ -93,9 +96,13 @@ public class CarService {
    * @param car car {@linkplain org.retal.domain.Car Car} to be updated
    */
   public void updateCar(Car car, BindingResult bindingResult, String capacity, String shiftlength) {
-
     log.info("Attempt to update car ID = " + car.getRegistrationId());
     doInitialDataValidation(car, bindingResult, capacity, shiftlength);
+    Car persistedCar = carDAO.read(car.getRegistrationId());
+    if (persistedCar.getOrder() != null || persistedCar.getDriver() != null) {
+      bindingResult.reject("carUnavailable",
+          "Car could not be updated due to assigned order or being driven by someone");
+    }
     if (!bindingResult.hasErrors()) {
       carDAO.update(car);
     }
@@ -148,17 +155,20 @@ public class CarService {
    * Gets all available cars for given order ID.
    * 
    * @param id {@linkplain org.retal.domain.Order Order} related ID
-   * @return list of all cars which can be re-assigned to that order
+   * @return list of all cars which can be re-assigned to that order or null if order is completed
    */
   public List<Car> getAllAvailableCarsForOrderId(Integer id) {
     Order order = orderDAO.read(id);
-    List<Car> availableCars =
-        carDAO.readAll().stream().filter(c -> c.getIsWorking()).filter(c -> c.getOrder() == null)
+    List<Car> availableCars = order.getIsCompleted() ? null
+        : carDAO.readAll().stream().filter(c -> c.getIsWorking()).filter(c -> c.getOrder() == null)
             .filter(c -> c.getCapacityTons() >= order.getRequiredCapacity())
             .filter(c -> c.getLocation().equals(order.getCar().getLocation()))
             .filter(c -> c.getShiftLength() >= order.getRequiredShiftLength())
             .collect(Collectors.toList());
-    log.debug(availableCars.size() + " cars are fit for order ID=" + order.getId());
-    return !order.getIsCompleted() ? availableCars : null;
+    String message =
+        availableCars != null ? availableCars.size() + " cars are fit for order ID=" + order.getId()
+            : "null";
+    log.debug(message);
+    return availableCars;
   }
 }

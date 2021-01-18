@@ -30,19 +30,15 @@ import org.springframework.test.context.web.WebAppConfiguration;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class DAOTest {
 
-  @Autowired
   private UserDAO userDAO;
 
-  @Autowired
   private CityDAO cityDAO;
 
-  @Autowired
   private CarDAO carDAO;
 
   private static final String[] cityNames =
       {"Mowcow", "Omsk", "Samara", "Yaroslavl", "Cheboksary", "Chelyabinsk"};
   
-  //private static final Logger log = Logger.getLogger(DAOTest.class);
 
   @Configuration
   static class ContextConfiguration {
@@ -61,6 +57,21 @@ public class DAOTest {
     public CarDAO getCarDAO() {
       return new CarDAO();
     }
+  }
+  
+  @Autowired
+  public void setUserDAO(UserDAO userDAO) {
+    this.userDAO = userDAO;
+  }
+  
+  @Autowired
+  public void setCityDAO(CityDAO cityDAO) {
+    this.cityDAO = cityDAO;
+  }
+  
+  @Autowired
+  public void setCarDAO(CarDAO carDAO) {
+    this.carDAO = carDAO;
   }
 
   @Test

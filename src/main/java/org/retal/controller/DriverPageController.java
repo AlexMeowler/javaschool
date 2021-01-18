@@ -60,7 +60,7 @@ public class DriverPageController {
       List<String> routeList = new ArrayList<>();
       String nextHop = null;
       int nextHopLength = -1;
-      String[] cities = order.getRoute().split(";");
+      String[] cities = order.getRoute().split(Order.ROUTE_DELIMETER);
       String userCity = user.getUserInfo().getCity().getCurrentCity();
       for (int i = 0; i < cities.length; i++) {
         routeList.add(cities[i]);
@@ -87,7 +87,7 @@ public class DriverPageController {
   }
 
   /**
-   * Method for changing driver status using {@linkplain org.retal.service.driverService service
+   * Method for changing driver status using {@linkplain org.retal.service.DriverService service
    * layer}.
    */
   @GetMapping(value = "/changeStatus/{status}")

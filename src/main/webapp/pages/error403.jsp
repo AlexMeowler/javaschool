@@ -17,6 +17,7 @@
 		<c:if test="${not empty username}"><c:set var = "message" value = "${username}, "/></c:if>
 		<h2>Sorry, <c:out value="${message}"/>but I'm afraid can't let you do that...</h2>
 		<a href="${pageContext.request.contextPath}/home">Return to home page</a>
+		<div class="footer"></div>
 	</div>
 </body>
 </html>

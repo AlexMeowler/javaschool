@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AdminPageController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Logiweb Service</a> &gt; <a href="index.source.html" class="el_package">org.retal.controller</a> &gt; <span class="el_source">AdminPageController.java</span></div><h1>AdminPageController.java</h1><pre class="source lang-java linenums">package org.retal.controller;
+
+import java.util.List;
+import java.util.Map;
+import org.apache.log4j.Logger;
+import org.retal.domain.Cargo;
+import org.retal.domain.City;
+import org.retal.domain.SessionInfo;
+import org.retal.domain.User;
+import org.retal.domain.UserInfo;
+import org.retal.domain.enums.CargoStatus;
+import org.retal.dto.CargoDTO;
+import org.retal.dto.CityDTO;
+import org.retal.dto.UserDTO;
+import org.retal.dto.UserInfoDTO;
+import org.retal.service.CarService;
+import org.retal.service.CargoAndOrdersService;
+import org.retal.service.CityService;
+import org.retal.service.UserService;
+import org.retal.service.UserValidator;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.RedirectView;
+
+/**
+ * Controller for administrator page and all possible actions on that page.
+ * 
+ * @author Alexander Retivov
+ *
+ */
+@Controller
+public class AdminPageController {
+
+  private final UserService userService;
+
+  private final SessionInfo sessionInfo;
+
+  private final CityService cityService;
+
+  private final CarService carService;
+
+  private final CargoAndOrdersService cargoAndOrdersService;
+
+  private static final String ADMIN_PAGE = &quot;/adminPage&quot;;
+
+<span class="fc" id="L53">  private static final Logger log = Logger.getLogger(AdminPageController.class);</span>
+
+  /**
+   * Creates an instance of this class using constructor-based dependency injection.
+   */
+  @Autowired
+  public AdminPageController(UserService userService, SessionInfo sessionInfo,
+<span class="fc" id="L60">      CityService cityService, CarService carService, CargoAndOrdersService cargoAndOrdersService) {</span>
+<span class="fc" id="L61">    this.userService = userService;</span>
+<span class="fc" id="L62">    this.sessionInfo = sessionInfo;</span>
+<span class="fc" id="L63">    this.cityService = cityService;</span>
+<span class="fc" id="L64">    this.carService = carService;</span>
+<span class="fc" id="L65">    this.cargoAndOrdersService = cargoAndOrdersService;</span>
+<span class="fc" id="L66">  }</span>
+
+  /**
+   * Method responsible for showing the main administrator page.
+   */
+  @GetMapping(value = ADMIN_PAGE)
+  public String getAdminPage(Model model) {
+<span class="nc" id="L73">    BindingResult result =</span>
+<span class="nc" id="L74">        (BindingResult) model.asMap().get(BindingResult.MODEL_KEY_PREFIX + &quot;user&quot;);</span>
+<span class="nc" id="L75">    Map&lt;String, String&gt; errors = UserValidator.convertErrorsToHashMap(result);</span>
+<span class="nc bnc" id="L76" title="All 2 branches missed.">    for (Map.Entry&lt;String, String&gt; e : errors.entrySet()) {</span>
+<span class="nc" id="L77">      log.debug(e.getKey() + &quot;:&quot; + e.getValue());</span>
+<span class="nc" id="L78">    }</span>
+<span class="nc" id="L79">    model.addAllAttributes(errors);</span>
+<span class="nc" id="L80">    List&lt;User&gt; users = userService.getAllUsers();</span>
+<span class="nc" id="L81">    model.addAttribute(&quot;userList&quot;, users);</span>
+<span class="nc" id="L82">    List&lt;City&gt; cities = cityService.getAllCities();</span>
+<span class="nc" id="L83">    model.addAttribute(&quot;cityList&quot;, cities);</span>
+<span class="nc" id="L84">    model.addAttribute(&quot;cargoList&quot;, cargoAndOrdersService.getAllCargo());</span>
+<span class="nc" id="L85">    return &quot;adminPage&quot;;</span>
+  }
+
+  /**
+   * Method responsible for adding cities and distances between them to database from file. It was
+   * used only once, but will remain here in case of additional cities/distances are required.
+   * 
+   * @see org.retal.domain.City
+   * @see org.retal.domain.CityDistance
+   */
+  @PostMapping(value = &quot;/addCityInfo&quot;)
+  public RedirectView addCityInfo() {
+<span class="nc" id="L97">    RedirectView redirectView = new RedirectView(ADMIN_PAGE, true);</span>
+<span class="nc" id="L98">    cityService.addCitiesFromFile();</span>
+<span class="nc" id="L99">    cityService.addDistancesFromFile();</span>
+<span class="nc" id="L100">    return redirectView;</span>
+  }
+
+  /**
+   * Method responsible for adding drivers to database from file. It was used only once, but will
+   * remain here in case of additional drivers are required.
+   */
+  @PostMapping(value = &quot;/addDriverInfo&quot;)
+  public RedirectView addDriverInfo() {
+<span class="nc" id="L109">    RedirectView redirectView = new RedirectView(ADMIN_PAGE, true);</span>
+<span class="nc" id="L110">    userService.addDriversFromFile();</span>
+<span class="nc" id="L111">    return redirectView;</span>
+  }
+
+  /**
+   * Method responsible for generating one car for each city. It was used only once, but will remain
+   * here in case of additional cars are required.
+   * 
+   * @see org.retal.domain.Car
+   */
+  @PostMapping(value = &quot;/addCarsInfo&quot;)
+  public RedirectView addCarsInfo() {
+<span class="nc" id="L122">    RedirectView redirectView = new RedirectView(ADMIN_PAGE, true);</span>
+<span class="nc" id="L123">    carService.generateCarForEachCity();</span>
+<span class="nc" id="L124">    return redirectView;</span>
+  }
+
+  /**
+   * Method responsible for adding new user to database from form on page using
+   * {@linkplain org.retal.service.UserService service layer}.
+   * 
+   * @see org.retal.domain.User
+   */
+  @PostMapping(value = &quot;/addNewUser&quot;)
+  public RedirectView addNewUser(UserDTO userDTO, BindingResult bindingResult,
+      UserInfoDTO userInfoDTO, CityDTO cityDTO, RedirectAttributes redir) {
+<span class="nc" id="L136">    redir.addFlashAttribute(&quot;visible&quot;, &quot;true&quot;);</span>
+<span class="nc" id="L137">    User user = mapUserRelatedDTOsToEntity(userDTO, userInfoDTO, cityDTO);</span>
+<span class="nc" id="L138">    userService.addNewUser(user, bindingResult, userDTO.getPassword());</span>
+<span class="nc" id="L139">    RedirectView redirectView = new RedirectView(ADMIN_PAGE, true);</span>
+<span class="nc bnc" id="L140" title="All 2 branches missed.">    if (bindingResult.hasErrors()) {</span>
+<span class="nc" id="L141">      log.warn(&quot;Validation failed when adding new user&quot;);</span>
+<span class="nc" id="L142">      redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + &quot;user&quot;, bindingResult);</span>
+<span class="nc" id="L143">      redir.addFlashAttribute(&quot;user&quot;, user);</span>
+    }
+<span class="nc" id="L145">    return redirectView;</span>
+  }
+
+  /**
+   * Method responsible for attempt to delete user from database when button is clicked using
+   * {@linkplain org.retal.service.UserService service layer}.
+   * 
+   * @see org.retal.domain.User
+   */
+  @GetMapping(value = &quot;/deleteUser/{id}&quot;)
+  public RedirectView delete(@PathVariable Integer id, RedirectAttributes redir) {
+<span class="nc" id="L156">    RedirectView redirectView = new RedirectView(ADMIN_PAGE, true);</span>
+<span class="nc" id="L157">    String answer = userService.deleteUser(id);</span>
+<span class="nc bnc" id="L158" title="All 2 branches missed.">    if (answer.equals(UserService.DELETION_UPDATION_ERROR)) {</span>
+<span class="nc" id="L159">      redir.addFlashAttribute(&quot;error_userDeletionFailed&quot;,</span>
+          &quot;Could not delete user due to assigned order or being driving car&quot;);
+    }
+<span class="nc" id="L162">    return redirectView;</span>
+  }
+
+  /**
+   * Method responsible for redirecting to user editor page.
+   * 
+   * @see org.retal.domain.User
+   */
+  @GetMapping(value = &quot;/editUser/{id}&quot;)
+  public RedirectView edit(@PathVariable Integer id, RedirectAttributes redir) {
+<span class="nc" id="L172">    RedirectView redirectView = new RedirectView(&quot;/editUser&quot;, true);</span>
+<span class="nc" id="L173">    redir.addFlashAttribute(&quot;user&quot;, userService.getUser(id));</span>
+<span class="nc" id="L174">    redir.addFlashAttribute(&quot;we&quot;, sessionInfo.getCurrentUser());</span>
+<span class="nc" id="L175">    return redirectView;</span>
+  }
+
+  /**
+   * Method responsible for showing user editor page.
+   * 
+   * @see org.retal.domain.User
+   */
+  @GetMapping(value = &quot;/editUser&quot;)
+  public String editForm(Model model) {
+<span class="nc" id="L185">    BindingResult result =</span>
+<span class="nc" id="L186">        (BindingResult) model.asMap().get(BindingResult.MODEL_KEY_PREFIX + &quot;user&quot;);</span>
+<span class="nc" id="L187">    Map&lt;String, String&gt; errors = UserValidator.convertErrorsToHashMap(result);</span>
+<span class="nc" id="L188">    model.addAllAttributes(errors);</span>
+<span class="nc" id="L189">    model.addAttribute(&quot;editUser&quot;, &quot;/submitEditedUser&quot;);</span>
+<span class="nc" id="L190">    List&lt;City&gt; cities = cityService.getAllCities();</span>
+<span class="nc" id="L191">    model.addAttribute(&quot;cityList&quot;, cities);</span>
+<span class="nc" id="L192">    return &quot;editUser&quot;;</span>
+  }
+
+  /**
+   * Method responsible for submitting edited user to {@linkplain org.retal.service.UserService
+   * service layer} which will update user if input is valid.
+   * 
+   * @see org.retal.domain.User
+   */
+  @PostMapping(value = &quot;/submitEditedUser&quot;)
+  public RedirectView finishEditing(UserDTO userDTO, BindingResult bindingResult,
+      UserInfoDTO userInfoDTO, CityDTO cityDTO, RedirectAttributes redir) {
+<span class="nc" id="L204">    RedirectView redirectView = new RedirectView(ADMIN_PAGE, true);</span>
+<span class="nc" id="L205">    User user = mapUserRelatedDTOsToEntity(userDTO, userInfoDTO, cityDTO);</span>
+<span class="nc" id="L206">    userService.updateUser(user, bindingResult, userDTO.getPassword());</span>
+<span class="nc bnc" id="L207" title="All 2 branches missed.">    if (bindingResult.hasErrors()) {</span>
+<span class="nc" id="L208">      log.warn(&quot;Validation fail when editing user&quot;);</span>
+<span class="nc" id="L209">      redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + &quot;user&quot;, bindingResult);</span>
+<span class="nc" id="L210">      redir.addFlashAttribute(&quot;user&quot;, user);</span>
+<span class="nc" id="L211">      redirectView.setUrl(&quot;/editUser&quot;);</span>
+    }
+<span class="nc" id="L213">    return redirectView;</span>
+  }
+
+  /**
+   * Method responsible for adding cargo entities using
+   * {@linkplain org.retal.service.CargoAndOrdersService service layer}.
+   * 
+   * @see org.retal.domain.Cargo
+   */
+  @PostMapping(value = &quot;/addNewCargo&quot;)
+  public RedirectView addNewCargo(CargoDTO cargoDTO, BindingResult bindingResult,
+      RedirectAttributes redir, @RequestParam(name = &quot;mass&quot;) String weight) {
+<span class="nc" id="L225">    redir.addFlashAttribute(&quot;visiblecargo&quot;, &quot;true&quot;);</span>
+<span class="nc" id="L226">    Cargo cargo = new Cargo(cargoDTO);</span>
+<span class="nc" id="L227">    cargo.setStatus(CargoStatus.PREPARED.toString().toLowerCase());</span>
+<span class="nc" id="L228">    cargoAndOrdersService.addNewCargo(cargo, bindingResult, weight);</span>
+<span class="nc" id="L229">    RedirectView redirectView = new RedirectView(ADMIN_PAGE, true);</span>
+<span class="nc bnc" id="L230" title="All 2 branches missed.">    if (bindingResult.hasErrors()) {</span>
+<span class="nc" id="L231">      log.warn(&quot;Validation fail when adding new cargo&quot;);</span>
+<span class="nc" id="L232">      redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + &quot;cargo&quot;, bindingResult);</span>
+<span class="nc" id="L233">      redir.addFlashAttribute(&quot;cargo&quot;, cargo);</span>
+    }
+<span class="nc" id="L235">    return redirectView;</span>
+  }
+
+  /**
+   * Method for mapping user related DTOs (user, user info, city) to
+   * {@linkplain org.retal.domain.User User} entity.
+   * 
+   * @param userDTO instance of {@linkplain org.retal.dto.UserDTO}
+   * @param userInfoDTO instance of {@linkplain org.retal.dto.UserInfoDTO}
+   * @param cityDTO instance of {@linkplain org.retal.dto.CityDTO}
+   * @return transient instance of {@linkplain org.retal.domain.User User} entity
+   */
+  private User mapUserRelatedDTOsToEntity(UserDTO userDTO, UserInfoDTO userInfoDTO,
+      CityDTO cityDTO) {
+<span class="nc" id="L249">    User user = new User(userDTO);</span>
+<span class="nc" id="L250">    UserInfo userInfo = new UserInfo(userInfoDTO);</span>
+<span class="nc" id="L251">    City currentCity = new City(cityDTO);</span>
+<span class="nc" id="L252">    userInfo.setCity(currentCity);</span>
+<span class="nc" id="L253">    user.setUserInfo(userInfo);</span>
+<span class="nc" id="L254">    return user;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

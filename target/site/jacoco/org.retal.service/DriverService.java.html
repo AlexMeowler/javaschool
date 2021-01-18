@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DriverService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Logiweb Service</a> &gt; <a href="index.source.html" class="el_package">org.retal.service</a> &gt; <span class="el_source">DriverService.java</span></div><h1>DriverService.java</h1><pre class="source lang-java linenums">package org.retal.service;
+
+import org.apache.log4j.Logger;
+import org.retal.dao.CarDAO;
+import org.retal.dao.CityDAO;
+import org.retal.dao.UserDAO;
+import org.retal.domain.Car;
+import org.retal.domain.City;
+import org.retal.domain.Order;
+import org.retal.domain.SessionInfo;
+import org.retal.domain.User;
+import org.retal.domain.enums.DriverStatus;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.validation.BindingResult;
+
+/**
+ * Service, containing business-logic methods regarding {@linkplain org.retal.domain.User User}
+ * entities with role 'driver'.
+ * 
+ * @author Alexander Retivov
+ *
+ */
+@Service
+public class DriverService {
+
+  private final SessionInfo sessionInfo;
+
+  private final UserDAO userDAO;
+
+  private final CityDAO cityDAO;
+
+  private final CarDAO carDAO;
+
+  private final CargoAndOrdersService cargoAndOrdersService;
+
+<span class="fc" id="L37">  private static final Logger log = Logger.getLogger(DriverService.class);</span>
+
+  /**
+   * Creates an instance of this class using constructor-based dependency injection.
+   */
+  @Autowired
+  public DriverService(SessionInfo sessionInfo, UserDAO userDAO, CityDAO cityDAO, CarDAO carDAO,
+<span class="fc" id="L44">      CargoAndOrdersService cargoAndOrdersService) {</span>
+<span class="fc" id="L45">    this.sessionInfo = sessionInfo;</span>
+<span class="fc" id="L46">    this.userDAO = userDAO;</span>
+<span class="fc" id="L47">    this.cityDAO = cityDAO;</span>
+<span class="fc" id="L48">    this.carDAO = carDAO;</span>
+<span class="fc" id="L49">    this.cargoAndOrdersService = cargoAndOrdersService;</span>
+<span class="fc" id="L50">  }</span>
+
+  /**
+   * Updates driver status.
+   * 
+   * @param newStatus new status
+   * @param bindingResult object to store validation result
+   */
+  public void changeStatus(String newStatus, BindingResult bindingResult) {
+<span class="nc" id="L59">    User driver = sessionInfo.getCurrentUser();</span>
+<span class="nc" id="L60">    newStatus = newStatus.toLowerCase().replace(&quot; &quot;, &quot;_&quot;);</span>
+<span class="nc" id="L61">    DriverStatus status = null;</span>
+    try {
+<span class="nc" id="L63">      status = DriverStatus.valueOf(newStatus.toUpperCase());</span>
+<span class="nc" id="L64">    } catch (IllegalArgumentException e) {</span>
+<span class="nc" id="L65">      bindingResult.reject(&quot;argument&quot;,</span>
+          &quot;Illegal argument for status, please don't try to change page code.&quot;);
+<span class="nc" id="L67">      log.error(&quot;Illegal argument for driver status&quot;);</span>
+<span class="nc" id="L68">    }</span>
+<span class="nc bnc" id="L69" title="All 2 branches missed.">    if (status != null) {</span>
+<span class="nc bnc" id="L70" title="All 5 branches missed.">      switch (status) {</span>
+        case DRIVING:
+<span class="nc bnc" id="L72" title="All 2 branches missed.">          if (driver.getUserInfo().getOrder() != null) {</span>
+<span class="nc" id="L73">            Car car = driver.getUserInfo().getOrder().getCar();</span>
+<span class="nc bnc" id="L74" title="All 4 branches missed.">            if (car.getDriver() == null || car.getDriver().getId() == driver.getId()) {</span>
+<span class="nc" id="L75">              driver.getUserInfo().setCar(car);</span>
+            } else {
+<span class="nc" id="L77">              bindingResult.reject(&quot;car&quot;,</span>
+                  &quot;Could not select car, assigned car is being drived by someone else.&quot;);
+            }
+<span class="nc" id="L80">          } else {</span>
+<span class="nc" id="L81">            bindingResult.reject(&quot;car&quot;,</span>
+                &quot;Could not change status, no order (and therefore, no car) is assigned&quot;
+                    + &quot; to you at this time.&quot;);
+          }
+<span class="nc" id="L85">          break;</span>
+        case LOADING_AND_UNLOADING_CARGO:
+<span class="nc" id="L87">          break;</span>
+        case ON_SHIFT:
+<span class="nc" id="L89">          driver.getUserInfo().setCar(null);</span>
+<span class="nc" id="L90">          break;</span>
+        case RESTING:
+<span class="nc" id="L92">          unassignDriverIfPossible(driver);</span>
+<span class="nc" id="L93">          driver.getUserInfo().setCar(null);</span>
+<span class="nc" id="L94">          break;</span>
+        default:
+          break;
+      }
+<span class="nc bnc" id="L98" title="All 2 branches missed.">      if (!bindingResult.hasErrors()) {</span>
+<span class="nc" id="L99">        newStatus = newStatus.replace(&quot;_&quot;, &quot; &quot;);</span>
+<span class="nc" id="L100">        driver.getUserInfo().setStatus(newStatus);</span>
+<span class="nc" id="L101">        userDAO.update(driver);</span>
+      }
+    }
+<span class="nc" id="L104">  }</span>
+
+  /**
+   * Changes location of driver.
+   * 
+   * @param city name of city to which location should be changed
+   * @param bindingResult object for storing validating result
+   */
+  public void changeLocation(String city, BindingResult bindingResult) {
+<span class="nc" id="L113">    User driver = sessionInfo.getCurrentUser();</span>
+<span class="nc" id="L114">    String userCity = driver.getUserInfo().getCity().getCurrentCity();</span>
+<span class="nc" id="L115">    String[] cities = driver.getUserInfo().getOrder().getRoute().split(Order.ROUTE_DELIMETER);</span>
+<span class="nc" id="L116">    int index = -1;</span>
+<span class="nc bnc" id="L117" title="All 2 branches missed.">    for (int i = 0; i &lt; cities.length - 1; i++) {</span>
+<span class="nc bnc" id="L118" title="All 4 branches missed.">      if (cities[i + 1].equalsIgnoreCase(city) &amp;&amp; cities[i].equalsIgnoreCase(userCity)) {</span>
+<span class="nc" id="L119">        index = i + 1;</span>
+      }
+    }
+<span class="nc bnc" id="L122" title="All 2 branches missed.">    int length =</span>
+<span class="nc" id="L123">        index != -1 ? cargoAndOrdersService.lengthBetweenTwoCities(userCity, cities[index]) : 0;</span>
+<span class="nc" id="L124">    length = (int) Math.round((double) length / CargoAndOrdersService.AVERAGE_CAR_SPEED);</span>
+<span class="nc" id="L125">    Integer hoursDrived = driver.getUserInfo().getHoursDrived();</span>
+<span class="nc bnc" id="L126" title="All 2 branches missed.">    if (hoursDrived != null) {</span>
+<span class="nc" id="L127">      hoursDrived += length;</span>
+    } else {
+<span class="nc" id="L129">      hoursDrived = length;</span>
+    }
+<span class="nc" id="L131">    Integer hoursWorked = driver.getUserInfo().getHoursWorked() + length;</span>
+<span class="nc bnc" id="L132" title="All 4 branches missed.">    if (index != -1 &amp;&amp; hoursDrived &lt;= driver.getUserInfo().getOrder().getCar().getShiftLength()) {</span>
+<span class="nc" id="L133">      changeStatus(DriverStatus.DRIVING.toString(), bindingResult);</span>
+<span class="nc" id="L134">      City newCity = cityDAO.read(city);</span>
+<span class="nc" id="L135">      driver.getUserInfo().setCity(newCity);</span>
+<span class="nc" id="L136">      driver.getUserInfo().setHoursWorked(hoursWorked);</span>
+      // FIXME month checking
+<span class="nc" id="L138">      driver.getUserInfo().setHoursDrived(hoursDrived);</span>
+<span class="nc" id="L139">      userDAO.update(driver);</span>
+<span class="nc" id="L140">      Car car = driver.getUserInfo().getCar();</span>
+<span class="nc" id="L141">      car.setLocation(newCity);</span>
+<span class="nc" id="L142">      carDAO.update(car);</span>
+<span class="nc" id="L143">    } else {</span>
+<span class="nc" id="L144">      bindingResult.reject(&quot;city&quot;,</span>
+          &quot;Illegal next city argument. Please don't try to change page code.&quot;);
+<span class="nc" id="L146">      log.warn(&quot;Illegal next city on route of order id=&quot; + driver.getUserInfo().getOrder().getId());</span>
+    }
+<span class="nc" id="L148">  }</span>
+
+  private void unassignDriverIfPossible(User driver) {
+<span class="nc" id="L151">    String userCity = driver.getUserInfo().getCity().getCurrentCity();</span>
+<span class="nc" id="L152">    String[] cities = driver.getUserInfo().getOrder().getRoute().split(Order.ROUTE_DELIMETER);</span>
+<span class="nc" id="L153">    int index = -1;</span>
+<span class="nc bnc" id="L154" title="All 2 branches missed.">    for (int i = 0; i &lt; cities.length - 1; i++) {</span>
+<span class="nc bnc" id="L155" title="All 2 branches missed.">      if (cities[i].equalsIgnoreCase(userCity)) {</span>
+<span class="nc" id="L156">        index = i + 1;</span>
+      }
+    }
+<span class="nc bnc" id="L159" title="All 2 branches missed.">    int length =</span>
+<span class="nc" id="L160">        index != -1 ? cargoAndOrdersService.lengthBetweenTwoCities(userCity, cities[index]) : 0;</span>
+<span class="nc" id="L161">    length = (int) Math.round((double) length / CargoAndOrdersService.AVERAGE_CAR_SPEED);</span>
+<span class="nc" id="L162">    Integer hoursDrived = driver.getUserInfo().getHoursDrived();</span>
+<span class="nc bnc" id="L163" title="All 2 branches missed.">    if (hoursDrived != null) {</span>
+<span class="nc" id="L164">      hoursDrived += length;</span>
+    } else {
+<span class="nc" id="L166">      hoursDrived = length;</span>
+    }
+<span class="nc bnc" id="L168" title="All 4 branches missed.">    if (index != -1 &amp;&amp; hoursDrived &gt; driver.getUserInfo().getOrder().getCar().getShiftLength()) {</span>
+<span class="nc" id="L169">      driver.getUserInfo().setOrder(null);</span>
+<span class="nc" id="L170">      driver.getUserInfo().setHoursDrived(null);</span>
+    }
+<span class="nc" id="L172">  }</span>
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

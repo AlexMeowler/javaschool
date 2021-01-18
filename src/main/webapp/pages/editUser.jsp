@@ -15,6 +15,8 @@
 	<jsp:include page="menu.jsp"/>
 	<div class="container main-body">
 	<c:url value="${editUser}" var = "edit"/>
+	<span class = "error">${error_userMaliciousInput}</span>
+	<span class = "error">${error_userUnavailable}</span>
 	<form:form id = "form" action="${edit}" method="POST">
 		<br>
 		<table class="form-table">
@@ -48,12 +50,12 @@
 		<tr>
 			<td><label>Name</label></td>
 			<td><input type="text" name="name" value="${user.userInfo.name}"/></td>
-			<td><span class = "error">${error_name}</span></td>
+			<td><span class = "error">${error_name}  ${error_noDigitsName}</span></td>
 		</tr>
 		<tr>
 			<td><label>Surname</label></td>
 			<td><input type="text" name="surname" value="${user.userInfo.surname}"/></td>
-			<td><span class = "error">${error_surname}</span></td>
+			<td><span class = "error">${error_surname}  ${error_noDigitsName}</span></td>
 		</tr>
 		<tr>
 			<td><label>Status</label></td>
@@ -77,7 +79,8 @@
 		</tr>
 		</table>
 		<input type="submit" value="Finish editing user">
-	</form:form>	
+	</form:form>
+	<div class="footer"></div>	
 	</div>
 </body>
 </html>

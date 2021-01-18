@@ -1,9 +1,12 @@
 package org.retal.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import org.retal.domain.Car;
 import org.retal.domain.Cargo;
+import org.retal.domain.Order;
 import org.retal.domain.SessionInfo;
 import org.retal.domain.User;
 import org.retal.domain.UserInfo;
@@ -59,8 +62,19 @@ public class CargoAndOrdersPageController {
     UserInfo userInfo = user.getUserInfo();
     model.addAttribute("current_user_name", userInfo.getName() + " " + userInfo.getSurname());
     model.addAttribute("cargoList", cargoAndOrdersService.getAllCargo());
-    model.addAttribute("ordersList", cargoAndOrdersService.getAllOrders());
+    model.addAttribute("availableCargoList", getAllCitiesAndAssignableCargo()[1]);
+    List<Order> orders = cargoAndOrdersService.getAllOrders();
+    model.addAttribute("ordersList", orders);
     model.addAttribute("cityList", cityService.getAllCities());
+    List<Boolean> isOrderStarted = new ArrayList<>();
+    List<Boolean> hasCarsAvailable = new ArrayList<>();
+    orders.forEach(o -> {
+      isOrderStarted.add(cargoAndOrdersService.isOrderStarted(o));
+      List<Car> cars = getAvailableCarsForOrder(o.getId());
+      hasCarsAvailable.add(cars != null && cars.size() != 0);
+    });
+    model.addAttribute("orderStarted", isOrderStarted);
+    model.addAttribute("hasCarsAvailable", hasCarsAvailable);
     return "cargo_orders";
   }
 
@@ -75,13 +89,12 @@ public class CargoAndOrdersPageController {
   @GetMapping(value = "/getCityAndCargoInfo")
   @ResponseBody
   public List[] getAllCitiesAndAssignableCargo() {
-    List<Cargo> cargo = cargoAndOrdersService.getAllCargo();
-    for (int i = 0; i < cargo.size(); i++) {
-      if (cargo.get(i).getPoints().size() != 0) {
-        cargo.remove(i);
-        i--;
-      }
-    }
+    List<Cargo> cargo = cargoAndOrdersService.getAllCargo().stream()
+        .filter(c -> c.getPoints().size() == 0).collect(Collectors.toList());
+    /*
+     * for (int i = 0; i < cargo.size(); i++) { if (cargo.get(i).getPoints().size() != 0) {
+     * cargo.remove(i); i--; } }
+     */
     return new List[] {cityService.getAllCities(), cargo};
   }
 

@@ -49,7 +49,7 @@
 			<th scope="col">Assigned cargo</th>
 			<th scope="col">Action</th>
 		</tr>
-		<c:forEach var="order" items="${ordersList}">
+		<c:forEach var="order" items="${ordersList}" varStatus="i">
 		<tr>
 			<td>${order.id}</td>
 			<c:set var = "status" value = "Not completed"/>
@@ -79,17 +79,17 @@
 						<c:set var = "cityFrom" value = "${pointB.city.currentCity}"/>
 						<c:set var = "cityTo" value = "${pointA.city.currentCity}"/>
 					</c:if>
-					${cargo.id}: ${cargo.name} (${cityFrom} - ${cityTo})<br>
+					${cargo.id}: ${cargo.name} (To deliver from <strong>${cityFrom}</strong> to <strong>${cityTo}</strong>)<br>
 				</c:forEach>
 			</td>
 			<td>
-				<c:if test="${!order.isCompleted}">
+				<c:if test="${!order.isCompleted and !orderStarted[i.index] and hasCarsAvailable[i.index]}">
 					<a id="order_a${order.id}" href="javascript: getCarList(${order.id});">Reassign car</a>
 					<select id="order_select${order.id}" style="display: none;"></select><br>
 					<a id="order_submit${order.id}" href="javascript: submitCar(${order.id});" style="display: none;">Change car</a><br>
 					<span class="error" id="order_error${order.id}"></span>
 				</c:if>
-				<c:if test="${order.isCompleted}">
+				<c:if test="${order.isCompleted or orderStarted[i.index] or !hasCarsAvailable[i.index]}">
 					-
 				</c:if>
 			</td>
@@ -119,7 +119,7 @@
 					<td><label>Cargo</label></td>
 					<td>
 						<select id="cargo${i.index}" name="list[${i.index}].cargoId">
-							<c:forEach var="cargo" items="${cargoList}">
+							<c:forEach var="cargo" items="${availableCargoList}">
 								<option value = "${cargo.id}" ${routePoint.cargoId == cargo.id ? 'selected' : ''}>${cargo.id}: ${cargo.name}</option>
 							</c:forEach>
 						</select>
@@ -141,6 +141,7 @@
 		<br>
 		<input type="submit" value="Register order">
 	</form:form>
+	<div class="footer"></div>
 	</div>
 </body>
 </html>

@@ -11,16 +11,17 @@ import org.springframework.validation.Validator;
 
 /**
  * Custom {@linkplain org.retal.domain.Cargo Cargo} validator.
+ * 
  * @author Alexander Retivov
  *
  */
 @Service
 public class CargoValidator implements Validator {
-  
+
   private final javax.validation.Validator validator;
 
   private static final Logger log = Logger.getLogger(CargoValidator.class);
-  
+
   @Autowired
   public CargoValidator(javax.validation.Validator validator) {
     this.validator = validator;
@@ -33,7 +34,6 @@ public class CargoValidator implements Validator {
 
   @Override
   public void validate(Object target, Errors errors) {
-    // logging
     log.info("Validating cargo");
     Cargo cargo = (Cargo) target;
     Set<ConstraintViolation<Object>> validates = validator.validate(cargo);
@@ -45,6 +45,20 @@ public class CargoValidator implements Validator {
     Integer weight = cargo.getMass();
     if (weight != null && weight < 0) {
       throwError(errors, "mass", "Cargo weight length must non-negative integer.");
+    }
+    String maliciousInputMessage = UserValidator.checkForMaliciousInput(cargo.getName());
+    maliciousInputMessage = setIfEmpty(maliciousInputMessage,
+        UserValidator.checkForMaliciousInput(cargo.getDescription()));
+    if (!maliciousInputMessage.isEmpty()) {
+      throwError(errors, "cargoMaliciousInput", maliciousInputMessage);
+    }
+  }
+
+  private String setIfEmpty(String givenString, String givenResult) {
+    if (givenString.isEmpty()) {
+      return givenResult;
+    } else {
+      return givenString;
     }
   }
 

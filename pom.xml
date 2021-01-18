@@ -171,6 +171,14 @@
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
 				<version>0.8.6</version>
+				<configuration>
+					<dataFile>target/jacoco.exec</dataFile>
+					<excludes>
+						<exclude>org/retal/config/**/*.class</exclude>
+						<exclude>org/retal/domain/**/*.class</exclude>
+						<exclude>org/retal/dto/*.class</exclude>
+					</excludes>
+				</configuration>
 				<executions>
 					<execution>
 						<id>prepare-agent</id>
@@ -179,29 +187,13 @@
 						</goals>
 					</execution>
 					<execution>
-						<id>report</id>
-						<phase>prepare-package</phase>
-						<goals>
-							<goal>report</goal>
-						</goals>
-					</execution>
-					<execution>
 						<id>post-unit-test</id>
 						<phase>test</phase>
 						<goals>
 							<goal>report</goal>
 						</goals>
-						<configuration>
-							<dataFile>target/jacoco.exec</dataFile>
-							<outputDirectory>target/jacoco-ut</outputDirectory>
-						</configuration>
 					</execution>
 				</executions>
-				<configuration>
-					<systemPropertyVariables>
-						<jacoco-agent.destfile>target/jacoco.exec</jacoco-agent.destfile>
-					</systemPropertyVariables>
-				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -219,13 +211,6 @@
 				<configuration>
 					<show>private</show>
 					<doclint>none</doclint>
-					<includeDependencySources>true</includeDependencySources>
-					<dependencySourceIncludes>
-						<dependencySourceInclude>javax.validation*</dependencySourceInclude>
-						<dependencySourceInclude>javax.servlet*</dependencySourceInclude>
-						<dependencySourceInclude>javax.persistence*</dependencySourceInclude>
-						<dependencySourceInclude>org.springframework*</dependencySourceInclude>
-					</dependencySourceIncludes>
 				</configuration>
 			</plugin>
 		</plugins>

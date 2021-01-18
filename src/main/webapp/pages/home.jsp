@@ -32,6 +32,7 @@
 		</form:form>
 		</sec:authorize>
 		<c:out value="${message}"/>
+		<div class="footer"></div>
   	</div>
 </body>
 </html>

@@ -15,6 +15,7 @@
 	<jsp:include page="menu.jsp"/>
 	<div class="container main-body">
 	<p>Welcome, manager ${current_user_name}!</p>
+	<span class = "error">${error_userDeletionFailed}</span>
 	<p>Drivers list:</p>
 	<table class="info-table">
 		<caption hidden="true">Drivers list</caption>
@@ -47,6 +48,7 @@
 	<c:set var = "hidden" value = ""/>
 	<c:if test = "${empty visibledriver}"><c:set var = "hidden" value = "display:none;"/></c:if>
 	<c:url value="/addNewDriver" var = "addDriver"/>
+	<br><span class = "error">${error_userMaliciousInput}</span>
 	<form:form id = "driverform" action="${addDriver}" method="POST" style = "${hidden}">
 		<br>
 		<table class="form-table">
@@ -97,6 +99,7 @@
 		<input type="submit" value="Add driver">
 	</form:form>
 	<br><br><br>
+	<span class = "error">${error_carDeletionFailed}</span>
 	<p>Cars list:</p>
 	<table class="info-table">
 		<caption hidden="true">Cars list</caption>
@@ -170,6 +173,7 @@
 		</table>
 		<input type="submit" value="Add car">
 	</form:form>
+	<div class="footer"></div>
 	</div>
 </body>
 </html>

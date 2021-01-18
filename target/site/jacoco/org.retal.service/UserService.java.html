@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UserService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Logiweb Service</a> &gt; <a href="index.source.html" class="el_package">org.retal.service</a> &gt; <span class="el_source">UserService.java</span></div><h1>UserService.java</h1><pre class="source lang-java linenums">package org.retal.service;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.List;
+import org.apache.log4j.Logger;
+import org.retal.dao.UserDAO;
+import org.retal.domain.City;
+import org.retal.domain.SessionInfo;
+import org.retal.domain.User;
+import org.retal.domain.UserInfo;
+import org.retal.domain.enums.DriverStatus;
+import org.retal.domain.enums.UserRole;
+import org.retal.dto.UserWrapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.Validator;
+
+/**
+ * Service, containing business-logic methods regarding {@linkplain org.retal.domain.User User} and
+ * {@linkplain org.retal.domain.UserInfo UserInfo} entities.
+ * 
+ * @author Alexander Retivov
+ *
+ */
+@Service
+public class UserService {
+
+  private UserDAO userDAO;
+
+  private SessionInfo sessionInfo;
+
+  private Validator userValidator;
+
+  private CityService cityService;
+
+<span class="fc" id="L39">  private static final Logger log = Logger.getLogger(UserService.class);</span>
+
+  public static final String DELETION_UPDATION_ERROR = &quot;ERROR&quot;;
+
+  /**
+   * Creates an instance of this class using constructor-based dependency injection.
+   */
+  @Autowired
+  public UserService(UserDAO userDAO, SessionInfo sessionInfo, UserValidator userValidator,
+<span class="fc" id="L48">      CityService cityService) {</span>
+<span class="fc" id="L49">    this.userDAO = userDAO;</span>
+<span class="fc" id="L50">    this.sessionInfo = sessionInfo;</span>
+<span class="fc" id="L51">    this.userValidator = userValidator;</span>
+<span class="fc" id="L52">    this.cityService = cityService;</span>
+<span class="fc" id="L53">  }</span>
+
+  public List&lt;User&gt; getAllUsers() {
+<span class="nc" id="L56">    return userDAO.readAll();</span>
+  }
+
+  public User getUser(int id) {
+<span class="nc" id="L60">    return userDAO.read(id);</span>
+  }
+
+  public List&lt;User&gt; getAllDrivers() {
+<span class="nc" id="L64">    return userDAO.readAllWithRole(UserRole.DRIVER.toString());</span>
+  }
+
+  /**
+   * Validates and adds new user to database.
+   * 
+   * @param user {@linkplain org.retal.domain.User User} to be added
+   * @param bindingResult object to store validation result
+   * @param password not hashed password to be validated
+   */
+  public void addNewUser(User user, BindingResult bindingResult, String password) {
+<span class="nc" id="L75">    userValidator.validate(new UserWrapper(user, password), bindingResult);</span>
+<span class="nc bnc" id="L76" title="All 2 branches missed.">    if (password.length() &lt; 6) {</span>
+<span class="nc" id="L77">      String property = &quot;realPassword&quot;;</span>
+<span class="nc" id="L78">      String message = &quot;Password must have at least 6 characters&quot;;</span>
+<span class="nc" id="L79">      log.info(property + &quot; : &quot; + message);</span>
+<span class="nc" id="L80">      bindingResult.reject(property, message);</span>
+    }
+<span class="nc bnc" id="L82" title="All 2 branches missed.">    if (userDAO.findUser(user.getLogin()) != null) {</span>
+<span class="nc" id="L83">      bindingResult.reject(&quot;unique&quot;, &quot;Login must be unique&quot;);</span>
+    }
+<span class="nc bnc" id="L85" title="All 2 branches missed.">    if (!bindingResult.hasErrors()) {</span>
+<span class="nc" id="L86">      userDAO.add(user);</span>
+    }
+<span class="nc" id="L88">  }</span>
+
+  /**
+   * Deletes user from database by ID.
+   * 
+   * @param id ID of user to be deleted
+   */
+  public String deleteUser(int id) {
+<span class="nc" id="L96">    User target = userDAO.read(id);</span>
+<span class="nc" id="L97">    return deleteUser(target);</span>
+  }
+
+  /**
+   * Deletes user from database.
+   * 
+   * @param target user to be deleted
+   * @return redirect address (for controllers) if method invoker has no rights to delete
+   *         &lt;b&gt;target&lt;/b&gt; user
+   */
+  public String deleteUser(User target) {
+<span class="nc" id="L108">    User caller = sessionInfo.getCurrentUser();</span>
+<span class="nc" id="L109">    String redirect = &quot;&quot;;</span>
+<span class="nc bnc" id="L110" title="All 2 branches missed.">    if (userHasRightsToEditOrDeleteUser(caller, target)) {</span>
+<span class="nc" id="L111">      UserInfo userInfo = target.getUserInfo();</span>
+<span class="nc bnc" id="L112" title="All 4 branches missed.">      if (userInfo.getCar() == null &amp;&amp; userInfo.getOrder() == null) {</span>
+<span class="nc" id="L113">        userDAO.delete(target);</span>
+      } else {
+<span class="nc" id="L115">        redirect = DELETION_UPDATION_ERROR;</span>
+      }
+<span class="nc" id="L117">    } else {</span>
+<span class="nc" id="L118">      log.warn(&quot;Attempt to delete user without sufficient permissions&quot;);</span>
+<span class="nc" id="L119">      redirect = &quot;/403&quot;;</span>
+    }
+<span class="nc" id="L121">    return redirect;</span>
+  }
+
+  /**
+   * Updates user in database.
+   * 
+   * @param updatedUser user to be updates
+   * @param bindingResult object to store validation result
+   * @param password not hashed password to be validated
+   * @return redirect address (for controllers) if method invoker has no rights to edit
+   *         &lt;b&gt;updatedUser&lt;/b&gt; user
+   */
+  public String updateUser(User updatedUser, BindingResult bindingResult, String password) {
+<span class="nc" id="L134">    userValidator.validate(new UserWrapper(updatedUser, password), bindingResult);</span>
+<span class="nc" id="L135">    User correlationDB = userDAO.findUser(updatedUser.getLogin());</span>
+<span class="nc bnc" id="L136" title="All 4 branches missed.">    if ((correlationDB != null) &amp;&amp; (correlationDB.getId() != updatedUser.getId())) {</span>
+<span class="nc" id="L137">      bindingResult.reject(&quot;unique&quot;, &quot;New login must be unique&quot;);</span>
+    }
+<span class="nc" id="L139">    User caller = sessionInfo.getCurrentUser();</span>
+<span class="nc" id="L140">    String redirect = &quot;&quot;;</span>
+<span class="nc" id="L141">    User target = userDAO.read(updatedUser.getId());</span>
+<span class="nc" id="L142">    UserInfo userInfo = target.getUserInfo();</span>
+<span class="nc bnc" id="L143" title="All 4 branches missed.">    if (userInfo.getOrder() != null || userInfo.getCar() != null) {</span>
+<span class="nc" id="L144">      bindingResult.reject(&quot;userUnavailable&quot;,</span>
+          &quot;User could not be updated due to assigned order or being driving car&quot;);
+    }
+<span class="nc bnc" id="L147" title="All 4 branches missed.">    if (!bindingResult.hasErrors() &amp;&amp; userHasRightsToEditOrDeleteUser(caller, target)) {</span>
+<span class="nc bnc" id="L148" title="All 2 branches missed.">      if (password.isEmpty()) {</span>
+<span class="nc" id="L149">        User copy = userDAO.read(updatedUser.getId());</span>
+<span class="nc" id="L150">        copy.setLogin(updatedUser.getLogin());</span>
+<span class="nc" id="L151">        copy.setRole(updatedUser.getRole());</span>
+<span class="nc" id="L152">        copy.setUserInfo(updatedUser.getUserInfo());</span>
+<span class="nc" id="L153">        updatedUser = copy;</span>
+      }
+<span class="nc" id="L155">      userDAO.update(updatedUser);</span>
+    } else {
+<span class="nc" id="L157">      log.warn(&quot;Attempt to edit user without sufficient permissions&quot;);</span>
+<span class="nc" id="L158">      redirect = &quot;/403&quot;;</span>
+    }
+<span class="nc" id="L160">    return redirect;</span>
+  }
+
+  /**
+   * Checks if user A has rights to edit or delete user B.
+   * 
+   * @param caller user A
+   * @param target user B
+   * @return true is user A has right to edit or delete user B, false otherwise
+   */
+  private boolean userHasRightsToEditOrDeleteUser(User caller, User target) {
+<span class="nc" id="L171">    String callerRoleString = caller.getRole().toUpperCase();</span>
+<span class="nc bnc" id="L172" title="All 2 branches missed.">    String targetRoleString =</span>
+<span class="nc" id="L173">        target != null ? target.getRole().toUpperCase() : UserRole.DRIVER.toString().toUpperCase();</span>
+<span class="nc" id="L174">    UserRole callerRole = UserRole.valueOf(callerRoleString);</span>
+<span class="nc" id="L175">    UserRole targetRole = UserRole.valueOf(targetRoleString);</span>
+<span class="nc bnc" id="L176" title="All 2 branches missed.">    boolean hasHigherRank = callerRole.ordinal() &gt; targetRole.ordinal();</span>
+<span class="nc" id="L177">    boolean isAdmin = caller.getRole().equalsIgnoreCase(UserRole.ADMIN.toString());</span>
+<span class="nc bnc" id="L178" title="All 4 branches missed.">    return hasHigherRank || isAdmin;</span>
+  }
+
+  /**
+   * Load names and surnames from text files and generates drivers based on them. One driver per
+   * city.
+   */
+  public void addDriversFromFile() {
+    try {
+<span class="nc" id="L187">      BufferedReader namesReader = new BufferedReader(</span>
+<span class="nc" id="L188">          new InputStreamReader(UserService.class.getResourceAsStream(&quot;/names.txt&quot;)));</span>
+<span class="nc" id="L189">      BufferedReader surnamesReader = new BufferedReader(</span>
+<span class="nc" id="L190">          new InputStreamReader(UserService.class.getResourceAsStream(&quot;/surnames.txt&quot;)));</span>
+      String name;
+      String surname;
+<span class="nc" id="L193">      List&lt;City&gt; cities = cityService.getAllCities();</span>
+<span class="nc" id="L194">      int i = 0;</span>
+<span class="nc bnc" id="L195" title="All 4 branches missed.">      while (i &lt; cities.size() &amp;&amp; (name = namesReader.readLine()) != null</span>
+<span class="nc bnc" id="L196" title="All 2 branches missed.">          &amp;&amp; (surname = surnamesReader.readLine()) != null) {</span>
+<span class="nc" id="L197">        User user = new User();</span>
+<span class="nc" id="L198">        UserInfo userInfo = new UserInfo();</span>
+<span class="nc" id="L199">        String login = &quot;d&quot; + name.substring(0, 3) + surname.substring(0, 3);</span>
+<span class="nc" id="L200">        user.setLogin(login);</span>
+<span class="nc" id="L201">        user.setPassword(login);</span>
+<span class="nc" id="L202">        user.setRole(UserRole.DRIVER.toString().toLowerCase());</span>
+<span class="nc" id="L203">        user.setUserInfo(userInfo);</span>
+<span class="nc" id="L204">        userInfo.setName(name);</span>
+<span class="nc" id="L205">        userInfo.setSurname(surname);</span>
+<span class="nc" id="L206">        userInfo.setStatus(DriverStatus.ON_SHIFT.toString().toLowerCase());</span>
+<span class="nc" id="L207">        userInfo.setCity(cities.get(i));</span>
+<span class="nc" id="L208">        userDAO.add(user);</span>
+<span class="nc" id="L209">        i++;</span>
+<span class="nc" id="L210">      }</span>
+<span class="nc" id="L211">      namesReader.close();</span>
+<span class="nc" id="L212">      surnamesReader.close();</span>
+<span class="nc" id="L213">    } catch (IOException e) {</span>
+<span class="nc" id="L214">      log.error(&quot;File names.txt or surnames.txt not found&quot;);</span>
+<span class="nc" id="L215">    }</span>
+<span class="nc" id="L216">  }</span>
+
+  /**
+   * Sets the amount of hours at work during current month at 0 for all users. This method is only
+   * called when month change occurred.
+   */
+  public void setUsersWorkedHoursToZero() {
+<span class="nc bnc" id="L223" title="All 2 branches missed.">    for (User u : userDAO.readAll()) {</span>
+<span class="nc" id="L224">      u.getUserInfo().setHoursWorked(0);</span>
+<span class="nc" id="L225">      userDAO.update(u);</span>
+<span class="nc" id="L226">    }</span>
+<span class="nc" id="L227">  }</span>
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

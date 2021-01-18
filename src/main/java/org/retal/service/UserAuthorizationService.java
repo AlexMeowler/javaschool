@@ -35,7 +35,10 @@ public class UserAuthorizationService implements UserDetailsService {
   
   @Override
   public UserDetails loadUserByUsername(String username) {
-    // FIXME SQL REGEX
+    if (!UserValidator.checkForMaliciousInput(username).isEmpty()) {
+      log.warn("Attempt to inject malicious input");
+      throw new UsernameNotFoundException("Malicious input detected");
+    }
     User user = userDAO.findUser(username);
     if (user == null) {
       log.info("User " + username + " not found");
