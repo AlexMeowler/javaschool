@@ -1,12 +1,19 @@
 package org.retal.service;
 
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import org.apache.log4j.Logger;
+import org.hibernate.Session;
 import org.retal.dao.CarDAO;
 import org.retal.dao.CityDAO;
+import org.retal.dao.OrderRouteProgressionDAO;
 import org.retal.dao.UserDAO;
 import org.retal.domain.Car;
 import org.retal.domain.City;
+import org.retal.domain.HibernateSessionFactory;
 import org.retal.domain.Order;
+import org.retal.domain.OrderRouteProgression;
+import org.retal.domain.RoutePoint;
 import org.retal.domain.SessionInfo;
 import org.retal.domain.User;
 import org.retal.domain.enums.DriverStatus;
@@ -32,6 +39,8 @@ public class DriverService {
 
   private final CarDAO carDAO;
 
+  private final OrderRouteProgressionDAO orderRouteProgressionDAO;
+
   private final CargoAndOrdersService cargoAndOrdersService;
 
   private static final Logger log = Logger.getLogger(DriverService.class);
@@ -41,11 +50,13 @@ public class DriverService {
    */
   @Autowired
   public DriverService(SessionInfo sessionInfo, UserDAO userDAO, CityDAO cityDAO, CarDAO carDAO,
+      OrderRouteProgressionDAO orderRouteProgressionDAO,
       CargoAndOrdersService cargoAndOrdersService) {
     this.sessionInfo = sessionInfo;
     this.userDAO = userDAO;
     this.cityDAO = cityDAO;
     this.carDAO = carDAO;
+    this.orderRouteProgressionDAO = orderRouteProgressionDAO;
     this.cargoAndOrdersService = cargoAndOrdersService;
   }
 
@@ -111,16 +122,25 @@ public class DriverService {
    */
   public void changeLocation(String city, BindingResult bindingResult) {
     User driver = sessionInfo.getCurrentUser();
+    Session session = HibernateSessionFactory.getSessionFactory().openSession();
+    boolean canChangeLocation = true;
+    City driverCity = driver.getUserInfo().getCity();
+    session.persist(driverCity);
+    for (RoutePoint rp : driverCity.getPoints()) {
+      String statusToAvoid = rp.getIsLoading() ? "prepared" : "loaded";
+      canChangeLocation &= !rp.getCargo().getStatus().equalsIgnoreCase(statusToAvoid);
+    }
+    session.close();
+    if (!canChangeLocation) {
+      bindingResult.reject("cargoManagement",
+          "Not all assigned to current city cargo is loaded/unloaded, please double-check.");
+    }
     String userCity = driver.getUserInfo().getCity().getCurrentCity();
     String[] cities = driver.getUserInfo().getOrder().getRoute().split(Order.ROUTE_DELIMETER);
-    int index = -1;
-    for (int i = 0; i < cities.length - 1; i++) {
-      if (cities[i + 1].equalsIgnoreCase(city) && cities[i].equalsIgnoreCase(userCity)) {
-        index = i + 1;
-      }
-    }
-    int length =
-        index != -1 ? cargoAndOrdersService.lengthBetweenTwoCities(userCity, cities[index]) : 0;
+    int index = driver.getUserInfo().getOrder().getOrderRouteProgression().getRouteCounter() + 1;
+    int length = index < cities.length
+        ? cargoAndOrdersService.lengthBetweenTwoCities(userCity, cities[index])
+        : 0;
     length = (int) Math.round((double) length / CargoAndOrdersService.AVERAGE_CAR_SPEED);
     Integer hoursDrived = driver.getUserInfo().getHoursDrived();
     if (hoursDrived != null) {
@@ -129,17 +149,29 @@ public class DriverService {
       hoursDrived = length;
     }
     Integer hoursWorked = driver.getUserInfo().getHoursWorked() + length;
-    if (index != -1 && hoursDrived <= driver.getUserInfo().getOrder().getCar().getShiftLength()) {
-      changeStatus(DriverStatus.DRIVING.toString(), bindingResult);
-      City newCity = cityDAO.read(city);
-      driver.getUserInfo().setCity(newCity);
-      driver.getUserInfo().setHoursWorked(hoursWorked);
-      // FIXME month checking
-      driver.getUserInfo().setHoursDrived(hoursDrived);
-      userDAO.update(driver);
-      Car car = driver.getUserInfo().getCar();
-      car.setLocation(newCity);
-      carDAO.update(car);
+    Calendar currentDate = new GregorianCalendar();
+    Calendar modifiedDate = (Calendar) currentDate.clone();
+    modifiedDate.add(Calendar.HOUR_OF_DAY, length);
+    if (currentDate.get(Calendar.MONTH) != modifiedDate.get(Calendar.MONTH)) {
+      hoursWorked = modifiedDate.get(Calendar.HOUR_OF_DAY);
+    }
+    if (index < cities.length
+        && hoursDrived <= driver.getUserInfo().getOrder().getCar().getShiftLength()) {
+      if (!bindingResult.hasErrors()) {
+        changeStatus(DriverStatus.DRIVING.toString(), bindingResult);
+        City newCity = cityDAO.read(city);
+        driver.getUserInfo().setCity(newCity);
+        driver.getUserInfo().setHoursWorked(hoursWorked);
+        driver.getUserInfo().setHoursDrived(hoursDrived);
+        userDAO.update(driver);
+        Car car = driver.getUserInfo().getCar();
+        car.setLocation(newCity);
+        carDAO.update(car);
+        OrderRouteProgression orderRouteProgression =
+            driver.getUserInfo().getOrder().getOrderRouteProgression();
+        orderRouteProgression.incrementCounter();
+        orderRouteProgressionDAO.update(orderRouteProgression);
+      }
     } else {
       bindingResult.reject("city",
           "Illegal next city argument. Please don't try to change page code.");

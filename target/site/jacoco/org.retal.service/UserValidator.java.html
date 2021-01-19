@@ -28,7 +28,7 @@ public class UserValidator implements Validator {
   private CityDAO cityDAO;
 
   public static final String MALICIOUS_REGEX =
-      &quot;(\\W+)|(create)|(drop)|(table)|(add)|(database)|(select)|&quot;
+      &quot;([\\W&amp;&amp;[^ -]]+)|(create)|(drop)|(table)|(add)|(database)|(select)|&quot;
           + &quot;(where)|(join)|(or)|(and)|(alter)|(update)&quot;;
 
   @Autowired
@@ -106,12 +106,12 @@ public class UserValidator implements Validator {
    *         characters detected
    */
   public static String checkForMaliciousInput(String input) {
-<span class="nc" id="L109">    Pattern maliciousMatcher = Pattern.compile(MALICIOUS_REGEX);</span>
-<span class="nc" id="L110">    String message = &quot;&quot;;</span>
-<span class="nc bnc" id="L111" title="All 2 branches missed.">    if (maliciousMatcher.matcher(input.toLowerCase()).find()) {</span>
-<span class="nc" id="L112">      message = &quot;No special characters and SQL syntax words allowed&quot;;</span>
+<span class="fc" id="L109">    Pattern maliciousMatcher = Pattern.compile(MALICIOUS_REGEX);</span>
+<span class="fc" id="L110">    String message = &quot;&quot;;</span>
+<span class="fc bfc" id="L111" title="All 2 branches covered.">    if (maliciousMatcher.matcher(input.toLowerCase()).find()) {</span>
+<span class="fc" id="L112">      message = &quot;No special characters and SQL syntax words allowed&quot;;</span>
     }
-<span class="nc" id="L114">    return message;</span>
+<span class="fc" id="L114">    return message;</span>
   }
 
   private String setIfEmpty(String givenString, String givenResult) {

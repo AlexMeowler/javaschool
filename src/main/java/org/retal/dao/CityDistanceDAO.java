@@ -3,9 +3,7 @@ package org.retal.dao;
 import java.util.List;
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
-import org.hibernate.Transaction;
 import org.retal.domain.CityDistance;
-import org.retal.domain.HibernateSessionFactory;
 import org.retal.domain.MethodUndefinedException;
 import org.springframework.stereotype.Component;
 
@@ -18,34 +16,31 @@ public class CityDistanceDAO implements DAO<CityDistance> {
   public void add(CityDistance t) {
     log.info("Attempt to add distance between cities '" + t.getCityA() + "' and '" + t.getCityB()
         + "', distance = " + t.getDistance());
-    Session session = HibernateSessionFactory.getSessionFactory().openSession();
-    Transaction transaction = session.beginTransaction();
+    Session session = DAO.start();
     session.saveOrUpdate(t);
     session.flush();
-    transaction.commit();
-    session.close();
-
+    DAO.end(session);
   }
 
   @Override
   public CityDistance read(Object... keys) {
-    validatePrimaryKeys(new Class<?>[] {String.class, String.class}, keys);
+    DAO.validatePrimaryKeys(new Class<?>[] {String.class, String.class}, keys);
     CityDistance.CityDistancePK primaryKey =
         new CityDistance.CityDistancePK((String) keys[0], (String) keys[1]);
-    Session session = HibernateSessionFactory.getSessionFactory().openSession();
+    Session session = DAO.start();
     CityDistance cityDistance = session.get(CityDistance.class, primaryKey);
-    session.close();
+    DAO.end(session);
     return cityDistance;
   }
 
   @Override
   public List<CityDistance> readAll() {
-    Session session = HibernateSessionFactory.getSessionFactory().openSession();
+    Session session = DAO.start();
     List<CityDistance> distances =
         session.createNativeQuery("SELECT * FROM map_country_distance", CityDistance.class)
             .getResultList();
     log.info("retrieved " + distances.size() + " distances");
-    session.close();
+    DAO.end(session);
     return distances;
   }
 

@@ -1,12 +1,9 @@
 package org.retal.dao;
 
 import java.util.List;
-import javax.transaction.Transactional;
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
-import org.hibernate.Transaction;
 import org.retal.domain.Car;
-import org.retal.domain.HibernateSessionFactory;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -17,57 +14,47 @@ public class CarDAO implements DAO<Car> {
   @Override
   public void add(Car car) {
     log.info("Attempt to add new car");
-    Session session = HibernateSessionFactory.getSessionFactory().openSession();
-    Transaction transaction = session.beginTransaction();
+    Session session = DAO.start();
     session.save(car);
     session.flush();
-    transaction.commit();
-    session.close();
+    DAO.end(session);
   }
 
   @Override
   public Car read(Object... keys) throws IllegalArgumentException {
-    validatePrimaryKeys(new Class<?>[] {String.class}, keys);
+    DAO.validatePrimaryKeys(new Class<?>[] {String.class}, keys);
     String id = (String) keys[0];
-    Session session = HibernateSessionFactory.getSessionFactory().openSession();
-    Transaction transaction = session.beginTransaction();
+    Session session = DAO.start();
     Car car = session.get(Car.class, id);
-    //session.flush();
-    transaction.commit();
-    session.close();
+    DAO.end(session);
     return car;
   }
 
   @Override
-  @Transactional
   public List<Car> readAll() {
-    Session session = HibernateSessionFactory.getSessionFactory().openSession();
+    Session session = DAO.start();
     List<Car> cars = session.createNativeQuery("SELECT * FROM CARS", Car.class).getResultList();
     log.info(cars.size() + " cars retrieved");
-    session.close();
+    DAO.end(session);
     return cars;
   }
 
   @Override
   public void delete(Car car) {
-    Session session = HibernateSessionFactory.getSessionFactory().openSession();
-    Transaction transaction = session.beginTransaction();
+    Session session = DAO.start();
     session.delete(car);
     session.flush();
-    transaction.commit();
-    session.close();
+    DAO.end(session);
     log.info(car.toString() + " deleted");
   }
 
   @Override
   public void update(Car car) {
     log.info("Updating car");
-    Session session = HibernateSessionFactory.getSessionFactory().openSession();
-    Transaction transaction = session.beginTransaction();
+    Session session = DAO.start();
     session.update(car);
     session.flush();
-    transaction.commit();
-    session.close();
+    DAO.end(session);
   }
 
 }

@@ -77,12 +77,18 @@ public class AdminPageController {
 <span class="nc" id="L77">      log.debug(e.getKey() + &quot;:&quot; + e.getValue());</span>
 <span class="nc" id="L78">    }</span>
 <span class="nc" id="L79">    model.addAllAttributes(errors);</span>
-<span class="nc" id="L80">    List&lt;User&gt; users = userService.getAllUsers();</span>
-<span class="nc" id="L81">    model.addAttribute(&quot;userList&quot;, users);</span>
-<span class="nc" id="L82">    List&lt;City&gt; cities = cityService.getAllCities();</span>
-<span class="nc" id="L83">    model.addAttribute(&quot;cityList&quot;, cities);</span>
-<span class="nc" id="L84">    model.addAttribute(&quot;cargoList&quot;, cargoAndOrdersService.getAllCargo());</span>
-<span class="nc" id="L85">    return &quot;adminPage&quot;;</span>
+<span class="nc" id="L80">    result = (BindingResult) model.asMap().get(BindingResult.MODEL_KEY_PREFIX + &quot;cargo&quot;);</span>
+<span class="nc" id="L81">    errors = UserValidator.convertErrorsToHashMap(result);</span>
+<span class="nc bnc" id="L82" title="All 2 branches missed.">    for (Map.Entry&lt;String, String&gt; e : errors.entrySet()) {</span>
+<span class="nc" id="L83">      log.debug(e.getKey() + &quot;:&quot; + e.getValue());</span>
+<span class="nc" id="L84">    }</span>
+<span class="nc" id="L85">    model.addAllAttributes(errors);</span>
+<span class="nc" id="L86">    List&lt;User&gt; users = userService.getAllUsers();</span>
+<span class="nc" id="L87">    model.addAttribute(&quot;userList&quot;, users);</span>
+<span class="nc" id="L88">    List&lt;City&gt; cities = cityService.getAllCities();</span>
+<span class="nc" id="L89">    model.addAttribute(&quot;cityList&quot;, cities);</span>
+<span class="nc" id="L90">    model.addAttribute(&quot;cargoList&quot;, cargoAndOrdersService.getAllCargo());</span>
+<span class="nc" id="L91">    return &quot;adminPage&quot;;</span>
   }
 
   /**
@@ -94,10 +100,10 @@ public class AdminPageController {
    */
   @PostMapping(value = &quot;/addCityInfo&quot;)
   public RedirectView addCityInfo() {
-<span class="nc" id="L97">    RedirectView redirectView = new RedirectView(ADMIN_PAGE, true);</span>
-<span class="nc" id="L98">    cityService.addCitiesFromFile();</span>
-<span class="nc" id="L99">    cityService.addDistancesFromFile();</span>
-<span class="nc" id="L100">    return redirectView;</span>
+<span class="nc" id="L103">    RedirectView redirectView = new RedirectView(ADMIN_PAGE, true);</span>
+<span class="nc" id="L104">    cityService.addCitiesFromFile();</span>
+<span class="nc" id="L105">    cityService.addDistancesFromFile();</span>
+<span class="nc" id="L106">    return redirectView;</span>
   }
 
   /**
@@ -106,9 +112,9 @@ public class AdminPageController {
    */
   @PostMapping(value = &quot;/addDriverInfo&quot;)
   public RedirectView addDriverInfo() {
-<span class="nc" id="L109">    RedirectView redirectView = new RedirectView(ADMIN_PAGE, true);</span>
-<span class="nc" id="L110">    userService.addDriversFromFile();</span>
-<span class="nc" id="L111">    return redirectView;</span>
+<span class="nc" id="L115">    RedirectView redirectView = new RedirectView(ADMIN_PAGE, true);</span>
+<span class="nc" id="L116">    userService.addDriversFromFile();</span>
+<span class="nc" id="L117">    return redirectView;</span>
   }
 
   /**
@@ -119,9 +125,9 @@ public class AdminPageController {
    */
   @PostMapping(value = &quot;/addCarsInfo&quot;)
   public RedirectView addCarsInfo() {
-<span class="nc" id="L122">    RedirectView redirectView = new RedirectView(ADMIN_PAGE, true);</span>
-<span class="nc" id="L123">    carService.generateCarForEachCity();</span>
-<span class="nc" id="L124">    return redirectView;</span>
+<span class="nc" id="L128">    RedirectView redirectView = new RedirectView(ADMIN_PAGE, true);</span>
+<span class="nc" id="L129">    carService.generateCarForEachCity();</span>
+<span class="nc" id="L130">    return redirectView;</span>
   }
 
   /**
@@ -133,16 +139,16 @@ public class AdminPageController {
   @PostMapping(value = &quot;/addNewUser&quot;)
   public RedirectView addNewUser(UserDTO userDTO, BindingResult bindingResult,
       UserInfoDTO userInfoDTO, CityDTO cityDTO, RedirectAttributes redir) {
-<span class="nc" id="L136">    redir.addFlashAttribute(&quot;visible&quot;, &quot;true&quot;);</span>
-<span class="nc" id="L137">    User user = mapUserRelatedDTOsToEntity(userDTO, userInfoDTO, cityDTO);</span>
-<span class="nc" id="L138">    userService.addNewUser(user, bindingResult, userDTO.getPassword());</span>
-<span class="nc" id="L139">    RedirectView redirectView = new RedirectView(ADMIN_PAGE, true);</span>
-<span class="nc bnc" id="L140" title="All 2 branches missed.">    if (bindingResult.hasErrors()) {</span>
-<span class="nc" id="L141">      log.warn(&quot;Validation failed when adding new user&quot;);</span>
-<span class="nc" id="L142">      redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + &quot;user&quot;, bindingResult);</span>
-<span class="nc" id="L143">      redir.addFlashAttribute(&quot;user&quot;, user);</span>
+<span class="nc" id="L142">    redir.addFlashAttribute(&quot;visible&quot;, &quot;true&quot;);</span>
+<span class="nc" id="L143">    User user = mapUserRelatedDTOsToEntity(userDTO, userInfoDTO, cityDTO);</span>
+<span class="nc" id="L144">    userService.addNewUser(user, bindingResult, userDTO.getPassword());</span>
+<span class="nc" id="L145">    RedirectView redirectView = new RedirectView(ADMIN_PAGE, true);</span>
+<span class="nc bnc" id="L146" title="All 2 branches missed.">    if (bindingResult.hasErrors()) {</span>
+<span class="nc" id="L147">      log.warn(&quot;Validation failed when adding new user&quot;);</span>
+<span class="nc" id="L148">      redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + &quot;user&quot;, bindingResult);</span>
+<span class="nc" id="L149">      redir.addFlashAttribute(&quot;user&quot;, user);</span>
     }
-<span class="nc" id="L145">    return redirectView;</span>
+<span class="nc" id="L151">    return redirectView;</span>
   }
 
   /**
@@ -153,13 +159,13 @@ public class AdminPageController {
    */
   @GetMapping(value = &quot;/deleteUser/{id}&quot;)
   public RedirectView delete(@PathVariable Integer id, RedirectAttributes redir) {
-<span class="nc" id="L156">    RedirectView redirectView = new RedirectView(ADMIN_PAGE, true);</span>
-<span class="nc" id="L157">    String answer = userService.deleteUser(id);</span>
-<span class="nc bnc" id="L158" title="All 2 branches missed.">    if (answer.equals(UserService.DELETION_UPDATION_ERROR)) {</span>
-<span class="nc" id="L159">      redir.addFlashAttribute(&quot;error_userDeletionFailed&quot;,</span>
+<span class="nc" id="L162">    RedirectView redirectView = new RedirectView(ADMIN_PAGE, true);</span>
+<span class="nc" id="L163">    String answer = userService.deleteUser(id);</span>
+<span class="nc bnc" id="L164" title="All 2 branches missed.">    if (answer.equals(UserService.DELETION_UPDATION_ERROR)) {</span>
+<span class="nc" id="L165">      redir.addFlashAttribute(&quot;error_userDeletionFailed&quot;,</span>
           &quot;Could not delete user due to assigned order or being driving car&quot;);
     }
-<span class="nc" id="L162">    return redirectView;</span>
+<span class="nc" id="L168">    return redirectView;</span>
   }
 
   /**
@@ -169,10 +175,10 @@ public class AdminPageController {
    */
   @GetMapping(value = &quot;/editUser/{id}&quot;)
   public RedirectView edit(@PathVariable Integer id, RedirectAttributes redir) {
-<span class="nc" id="L172">    RedirectView redirectView = new RedirectView(&quot;/editUser&quot;, true);</span>
-<span class="nc" id="L173">    redir.addFlashAttribute(&quot;user&quot;, userService.getUser(id));</span>
-<span class="nc" id="L174">    redir.addFlashAttribute(&quot;we&quot;, sessionInfo.getCurrentUser());</span>
-<span class="nc" id="L175">    return redirectView;</span>
+<span class="nc" id="L178">    RedirectView redirectView = new RedirectView(&quot;/editUser&quot;, true);</span>
+<span class="nc" id="L179">    redir.addFlashAttribute(&quot;user&quot;, userService.getUser(id));</span>
+<span class="nc" id="L180">    redir.addFlashAttribute(&quot;we&quot;, sessionInfo.getCurrentUser());</span>
+<span class="nc" id="L181">    return redirectView;</span>
   }
 
   /**
@@ -182,14 +188,14 @@ public class AdminPageController {
    */
   @GetMapping(value = &quot;/editUser&quot;)
   public String editForm(Model model) {
-<span class="nc" id="L185">    BindingResult result =</span>
-<span class="nc" id="L186">        (BindingResult) model.asMap().get(BindingResult.MODEL_KEY_PREFIX + &quot;user&quot;);</span>
-<span class="nc" id="L187">    Map&lt;String, String&gt; errors = UserValidator.convertErrorsToHashMap(result);</span>
-<span class="nc" id="L188">    model.addAllAttributes(errors);</span>
-<span class="nc" id="L189">    model.addAttribute(&quot;editUser&quot;, &quot;/submitEditedUser&quot;);</span>
-<span class="nc" id="L190">    List&lt;City&gt; cities = cityService.getAllCities();</span>
-<span class="nc" id="L191">    model.addAttribute(&quot;cityList&quot;, cities);</span>
-<span class="nc" id="L192">    return &quot;editUser&quot;;</span>
+<span class="nc" id="L191">    BindingResult result =</span>
+<span class="nc" id="L192">        (BindingResult) model.asMap().get(BindingResult.MODEL_KEY_PREFIX + &quot;user&quot;);</span>
+<span class="nc" id="L193">    Map&lt;String, String&gt; errors = UserValidator.convertErrorsToHashMap(result);</span>
+<span class="nc" id="L194">    model.addAllAttributes(errors);</span>
+<span class="nc" id="L195">    model.addAttribute(&quot;editUser&quot;, &quot;/submitEditedUser&quot;);</span>
+<span class="nc" id="L196">    List&lt;City&gt; cities = cityService.getAllCities();</span>
+<span class="nc" id="L197">    model.addAttribute(&quot;cityList&quot;, cities);</span>
+<span class="nc" id="L198">    return &quot;editUser&quot;;</span>
   }
 
   /**
@@ -201,16 +207,16 @@ public class AdminPageController {
   @PostMapping(value = &quot;/submitEditedUser&quot;)
   public RedirectView finishEditing(UserDTO userDTO, BindingResult bindingResult,
       UserInfoDTO userInfoDTO, CityDTO cityDTO, RedirectAttributes redir) {
-<span class="nc" id="L204">    RedirectView redirectView = new RedirectView(ADMIN_PAGE, true);</span>
-<span class="nc" id="L205">    User user = mapUserRelatedDTOsToEntity(userDTO, userInfoDTO, cityDTO);</span>
-<span class="nc" id="L206">    userService.updateUser(user, bindingResult, userDTO.getPassword());</span>
-<span class="nc bnc" id="L207" title="All 2 branches missed.">    if (bindingResult.hasErrors()) {</span>
-<span class="nc" id="L208">      log.warn(&quot;Validation fail when editing user&quot;);</span>
-<span class="nc" id="L209">      redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + &quot;user&quot;, bindingResult);</span>
-<span class="nc" id="L210">      redir.addFlashAttribute(&quot;user&quot;, user);</span>
-<span class="nc" id="L211">      redirectView.setUrl(&quot;/editUser&quot;);</span>
+<span class="nc" id="L210">    RedirectView redirectView = new RedirectView(ADMIN_PAGE, true);</span>
+<span class="nc" id="L211">    User user = mapUserRelatedDTOsToEntity(userDTO, userInfoDTO, cityDTO);</span>
+<span class="nc" id="L212">    userService.updateUser(user, bindingResult, userDTO.getPassword());</span>
+<span class="nc bnc" id="L213" title="All 2 branches missed.">    if (bindingResult.hasErrors()) {</span>
+<span class="nc" id="L214">      log.warn(&quot;Validation fail when editing user&quot;);</span>
+<span class="nc" id="L215">      redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + &quot;user&quot;, bindingResult);</span>
+<span class="nc" id="L216">      redir.addFlashAttribute(&quot;user&quot;, user);</span>
+<span class="nc" id="L217">      redirectView.setUrl(&quot;/editUser&quot;);</span>
     }
-<span class="nc" id="L213">    return redirectView;</span>
+<span class="nc" id="L219">    return redirectView;</span>
   }
 
   /**
@@ -222,17 +228,17 @@ public class AdminPageController {
   @PostMapping(value = &quot;/addNewCargo&quot;)
   public RedirectView addNewCargo(CargoDTO cargoDTO, BindingResult bindingResult,
       RedirectAttributes redir, @RequestParam(name = &quot;mass&quot;) String weight) {
-<span class="nc" id="L225">    redir.addFlashAttribute(&quot;visiblecargo&quot;, &quot;true&quot;);</span>
-<span class="nc" id="L226">    Cargo cargo = new Cargo(cargoDTO);</span>
-<span class="nc" id="L227">    cargo.setStatus(CargoStatus.PREPARED.toString().toLowerCase());</span>
-<span class="nc" id="L228">    cargoAndOrdersService.addNewCargo(cargo, bindingResult, weight);</span>
-<span class="nc" id="L229">    RedirectView redirectView = new RedirectView(ADMIN_PAGE, true);</span>
-<span class="nc bnc" id="L230" title="All 2 branches missed.">    if (bindingResult.hasErrors()) {</span>
-<span class="nc" id="L231">      log.warn(&quot;Validation fail when adding new cargo&quot;);</span>
-<span class="nc" id="L232">      redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + &quot;cargo&quot;, bindingResult);</span>
-<span class="nc" id="L233">      redir.addFlashAttribute(&quot;cargo&quot;, cargo);</span>
+<span class="nc" id="L231">    redir.addFlashAttribute(&quot;visiblecargo&quot;, &quot;true&quot;);</span>
+<span class="nc" id="L232">    Cargo cargo = new Cargo(cargoDTO);</span>
+<span class="nc" id="L233">    cargo.setStatus(CargoStatus.PREPARED.toString().toLowerCase());</span>
+<span class="nc" id="L234">    cargoAndOrdersService.addNewCargo(cargo, bindingResult, weight);</span>
+<span class="nc" id="L235">    RedirectView redirectView = new RedirectView(ADMIN_PAGE, true);</span>
+<span class="nc bnc" id="L236" title="All 2 branches missed.">    if (bindingResult.hasErrors()) {</span>
+<span class="nc" id="L237">      log.warn(&quot;Validation fail when adding new cargo&quot;);</span>
+<span class="nc" id="L238">      redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + &quot;cargo&quot;, bindingResult);</span>
+<span class="nc" id="L239">      redir.addFlashAttribute(&quot;cargo&quot;, cargo);</span>
     }
-<span class="nc" id="L235">    return redirectView;</span>
+<span class="nc" id="L241">    return redirectView;</span>
   }
 
   /**
@@ -246,12 +252,12 @@ public class AdminPageController {
    */
   private User mapUserRelatedDTOsToEntity(UserDTO userDTO, UserInfoDTO userInfoDTO,
       CityDTO cityDTO) {
-<span class="nc" id="L249">    User user = new User(userDTO);</span>
-<span class="nc" id="L250">    UserInfo userInfo = new UserInfo(userInfoDTO);</span>
-<span class="nc" id="L251">    City currentCity = new City(cityDTO);</span>
-<span class="nc" id="L252">    userInfo.setCity(currentCity);</span>
-<span class="nc" id="L253">    user.setUserInfo(userInfo);</span>
-<span class="nc" id="L254">    return user;</span>
+<span class="nc" id="L255">    User user = new User(userDTO);</span>
+<span class="nc" id="L256">    UserInfo userInfo = new UserInfo(userInfoDTO);</span>
+<span class="nc" id="L257">    City currentCity = new City(cityDTO);</span>
+<span class="nc" id="L258">    userInfo.setCity(currentCity);</span>
+<span class="nc" id="L259">    user.setUserInfo(userInfo);</span>
+<span class="nc" id="L260">    return user;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

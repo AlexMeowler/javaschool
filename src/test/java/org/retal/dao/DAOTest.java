@@ -6,6 +6,8 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,6 +16,7 @@ import org.retal.config.spring.RootConfig;
 import org.retal.config.spring.WebConfig;
 import org.retal.domain.Car;
 import org.retal.domain.City;
+import org.retal.domain.HibernateSessionFactory;
 import org.retal.domain.MethodUndefinedException;
 import org.retal.domain.User;
 import org.retal.domain.UserInfo;
@@ -35,6 +38,8 @@ public class DAOTest {
   private CityDAO cityDAO;
 
   private CarDAO carDAO;
+  
+  private OrderRouteProgressionDAO orderRouteProgressionDAO;
 
   private static final String[] cityNames =
       {"Mowcow", "Omsk", "Samara", "Yaroslavl", "Cheboksary", "Chelyabinsk"};
@@ -57,6 +62,11 @@ public class DAOTest {
     public CarDAO getCarDAO() {
       return new CarDAO();
     }
+    
+    @Bean
+    public OrderRouteProgressionDAO getOrderRouteProgressionDAO() {
+      return new OrderRouteProgressionDAO();
+    }
   }
   
   @Autowired
@@ -72,6 +82,11 @@ public class DAOTest {
   @Autowired
   public void setCarDAO(CarDAO carDAO) {
     this.carDAO = carDAO;
+  }
+  
+  @Autowired
+  public void setOrderRouteProgressionDAO(OrderRouteProgressionDAO orderRouteProgressionDAO) {
+    this.orderRouteProgressionDAO = orderRouteProgressionDAO;
   }
 
   @Test
@@ -201,5 +216,20 @@ public class DAOTest {
   @Test(expected = IllegalArgumentException.class)
   public void testA9CarReadError() {
     carDAO.read(Integer.valueOf(4));
+  }
+  
+  @Test(expected = MethodUndefinedException.class)
+  public void testB1TransactionNotBegunAndReadAllDefaultMethod() {
+    Session session = HibernateSessionFactory.getSessionFactory().openSession();
+    Transaction transaction = session.beginTransaction();
+    transaction.commit();
+    DAO.end(session);
+    orderRouteProgressionDAO.readAll();
+  }
+  
+  @Test
+  public void testB2FindUserMaliciousInput() {
+    assertNull(userDAO.findUser("DROP TABLE users"));
+    assertNull(userDAO.findUser("<script>alert(\"haha\")</script>"));
   }
 }

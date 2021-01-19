@@ -77,6 +77,12 @@ public class AdminPageController {
       log.debug(e.getKey() + ":" + e.getValue());
     }
     model.addAllAttributes(errors);
+    result = (BindingResult) model.asMap().get(BindingResult.MODEL_KEY_PREFIX + "cargo");
+    errors = UserValidator.convertErrorsToHashMap(result);
+    for (Map.Entry<String, String> e : errors.entrySet()) {
+      log.debug(e.getKey() + ":" + e.getValue());
+    }
+    model.addAllAttributes(errors);
     List<User> users = userService.getAllUsers();
     model.addAttribute("userList", users);
     List<City> cities = cityService.getAllCities();

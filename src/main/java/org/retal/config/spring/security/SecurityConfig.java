@@ -1,5 +1,6 @@
 package org.retal.config.spring.security;
 
+import org.retal.controller.GlobalExceptionHandler;
 import org.retal.domain.enums.UserRole;
 import org.retal.service.UserAuthorizationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +40,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     auth.userDetailsService(authService).passwordEncoder(new SHA512PasswordEncoder());
 
   }
-  
+
   /**
    * Creates an instance of this class using constructor-based dependency injection.
    */
@@ -54,8 +55,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
   @Override
   protected void configure(HttpSecurity http) throws Exception {
-    http.authorizeRequests().antMatchers("/static/**", "/home", "/", "/403").permitAll()
-        .antMatchers("/spring_auth").anonymous().antMatchers("static/my_js_library.js")
+    http.authorizeRequests()
+        .antMatchers("/static/**", "/home", "/", "/403", "/404", GlobalExceptionHandler.ERROR_PAGE)
+        .permitAll().antMatchers("/spring_auth").anonymous().antMatchers("static/my_js_library.js")
         .authenticated().antMatchers("/adminPage", "/addNewUser", "/deleteUser/*")
         .hasAuthority(UserRole.ADMIN.toString())
         .antMatchers("/managerPage", "/deleteDriver/*", "/editUser", "/addNewCar", "/deleteCar/*",

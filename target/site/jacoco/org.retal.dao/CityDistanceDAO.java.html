@@ -3,60 +3,55 @@
 import java.util.List;
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
-import org.hibernate.Transaction;
 import org.retal.domain.CityDistance;
-import org.retal.domain.HibernateSessionFactory;
 import org.retal.domain.MethodUndefinedException;
 import org.springframework.stereotype.Component;
 
 @Component
-<span class="fc" id="L13">public class CityDistanceDAO implements DAO&lt;CityDistance&gt; {</span>
+<span class="fc" id="L11">public class CityDistanceDAO implements DAO&lt;CityDistance&gt; {</span>
 
-<span class="fc" id="L15">  private static final Logger log = Logger.getLogger(CityDistanceDAO.class);</span>
+<span class="fc" id="L13">  private static final Logger log = Logger.getLogger(CityDistanceDAO.class);</span>
 
   @Override
   public void add(CityDistance t) {
-<span class="nc" id="L19">    log.info(&quot;Attempt to add distance between cities '&quot; + t.getCityA() + &quot;' and '&quot; + t.getCityB()</span>
-<span class="nc" id="L20">        + &quot;', distance = &quot; + t.getDistance());</span>
-<span class="nc" id="L21">    Session session = HibernateSessionFactory.getSessionFactory().openSession();</span>
-<span class="nc" id="L22">    Transaction transaction = session.beginTransaction();</span>
-<span class="nc" id="L23">    session.saveOrUpdate(t);</span>
-<span class="nc" id="L24">    session.flush();</span>
-<span class="nc" id="L25">    transaction.commit();</span>
-<span class="nc" id="L26">    session.close();</span>
-
-<span class="nc" id="L28">  }</span>
+<span class="nc" id="L17">    log.info(&quot;Attempt to add distance between cities '&quot; + t.getCityA() + &quot;' and '&quot; + t.getCityB()</span>
+<span class="nc" id="L18">        + &quot;', distance = &quot; + t.getDistance());</span>
+<span class="nc" id="L19">    Session session = DAO.start();</span>
+<span class="nc" id="L20">    session.saveOrUpdate(t);</span>
+<span class="nc" id="L21">    session.flush();</span>
+<span class="nc" id="L22">    DAO.end(session);</span>
+<span class="nc" id="L23">  }</span>
 
   @Override
   public CityDistance read(Object... keys) {
-<span class="nc" id="L32">    validatePrimaryKeys(new Class&lt;?&gt;[] {String.class, String.class}, keys);</span>
-<span class="nc" id="L33">    CityDistance.CityDistancePK primaryKey =</span>
+<span class="nc" id="L27">    DAO.validatePrimaryKeys(new Class&lt;?&gt;[] {String.class, String.class}, keys);</span>
+<span class="nc" id="L28">    CityDistance.CityDistancePK primaryKey =</span>
         new CityDistance.CityDistancePK((String) keys[0], (String) keys[1]);
-<span class="nc" id="L35">    Session session = HibernateSessionFactory.getSessionFactory().openSession();</span>
-<span class="nc" id="L36">    CityDistance cityDistance = session.get(CityDistance.class, primaryKey);</span>
-<span class="nc" id="L37">    session.close();</span>
-<span class="nc" id="L38">    return cityDistance;</span>
+<span class="nc" id="L30">    Session session = DAO.start();</span>
+<span class="nc" id="L31">    CityDistance cityDistance = session.get(CityDistance.class, primaryKey);</span>
+<span class="nc" id="L32">    DAO.end(session);</span>
+<span class="nc" id="L33">    return cityDistance;</span>
   }
 
   @Override
   public List&lt;CityDistance&gt; readAll() {
-<span class="nc" id="L43">    Session session = HibernateSessionFactory.getSessionFactory().openSession();</span>
-<span class="nc" id="L44">    List&lt;CityDistance&gt; distances =</span>
-<span class="nc" id="L45">        session.createNativeQuery(&quot;SELECT * FROM map_country_distance&quot;, CityDistance.class)</span>
-<span class="nc" id="L46">            .getResultList();</span>
-<span class="nc" id="L47">    log.info(&quot;retrieved &quot; + distances.size() + &quot; distances&quot;);</span>
-<span class="nc" id="L48">    session.close();</span>
-<span class="nc" id="L49">    return distances;</span>
+<span class="nc" id="L38">    Session session = DAO.start();</span>
+<span class="nc" id="L39">    List&lt;CityDistance&gt; distances =</span>
+<span class="nc" id="L40">        session.createNativeQuery(&quot;SELECT * FROM map_country_distance&quot;, CityDistance.class)</span>
+<span class="nc" id="L41">            .getResultList();</span>
+<span class="nc" id="L42">    log.info(&quot;retrieved &quot; + distances.size() + &quot; distances&quot;);</span>
+<span class="nc" id="L43">    DAO.end(session);</span>
+<span class="nc" id="L44">    return distances;</span>
   }
 
   @Override
   public void delete(CityDistance t) {
-<span class="nc" id="L54">    throw new MethodUndefinedException();</span>
+<span class="nc" id="L49">    throw new MethodUndefinedException();</span>
   }
 
   @Override
   public void update(CityDistance t) {
-<span class="nc" id="L59">    throw new MethodUndefinedException();</span>
+<span class="nc" id="L54">    throw new MethodUndefinedException();</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

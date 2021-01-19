@@ -1,12 +1,9 @@
 package org.retal.dao;
 
 import java.util.List;
-import javax.transaction.Transactional;
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
-import org.hibernate.Transaction;
 import org.retal.domain.City;
-import org.retal.domain.HibernateSessionFactory;
 import org.retal.domain.MethodUndefinedException;
 import org.springframework.stereotype.Component;
 
@@ -18,34 +15,31 @@ public class CityDAO implements DAO<City> {
   @Override
   public void add(City city) {
     log.info("Attempt to add city '" + city.getCurrentCity() + "'");
-    Session session = HibernateSessionFactory.getSessionFactory().openSession();
-    Transaction transaction = session.beginTransaction();
+    Session session = DAO.start();
     session.saveOrUpdate(city);
     session.flush();
-    transaction.commit();
-    session.close();
+    DAO.end(session);
   }
 
   @Override
   public City read(Object... keys) {
-    validatePrimaryKeys(new Class<?>[] {String.class}, keys);
+    DAO.validatePrimaryKeys(new Class<?>[] {String.class}, keys);
     String cityName = (String) keys[0];
-    Session session = HibernateSessionFactory.getSessionFactory().openSession();
+    Session session = DAO.start();
     City city = session.get(City.class, cityName);
-    session.close();
+    DAO.end(session);
     String text = city != null ? "'" + city.getCurrentCity() + "'" : "not";
     log.info("City " + text + " found");
     return city;
   }
 
   @Override
-  @Transactional
   public List<City> readAll() {
 
-    Session session = HibernateSessionFactory.getSessionFactory().openSession();
+    Session session = DAO.start();
     List<City> cities =
         session.createNativeQuery("SELECT * FROM map_country_cities", City.class).getResultList();
-    session.close();
+    DAO.end(session);
     log.info("Retrieved " + cities.size() + " cities");
     return cities;
   }

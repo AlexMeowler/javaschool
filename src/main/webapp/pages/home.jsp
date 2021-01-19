@@ -13,13 +13,17 @@
 <body>
 	<jsp:include page="menu.jsp"/>
 	<div class="container main-body">
-    	<sec:authorize access = "isAuthenticated()">
-			<p>Welcome to home page, <sec:authentication property="principal.username"/>!</p>
-		</sec:authorize>
+    	<div class="description">
+   		<h1>Hello, welcome to Logiweb website!</h1> 
+    	<p>Logiweb is a logistic company. 
+    	   We operate in 37 cities in Russia and can deliver cargo of any scale at affordable prices. 
+    	   Feel free to contact us any time!
+		</p>      
+		</div>
 		<sec:authorize access = "!isAuthenticated()">
 		<c:url value="/spring_auth" var = "loginURL"/>
 		<form:form class = "login-form" action="${loginURL}" method="POST">
-			<h2 class = "form-signin-heading">Please log in</h2>
+			<h2 class = "form-signin-heading">Authorization form for company members</h2>
 			<div class="form-group">
 				<label>Login</label>
 				<input class="form-control form-control-lg" type="text" name="j_login"/>

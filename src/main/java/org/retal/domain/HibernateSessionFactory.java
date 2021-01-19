@@ -43,7 +43,7 @@ public class HibernateSessionFactory {
       config.addAnnotatedClass(User.class).addAnnotatedClass(UserInfo.class)
           .addAnnotatedClass(Car.class).addAnnotatedClass(City.class).addAnnotatedClass(Cargo.class)
           .addAnnotatedClass(RoutePoint.class).addAnnotatedClass(Order.class)
-          .addAnnotatedClass(CityDistance.class);
+          .addAnnotatedClass(CityDistance.class).addAnnotatedClass(OrderRouteProgression.class);
       ServiceRegistry serviceRegistry =
           new StandardServiceRegistryBuilder().applySettings(config.getProperties()).build();
       sessionFactory = config.buildSessionFactory(serviceRegistry);

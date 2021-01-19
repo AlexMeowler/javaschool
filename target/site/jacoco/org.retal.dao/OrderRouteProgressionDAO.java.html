@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>OrderRouteProgressionDAO.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Logiweb Service</a> &gt; <a href="index.source.html" class="el_package">org.retal.dao</a> &gt; <span class="el_source">OrderRouteProgressionDAO.java</span></div><h1>OrderRouteProgressionDAO.java</h1><pre class="source lang-java linenums">package org.retal.dao;
+
+import org.apache.log4j.Logger;
+import org.hibernate.Session;
+import org.retal.domain.OrderRouteProgression;
+import org.springframework.stereotype.Component;
+
+@Component
+<span class="fc" id="L9">public class OrderRouteProgressionDAO implements DAO&lt;OrderRouteProgression&gt; {</span>
+
+<span class="fc" id="L11">  private static final Logger log = Logger.getLogger(OrderRouteProgressionDAO.class);</span>
+  
+  @Override
+  public void add(OrderRouteProgression t) {
+<span class="nc" id="L15">    Session session = DAO.start();</span>
+<span class="nc" id="L16">    session.save(t);</span>
+<span class="nc" id="L17">    session.flush();</span>
+<span class="nc" id="L18">    DAO.end(session);</span>
+<span class="nc" id="L19">  }</span>
+
+  @Override
+  public OrderRouteProgression read(Object... keys) throws IllegalArgumentException {
+<span class="nc" id="L23">    DAO.validatePrimaryKeys(new Class&lt;?&gt;[] {Integer.class}, keys);</span>
+<span class="nc" id="L24">    Integer id = (Integer) keys[0];</span>
+<span class="nc" id="L25">    Session session = DAO.start();</span>
+<span class="nc" id="L26">    OrderRouteProgression orderRouteProgression = session.get(OrderRouteProgression.class, id);</span>
+<span class="nc" id="L27">    DAO.end(session);</span>
+<span class="nc" id="L28">    return orderRouteProgression;</span>
+  }
+
+  @Override
+  public void delete(OrderRouteProgression t) {
+<span class="nc" id="L33">    Session session = DAO.start();</span>
+<span class="nc" id="L34">    session.delete(t);</span>
+<span class="nc" id="L35">    session.flush();</span>
+<span class="nc" id="L36">    DAO.end(session);</span>
+<span class="nc" id="L37">  }</span>
+
+  @Override
+  public void update(OrderRouteProgression t) {
+<span class="nc" id="L41">    log.debug(&quot;Updating route progression for order id = &quot; + t.getId());</span>
+<span class="nc" id="L42">    Session session = DAO.start();</span>
+<span class="nc" id="L43">    session.update(t);</span>
+<span class="nc" id="L44">    session.flush();</span>
+<span class="nc" id="L45">    DAO.end(session);</span>
+<span class="nc" id="L46">  }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

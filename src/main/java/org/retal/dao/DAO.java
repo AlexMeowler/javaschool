@@ -1,10 +1,14 @@
 package org.retal.dao;
 
 import java.util.List;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.retal.domain.HibernateSessionFactory;
 import org.retal.domain.MethodUndefinedException;
 
 /**
- * Generic interface for basic CRUD operations.
+ * Generic interface for basic CRUD operations. If method is not implemented properly due to some
+ * reasons, it should throw {@link MethodUndefinedException}.
  * 
  * @author Alexander Retivov
  *
@@ -31,8 +35,8 @@ public interface DAO<T> {
   public T read(Object... keys) throws IllegalArgumentException;
 
   /**
-   * Reads all entities from database. This method is not necessary to override, but if it is called
-   * with its default implementation, an exception will be thrown.
+   * Reads all entities from database. This method is optional to override, but if it is called with
+   * its default implementation, an exception will be thrown.
    * 
    * @return List of all entities read from database
    * @throws MethodUndefinedException if default method implementation is called
@@ -65,7 +69,7 @@ public interface DAO<T> {
    * @throws IllegalArgumentException if the input is invalid
    * 
    */
-  public default void validatePrimaryKeys(Class<?>[] classes, Object... objects)
+  public static void validatePrimaryKeys(Class<?>[] classes, Object... objects)
       throws IllegalArgumentException {
     boolean isValid = objects.length == classes.length;
     for (int i = 0; i < classes.length; i++) {
@@ -79,5 +83,30 @@ public interface DAO<T> {
       message = message.substring(0, message.length() - 2);
       throw new IllegalArgumentException("Primary key must be " + message);
     }
+  }
+
+  /**
+   * Utility method which starts session and begins transaction for that session.
+   * 
+   * @return open {@linkplain org.hibernate.Session Session}
+   */
+  public static Session start() {
+    Session session = HibernateSessionFactory.getSessionFactory().openSession();
+    session.beginTransaction();
+    return session;
+  }
+
+  /**
+   * Utility method which commits transaction (if transaction is started) for given session and
+   * closes given it.
+   * 
+   * @param session open {@linkplain org.hibernate.Session Session} to close
+   */
+  public static void end(Session session) {
+    Transaction transaction = session.getTransaction();
+    if (transaction.isActive()) {
+      transaction.commit();
+    }
+    session.close();
   }
 }

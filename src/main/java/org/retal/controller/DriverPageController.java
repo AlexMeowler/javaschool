@@ -3,7 +3,6 @@ package org.retal.controller;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import org.apache.log4j.Logger;
 import org.retal.domain.Order;
 import org.retal.domain.SessionInfo;
 import org.retal.domain.User;
@@ -29,8 +28,6 @@ public class DriverPageController {
   private final DriverService driverService;
 
   private final CargoAndOrdersService cargoAndOrdersService;
-
-  private static final Logger log = Logger.getLogger(DriverPageController.class);
 
   /**
    * Creates an instance of this class using constructor-based dependency injection.
@@ -61,18 +58,24 @@ public class DriverPageController {
       String nextHop = null;
       int nextHopLength = -1;
       String[] cities = order.getRoute().split(Order.ROUTE_DELIMETER);
-      String userCity = user.getUserInfo().getCity().getCurrentCity();
-      for (int i = 0; i < cities.length; i++) {
-        routeList.add(cities[i]);
-        // FIXME now working for cycles
-        if (nextHop == null && i > 0 && cities[i - 1].equalsIgnoreCase(userCity)) {
-          nextHop = cities[i];
-          nextHopLength = cargoAndOrdersService.lengthBetweenTwoCities(userCity, cities[i]);
-        }
+      for (String city : cities) {
+        routeList.add(city);
       }
-      log.debug(nextHop + "; " + nextHopLength);
-      nextHopLength =
-          (int) Math.round((double) nextHopLength / CargoAndOrdersService.AVERAGE_CAR_SPEED);
+      String userCity = user.getUserInfo().getCity().getCurrentCity();
+      int index = user.getUserInfo().getOrder().getOrderRouteProgression().getRouteCounter() + 1;
+      model.addAttribute("routeCounter", index - 1);
+      if (index < cities.length) {
+        nextHop = cities[index];
+        nextHopLength = cargoAndOrdersService.lengthBetweenTwoCities(userCity, cities[index]);
+        nextHopLength =
+            (int) Math.round((double) nextHopLength / CargoAndOrdersService.AVERAGE_CAR_SPEED);
+      }
+      /*
+       * for (int i = 0; i < cities.length; i++) { routeList.add(cities[i]); // FIXME now working
+       * for cycles if (nextHop == null && i > 0 && cities[i - 1].equalsIgnoreCase(userCity)) {
+       * nextHop = cities[i]; nextHopLength = cargoAndOrdersService.lengthBetweenTwoCities(userCity,
+       * cities[i]); } }
+       */
       model.addAttribute("routeList", routeList);
       model.addAttribute("nextHop", nextHop);
       model.addAttribute("nextHopLength", nextHopLength);

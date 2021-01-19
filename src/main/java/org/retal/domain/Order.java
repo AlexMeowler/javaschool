@@ -10,18 +10,20 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 /**
  * Entity class for orders.
+ * 
  * @author Alexander Retivov
  *
  */
 @Entity
 @Table(name = "orders")
 public class Order {
-  
+
   public static final String ROUTE_DELIMETER = ";";
 
   @Id
@@ -44,6 +46,10 @@ public class Order {
 
   @OneToMany(mappedBy = "order", fetch = FetchType.EAGER)
   private Set<UserInfo> driverInfo;
+
+  @OneToOne(mappedBy = "order", fetch = FetchType.EAGER)
+  @PrimaryKeyJoinColumn
+  private OrderRouteProgression orderRouteProgression;
 
   @Transient
   private Set<Cargo> cargo;
@@ -100,6 +106,14 @@ public class Order {
 
   public void setDriverInfo(Set<UserInfo> driverInfo) {
     this.driverInfo = driverInfo;
+  }
+
+  public OrderRouteProgression getOrderRouteProgression() {
+    return orderRouteProgression;
+  }
+
+  public void setOrderRouteProgression(OrderRouteProgression orderRouteProgression) {
+    this.orderRouteProgression = orderRouteProgression;
   }
 
   public Set<Cargo> getCargo() {

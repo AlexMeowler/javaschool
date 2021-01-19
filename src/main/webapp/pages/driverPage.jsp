@@ -59,7 +59,16 @@
 				<c:if test="${not empty order.car}">${order.car.registrationId}</c:if>
 				<c:if test="${empty order.car}">-</c:if>
 			</td>
-			<td><c:forEach var="route" items="${routeList}">${route}<br></c:forEach></td>
+			<td>
+				<c:forEach var="route" items="${routeList}" varStatus="i">
+					<c:if test="${routeCounter eq i.index}">
+						<strong>${route}<br></strong>
+					</c:if>
+					<c:if test="${routeCounter ne i.index}">
+						${route}<br>
+					</c:if>
+				</c:forEach>
+			</td>
 			<td>
 				<c:forEach var="cargo" items="${order.cargo}">
 					<c:set var = "iter" value = "${cargo.points.iterator()}"/>
@@ -94,7 +103,7 @@
 	</p>
 	<c:if test="${empty user.userInfo.hoursDrived or user.userInfo.hoursDrived + nextHopLength <= order.car.shiftLength}">
 		<c:if test="${not empty nextHop}">
-			<p>Next city on your route is ${nextHop}, it should take about ${nextHopLength} hours to reach it. 
+			<p>Next city on your route is <strong>${nextHop}</strong>, it should take about <strong>${nextHopLength}</strong> hours to reach it. 
 			<a href="<c:url value="/changeLocation/${nextHop}"/>">Change location</a></p>
 		</c:if>
 		<c:if test="${empty nextHop}">
@@ -114,6 +123,9 @@
 	</c:if>
 	<c:if test="${not empty error_globalCargo}">
 		<span class = "error">${error_globalCargo}</span><br>
+	</c:if>
+	<c:if test="${not empty error_cargoManagement}">
+		<span class="error">${error_cargoManagement}</span><br>
 	</c:if>
 	<p>Cargo management menu:<br>Please, remember: changes to cargo status <strong>can't be undone</strong></p>
 	<table class="info-table">

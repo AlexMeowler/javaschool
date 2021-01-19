@@ -3,9 +3,8 @@ package org.retal.dao;
 import java.util.List;
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
-import org.hibernate.Transaction;
 import org.retal.domain.Cargo;
-import org.retal.domain.HibernateSessionFactory;
+import org.retal.domain.MethodUndefinedException;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -17,48 +16,43 @@ public class CargoDAO implements DAO<Cargo> {
   public void add(Cargo cargo) {
     log.info(
         "Attempt to add cargo: name='" + cargo.getName() + "', mass='" + cargo.getMass() + "'");
-    Session session = HibernateSessionFactory.getSessionFactory().openSession();
-    Transaction transaction = session.beginTransaction();
+    Session session = DAO.start();
     session.save(cargo);
     session.flush();
-    transaction.commit();
-    session.close();
+    DAO.end(session);
   }
 
   @Override
   public Cargo read(Object... keys) {
-    validatePrimaryKeys(new Class<?>[] {Integer.class}, keys);
+    DAO.validatePrimaryKeys(new Class<?>[] {Integer.class}, keys);
     Integer id = (Integer) keys[0];
-    Session session = HibernateSessionFactory.getSessionFactory().openSession();
+    Session session = DAO.start();
     Cargo cargo = session.get(Cargo.class, id);
-    session.close();
+    DAO.end(session);
     return cargo;
   }
 
   @Override
   public List<Cargo> readAll() {
-    Session session = HibernateSessionFactory.getSessionFactory().openSession();
+    Session session = DAO.start();
     List<Cargo> cargos =
         session.createNativeQuery("SELECT * FROM CARGO", Cargo.class).getResultList();
     log.info(cargos.size() + " cargos retrieved");
-    session.close();
+    DAO.end(session);
     return cargos;
   }
 
   @Override
   public void delete(Cargo t) {
-    // TODO Auto-generated method stub
-
+    throw new MethodUndefinedException();
   }
 
   @Override
   public void update(Cargo t) {
-    Session session = HibernateSessionFactory.getSessionFactory().openSession();
-    Transaction transaction = session.beginTransaction();
+    Session session = DAO.start();
     session.update(t);
     session.flush();
-    transaction.commit();
-    session.close();
+    DAO.end(session);
   }
 
 }

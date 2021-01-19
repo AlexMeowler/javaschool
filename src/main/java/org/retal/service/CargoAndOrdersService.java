@@ -19,6 +19,7 @@ import org.retal.dao.CargoDAO;
 import org.retal.dao.CityDAO;
 import org.retal.dao.CityDistanceDAO;
 import org.retal.dao.OrderDAO;
+import org.retal.dao.OrderRouteProgressionDAO;
 import org.retal.dao.RoutePointDAO;
 import org.retal.dao.UserDAO;
 import org.retal.domain.Car;
@@ -27,6 +28,7 @@ import org.retal.domain.City;
 import org.retal.domain.CityDistance;
 import org.retal.domain.HibernateSessionFactory;
 import org.retal.domain.Order;
+import org.retal.domain.OrderRouteProgression;
 import org.retal.domain.RoutePoint;
 import org.retal.domain.SessionInfo;
 import org.retal.domain.User;
@@ -67,6 +69,8 @@ public class CargoAndOrdersService {
 
   private final UserDAO userDAO;
 
+  private final OrderRouteProgressionDAO orderRouteProgressionDAO;
+
   private final CarService carService;
 
   private final RoutePointDAO routePointDAO;
@@ -84,14 +88,15 @@ public class CargoAndOrdersService {
    */
   @Autowired
   public CargoAndOrdersService(CargoDAO cargoDAO, CityDAO cityDAO, CityDistanceDAO cityDistanceDAO,
-      OrderDAO orderDAO, UserDAO userDAO, CarService carService, RoutePointDAO routePointDAO,
-      CargoValidator cargoValidator, RoutePointsValidator routePointsValidator,
-      SessionInfo sessionInfo) {
+      OrderDAO orderDAO, UserDAO userDAO, OrderRouteProgressionDAO orderRouteProgressionDAO,
+      CarService carService, RoutePointDAO routePointDAO, CargoValidator cargoValidator,
+      RoutePointsValidator routePointsValidator, SessionInfo sessionInfo) {
     this.cargoDAO = cargoDAO;
     this.cityDAO = cityDAO;
     this.cityDistanceDAO = cityDistanceDAO;
     this.orderDAO = orderDAO;
     this.userDAO = userDAO;
+    this.orderRouteProgressionDAO = orderRouteProgressionDAO;
     this.carService = carService;
     this.routePointDAO = routePointDAO;
     this.cargoValidator = cargoValidator;
@@ -271,9 +276,9 @@ public class CargoAndOrdersService {
         driverInfo.setHoursDrived(null);
         userDAO.update(driverInfo.getUser());
       }
+      orderRouteProgressionDAO.delete(order.getOrderRouteProgression());
       order.setIsCompleted(isCompleted);
       order.setCar(null);
-      order.setRequiredShiftLength(null);
       Session session = HibernateSessionFactory.getSessionFactory().openSession();
       orderDAO.setSession(session);
       Transaction transaction = session.beginTransaction();
@@ -398,6 +403,10 @@ public class CargoAndOrdersService {
         orderDAO.setSession(null);
         routePointDAO.setSession(null);
         session.close();
+        OrderRouteProgression orderRouteProgression = new OrderRouteProgression();
+        orderRouteProgression.setOrder(order);
+        orderRouteProgression.setRouteCounter(0);
+        orderRouteProgressionDAO.add(orderRouteProgression);
       }
     }
   }
@@ -700,9 +709,7 @@ public class CargoAndOrdersService {
   /**
    * Simulated annealing algorithm implementation for solving the traveling salesman problem. This
    * is modified version of algorithm based on some restrictions stated
-   * {@linkplain 
-   * CargoAndOrdersService#createOrderAndRoutePoints(RoutePointListWrapper, BindingResult)
-   * here}
+   * {@linkplain #createOrderAndRoutePoints(RoutePointListWrapper, BindingResult) here}
    * 
    * @see <a href="https://en.wikipedia.org/wiki/Simulated_annealing">Simulated annealing
    *      algorithm</a>
@@ -1098,7 +1105,7 @@ public class CargoAndOrdersService {
       copy.add(Calendar.HOUR_OF_DAY, hoursToNextCity);
       int hoursWorked = driver.getUserInfo().getHoursWorked();
       if (copy.get(Calendar.MONTH) != calendar.get(Calendar.MONTH)) {
-        hoursWorked = hoursToNextCity - (24 - calendar.get(Calendar.HOUR_OF_DAY));
+        hoursWorked = copy.get(Calendar.HOUR_OF_DAY);
       }
       calendar = copy;
       boolean hasTime = hoursWorked + hoursAtDriving <= MONTH_HOURS_LIMIT;
