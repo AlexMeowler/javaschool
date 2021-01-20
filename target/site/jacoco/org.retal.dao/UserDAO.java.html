@@ -29,7 +29,7 @@ import org.springframework.stereotype.Component;
 <span class="fc" id="L29">    User user = session.get(User.class, id);</span>
 <span class="fc bfc" id="L30" title="All 2 branches covered.">    if (user != null) {</span>
 <span class="fc" id="L31">      log.debug(&quot;for user id='&quot; + user.getId() + &quot;' user info = &quot; + user.getUserInfo().toString());</span>
-    } else {
+<span class="fc" id="L32">    } else {</span>
 <span class="fc" id="L33">      log.debug(&quot;user not found&quot;);</span>
     }
 <span class="fc" id="L35">    DAO.end(session);</span>
@@ -52,7 +52,7 @@ import org.springframework.stereotype.Component;
 <span class="fc" id="L52">    String query = String.format(&quot;SELECT * FROM USERS WHERE login= '%s'&quot;, username);</span>
 <span class="fc" id="L53">    List&lt;User&gt; users = session.createNativeQuery(query, User.class).getResultList();</span>
 <span class="fc" id="L54">    DAO.end(session);</span>
-<span class="pc bpc" id="L55" title="1 of 2 branches missed.">    return users.size() == 1 ? users.get(0) : null;</span>
+<span class="fc bfc" id="L55" title="All 2 branches covered.">    return users.size() == 1 ? users.get(0) : null;</span>
   }
 
   @Override
@@ -71,9 +71,9 @@ import org.springframework.stereotype.Component;
    */
   public List&lt;User&gt; readAllWithRole(String role) {
 <span class="fc" id="L73">    role = role.toLowerCase();</span>
-<span class="pc bpc" id="L74" title="1 of 2 branches missed.">    if (!UserValidator.checkForMaliciousInput(role).isEmpty()) {</span>
-<span class="nc" id="L75">      log.warn(&quot;Attempt to inject malicious input&quot;);</span>
-<span class="nc" id="L76">      return null;</span>
+<span class="fc bfc" id="L74" title="All 2 branches covered.">    if (!UserValidator.checkForMaliciousInput(role).isEmpty()) {</span>
+<span class="fc" id="L75">      log.warn(&quot;Attempt to inject malicious input&quot;);</span>
+<span class="fc" id="L76">      return null;</span>
     }
 <span class="fc" id="L78">    Session session = DAO.start();</span>
 <span class="fc" id="L79">    List&lt;User&gt; users =</span>

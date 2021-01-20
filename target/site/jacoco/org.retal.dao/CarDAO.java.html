@@ -32,30 +32,30 @@ import org.springframework.stereotype.Component;
 
   @Override
   public List&lt;Car&gt; readAll() {
-<span class="nc" id="L35">    Session session = DAO.start();</span>
-<span class="nc" id="L36">    List&lt;Car&gt; cars = session.createNativeQuery(&quot;SELECT * FROM CARS&quot;, Car.class).getResultList();</span>
-<span class="nc" id="L37">    log.info(cars.size() + &quot; cars retrieved&quot;);</span>
-<span class="nc" id="L38">    DAO.end(session);</span>
-<span class="nc" id="L39">    return cars;</span>
+<span class="fc" id="L35">    Session session = DAO.start();</span>
+<span class="fc" id="L36">    List&lt;Car&gt; cars = session.createNativeQuery(&quot;SELECT * FROM CARS&quot;, Car.class).getResultList();</span>
+<span class="fc" id="L37">    log.info(cars.size() + &quot; cars retrieved&quot;);</span>
+<span class="fc" id="L38">    DAO.end(session);</span>
+<span class="fc" id="L39">    return cars;</span>
   }
 
   @Override
   public void delete(Car car) {
-<span class="nc" id="L44">    Session session = DAO.start();</span>
-<span class="nc" id="L45">    session.delete(car);</span>
-<span class="nc" id="L46">    session.flush();</span>
-<span class="nc" id="L47">    DAO.end(session);</span>
-<span class="nc" id="L48">    log.info(car.toString() + &quot; deleted&quot;);</span>
-<span class="nc" id="L49">  }</span>
+<span class="fc" id="L44">    Session session = DAO.start();</span>
+<span class="fc" id="L45">    session.delete(car);</span>
+<span class="fc" id="L46">    session.flush();</span>
+<span class="fc" id="L47">    DAO.end(session);</span>
+<span class="fc" id="L48">    log.info(car.toString() + &quot; deleted&quot;);</span>
+<span class="fc" id="L49">  }</span>
 
   @Override
   public void update(Car car) {
-<span class="nc" id="L53">    log.info(&quot;Updating car&quot;);</span>
-<span class="nc" id="L54">    Session session = DAO.start();</span>
-<span class="nc" id="L55">    session.update(car);</span>
-<span class="nc" id="L56">    session.flush();</span>
-<span class="nc" id="L57">    DAO.end(session);</span>
-<span class="nc" id="L58">  }</span>
+<span class="fc" id="L53">    log.info(&quot;Updating car&quot;);</span>
+<span class="fc" id="L54">    Session session = DAO.start();</span>
+<span class="fc" id="L55">    session.update(car);</span>
+<span class="fc" id="L56">    session.flush();</span>
+<span class="fc" id="L57">    DAO.end(session);</span>
+<span class="fc" id="L58">  }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

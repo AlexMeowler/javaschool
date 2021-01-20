@@ -22,31 +22,31 @@ import org.springframework.stereotype.Component;
   
   @Override
   public void add(RoutePoint t) {
-<span class="nc bnc" id="L25" title="All 2 branches missed.">    if (session == null) {</span>
-<span class="nc" id="L26">      log.error(&quot;Session is null&quot;);</span>
-<span class="nc" id="L27">      return;</span>
+<span class="fc bfc" id="L25" title="All 2 branches covered.">    if (session == null) {</span>
+<span class="fc" id="L26">      log.error(&quot;Session is null&quot;);</span>
+<span class="fc" id="L27">      throw new NullPointerException(&quot;Session is null&quot;);</span>
     }
-<span class="nc" id="L29">    log.info(&quot;Attempt to save &quot; + t.toString());</span>
-<span class="nc" id="L30">    session.save(t);</span>
-<span class="nc" id="L31">  }</span>
+<span class="fc" id="L29">    log.info(&quot;Attempt to save &quot; + t.toString());</span>
+<span class="fc" id="L30">    session.save(t);</span>
+<span class="fc" id="L31">  }</span>
 
   @Override
   public RoutePoint read(Object... keys) {
-<span class="nc" id="L35">    throw new MethodUndefinedException();</span>
+<span class="fc" id="L35">    throw new MethodUndefinedException();</span>
   }
 
   @Override
   public void delete(RoutePoint t) {
-<span class="nc" id="L40">    throw new MethodUndefinedException();</span>
+<span class="fc" id="L40">    throw new MethodUndefinedException();</span>
   }
 
   @Override
   public void update(RoutePoint t) {
-<span class="nc" id="L45">    throw new MethodUndefinedException();</span>
+<span class="fc" id="L45">    throw new MethodUndefinedException();</span>
   }
 
   public void setSession(Session session) {
-<span class="nc" id="L49">    this.session = session;</span>
-<span class="nc" id="L50">  }</span>
+<span class="fc" id="L49">    this.session = session;</span>
+<span class="fc" id="L50">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

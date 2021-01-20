@@ -49,11 +49,11 @@ public class CityService {
 <span class="nc" id="L49">        City city = new City();</span>
 <span class="nc" id="L50">        city.setCurrentCity(line);</span>
 <span class="nc" id="L51">        cityDAO.add(city);</span>
-<span class="nc" id="L52">      }</span>
+      }
 <span class="nc" id="L53">      reader.close();</span>
 <span class="nc" id="L54">    } catch (IOException e) {</span>
 <span class="nc" id="L55">      log.error(&quot;File citynames.txt not found&quot;);</span>
-<span class="nc" id="L56">    }</span>
+    }
 <span class="nc" id="L57">  }</span>
 
   /**
@@ -71,11 +71,11 @@ public class CityService {
 <span class="nc" id="L71">        citydist.setCityB(args[1].replaceAll(&quot;_&quot;, &quot; &quot;));</span>
 <span class="nc" id="L72">        citydist.setDistance((int) Double.parseDouble(args[2]));</span>
 <span class="nc" id="L73">        cityDistanceDAO.add(citydist);</span>
-<span class="nc" id="L74">      }</span>
+      }
 <span class="nc" id="L75">      reader.close();</span>
 <span class="nc" id="L76">    } catch (IOException e) {</span>
 <span class="nc" id="L77">      log.error(&quot;File graph.txt not found&quot;);</span>
-<span class="nc" id="L78">    }</span>
+    }
 <span class="nc" id="L79">  }</span>
 
   public List&lt;City&gt; getAllCities() {

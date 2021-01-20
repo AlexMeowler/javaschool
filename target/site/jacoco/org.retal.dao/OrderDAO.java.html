@@ -26,71 +26,65 @@ import org.springframework.stereotype.Component;
 
   @Override
   public void add(Order t) {
-<span class="nc bnc" id="L29" title="All 2 branches missed.">    if (session == null) {</span>
-<span class="nc" id="L30">      log.error(&quot;Session is null&quot;);</span>
-<span class="nc" id="L31">      return;</span>
+<span class="fc bfc" id="L29" title="All 2 branches covered.">    if (session == null) {</span>
+<span class="fc" id="L30">      throw new NullPointerException(&quot;Session is null&quot;);</span>
     }
-<span class="nc" id="L33">    log.info(&quot;Attempt to add order &quot; + t.toString());</span>
-<span class="nc" id="L34">    session.save(t);</span>
-<span class="nc" id="L35">  }</span>
+<span class="fc" id="L32">    log.info(&quot;Attempt to add order &quot; + t.toString());</span>
+<span class="fc" id="L33">    session.save(t);</span>
+<span class="fc" id="L34">  }</span>
 
   @Override
   public Order read(Object... keys) {
-<span class="nc" id="L39">    DAO.validatePrimaryKeys(new Class&lt;?&gt;[] {Integer.class}, keys);</span>
-<span class="nc" id="L40">    Integer id = (Integer) keys[0];</span>
-<span class="nc" id="L41">    Session session = DAO.start();</span>
-<span class="nc" id="L42">    List&lt;Order&gt; orders =</span>
-<span class="nc" id="L43">        session.createNativeQuery(&quot;SELECT * FROM ORDERS WHERE id='&quot; + id + &quot;'&quot;, Order.class)</span>
-<span class="nc" id="L44">            .getResultList();</span>
-<span class="nc" id="L45">    DAO.end(session);</span>
-<span class="nc bnc" id="L46" title="All 2 branches missed.">    if (orders.size() == 1) {</span>
-<span class="nc" id="L47">      Order o = orders.get(0);</span>
-<span class="nc" id="L48">      Set&lt;Cargo&gt; cargo = new HashSet&lt;&gt;();</span>
-<span class="nc bnc" id="L49" title="All 2 branches missed.">      for (RoutePoint rp : o.getPoints()) {</span>
-<span class="nc" id="L50">        cargo.add(rp.getCargo());</span>
-<span class="nc" id="L51">      }</span>
-<span class="nc" id="L52">      o.setCargo(cargo);</span>
-<span class="nc" id="L53">      return o;</span>
+<span class="fc" id="L38">    DAO.validatePrimaryKeys(new Class&lt;?&gt;[] {Integer.class}, keys);</span>
+<span class="fc" id="L39">    Integer id = (Integer) keys[0];</span>
+<span class="fc" id="L40">    Session session = DAO.start();</span>
+<span class="fc" id="L41">    Order order = session.get(Order.class, id);</span>
+<span class="fc" id="L42">    DAO.end(session);</span>
+<span class="fc bfc" id="L43" title="All 2 branches covered.">    if (order != null) {</span>
+<span class="fc" id="L44">      Set&lt;Cargo&gt; cargo = new HashSet&lt;&gt;();</span>
+<span class="fc bfc" id="L45" title="All 2 branches covered.">      for (RoutePoint rp : order.getPoints()) {</span>
+<span class="fc" id="L46">        cargo.add(rp.getCargo());</span>
+      }
+<span class="fc" id="L48">      order.setCargo(cargo);</span>
+<span class="fc" id="L49">      return order;</span>
     } else {
-<span class="nc" id="L55">      return null;</span>
+<span class="fc" id="L51">      return null;</span>
     }
-
   }
 
   @Override
   public List&lt;Order&gt; readAll() {
-<span class="nc" id="L62">    Session session = DAO.start();</span>
-<span class="nc" id="L63">    List&lt;Order&gt; orders =</span>
-<span class="nc" id="L64">        session.createNativeQuery(&quot;SELECT * FROM ORDERS&quot;, Order.class).getResultList();</span>
-<span class="nc" id="L65">    log.info(orders.size() + &quot; orders retrieved&quot;);</span>
-<span class="nc bnc" id="L66" title="All 2 branches missed.">    for (Order o : orders) {</span>
-<span class="nc" id="L67">      Set&lt;Cargo&gt; cargo = new HashSet&lt;&gt;();</span>
-<span class="nc bnc" id="L68" title="All 2 branches missed.">      for (RoutePoint rp : o.getPoints()) {</span>
-<span class="nc" id="L69">        cargo.add(rp.getCargo());</span>
-<span class="nc" id="L70">      }</span>
-<span class="nc" id="L71">      o.setCargo(cargo);</span>
-<span class="nc" id="L72">    }</span>
-<span class="nc" id="L73">    DAO.end(session);</span>
-<span class="nc" id="L74">    return orders;</span>
+<span class="fc" id="L57">    Session session = DAO.start();</span>
+<span class="fc" id="L58">    List&lt;Order&gt; orders =</span>
+<span class="fc" id="L59">        session.createNativeQuery(&quot;SELECT * FROM ORDERS&quot;, Order.class).getResultList();</span>
+<span class="fc" id="L60">    log.info(orders.size() + &quot; orders retrieved&quot;);</span>
+<span class="fc bfc" id="L61" title="All 2 branches covered.">    for (Order o : orders) {</span>
+<span class="fc" id="L62">      Set&lt;Cargo&gt; cargo = new HashSet&lt;&gt;();</span>
+<span class="fc bfc" id="L63" title="All 2 branches covered.">      for (RoutePoint rp : o.getPoints()) {</span>
+<span class="fc" id="L64">        cargo.add(rp.getCargo());</span>
+      }
+<span class="fc" id="L66">      o.setCargo(cargo);</span>
+    }
+<span class="fc" id="L68">    DAO.end(session);</span>
+<span class="fc" id="L69">    return orders;</span>
   }
 
   @Override
   public void delete(Order t) {
-<span class="nc" id="L79">    throw new MethodUndefinedException();</span>
+<span class="fc" id="L74">    throw new MethodUndefinedException();</span>
   }
 
   @Override
   public void update(Order t) {
-<span class="nc bnc" id="L84" title="All 2 branches missed.">    if (session == null) {</span>
-<span class="nc" id="L85">      log.error(&quot;Session is null&quot;);</span>
-<span class="nc" id="L86">      return;</span>
+<span class="fc bfc" id="L79" title="All 2 branches covered.">    if (session == null) {</span>
+<span class="fc" id="L80">      throw new NullPointerException(&quot;Session is null&quot;);</span>
     }
-<span class="nc" id="L88">    log.info(&quot;Updating order &quot; + t.toString());</span>
-<span class="nc" id="L89">    session.update(t);</span>
-<span class="nc" id="L90">  }</span>
+<span class="fc" id="L82">    log.info(&quot;Updating order &quot; + t.toString());</span>
+<span class="fc" id="L83">    session.update(t);</span>
+<span class="fc" id="L84">  }</span>
 
   public void setSession(Session session) {
-<span class="nc" id="L93">    this.session = session;</span>
-<span class="nc" id="L94">  }</span>
+<span class="fc" id="L87">    this.session = session;</span>
+<span class="fc" id="L88">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

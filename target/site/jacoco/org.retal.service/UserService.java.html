@@ -38,14 +38,14 @@ public class UserService {
 
 <span class="fc" id="L39">  private static final Logger log = Logger.getLogger(UserService.class);</span>
 
-  public static final String DELETION_UPDATION_ERROR = &quot;ERROR&quot;;
+<span class="fc" id="L41">  public static final String DELETION_UPDATION_ERROR = &quot;ERROR&quot;;</span>
 
   /**
    * Creates an instance of this class using constructor-based dependency injection.
    */
   @Autowired
-  public UserService(UserDAO userDAO, SessionInfo sessionInfo, UserValidator userValidator,
-<span class="fc" id="L48">      CityService cityService) {</span>
+<span class="fc" id="L47">  public UserService(UserDAO userDAO, SessionInfo sessionInfo, UserValidator userValidator,</span>
+      CityService cityService) {
 <span class="fc" id="L49">    this.userDAO = userDAO;</span>
 <span class="fc" id="L50">    this.sessionInfo = sessionInfo;</span>
 <span class="fc" id="L51">    this.userValidator = userValidator;</span>
@@ -111,7 +111,7 @@ public class UserService {
 <span class="nc" id="L111">      UserInfo userInfo = target.getUserInfo();</span>
 <span class="nc bnc" id="L112" title="All 4 branches missed.">      if (userInfo.getCar() == null &amp;&amp; userInfo.getOrder() == null) {</span>
 <span class="nc" id="L113">        userDAO.delete(target);</span>
-      } else {
+<span class="nc" id="L114">      } else {</span>
 <span class="nc" id="L115">        redirect = DELETION_UPDATION_ERROR;</span>
       }
 <span class="nc" id="L117">    } else {</span>
@@ -142,7 +142,7 @@ public class UserService {
 <span class="nc" id="L142">    UserInfo userInfo = target.getUserInfo();</span>
 <span class="nc bnc" id="L143" title="All 4 branches missed.">    if (userInfo.getOrder() != null || userInfo.getCar() != null) {</span>
 <span class="nc" id="L144">      bindingResult.reject(&quot;userUnavailable&quot;,</span>
-          &quot;User could not be updated due to assigned order or being driving car&quot;);
+<span class="nc" id="L145">          &quot;User could not be updated due to assigned order or being driving car&quot;);</span>
     }
 <span class="nc bnc" id="L147" title="All 4 branches missed.">    if (!bindingResult.hasErrors() &amp;&amp; userHasRightsToEditOrDeleteUser(caller, target)) {</span>
 <span class="nc bnc" id="L148" title="All 2 branches missed.">      if (password.isEmpty()) {</span>
@@ -153,7 +153,7 @@ public class UserService {
 <span class="nc" id="L153">        updatedUser = copy;</span>
       }
 <span class="nc" id="L155">      userDAO.update(updatedUser);</span>
-    } else {
+<span class="nc" id="L156">    } else {</span>
 <span class="nc" id="L157">      log.warn(&quot;Attempt to edit user without sufficient permissions&quot;);</span>
 <span class="nc" id="L158">      redirect = &quot;/403&quot;;</span>
     }
@@ -169,8 +169,8 @@ public class UserService {
    */
   private boolean userHasRightsToEditOrDeleteUser(User caller, User target) {
 <span class="nc" id="L171">    String callerRoleString = caller.getRole().toUpperCase();</span>
-<span class="nc bnc" id="L172" title="All 2 branches missed.">    String targetRoleString =</span>
-<span class="nc" id="L173">        target != null ? target.getRole().toUpperCase() : UserRole.DRIVER.toString().toUpperCase();</span>
+<span class="nc" id="L172">    String targetRoleString =</span>
+<span class="nc bnc" id="L173" title="All 2 branches missed.">        target != null ? target.getRole().toUpperCase() : UserRole.DRIVER.toString().toUpperCase();</span>
 <span class="nc" id="L174">    UserRole callerRole = UserRole.valueOf(callerRoleString);</span>
 <span class="nc" id="L175">    UserRole targetRole = UserRole.valueOf(targetRoleString);</span>
 <span class="nc bnc" id="L176" title="All 2 branches missed.">    boolean hasHigherRank = callerRole.ordinal() &gt; targetRole.ordinal();</span>
@@ -207,12 +207,12 @@ public class UserService {
 <span class="nc" id="L207">        userInfo.setCity(cities.get(i));</span>
 <span class="nc" id="L208">        userDAO.add(user);</span>
 <span class="nc" id="L209">        i++;</span>
-<span class="nc" id="L210">      }</span>
+      }
 <span class="nc" id="L211">      namesReader.close();</span>
 <span class="nc" id="L212">      surnamesReader.close();</span>
 <span class="nc" id="L213">    } catch (IOException e) {</span>
 <span class="nc" id="L214">      log.error(&quot;File names.txt or surnames.txt not found&quot;);</span>
-<span class="nc" id="L215">    }</span>
+    }
 <span class="nc" id="L216">  }</span>
 
   /**
@@ -223,7 +223,7 @@ public class UserService {
 <span class="nc bnc" id="L223" title="All 2 branches missed.">    for (User u : userDAO.readAll()) {</span>
 <span class="nc" id="L224">      u.getUserInfo().setHoursWorked(0);</span>
 <span class="nc" id="L225">      userDAO.update(u);</span>
-<span class="nc" id="L226">    }</span>
+    }
 <span class="nc" id="L227">  }</span>
 
 

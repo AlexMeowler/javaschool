@@ -29,7 +29,7 @@ public class UserValidator implements Validator {
 
   public static final String MALICIOUS_REGEX =
       &quot;([\\W&amp;&amp;[^ -]]+)|(create)|(drop)|(table)|(add)|(database)|(select)|&quot;
-          + &quot;(where)|(join)|(or)|(and)|(alter)|(update)&quot;;
+<span class="fc" id="L32">          + &quot;(where)|(join)|(or)|(and)|(alter)|(update)&quot;;</span>
 
   @Autowired
 <span class="fc" id="L35">  public UserValidator(javax.validation.Validator validator, CityDAO cityDAO) {</span>
@@ -52,7 +52,7 @@ public class UserValidator implements Validator {
 <span class="nc" id="L52">      String propertyPath = violation.getPropertyPath().toString();</span>
 <span class="nc" id="L53">      String message = violation.getMessage();</span>
 <span class="nc" id="L54">      throwError(errors, propertyPath, message);</span>
-<span class="nc" id="L55">    }</span>
+    }
 <span class="nc" id="L56">    log.info(&quot;Validating user info&quot;);</span>
 <span class="nc" id="L57">    UserInfo userInfo = user.getUserInfo();</span>
 <span class="nc" id="L58">    validates = validator.validate(userInfo);</span>
@@ -60,7 +60,7 @@ public class UserValidator implements Validator {
 <span class="nc" id="L60">      String propertyPath = violation.getPropertyPath().toString();</span>
 <span class="nc" id="L61">      String message = violation.getMessage();</span>
 <span class="nc" id="L62">      throwError(errors, propertyPath, message);</span>
-<span class="nc" id="L63">    }</span>
+    }
 <span class="nc" id="L64">    Pattern digits = Pattern.compile(&quot;\\d+&quot;);</span>
 <span class="nc bnc" id="L65" title="All 2 branches missed.">    if (digits.matcher(userInfo.getName()).find()) {</span>
 <span class="nc" id="L66">      throwError(errors, &quot;noDigitsName&quot;, &quot;Name must not contain digits.&quot;);</span>
@@ -142,7 +142,7 @@ public class UserValidator implements Validator {
 <span class="nc bnc" id="L142" title="All 2 branches missed.">      for (ObjectError o : bindingResult.getAllErrors()) {</span>
 <span class="nc" id="L143">        map.put(&quot;error_&quot; + o.getCode(), o.getDefaultMessage());</span>
 <span class="nc" id="L144">        log.debug(o.getCode() + &quot;:&quot; + o.getDefaultMessage());</span>
-<span class="nc" id="L145">      }</span>
+      }
     }
 <span class="nc" id="L147">    return map;</span>
   }

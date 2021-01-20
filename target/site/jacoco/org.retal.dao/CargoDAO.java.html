@@ -14,46 +14,46 @@ import org.springframework.stereotype.Component;
 
   @Override
   public void add(Cargo cargo) {
-<span class="nc" id="L17">    log.info(</span>
-<span class="nc" id="L18">        &quot;Attempt to add cargo: name='&quot; + cargo.getName() + &quot;', mass='&quot; + cargo.getMass() + &quot;'&quot;);</span>
-<span class="nc" id="L19">    Session session = DAO.start();</span>
-<span class="nc" id="L20">    session.save(cargo);</span>
-<span class="nc" id="L21">    session.flush();</span>
-<span class="nc" id="L22">    DAO.end(session);</span>
-<span class="nc" id="L23">  }</span>
+<span class="fc" id="L17">    log.info(</span>
+<span class="fc" id="L18">        &quot;Attempt to add cargo: name='&quot; + cargo.getName() + &quot;', mass='&quot; + cargo.getMass() + &quot;'&quot;);</span>
+<span class="fc" id="L19">    Session session = DAO.start();</span>
+<span class="fc" id="L20">    session.save(cargo);</span>
+<span class="fc" id="L21">    session.flush();</span>
+<span class="fc" id="L22">    DAO.end(session);</span>
+<span class="fc" id="L23">  }</span>
 
   @Override
   public Cargo read(Object... keys) {
-<span class="nc" id="L27">    DAO.validatePrimaryKeys(new Class&lt;?&gt;[] {Integer.class}, keys);</span>
-<span class="nc" id="L28">    Integer id = (Integer) keys[0];</span>
-<span class="nc" id="L29">    Session session = DAO.start();</span>
-<span class="nc" id="L30">    Cargo cargo = session.get(Cargo.class, id);</span>
-<span class="nc" id="L31">    DAO.end(session);</span>
-<span class="nc" id="L32">    return cargo;</span>
+<span class="fc" id="L27">    DAO.validatePrimaryKeys(new Class&lt;?&gt;[] {Integer.class}, keys);</span>
+<span class="fc" id="L28">    Integer id = (Integer) keys[0];</span>
+<span class="fc" id="L29">    Session session = DAO.start();</span>
+<span class="fc" id="L30">    Cargo cargo = session.get(Cargo.class, id);</span>
+<span class="fc" id="L31">    DAO.end(session);</span>
+<span class="fc" id="L32">    return cargo;</span>
   }
 
   @Override
   public List&lt;Cargo&gt; readAll() {
-<span class="nc" id="L37">    Session session = DAO.start();</span>
-<span class="nc" id="L38">    List&lt;Cargo&gt; cargos =</span>
-<span class="nc" id="L39">        session.createNativeQuery(&quot;SELECT * FROM CARGO&quot;, Cargo.class).getResultList();</span>
-<span class="nc" id="L40">    log.info(cargos.size() + &quot; cargos retrieved&quot;);</span>
-<span class="nc" id="L41">    DAO.end(session);</span>
-<span class="nc" id="L42">    return cargos;</span>
+<span class="fc" id="L37">    Session session = DAO.start();</span>
+<span class="fc" id="L38">    List&lt;Cargo&gt; cargos =</span>
+<span class="fc" id="L39">        session.createNativeQuery(&quot;SELECT * FROM CARGO&quot;, Cargo.class).getResultList();</span>
+<span class="fc" id="L40">    log.info(cargos.size() + &quot; cargos retrieved&quot;);</span>
+<span class="fc" id="L41">    DAO.end(session);</span>
+<span class="fc" id="L42">    return cargos;</span>
   }
 
   @Override
   public void delete(Cargo t) {
-<span class="nc" id="L47">    throw new MethodUndefinedException();</span>
+<span class="fc" id="L47">    throw new MethodUndefinedException();</span>
   }
 
   @Override
   public void update(Cargo t) {
-<span class="nc" id="L52">    Session session = DAO.start();</span>
-<span class="nc" id="L53">    session.update(t);</span>
-<span class="nc" id="L54">    session.flush();</span>
-<span class="nc" id="L55">    DAO.end(session);</span>
-<span class="nc" id="L56">  }</span>
+<span class="fc" id="L52">    Session session = DAO.start();</span>
+<span class="fc" id="L53">    session.update(t);</span>
+<span class="fc" id="L54">    session.flush();</span>
+<span class="fc" id="L55">    DAO.end(session);</span>
+<span class="fc" id="L56">  }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

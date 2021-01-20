@@ -27,8 +27,7 @@ public class OrderDAO implements DAO<Order> {
   @Override
   public void add(Order t) {
     if (session == null) {
-      log.error("Session is null");
-      return;
+      throw new NullPointerException("Session is null");
     }
     log.info("Attempt to add order " + t.toString());
     session.save(t);
@@ -39,22 +38,18 @@ public class OrderDAO implements DAO<Order> {
     DAO.validatePrimaryKeys(new Class<?>[] {Integer.class}, keys);
     Integer id = (Integer) keys[0];
     Session session = DAO.start();
-    List<Order> orders =
-        session.createNativeQuery("SELECT * FROM ORDERS WHERE id='" + id + "'", Order.class)
-            .getResultList();
+    Order order = session.get(Order.class, id);
     DAO.end(session);
-    if (orders.size() == 1) {
-      Order o = orders.get(0);
+    if (order != null) {
       Set<Cargo> cargo = new HashSet<>();
-      for (RoutePoint rp : o.getPoints()) {
+      for (RoutePoint rp : order.getPoints()) {
         cargo.add(rp.getCargo());
       }
-      o.setCargo(cargo);
-      return o;
+      order.setCargo(cargo);
+      return order;
     } else {
       return null;
     }
-
   }
 
   @Override
@@ -82,8 +77,7 @@ public class OrderDAO implements DAO<Order> {
   @Override
   public void update(Order t) {
     if (session == null) {
-      log.error("Session is null");
-      return;
+      throw new NullPointerException("Session is null");
     }
     log.info("Updating order " + t.toString());
     session.update(t);

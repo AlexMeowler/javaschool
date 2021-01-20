@@ -7,7 +7,7 @@
 
 	<groupId>org.retal</groupId>
 	<artifactId>javaschool</artifactId>
-	<version>1.0.2</version>
+	<version>1.0.3</version>
 	<packaging>war</packaging>
 
 	<name>Logiweb Service</name>
@@ -221,6 +221,7 @@
 					<version>2.22.1</version>
 					<configuration>
 						<argLine>${argLine}</argLine>
+						<runOrder>alphabetical</runOrder>
 					</configuration>
 					<executions>
 						<execution>

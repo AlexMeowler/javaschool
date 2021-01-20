@@ -24,7 +24,7 @@ public class RoutePointDAO implements DAO<RoutePoint> {
   public void add(RoutePoint t) {
     if (session == null) {
       log.error("Session is null");
-      return;
+      throw new NullPointerException("Session is null");
     }
     log.info("Attempt to save " + t.toString());
     session.save(t);
