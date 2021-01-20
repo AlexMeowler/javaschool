@@ -16,6 +16,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.retal.config.spring.RootConfig;
 import org.retal.config.spring.WebConfig;
+import org.retal.controller.TestCase4AdminPageController;
 import org.retal.domain.Car;
 import org.retal.domain.Cargo;
 import org.retal.domain.City;
@@ -56,7 +57,7 @@ public class TestCase1DAO {
 
   private RoutePointDAO routePointDAO;
 
-  private static final String[] cityNames =
+  public static final String[] CITY_NAMES =
       {"Mowcow", "Yaroslavl", "Omsk", "Samara", "Cheboksary", "Chelyabinsk"};
 
 
@@ -144,39 +145,41 @@ public class TestCase1DAO {
     this.routePointDAO = routePointDAO;
   }
   
+  /**
+   * Cleaning DB after all tests are performed.
+   */
   @AfterClass
   public static void cleanup() {
-    Session session = DAO.start();
-    session.createSQLQuery("DROP ALL OBJECTS");
+    TestCase4AdminPageController.cleanup();
   }
 
   @Test
   public void test1CityWritingAndReading() {
-    for (String name : cityNames) {
+    for (String name : CITY_NAMES) {
       City city = new City();
       city.setCurrentCity(name);
       cityDAO.add(city);
     }
-    City readCity = cityDAO.read(cityNames[0]);
-    assertEquals(cityNames[0], readCity.getCurrentCity());
+    City readCity = cityDAO.read(CITY_NAMES[0]);
+    assertEquals(CITY_NAMES[0], readCity.getCurrentCity());
   }
 
   @Test(expected = MethodUndefinedException.class)
   public void test2CityDeletion() {
-    City city = cityDAO.read(cityNames[1]);
+    City city = cityDAO.read(CITY_NAMES[1]);
     cityDAO.delete(city);
   }
 
   @Test(expected = MethodUndefinedException.class)
   public void test3CityUpdate() {
-    City city = cityDAO.read(cityNames[1]);
+    City city = cityDAO.read(CITY_NAMES[1]);
     cityDAO.update(city);
   }
 
   @Test
   public void test4CityReadAll() {
     List<City> cities = cityDAO.readAll();
-    for (String name : cityNames) {
+    for (String name : CITY_NAMES) {
       assertTrue(cities.stream().filter(c -> c.getCurrentCity().equals(name)).count() == 1);
     }
   }
@@ -185,7 +188,7 @@ public class TestCase1DAO {
   public void test5UserWriteAndRead() {
     User user = new User();
     UserInfo userInfo = new UserInfo();
-    City city = cityDAO.read(cityNames[0]);
+    City city = cityDAO.read(CITY_NAMES[0]);
     assertNotNull(city);
     userInfo.setCity(city);
     user.setLogin("admin");
@@ -258,7 +261,7 @@ public class TestCase1DAO {
     for (String id : ids) {
       car = new Car();
       car.setRegistrationId(id);
-      car.setLocation(cityDAO.read(cityNames[0]));
+      car.setLocation(cityDAO.read(CITY_NAMES[0]));
       car.setCapacityTons(2f);
       car.setShiftLength(13);
       carDAO.add(car);
@@ -306,7 +309,7 @@ public class TestCase1DAO {
   @Test
   public void testB3UpdateAndDeleteCar() {
     Car car = carDAO.readAll().get(0);
-    car.setLocation(cityDAO.read(cityNames[1]));
+    car.setLocation(cityDAO.read(CITY_NAMES[1]));
     carDAO.update(car);
     carDAO.delete(car);
   }
@@ -314,25 +317,25 @@ public class TestCase1DAO {
   @Test
   public void testB4addAndReadCityDistances() {
     CityDistance cd = new CityDistance();
-    cd.setCityA(cityNames[0]);
-    cd.setCityB(cityNames[1]);
+    cd.setCityA(CITY_NAMES[0]);
+    cd.setCityB(CITY_NAMES[1]);
     cd.setDistance(100);
     cityDistanceDAO.add(cd);
-    int distance = cityDistanceDAO.read(cityNames[0], cityNames[1]).getDistance();
+    int distance = cityDistanceDAO.read(CITY_NAMES[0], CITY_NAMES[1]).getDistance();
     assertEquals(distance, 100);
     assertEquals(cityDistanceDAO.readAll().size(), 1);
   }
 
   @Test(expected = MethodUndefinedException.class)
   public void testB5UpdateError() {
-    CityDistance cd = cityDistanceDAO.read(cityNames[0], cityNames[1]);
+    CityDistance cd = cityDistanceDAO.read(CITY_NAMES[0], CITY_NAMES[1]);
     cd.setDistance(200);
     cityDistanceDAO.update(cd);
   }
 
   @Test(expected = MethodUndefinedException.class)
   public void testB6DeleteError() {
-    CityDistance cd = cityDistanceDAO.read(cityNames[0], cityNames[1]);
+    CityDistance cd = cityDistanceDAO.read(CITY_NAMES[0], CITY_NAMES[1]);
     cityDistanceDAO.delete(cd);
   }
 
@@ -378,7 +381,7 @@ public class TestCase1DAO {
     Order order = new Order();
     order.setCar(carDAO.readAll().get(0));
     order.setIsCompleted(false);
-    order.setRoute(cityNames[0] + Order.ROUTE_DELIMETER + cityNames[1]);
+    order.setRoute(CITY_NAMES[0] + Order.ROUTE_DELIMETER + CITY_NAMES[1]);
     order.setRequiredCapacity(cargoDAO.read(1).getMass().floatValue());
     order.setRequiredShiftLength(3);
     orderDAO.add(order);

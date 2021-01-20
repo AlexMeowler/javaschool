@@ -48,7 +48,7 @@ public class AdminPageController {
 
   private final CargoAndOrdersService cargoAndOrdersService;
 
-  private static final String ADMIN_PAGE = "/adminPage";
+  public static final String ADMIN_PAGE = "/adminPage";
 
   private static final Logger log = Logger.getLogger(AdminPageController.class);
 
@@ -141,6 +141,7 @@ public class AdminPageController {
       UserInfoDTO userInfoDTO, CityDTO cityDTO, RedirectAttributes redir) {
     redir.addFlashAttribute("visible", "true");
     User user = mapUserRelatedDTOsToEntity(userDTO, userInfoDTO, cityDTO);
+    
     userService.addNewUser(user, bindingResult, userDTO.getPassword());
     RedirectView redirectView = new RedirectView(ADMIN_PAGE, true);
     if (bindingResult.hasErrors()) {

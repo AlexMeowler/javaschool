@@ -2,7 +2,6 @@ package org.retal.controller;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -33,7 +32,7 @@ public class AuthAndLogoutController {
     }
     if (logout != null) {
       log.info("logout success");
-      redir.addFlashAttribute("message", "Logged out succesfully");
+      redir.addFlashAttribute("message", "Logged out successfully");
     }
     RedirectView redirectView = new RedirectView("/home", true);
     return redirectView;
@@ -43,7 +42,7 @@ public class AuthAndLogoutController {
    * Method responsible for logging out using Spring Security.
    */
   @PostMapping(value = "/logout")
-  public void logOut(Model model) {
+  public void logOut() {
     log.info("logout attempt");
   }
 }

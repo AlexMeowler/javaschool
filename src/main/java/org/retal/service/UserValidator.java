@@ -28,8 +28,11 @@ public class UserValidator implements Validator {
   private CityDAO cityDAO;
 
   public static final String MALICIOUS_REGEX =
-      "([\\W&&[^ -]]+)|(create)|(drop)|(table)|(add)|(database)|(select)|"
-          + "(where)|(join)|(or)|(and)|(alter)|(update)";
+      "([\\W&&[^ -]]+)|( create)|( drop)|( table)|( add)|( database)|( select)|( where)|( join)"
+      + "|( or)|( and)|( alter)|( update)|(create )|(drop )|(table )|(add )|(database )"
+      + "|(select )|(where )|(join )|(or )|(and )|(alter )|(update )|( create )|( drop )"
+      + "|( table )|( add )|( database )|( select )|( where )|( join )|( or )|( and )"
+      + "|( alter )|( update )";
 
   @Autowired
   public UserValidator(javax.validation.Validator validator, CityDAO cityDAO) {
@@ -68,6 +71,7 @@ public class UserValidator implements Validator {
     if (digits.matcher(userInfo.getSurname()).find()) {
       throwError(errors, "noDigitsSurname", "Surname must not contain digits.");
     }
+    log.info("Checking for malicious input");
     String maliciousInputMessage = checkForMaliciousInput(user.getLogin());
     maliciousInputMessage =
         setIfEmpty(maliciousInputMessage, checkForMaliciousInput(userInfo.getName()));

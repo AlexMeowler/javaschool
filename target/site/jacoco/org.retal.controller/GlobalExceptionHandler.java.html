@@ -2,9 +2,11 @@
 
 import org.apache.log4j.Logger;
 import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
@@ -15,11 +17,11 @@ import org.springframework.web.servlet.view.RedirectView;
  *
  */
 @ControllerAdvice
-<span class="fc" id="L18">public class GlobalExceptionHandler {</span>
+<span class="fc" id="L20">public class GlobalExceptionHandler {</span>
 
-  public static final String ERROR_PAGE = &quot;/errorPage&quot;;
+  public static final String ERROR_PAGE = &quot;errorPage&quot;;
 
-<span class="fc" id="L22">  private static final Logger log = Logger.getLogger(GlobalExceptionHandler.class);</span>
+<span class="fc" id="L24">  private static final Logger log = Logger.getLogger(GlobalExceptionHandler.class);</span>
 
   /**
    * Handler for all types of exceptions. This method logs given exception and redirects to error
@@ -30,13 +32,17 @@ import org.springframework.web.servlet.view.RedirectView;
    * @return view for error page
    */
   @ExceptionHandler(value = Exception.class)
+  @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
   public RedirectView customErrorPage(Exception e, RedirectAttributes redir) {
-<span class="nc" id="L34">    log.error(e, e);</span>
-<span class="nc" id="L35">    ResponseStatus status = AnnotationUtils.findAnnotation(e.getClass(), ResponseStatus.class);</span>
-<span class="nc bnc" id="L36" title="All 2 branches missed.">    Integer code = status != null ? status.code().value() : 500;</span>
-<span class="nc" id="L37">    RedirectView redirectView = new RedirectView(ERROR_PAGE, true);</span>
-<span class="nc" id="L38">    redir.addFlashAttribute(&quot;errorCode&quot;, &quot;Error &quot; + code);</span>
-<span class="nc" id="L39">    return redirectView;</span>
+<span class="fc" id="L37">    log.error(e, e);</span>
+<span class="fc" id="L38">    ResponseStatus status = AnnotationUtils.findAnnotation(e.getClass(), ResponseStatus.class);</span>
+<span class="fc bfc" id="L39" title="All 2 branches covered.">    Integer code = status != null ? status.code().value() : 500;</span>
+<span class="fc bfc" id="L40" title="All 4 branches covered.">    code = status == null &amp;&amp; e instanceof ResponseStatusException</span>
+<span class="fc" id="L41">        ? ((ResponseStatusException) e).getRawStatusCode()</span>
+<span class="fc" id="L42">        : code;</span>
+<span class="fc" id="L43">    RedirectView redirectView = new RedirectView(ERROR_PAGE, true);</span>
+<span class="fc" id="L44">    redir.addFlashAttribute(&quot;errorCode&quot;, &quot;Error &quot; + code);</span>
+<span class="fc" id="L45">    return redirectView;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

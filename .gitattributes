@@ -1,0 +1,3 @@
+target/site/apidocs/* linguist-vendored=false
+src/main/webapp/js/bootstrap*.js linguist-vendored=false
+src/main/webapp/css/bootstrap*.css linguist-vendored=false

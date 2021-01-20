@@ -47,8 +47,8 @@ public class ManagerPageController {
    * Creates an instance of this class using constructor-based dependency injection.
    */
   @Autowired
-<span class="fc" id="L50">  public ManagerPageController(SessionInfo sessionInfo, UserService userService,</span>
-      CarService carService, CityService cityService) {
+  public ManagerPageController(SessionInfo sessionInfo, UserService userService,
+<span class="fc" id="L51">      CarService carService, CityService cityService) {</span>
 <span class="fc" id="L52">    this.sessionInfo = sessionInfo;</span>
 <span class="fc" id="L53">    this.userService = userService;</span>
 <span class="fc" id="L54">    this.carService = carService;</span>
@@ -118,7 +118,7 @@ public class ManagerPageController {
     }
 <span class="nc bnc" id="L119" title="All 2 branches missed.">    if (url403.equals(UserService.DELETION_UPDATION_ERROR)) {</span>
 <span class="nc" id="L120">      redir.addFlashAttribute(&quot;error_userDeletionFailed&quot;,</span>
-<span class="nc" id="L121">          &quot;Could not delete driver due to assigned order or being driving car&quot;);</span>
+          &quot;Could not delete driver due to assigned order or being driving car&quot;);
     }
 <span class="nc" id="L123">    return redirectView;</span>
   }
@@ -208,7 +208,7 @@ public class ManagerPageController {
 <span class="nc" id="L208">    Car car = carService.getCar(id);</span>
 <span class="nc bnc" id="L209" title="All 2 branches missed.">    if (!carService.deleteCar(car)) {</span>
 <span class="nc" id="L210">      redir.addFlashAttribute(&quot;error_carDeletionFailed&quot;,</span>
-<span class="nc" id="L211">          &quot;Could not delete car due to assigned order or being driver by someone&quot;);</span>
+          &quot;Could not delete car due to assigned order or being driver by someone&quot;);
     }
 <span class="nc" id="L213">    return redirectView;</span>
   }

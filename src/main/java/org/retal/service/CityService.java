@@ -10,7 +10,9 @@ import org.retal.dao.CityDistanceDAO;
 import org.retal.domain.City;
 import org.retal.domain.CityDistance;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 /**
  * Service, containing business-logic methods regarding {@linkplain org.retal.domain.City City}
@@ -52,7 +54,9 @@ public class CityService {
       }
       reader.close();
     } catch (IOException e) {
-      log.error("File citynames.txt not found");
+      String message = "File citynames.txt not found";
+      log.error(message);
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, message);
     }
   }
 
@@ -74,7 +78,9 @@ public class CityService {
       }
       reader.close();
     } catch (IOException e) {
-      log.error("File graph.txt not found");
+      String message = "File graph.txt not found";
+      log.error(message);
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, message);
     }
   }
 

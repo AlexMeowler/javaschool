@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ErrorPagesController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Logiweb Service</a> &gt; <a href="index.source.html" class="el_package">org.retal.controller</a> &gt; <span class="el_source">ErrorPagesController.java</span></div><h1>ErrorPagesController.java</h1><pre class="source lang-java linenums">package org.retal.controller;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
@@ -13,14 +16,14 @@ import org.springframework.web.servlet.view.RedirectView;
  * @see org.retal.config.spring.security.Error403Handler
  */
 @Controller
-<span class="fc" id="L16">public class ErrorPagesController {</span>
+<span class="fc" id="L19">public class ErrorPagesController {</span>
 
   /**
    * Method responsible for showing default version of custom 403 (access denied) error page.
    */
   @GetMapping(&quot;/403&quot;)
   public String accessDeniedUnnamed() {
-<span class="nc" id="L23">    return &quot;error403&quot;;</span>
+<span class="fc" id="L26">    return &quot;error403&quot;;</span>
   }
 
   /**
@@ -29,19 +32,17 @@ import org.springframework.web.servlet.view.RedirectView;
    */
   @GetMapping(&quot;/403/{name}&quot;)
   public RedirectView accessDeniedNamed(@PathVariable String name, RedirectAttributes redir) {
-<span class="nc bnc" id="L32" title="All 2 branches missed.">    if (name != null) {</span>
-<span class="nc" id="L33">      redir.addFlashAttribute(&quot;username&quot;, name);</span>
-    }
-<span class="nc" id="L35">    RedirectView redirectView = new RedirectView(&quot;/403&quot;, true);</span>
-<span class="nc" id="L36">    return redirectView;</span>
+<span class="fc" id="L35">    redir.addFlashAttribute(&quot;username&quot;, name);</span>
+<span class="fc" id="L36">    RedirectView redirectView = new RedirectView(&quot;/403&quot;, true);</span>
+<span class="fc" id="L37">    return redirectView;</span>
   }
-  
+
   /**
    * Method responsible for showing default version of custom 404 (not found) error page.
    */
   @GetMapping(&quot;/404&quot;)
   public String notFound() {
-<span class="nc" id="L44">    return &quot;error404&quot;;</span>
+<span class="fc" id="L45">    return &quot;error404&quot;;</span>
   }
 
   /**
@@ -49,7 +50,7 @@ import org.springframework.web.servlet.view.RedirectView;
    */
   @GetMapping(GlobalExceptionHandler.ERROR_PAGE)
   public String showErrorPage() {
-<span class="nc" id="L52">    return GlobalExceptionHandler.ERROR_PAGE;</span>
+<span class="fc" id="L53">    return GlobalExceptionHandler.ERROR_PAGE;</span>
   }
 
   /**
@@ -57,7 +58,33 @@ import org.springframework.web.servlet.view.RedirectView;
    */
   @GetMapping(value = &quot;/exception&quot;)
   public void checkExceptionPage() {
-<span class="nc" id="L60">    throw new NullPointerException();</span>
+<span class="fc" id="L61">    throw new NullPointerException();</span>
+  }
+
+  /**
+   * Method for checking redirection to error page with 502 error code. This method throws
+   * ResponseStatusException.
+   */
+  @GetMapping(value = &quot;/exception502&quot;)
+  public void checkExceptionPageWithCustomCode() {
+<span class="fc" id="L70">    throw new ResponseStatusException(HttpStatus.BAD_GATEWAY);</span>
+  }
+
+  /**
+   * Method for checking redirection to error page with 502 error code. This method throws
+   * ResponseStatusException.
+   */
+  @GetMapping(value = &quot;/exception503&quot;)
+  public void checkExceptionPageWithAnnotatedException() {
+<span class="fc" id="L79">    throw new Annotated503ErrorCodeException();</span>
+  }
+
+  @SuppressWarnings(&quot;serial&quot;)
+  @ResponseStatus(code = HttpStatus.SERVICE_UNAVAILABLE)
+  private static class Annotated503ErrorCodeException extends RuntimeException {
+    public Annotated503ErrorCodeException() {
+<span class="fc" id="L86">      super();</span>
+<span class="fc" id="L87">    }</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

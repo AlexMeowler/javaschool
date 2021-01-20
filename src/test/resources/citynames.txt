@@ -1,0 +1,37 @@
+Moscow
+Saint-Petersburg
+Novosibirsk
+Ekaterinburg
+Nizhny Novgorod
+Kazan
+Samara
+Chelyabinsk
+Omsk
+Rostov-on-Don
+Ufa
+Krasnoyarsk
+Perm
+Volgograd
+Voronezh
+Saratov
+Krasnodar
+Tolyatti
+Tyumen
+Izhevsk
+Barnaul
+Ulyanovsk
+Irkutsk
+Yaroslavl
+Makhachkala
+Orenburg
+Tomsk
+Novokuznetsk
+Kemerovo
+Astrakhan
+Ryazan
+Naberezhnye Chelny
+Penza
+Lipetsk
+Tula
+Kirov
+Cheboksary

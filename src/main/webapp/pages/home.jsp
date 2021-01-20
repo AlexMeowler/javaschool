@@ -23,7 +23,7 @@
 		<sec:authorize access = "!isAuthenticated()">
 		<c:url value="/spring_auth" var = "loginURL"/>
 		<form:form class = "login-form" action="${loginURL}" method="POST">
-			<h2 class = "form-signin-heading">Authorization form for company members</h2>
+			<h2 class = "form-signin-heading">Authorization for company members</h2>
 			<div class="form-group">
 				<label>Login</label>
 				<input class="form-control form-control-lg" type="text" name="j_login"/>
@@ -33,9 +33,9 @@
 				<input class="form-control form-control-lg" type="password" name="j_password"/>
 			</div>
 			<input class = "btn btn-primary btn-large" type="submit" value="Log in">
+			<c:out value="${message}"/>
 		</form:form>
 		</sec:authorize>
-		<c:out value="${message}"/>
 		<div class="footer"></div>
   	</div>
 </body>

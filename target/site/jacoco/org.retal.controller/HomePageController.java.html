@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
    */
   @GetMapping(value = &quot;/&quot;)
   public String getHomeFromBlankPath(Model model) {
-<span class="nc" id="L19">    return &quot;redirect:/home&quot;;</span>
+<span class="fc" id="L19">    return &quot;redirect:/home&quot;;</span>
   }
 
   /**
@@ -24,8 +24,8 @@ import org.springframework.web.bind.annotation.GetMapping;
    */
   @GetMapping(&quot;/home&quot;)
   public String getHome(Model model) {
-<span class="nc" id="L27">    log.info(&quot;Redirected to home page&quot;);</span>
-<span class="nc" id="L28">    return &quot;home&quot;;</span>
+<span class="fc" id="L27">    log.info(&quot;Redirected to home page&quot;);</span>
+<span class="fc" id="L28">    return &quot;home&quot;;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

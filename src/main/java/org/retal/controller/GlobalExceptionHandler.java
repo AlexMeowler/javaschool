@@ -2,9 +2,11 @@ package org.retal.controller;
 
 import org.apache.log4j.Logger;
 import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
@@ -17,7 +19,7 @@ import org.springframework.web.servlet.view.RedirectView;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-  public static final String ERROR_PAGE = "/errorPage";
+  public static final String ERROR_PAGE = "errorPage";
 
   private static final Logger log = Logger.getLogger(GlobalExceptionHandler.class);
 
@@ -30,10 +32,14 @@ public class GlobalExceptionHandler {
    * @return view for error page
    */
   @ExceptionHandler(value = Exception.class)
+  @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
   public RedirectView customErrorPage(Exception e, RedirectAttributes redir) {
     log.error(e, e);
     ResponseStatus status = AnnotationUtils.findAnnotation(e.getClass(), ResponseStatus.class);
     Integer code = status != null ? status.code().value() : 500;
+    code = status == null && e instanceof ResponseStatusException
+        ? ((ResponseStatusException) e).getRawStatusCode()
+        : code;
     RedirectView redirectView = new RedirectView(ERROR_PAGE, true);
     redir.addFlashAttribute("errorCode", "Error " + code);
     return redirectView;

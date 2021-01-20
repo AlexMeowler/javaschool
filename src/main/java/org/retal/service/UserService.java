@@ -14,9 +14,11 @@ import org.retal.domain.enums.DriverStatus;
 import org.retal.domain.enums.UserRole;
 import org.retal.dto.UserWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Validator;
+import org.springframework.web.server.ResponseStatusException;
 
 /**
  * Service, containing business-logic methods regarding {@linkplain org.retal.domain.User User} and
@@ -211,7 +213,9 @@ public class UserService {
       namesReader.close();
       surnamesReader.close();
     } catch (IOException e) {
-      log.error("File names.txt or surnames.txt not found");
+      String message = "File names.txt or surnames.txt not found";
+      log.error(message);
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, message);
     }
   }
 
