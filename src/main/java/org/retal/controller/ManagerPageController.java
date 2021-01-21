@@ -39,7 +39,7 @@ public class ManagerPageController {
 
   private final CityService cityService;
 
-  private static final String MANAGER_PAGE = "/managerPage";
+  public static final String MANAGER_PAGE = "/managerPage";
 
   private static final Logger log = Logger.getLogger(ManagerPageController.class);
 
@@ -63,10 +63,16 @@ public class ManagerPageController {
     BindingResult userResult =
         (BindingResult) model.asMap().get(BindingResult.MODEL_KEY_PREFIX + "user");
     Map<String, String> errors = UserValidator.convertErrorsToHashMap(userResult);
+    for (Map.Entry<String, String> e : errors.entrySet()) {
+      log.debug(e.getKey() + ":" + e.getValue());
+    }
     model.addAllAttributes(errors);
     BindingResult carResult =
         (BindingResult) model.asMap().get(BindingResult.MODEL_KEY_PREFIX + "car");
     errors = UserValidator.convertErrorsToHashMap(carResult);
+    for (Map.Entry<String, String> e : errors.entrySet()) {
+      log.debug(e.getKey() + ":" + e.getValue());
+    }
     model.addAllAttributes(errors);
     User user = sessionInfo.getCurrentUser();
     UserInfo userInfo = user.getUserInfo();

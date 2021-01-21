@@ -193,16 +193,16 @@ public class CargoAndOrdersService {
    */
   public void addNewCargo(Cargo cargo, BindingResult bindingResult, String weight) {
     try {
-<span class="nc" id="L196">      Integer weightInt = Integer.parseInt(weight);</span>
-<span class="nc" id="L197">      cargo.setMass(weightInt);</span>
-<span class="nc" id="L198">    } catch (NumberFormatException e) {</span>
-<span class="nc" id="L199">      bindingResult.reject(&quot;mass&quot;, &quot;Cargo weight length must be non-negative integer&quot;);</span>
-<span class="nc" id="L200">    }</span>
-<span class="nc" id="L201">    cargoValidator.validate(cargo, bindingResult);</span>
-<span class="nc bnc" id="L202" title="All 2 branches missed.">    if (!bindingResult.hasErrors()) {</span>
-<span class="nc" id="L203">      cargoDAO.add(cargo);</span>
+<span class="fc" id="L196">      Integer weightInt = Integer.parseInt(weight);</span>
+<span class="fc" id="L197">      cargo.setMass(weightInt);</span>
+<span class="fc" id="L198">    } catch (NumberFormatException e) {</span>
+<span class="fc" id="L199">      bindingResult.reject(&quot;mass&quot;, &quot;Cargo weight length must be non-negative integer&quot;);</span>
+<span class="fc" id="L200">    }</span>
+<span class="fc" id="L201">    cargoValidator.validate(cargo, bindingResult);</span>
+<span class="fc bfc" id="L202" title="All 2 branches covered.">    if (!bindingResult.hasErrors()) {</span>
+<span class="fc" id="L203">      cargoDAO.add(cargo);</span>
     }
-<span class="nc" id="L205">  }</span>
+<span class="fc" id="L205">  }</span>
 
   /**
    * Updates cargo status following chain &quot;prepared -&gt; loaded -&gt; unloaded&quot;. Additionally checks if

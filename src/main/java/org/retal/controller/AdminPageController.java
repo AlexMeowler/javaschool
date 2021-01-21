@@ -141,7 +141,6 @@ public class AdminPageController {
       UserInfoDTO userInfoDTO, CityDTO cityDTO, RedirectAttributes redir) {
     redir.addFlashAttribute("visible", "true");
     User user = mapUserRelatedDTOsToEntity(userDTO, userInfoDTO, cityDTO);
-    
     userService.addNewUser(user, bindingResult, userDTO.getPassword());
     RedirectView redirectView = new RedirectView(ADMIN_PAGE, true);
     if (bindingResult.hasErrors()) {

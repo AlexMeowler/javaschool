@@ -46,7 +46,9 @@ public class CargoValidator implements Validator {
     if (weight != null && weight < 0) {
       throwError(errors, "mass", "Cargo weight length must non-negative integer.");
     }
-    String maliciousInputMessage = UserValidator.checkForMaliciousInput(cargo.getName());
+    String maliciousInputMessage = "";
+    maliciousInputMessage =
+        setIfEmpty(maliciousInputMessage, UserValidator.checkForMaliciousInput(cargo.getName()));
     maliciousInputMessage = setIfEmpty(maliciousInputMessage,
         UserValidator.checkForMaliciousInput(cargo.getDescription()));
     if (!maliciousInputMessage.isEmpty()) {

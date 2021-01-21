@@ -39,7 +39,7 @@ public class ManagerPageController {
 
   private final CityService cityService;
 
-  private static final String MANAGER_PAGE = &quot;/managerPage&quot;;
+  public static final String MANAGER_PAGE = &quot;/managerPage&quot;;
 
 <span class="fc" id="L44">  private static final Logger log = Logger.getLogger(ManagerPageController.class);</span>
 
@@ -47,8 +47,8 @@ public class ManagerPageController {
    * Creates an instance of this class using constructor-based dependency injection.
    */
   @Autowired
-  public ManagerPageController(SessionInfo sessionInfo, UserService userService,
-<span class="fc" id="L51">      CarService carService, CityService cityService) {</span>
+<span class="fc" id="L50">  public ManagerPageController(SessionInfo sessionInfo, UserService userService,</span>
+      CarService carService, CityService cityService) {
 <span class="fc" id="L52">    this.sessionInfo = sessionInfo;</span>
 <span class="fc" id="L53">    this.userService = userService;</span>
 <span class="fc" id="L54">    this.carService = carService;</span>
@@ -60,24 +60,30 @@ public class ManagerPageController {
    */
   @GetMapping(value = MANAGER_PAGE)
   public String getManagerPage(Model model) {
-<span class="nc" id="L63">    BindingResult userResult =</span>
-<span class="nc" id="L64">        (BindingResult) model.asMap().get(BindingResult.MODEL_KEY_PREFIX + &quot;user&quot;);</span>
-<span class="nc" id="L65">    Map&lt;String, String&gt; errors = UserValidator.convertErrorsToHashMap(userResult);</span>
-<span class="nc" id="L66">    model.addAllAttributes(errors);</span>
-<span class="nc" id="L67">    BindingResult carResult =</span>
-<span class="nc" id="L68">        (BindingResult) model.asMap().get(BindingResult.MODEL_KEY_PREFIX + &quot;car&quot;);</span>
-<span class="nc" id="L69">    errors = UserValidator.convertErrorsToHashMap(carResult);</span>
-<span class="nc" id="L70">    model.addAllAttributes(errors);</span>
-<span class="nc" id="L71">    User user = sessionInfo.getCurrentUser();</span>
-<span class="nc" id="L72">    UserInfo userInfo = user.getUserInfo();</span>
-<span class="nc" id="L73">    model.addAttribute(&quot;current_user_name&quot;, userInfo.getName() + &quot; &quot; + userInfo.getSurname());</span>
-<span class="nc" id="L74">    List&lt;User&gt; users = userService.getAllDrivers();</span>
-<span class="nc" id="L75">    model.addAttribute(&quot;driverList&quot;, users);</span>
-<span class="nc" id="L76">    List&lt;Car&gt; cars = carService.getAllCars();</span>
-<span class="nc" id="L77">    model.addAttribute(&quot;carsList&quot;, cars);</span>
-<span class="nc" id="L78">    List&lt;City&gt; cities = cityService.getAllCities();</span>
-<span class="nc" id="L79">    model.addAttribute(&quot;cityList&quot;, cities);</span>
-<span class="nc" id="L80">    return &quot;managerPage&quot;;</span>
+<span class="fc" id="L63">    BindingResult userResult =</span>
+<span class="fc" id="L64">        (BindingResult) model.asMap().get(BindingResult.MODEL_KEY_PREFIX + &quot;user&quot;);</span>
+<span class="fc" id="L65">    Map&lt;String, String&gt; errors = UserValidator.convertErrorsToHashMap(userResult);</span>
+<span class="pc bpc" id="L66" title="1 of 2 branches missed.">    for (Map.Entry&lt;String, String&gt; e : errors.entrySet()) {</span>
+<span class="nc" id="L67">      log.debug(e.getKey() + &quot;:&quot; + e.getValue());</span>
+    }
+<span class="fc" id="L69">    model.addAllAttributes(errors);</span>
+<span class="fc" id="L70">    BindingResult carResult =</span>
+<span class="fc" id="L71">        (BindingResult) model.asMap().get(BindingResult.MODEL_KEY_PREFIX + &quot;car&quot;);</span>
+<span class="fc" id="L72">    errors = UserValidator.convertErrorsToHashMap(carResult);</span>
+<span class="pc bpc" id="L73" title="1 of 2 branches missed.">    for (Map.Entry&lt;String, String&gt; e : errors.entrySet()) {</span>
+<span class="nc" id="L74">      log.debug(e.getKey() + &quot;:&quot; + e.getValue());</span>
+    }
+<span class="fc" id="L76">    model.addAllAttributes(errors);</span>
+<span class="fc" id="L77">    User user = sessionInfo.getCurrentUser();</span>
+<span class="fc" id="L78">    UserInfo userInfo = user.getUserInfo();</span>
+<span class="fc" id="L79">    model.addAttribute(&quot;current_user_name&quot;, userInfo.getName() + &quot; &quot; + userInfo.getSurname());</span>
+<span class="fc" id="L80">    List&lt;User&gt; users = userService.getAllDrivers();</span>
+<span class="fc" id="L81">    model.addAttribute(&quot;driverList&quot;, users);</span>
+<span class="fc" id="L82">    List&lt;Car&gt; cars = carService.getAllCars();</span>
+<span class="fc" id="L83">    model.addAttribute(&quot;carsList&quot;, cars);</span>
+<span class="fc" id="L84">    List&lt;City&gt; cities = cityService.getAllCities();</span>
+<span class="fc" id="L85">    model.addAttribute(&quot;cityList&quot;, cities);</span>
+<span class="fc" id="L86">    return &quot;managerPage&quot;;</span>
   }
 
   /**
@@ -89,17 +95,17 @@ public class ManagerPageController {
   @PostMapping(value = &quot;/addNewDriver&quot;)
   public RedirectView addNewDriver(UserDTO userDTO, UserInfoDTO userInfoDTO, CityDTO cityDTO,
       RedirectAttributes redir, BindingResult bindingResult) {
-<span class="nc" id="L92">    log.info(&quot;Attempt to add new driver&quot;);</span>
-<span class="nc" id="L93">    redir.addFlashAttribute(&quot;visibledriver&quot;, &quot;true&quot;);</span>
-<span class="nc" id="L94">    User user = mapUserRelatedDTOsToDriverEntity(userDTO, userInfoDTO, cityDTO);</span>
-<span class="nc" id="L95">    userService.addNewUser(user, bindingResult, userDTO.getPassword());</span>
-<span class="nc bnc" id="L96" title="All 2 branches missed.">    if (bindingResult.hasErrors()) {</span>
-<span class="nc" id="L97">      log.warn(&quot;Validation failed when adding new driver&quot;);</span>
-<span class="nc" id="L98">      redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + &quot;user&quot;, bindingResult);</span>
-<span class="nc" id="L99">      redir.addFlashAttribute(&quot;user&quot;, user);</span>
+<span class="nc" id="L98">    log.info(&quot;Attempt to add new driver&quot;);</span>
+<span class="nc" id="L99">    redir.addFlashAttribute(&quot;visibledriver&quot;, &quot;true&quot;);</span>
+<span class="nc" id="L100">    User user = mapUserRelatedDTOsToDriverEntity(userDTO, userInfoDTO, cityDTO);</span>
+<span class="nc" id="L101">    userService.addNewUser(user, bindingResult, userDTO.getPassword());</span>
+<span class="nc bnc" id="L102" title="All 2 branches missed.">    if (bindingResult.hasErrors()) {</span>
+<span class="nc" id="L103">      log.warn(&quot;Validation failed when adding new driver&quot;);</span>
+<span class="nc" id="L104">      redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + &quot;user&quot;, bindingResult);</span>
+<span class="nc" id="L105">      redir.addFlashAttribute(&quot;user&quot;, user);</span>
     }
-<span class="nc" id="L101">    RedirectView redirectView = new RedirectView(MANAGER_PAGE, true);</span>
-<span class="nc" id="L102">    return redirectView;</span>
+<span class="nc" id="L107">    RedirectView redirectView = new RedirectView(MANAGER_PAGE, true);</span>
+<span class="nc" id="L108">    return redirectView;</span>
   }
 
   /**
@@ -110,17 +116,17 @@ public class ManagerPageController {
    */
   @GetMapping(value = &quot;/deleteDriver/{id}&quot;)
   public RedirectView deleteDriver(@PathVariable Integer id, RedirectAttributes redir) {
-<span class="nc" id="L113">    RedirectView redirectView = new RedirectView(MANAGER_PAGE, true);</span>
-<span class="nc" id="L114">    String url403 = userService.deleteUser(id);</span>
-<span class="nc bnc" id="L115" title="All 4 branches missed.">    if (!url403.isEmpty() &amp;&amp; !url403.equals(UserService.DELETION_UPDATION_ERROR)) {</span>
-<span class="nc" id="L116">      String param = sessionInfo.getCurrentUser().getLogin();</span>
-<span class="nc" id="L117">      redirectView.setUrl(url403 + &quot;/&quot; + param);</span>
+<span class="nc" id="L119">    RedirectView redirectView = new RedirectView(MANAGER_PAGE, true);</span>
+<span class="nc" id="L120">    String url403 = userService.deleteUser(id);</span>
+<span class="nc bnc" id="L121" title="All 4 branches missed.">    if (!url403.isEmpty() &amp;&amp; !url403.equals(UserService.DELETION_UPDATION_ERROR)) {</span>
+<span class="nc" id="L122">      String param = sessionInfo.getCurrentUser().getLogin();</span>
+<span class="nc" id="L123">      redirectView.setUrl(url403 + &quot;/&quot; + param);</span>
     }
-<span class="nc bnc" id="L119" title="All 2 branches missed.">    if (url403.equals(UserService.DELETION_UPDATION_ERROR)) {</span>
-<span class="nc" id="L120">      redir.addFlashAttribute(&quot;error_userDeletionFailed&quot;,</span>
-          &quot;Could not delete driver due to assigned order or being driving car&quot;);
+<span class="nc bnc" id="L125" title="All 2 branches missed.">    if (url403.equals(UserService.DELETION_UPDATION_ERROR)) {</span>
+<span class="nc" id="L126">      redir.addFlashAttribute(&quot;error_userDeletionFailed&quot;,</span>
+<span class="nc" id="L127">          &quot;Could not delete driver due to assigned order or being driving car&quot;);</span>
     }
-<span class="nc" id="L123">    return redirectView;</span>
+<span class="nc" id="L129">    return redirectView;</span>
   }
 
   /**
@@ -130,10 +136,10 @@ public class ManagerPageController {
    */
   @GetMapping(value = &quot;/editDriver/{id}&quot;)
   public RedirectView editDriver(@PathVariable Integer id, RedirectAttributes redir) {
-<span class="nc" id="L133">    RedirectView redirectView = new RedirectView(&quot;/editDriver&quot;, true);</span>
-<span class="nc" id="L134">    redir.addFlashAttribute(&quot;user&quot;, userService.getUser(id));</span>
-<span class="nc" id="L135">    redir.addFlashAttribute(&quot;we&quot;, sessionInfo.getCurrentUser());</span>
-<span class="nc" id="L136">    return redirectView;</span>
+<span class="nc" id="L139">    RedirectView redirectView = new RedirectView(&quot;/editDriver&quot;, true);</span>
+<span class="nc" id="L140">    redir.addFlashAttribute(&quot;user&quot;, userService.getUser(id));</span>
+<span class="nc" id="L141">    redir.addFlashAttribute(&quot;we&quot;, sessionInfo.getCurrentUser());</span>
+<span class="nc" id="L142">    return redirectView;</span>
   }
 
   /**
@@ -143,14 +149,14 @@ public class ManagerPageController {
    */
   @GetMapping(value = &quot;/editDriver&quot;)
   public String driverEditForm(Model model) {
-<span class="nc" id="L146">    BindingResult result =</span>
-<span class="nc" id="L147">        (BindingResult) model.asMap().get(BindingResult.MODEL_KEY_PREFIX + &quot;user&quot;);</span>
-<span class="nc" id="L148">    Map&lt;String, String&gt; errors = UserValidator.convertErrorsToHashMap(result);</span>
-<span class="nc" id="L149">    model.addAllAttributes(errors);</span>
-<span class="nc" id="L150">    model.addAttribute(&quot;editUser&quot;, &quot;/submitEditedDriver&quot;);</span>
-<span class="nc" id="L151">    List&lt;City&gt; cities = cityService.getAllCities();</span>
-<span class="nc" id="L152">    model.addAttribute(&quot;cityList&quot;, cities);</span>
-<span class="nc" id="L153">    return &quot;editUser&quot;;</span>
+<span class="nc" id="L152">    BindingResult result =</span>
+<span class="nc" id="L153">        (BindingResult) model.asMap().get(BindingResult.MODEL_KEY_PREFIX + &quot;user&quot;);</span>
+<span class="nc" id="L154">    Map&lt;String, String&gt; errors = UserValidator.convertErrorsToHashMap(result);</span>
+<span class="nc" id="L155">    model.addAllAttributes(errors);</span>
+<span class="nc" id="L156">    model.addAttribute(&quot;editUser&quot;, &quot;/submitEditedDriver&quot;);</span>
+<span class="nc" id="L157">    List&lt;City&gt; cities = cityService.getAllCities();</span>
+<span class="nc" id="L158">    model.addAttribute(&quot;cityList&quot;, cities);</span>
+<span class="nc" id="L159">    return &quot;editUser&quot;;</span>
   }
 
   /**
@@ -162,16 +168,16 @@ public class ManagerPageController {
   @PostMapping(value = &quot;/submitEditedDriver&quot;)
   public RedirectView finishDriverEditing(UserDTO userDTO, BindingResult bindingResult,
       UserInfoDTO userInfoDTO, CityDTO cityDTO, RedirectAttributes redir) {
-<span class="nc" id="L165">    RedirectView redirectView = new RedirectView(MANAGER_PAGE, true);</span>
-<span class="nc" id="L166">    User user = mapUserRelatedDTOsToDriverEntity(userDTO, userInfoDTO, cityDTO);</span>
-<span class="nc" id="L167">    userService.updateUser(user, bindingResult, userDTO.getPassword());</span>
-<span class="nc bnc" id="L168" title="All 2 branches missed.">    if (bindingResult.hasErrors()) {</span>
-<span class="nc" id="L169">      log.warn(&quot;There were validation errors at editing driver&quot;);</span>
-<span class="nc" id="L170">      redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + &quot;user&quot;, bindingResult);</span>
-<span class="nc" id="L171">      redir.addFlashAttribute(&quot;user&quot;, user);</span>
-<span class="nc" id="L172">      redirectView.setUrl(&quot;/editDriver&quot;);</span>
+<span class="nc" id="L171">    RedirectView redirectView = new RedirectView(MANAGER_PAGE, true);</span>
+<span class="nc" id="L172">    User user = mapUserRelatedDTOsToDriverEntity(userDTO, userInfoDTO, cityDTO);</span>
+<span class="nc" id="L173">    userService.updateUser(user, bindingResult, userDTO.getPassword());</span>
+<span class="nc bnc" id="L174" title="All 2 branches missed.">    if (bindingResult.hasErrors()) {</span>
+<span class="nc" id="L175">      log.warn(&quot;There were validation errors at editing driver&quot;);</span>
+<span class="nc" id="L176">      redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + &quot;user&quot;, bindingResult);</span>
+<span class="nc" id="L177">      redir.addFlashAttribute(&quot;user&quot;, user);</span>
+<span class="nc" id="L178">      redirectView.setUrl(&quot;/editDriver&quot;);</span>
     }
-<span class="nc" id="L174">    return redirectView;</span>
+<span class="nc" id="L180">    return redirectView;</span>
   }
 
   /**
@@ -184,16 +190,16 @@ public class ManagerPageController {
   public RedirectView addNewCar(CarDTO carDTO, BindingResult bindingResult, CityDTO cityDTO,
       RedirectAttributes redir, @RequestParam(name = &quot;capacity&quot;) String capacity,
       @RequestParam(name = &quot;shift&quot;) String shiftLength) {
-<span class="nc" id="L187">    redir.addFlashAttribute(&quot;visiblecar&quot;, &quot;true&quot;);</span>
-<span class="nc" id="L188">    Car car = mapCarRelatedDTOsToCarEntity(carDTO, cityDTO);</span>
-<span class="nc" id="L189">    carService.addNewCar(car, bindingResult, capacity, shiftLength);</span>
-<span class="nc bnc" id="L190" title="All 2 branches missed.">    if (bindingResult.hasErrors()) {</span>
-<span class="nc" id="L191">      log.warn(&quot;There were validation errors at adding new car&quot;);</span>
-<span class="nc" id="L192">      redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + &quot;car&quot;, bindingResult);</span>
-<span class="nc" id="L193">      redir.addFlashAttribute(&quot;car&quot;, car);</span>
+<span class="nc" id="L193">    redir.addFlashAttribute(&quot;visiblecar&quot;, &quot;true&quot;);</span>
+<span class="nc" id="L194">    Car car = mapCarRelatedDTOsToCarEntity(carDTO, cityDTO);</span>
+<span class="nc" id="L195">    carService.addNewCar(car, bindingResult, capacity, shiftLength);</span>
+<span class="nc bnc" id="L196" title="All 2 branches missed.">    if (bindingResult.hasErrors()) {</span>
+<span class="nc" id="L197">      log.warn(&quot;There were validation errors at adding new car&quot;);</span>
+<span class="nc" id="L198">      redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + &quot;car&quot;, bindingResult);</span>
+<span class="nc" id="L199">      redir.addFlashAttribute(&quot;car&quot;, car);</span>
     }
-<span class="nc" id="L195">    RedirectView redirectView = new RedirectView(MANAGER_PAGE, true);</span>
-<span class="nc" id="L196">    return redirectView;</span>
+<span class="nc" id="L201">    RedirectView redirectView = new RedirectView(MANAGER_PAGE, true);</span>
+<span class="nc" id="L202">    return redirectView;</span>
   }
 
   /**
@@ -204,13 +210,13 @@ public class ManagerPageController {
    */
   @GetMapping(value = &quot;/deleteCar/{id}&quot;)
   public RedirectView deleteCar(@PathVariable String id, RedirectAttributes redir) {
-<span class="nc" id="L207">    RedirectView redirectView = new RedirectView(MANAGER_PAGE, true);</span>
-<span class="nc" id="L208">    Car car = carService.getCar(id);</span>
-<span class="nc bnc" id="L209" title="All 2 branches missed.">    if (!carService.deleteCar(car)) {</span>
-<span class="nc" id="L210">      redir.addFlashAttribute(&quot;error_carDeletionFailed&quot;,</span>
-          &quot;Could not delete car due to assigned order or being driver by someone&quot;);
+<span class="nc" id="L213">    RedirectView redirectView = new RedirectView(MANAGER_PAGE, true);</span>
+<span class="nc" id="L214">    Car car = carService.getCar(id);</span>
+<span class="nc bnc" id="L215" title="All 2 branches missed.">    if (!carService.deleteCar(car)) {</span>
+<span class="nc" id="L216">      redir.addFlashAttribute(&quot;error_carDeletionFailed&quot;,</span>
+<span class="nc" id="L217">          &quot;Could not delete car due to assigned order or being driver by someone&quot;);</span>
     }
-<span class="nc" id="L213">    return redirectView;</span>
+<span class="nc" id="L219">    return redirectView;</span>
   }
 
   /**
@@ -220,9 +226,9 @@ public class ManagerPageController {
    */
   @GetMapping(value = &quot;/editCar/{id}&quot;)
   public RedirectView editCar(@PathVariable String id, RedirectAttributes redir) {
-<span class="nc" id="L223">    RedirectView redirectView = new RedirectView(&quot;/editCar&quot;, true);</span>
-<span class="nc" id="L224">    redir.addFlashAttribute(&quot;car&quot;, carService.getCar(id));</span>
-<span class="nc" id="L225">    return redirectView;</span>
+<span class="nc" id="L229">    RedirectView redirectView = new RedirectView(&quot;/editCar&quot;, true);</span>
+<span class="nc" id="L230">    redir.addFlashAttribute(&quot;car&quot;, carService.getCar(id));</span>
+<span class="nc" id="L231">    return redirectView;</span>
   }
 
   /**
@@ -232,13 +238,13 @@ public class ManagerPageController {
    */
   @GetMapping(value = &quot;/editCar&quot;)
   public String carEditForm(Model model) {
-<span class="nc" id="L235">    BindingResult result =</span>
-<span class="nc" id="L236">        (BindingResult) model.asMap().get(BindingResult.MODEL_KEY_PREFIX + &quot;car&quot;);</span>
-<span class="nc" id="L237">    Map&lt;String, String&gt; errors = UserValidator.convertErrorsToHashMap(result);</span>
-<span class="nc" id="L238">    model.addAllAttributes(errors);</span>
-<span class="nc" id="L239">    List&lt;City&gt; cities = cityService.getAllCities();</span>
-<span class="nc" id="L240">    model.addAttribute(&quot;cityList&quot;, cities);</span>
-<span class="nc" id="L241">    return &quot;editCar&quot;;</span>
+<span class="nc" id="L241">    BindingResult result =</span>
+<span class="nc" id="L242">        (BindingResult) model.asMap().get(BindingResult.MODEL_KEY_PREFIX + &quot;car&quot;);</span>
+<span class="nc" id="L243">    Map&lt;String, String&gt; errors = UserValidator.convertErrorsToHashMap(result);</span>
+<span class="nc" id="L244">    model.addAllAttributes(errors);</span>
+<span class="nc" id="L245">    List&lt;City&gt; cities = cityService.getAllCities();</span>
+<span class="nc" id="L246">    model.addAttribute(&quot;cityList&quot;, cities);</span>
+<span class="nc" id="L247">    return &quot;editCar&quot;;</span>
   }
 
   /**
@@ -251,16 +257,16 @@ public class ManagerPageController {
   public RedirectView finishCarEditing(CarDTO carDTO, BindingResult bindingResult,
       RedirectAttributes redir, @RequestParam(name = &quot;capacity&quot;) String capacity,
       @RequestParam(name = &quot;shift&quot;) String shiftLength, CityDTO cityDTO) {
-<span class="nc" id="L254">    RedirectView redirectView = new RedirectView(MANAGER_PAGE, true);</span>
-<span class="nc" id="L255">    Car car = mapCarRelatedDTOsToCarEntity(carDTO, cityDTO);</span>
-<span class="nc" id="L256">    carService.updateCar(car, bindingResult, capacity, shiftLength);</span>
-<span class="nc bnc" id="L257" title="All 2 branches missed.">    if (bindingResult.hasErrors()) {</span>
-<span class="nc" id="L258">      log.warn(&quot;There were validation errors at editing car&quot;);</span>
-<span class="nc" id="L259">      redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + &quot;car&quot;, bindingResult);</span>
-<span class="nc" id="L260">      redir.addFlashAttribute(&quot;car&quot;, car);</span>
-<span class="nc" id="L261">      redirectView.setUrl(&quot;/editCar&quot;);</span>
+<span class="nc" id="L260">    RedirectView redirectView = new RedirectView(MANAGER_PAGE, true);</span>
+<span class="nc" id="L261">    Car car = mapCarRelatedDTOsToCarEntity(carDTO, cityDTO);</span>
+<span class="nc" id="L262">    carService.updateCar(car, bindingResult, capacity, shiftLength);</span>
+<span class="nc bnc" id="L263" title="All 2 branches missed.">    if (bindingResult.hasErrors()) {</span>
+<span class="nc" id="L264">      log.warn(&quot;There were validation errors at editing car&quot;);</span>
+<span class="nc" id="L265">      redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + &quot;car&quot;, bindingResult);</span>
+<span class="nc" id="L266">      redir.addFlashAttribute(&quot;car&quot;, car);</span>
+<span class="nc" id="L267">      redirectView.setUrl(&quot;/editCar&quot;);</span>
     }
-<span class="nc" id="L263">    return redirectView;</span>
+<span class="nc" id="L269">    return redirectView;</span>
   }
 
   /**
@@ -274,13 +280,13 @@ public class ManagerPageController {
    */
   private User mapUserRelatedDTOsToDriverEntity(UserDTO userDTO, UserInfoDTO userInfoDTO,
       CityDTO cityDTO) {
-<span class="nc" id="L277">    User user = new User(userDTO);</span>
-<span class="nc" id="L278">    UserInfo userInfo = new UserInfo(userInfoDTO);</span>
-<span class="nc" id="L279">    City city = new City(cityDTO);</span>
-<span class="nc" id="L280">    user.setRole(UserRole.DRIVER.toString().toLowerCase());</span>
-<span class="nc" id="L281">    userInfo.setCity(city);</span>
-<span class="nc" id="L282">    user.setUserInfo(userInfo);</span>
-<span class="nc" id="L283">    return user;</span>
+<span class="nc" id="L283">    User user = new User(userDTO);</span>
+<span class="nc" id="L284">    UserInfo userInfo = new UserInfo(userInfoDTO);</span>
+<span class="nc" id="L285">    City city = new City(cityDTO);</span>
+<span class="nc" id="L286">    user.setRole(UserRole.DRIVER.toString().toLowerCase());</span>
+<span class="nc" id="L287">    userInfo.setCity(city);</span>
+<span class="nc" id="L288">    user.setUserInfo(userInfo);</span>
+<span class="nc" id="L289">    return user;</span>
   }
 
   /**
@@ -292,10 +298,10 @@ public class ManagerPageController {
    * @return transient instance of {@linkplain org.retal.domain.Car Car} entity
    */
   private Car mapCarRelatedDTOsToCarEntity(CarDTO carDTO, CityDTO cityDTO) {
-<span class="nc" id="L295">    Car car = new Car(carDTO);</span>
-<span class="nc" id="L296">    City city = new City(cityDTO);</span>
-<span class="nc" id="L297">    car.setLocation(city);</span>
-<span class="nc" id="L298">    return car;</span>
+<span class="nc" id="L301">    Car car = new Car(carDTO);</span>
+<span class="nc" id="L302">    City city = new City(cityDTO);</span>
+<span class="nc" id="L303">    car.setLocation(city);</span>
+<span class="nc" id="L304">    return car;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>
