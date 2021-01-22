@@ -146,18 +146,20 @@ public class UserService {
       bindingResult.reject("userUnavailable",
           "User could not be updated due to assigned order or being driving car");
     }
-    if (!bindingResult.hasErrors() && userHasRightsToEditOrDeleteUser(caller, target)) {
-      if (password.isEmpty()) {
-        User copy = userDAO.read(updatedUser.getId());
-        copy.setLogin(updatedUser.getLogin());
-        copy.setRole(updatedUser.getRole());
-        copy.setUserInfo(updatedUser.getUserInfo());
-        updatedUser = copy;
+    if (userHasRightsToEditOrDeleteUser(caller, target)) {
+      if (!bindingResult.hasErrors()) {
+        if (password.isEmpty()) {
+          User copy = userDAO.read(updatedUser.getId());
+          copy.setLogin(updatedUser.getLogin());
+          copy.setRole(updatedUser.getRole());
+          copy.setUserInfo(updatedUser.getUserInfo());
+          updatedUser = copy;
+        }
+        userDAO.update(updatedUser);
       }
-      userDAO.update(updatedUser);
     } else {
       log.warn("Attempt to edit user without sufficient permissions");
-      redirect = "/403";
+      redirect = "/403/" + caller.getLogin();
     }
     return redirect;
   }
@@ -169,10 +171,11 @@ public class UserService {
    * @param target user B
    * @return true is user A has right to edit or delete user B, false otherwise
    */
-  private boolean userHasRightsToEditOrDeleteUser(User caller, User target) {
+  public boolean userHasRightsToEditOrDeleteUser(User caller, User target) {
     String callerRoleString = caller.getRole().toUpperCase();
-    String targetRoleString =
-        target != null ? target.getRole().toUpperCase() : UserRole.DRIVER.toString().toUpperCase();
+    String targetRoleString = target.getRole().toUpperCase();
+    // target.getRole() != null ? target.getRole().toUpperCase() :
+    // UserRole.DRIVER.toString().toUpperCase();
     UserRole callerRole = UserRole.valueOf(callerRoleString);
     UserRole targetRole = UserRole.valueOf(targetRoleString);
     boolean hasHigherRank = callerRole.ordinal() > targetRole.ordinal();

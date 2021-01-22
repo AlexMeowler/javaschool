@@ -35,13 +35,13 @@ public class TestCase2ErrorPageControllerAndExceptionHandler {
 
   @Test
   public void testA1getErrorsPageAndExceptionHandling() throws Exception {
-    mockMvc.perform(get("/exception")).andExpect(status().is5xxServerError())
+    mockMvc.perform(get("/exception")).andExpect(status().is3xxRedirection())
         .andExpect(redirectedUrl(GlobalExceptionHandler.ERROR_PAGE))
         .andExpect(flash().attribute("errorCode", "Error 500"));
-    mockMvc.perform(get("/exception502")).andExpect(status().is5xxServerError())
+    mockMvc.perform(get("/exception502")).andExpect(status().is3xxRedirection())
         .andExpect(redirectedUrl(GlobalExceptionHandler.ERROR_PAGE))
         .andExpect(flash().attribute("errorCode", "Error 502"));
-    mockMvc.perform(get("/exception503")).andExpect(status().is5xxServerError())
+    mockMvc.perform(get("/exception503")).andExpect(status().is3xxRedirection())
     .andExpect(redirectedUrl(GlobalExceptionHandler.ERROR_PAGE))
     .andExpect(flash().attribute("errorCode", "Error 503"));
     mockMvc.perform(get("/" + GlobalExceptionHandler.ERROR_PAGE)).andExpect(status().isOk())

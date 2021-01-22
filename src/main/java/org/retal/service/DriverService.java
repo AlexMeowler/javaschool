@@ -95,6 +95,7 @@ public class DriverService {
           }
           break;
         case LOADING_AND_UNLOADING_CARGO:
+          driver.getUserInfo().setCar(null);
           break;
         case ON_SHIFT:
           driver.getUserInfo().setCar(null);

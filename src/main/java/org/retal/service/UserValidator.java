@@ -29,10 +29,10 @@ public class UserValidator implements Validator {
 
   public static final String MALICIOUS_REGEX =
       "([\\W&&[^ -]]+)|( create)|( drop)|( table)|( add)|( database)|( select)|( where)|( join)"
-      + "|( or)|( and)|( alter)|( update)|(create )|(drop )|(table )|(add )|(database )"
-      + "|(select )|(where )|(join )|(or )|(and )|(alter )|(update )|( create )|( drop )"
-      + "|( table )|( add )|( database )|( select )|( where )|( join )|( or )|( and )"
-      + "|( alter )|( update )";
+          + "|( or)|( and)|( alter)|( update)|(create )|(drop )|(table )|(add )|(database )"
+          + "|(select )|(where )|(join )|(or )|(and )|(alter )|(update )|( create )|( drop )"
+          + "|( table )|( add )|( database )|( select )|( where )|( join )|( or )|( and )"
+          + "|( alter )|( update )";
 
   @Autowired
   public UserValidator(javax.validation.Validator validator, CityDAO cityDAO) {
@@ -72,13 +72,27 @@ public class UserValidator implements Validator {
       throwError(errors, "noDigitsSurname", "Surname must not contain digits.");
     }
     log.info("Checking for malicious input");
-    String maliciousInputMessage = checkForMaliciousInput(user.getLogin());
-    maliciousInputMessage =
-        setIfEmpty(maliciousInputMessage, checkForMaliciousInput(userInfo.getName()));
-    maliciousInputMessage =
-        setIfEmpty(maliciousInputMessage, checkForMaliciousInput(userInfo.getSurname()));
+    String response = checkForMaliciousInput(user.getLogin());
+    if (!response.isEmpty()) {
+      user.setLogin("");
+    }
+    String maliciousInputMessage = response;
+    response = checkForMaliciousInput(userInfo.getName());
+    if (!response.isEmpty()) {
+      userInfo.setName("");
+    }
+    maliciousInputMessage = setIfEmpty(maliciousInputMessage, response);
+    response = checkForMaliciousInput(userInfo.getSurname());
+    if (!response.isEmpty()) {
+      userInfo.setSurname("");
+    }
+    maliciousInputMessage = setIfEmpty(maliciousInputMessage, response);
     String password = wrapper.getPassword();
-    maliciousInputMessage = setIfEmpty(maliciousInputMessage, checkForMaliciousInput(password));
+    response = checkForMaliciousInput(password);
+    if (!response.isEmpty()) {
+      userInfo.setSurname("");
+    }
+    maliciousInputMessage = setIfEmpty(maliciousInputMessage, response);
     if (password.length() < 6 && !password.isEmpty()) {
       String property = "realPassword";
       String message = "Password must have at least 6 characters.";

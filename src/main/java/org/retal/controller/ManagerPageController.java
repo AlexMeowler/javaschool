@@ -137,8 +137,14 @@ public class ManagerPageController {
   @GetMapping(value = "/editDriver/{id}")
   public RedirectView editDriver(@PathVariable Integer id, RedirectAttributes redir) {
     RedirectView redirectView = new RedirectView("/editDriver", true);
-    redir.addFlashAttribute("user", userService.getUser(id));
-    redir.addFlashAttribute("we", sessionInfo.getCurrentUser());
+    User we = sessionInfo.getCurrentUser();
+    User target = userService.getUser(id);
+    if (userService.userHasRightsToEditOrDeleteUser(we, target)) {
+      redir.addFlashAttribute("user", target);
+      redir.addFlashAttribute("we", we);
+    } else {
+      redirectView.setUrl("/403/" + we.getLogin());
+    }
     return redirectView;
   }
 
@@ -170,12 +176,15 @@ public class ManagerPageController {
       UserInfoDTO userInfoDTO, CityDTO cityDTO, RedirectAttributes redir) {
     RedirectView redirectView = new RedirectView(MANAGER_PAGE, true);
     User user = mapUserRelatedDTOsToDriverEntity(userDTO, userInfoDTO, cityDTO);
-    userService.updateUser(user, bindingResult, userDTO.getPassword());
+    String redirect = userService.updateUser(user, bindingResult, userDTO.getPassword());
     if (bindingResult.hasErrors()) {
       log.warn("There were validation errors at editing driver");
       redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + "user", bindingResult);
       redir.addFlashAttribute("user", user);
       redirectView.setUrl("/editDriver");
+    }
+    if (!redirect.isEmpty()) {
+      redirectView.setUrl(redirect);
     }
     return redirectView;
   }
@@ -214,7 +223,7 @@ public class ManagerPageController {
     Car car = carService.getCar(id);
     if (!carService.deleteCar(car)) {
       redir.addFlashAttribute("error_carDeletionFailed",
-          "Could not delete car due to assigned order or being driver by someone");
+          "Could not delete car due to assigned order or being driven by someone");
     }
     return redirectView;
   }

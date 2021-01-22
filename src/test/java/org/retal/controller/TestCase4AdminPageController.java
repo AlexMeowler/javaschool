@@ -17,8 +17,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.List;
 import java.util.stream.Collectors;
+import org.apache.log4j.Logger;
 import org.hibernate.Session;
+import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -68,6 +71,10 @@ public class TestCase4AdminPageController {
   private OrderDAO orderDAO;
 
   private CargoDAO cargoDAO;
+
+  private static final Logger log = Logger.getLogger(TestCase4AdminPageController.class);
+
+  private static int counter = 1;
 
 
   @Configuration
@@ -120,24 +127,32 @@ public class TestCase4AdminPageController {
   }
 
   /**
-   * Creates user account before tests for security testing.
+   * Creates user admin and driver account before tests for security testing.
    */
   @BeforeClass
-  public static void createAdminUser() {
+  public static void createAdminAndDriverUsers() {
+    User user = generateUser("administrator", "password", "admin", "Moscow", "admin", "admin");
+    UserDAO userDAO = new UserDAO();
+    userDAO.add(user);
+    user = generateUser("driver123", "password", "driver", "Moscow", "driver", "driver");
+    userDAO.add(user);
+  }
+
+  private static User generateUser(String login, String password, String role, String cityName,
+      String name, String surname) {
     User user = new User();
-    user.setLogin("administrator");
-    user.setPassword("password");
-    user.setRole("admin");
+    user.setLogin(login);
+    user.setPassword(password);
+    user.setRole(role);
     UserInfo userInfo = new UserInfo();
-    CityDAO cityDAO = new CityDAO();
     City city = new City();
-    city.setCurrentCity("Moscow");
-    cityDAO.add(city);
+    city.setCurrentCity(cityName);
+    new CityDAO().add(city);
     userInfo.setCity(city);
-    userInfo.setName("admin");
-    userInfo.setSurname("admin");
+    userInfo.setName(name);
+    userInfo.setSurname(surname);
     user.setUserInfo(userInfo);
-    new UserDAO().add(user);
+    return user;
   }
 
   /**
@@ -163,6 +178,17 @@ public class TestCase4AdminPageController {
     }
     session.createSQLQuery("SET REFERENTIAL_INTEGRITY TRUE").executeUpdate();
     DAO.end(session);
+  }
+
+  @Before
+  public void startTest() {
+    log.info("---Starting test " + counter + "---");
+  }
+
+  @After
+  public void endTest() {
+    log.info("---Ending test " + counter + "---");
+    counter++;
   }
 
   private MultiValueMap<String, String> generateUserParameters() {
@@ -302,9 +328,8 @@ public class TestCase4AdminPageController {
     params.set("password", "");
     params.set("id",
         Integer.toString(userDAO.findUser(generateUserParameters().getFirst("login")).getId()));
-    mockMvc.perform(post("/submitEditedUser").params(params)
-
-        .with(csrf())).andExpect(status().is3xxRedirection())
+    mockMvc.perform(post("/submitEditedUser").params(params).with(csrf()))
+        .andExpect(status().is3xxRedirection())
         .andExpect(redirectedUrl(AdminPageController.ADMIN_PAGE))
         .andExpect(flash().attribute(BindingResult.MODEL_KEY_PREFIX + "user", nullValue()));
     User user = userDAO.findUser(params.getFirst("login"));
@@ -325,11 +350,10 @@ public class TestCase4AdminPageController {
     params.set("name", name);
     params.set("id", Integer.toString(userDAO.findUser(params.getFirst("login")).getId()));
     RunnableWithExceptionThrows r = () -> {
-      mockMvc.perform(post("/submitEditedUser").params(params)
-
-          .with(csrf())).andExpect(redirectedUrl("/editUser"))
-          .andExpect(status().is3xxRedirection())
-          .andExpect(flash().attribute(BindingResult.MODEL_KEY_PREFIX + "user", notNullValue()));
+      mockMvc.perform(post("/submitEditedUser").params(params).with(csrf()))
+          .andExpect(redirectedUrl("/editUser")).andExpect(status().is3xxRedirection())
+          .andExpect(flash().attribute(BindingResult.MODEL_KEY_PREFIX + "user", notNullValue()))
+          .andExpect(redirectedUrl("/editUser"));
       assertNotEquals(userDAO.findUser(params.getFirst("login")).getUserInfo().getName(), name);
     };
     r.run();
@@ -352,6 +376,7 @@ public class TestCase4AdminPageController {
     MultiValueMap<String, String> params = generateUserParameters();
     String name = "ab2";
     params.set("name", name);
+    params.set("login", userDAO.readAll().get(0).getLogin());
     params.set("id", Integer.toString(userDAO.findUser(params.getFirst("login")).getId()));
     mockMvc.perform(post("/submitEditedUser").params(params).with(csrf()))
         .andExpect(status().is3xxRedirection()).andExpect(redirectedUrl("/editUser"))
@@ -360,8 +385,37 @@ public class TestCase4AdminPageController {
   }
 
   @Test
+  @WithMockUser(username = "driver123", password = "password", authorities = "DRIVER")
+  public void testB0ForgeAddress() throws Exception {
+    Integer id = userDAO.findUser("administrator").getId();
+    mockMvc.perform(get("/deleteUser/" + id)).andExpect(status().is3xxRedirection())
+        .andExpect(redirectedUrl("/403/driver123"));
+  }
+
+  @Test
+  @WithMockUser(username = "driver123", password = "password", authorities = "DRIVER")
+  public void testB0ForgeEditUserAddress() throws Exception {
+    Integer id = userDAO.findUser("administrator").getId();
+    mockMvc.perform(get("/editUser/" + id)).andExpect(status().is3xxRedirection())
+        .andExpect(redirectedUrl("/403/driver123"));
+  }
+
+  @Test
+  @WithMockUser(username = "driver123", password = "password", authorities = "DRIVER")
+  public void testB2SubmitEditedUserPermissionsFail() throws Exception {
+    MultiValueMap<String, String> params = generateUserParameters();
+    String name = "ab2";
+    params.set("name", name);
+    params.set("id", Integer.toString(userDAO.findUser("administrator").getId()));
+    mockMvc.perform(post("/submitEditedUser").params(params).with(csrf()))
+        .andExpect(status().is3xxRedirection()).andExpect(redirectedUrl("/403/driver123"))
+        .andExpect(flash().attribute(BindingResult.MODEL_KEY_PREFIX + "user", notNullValue()));
+    assertNotEquals(userDAO.findUser(params.getFirst("login")).getUserInfo().getName(), name);
+  }
+
+  @Test
   @WithMockUser(username = "administrator", password = "password", authorities = "ADMIN")
-  public void testB1DeleteUser() throws Exception {
+  public void testB3DeleteUser() throws Exception {
     Integer id = userDAO.findUser(generateUserParameters().getFirst("login")).getId();
     mockMvc.perform(get("/deleteUser/" + id)).andExpect(status().is3xxRedirection())
         .andExpect(flash().attribute("error_userDeletionFailed", nullValue()));
@@ -370,7 +424,7 @@ public class TestCase4AdminPageController {
 
   @Test
   @WithMockUser(username = "administrator", password = "password", authorities = "ADMIN")
-  public void testB2AddNewCargoForm() throws Exception {
+  public void testB4AddNewCargoForm() throws Exception {
     MultiValueMap<String, String> params = generateCargoParameters();
     mockMvc.perform(post("/addNewCargo").params(params).with(csrf()))
         .andExpect(status().is3xxRedirection())
@@ -380,7 +434,7 @@ public class TestCase4AdminPageController {
 
   @Test
   @WithMockUser(username = "administrator", password = "password", authorities = "ADMIN")
-  public void testB3AddNewCargoFormValidationFailAndRedirectToAdminPageWithFlashAttributes()
+  public void testB5AddNewCargoFormValidationFailAndRedirectToAdminPageWithFlashAttributes()
       throws Exception {
     MultiValueMap<String, String> params = generateUserParameters();
     params.set("name", "");
@@ -415,7 +469,13 @@ public class TestCase4AdminPageController {
 
   @Test
   @WithMockUser(username = "administrator", password = "password", authorities = "ADMIN")
-  public void testB4GetAdminPage() throws Exception {
+  public void testB6DeleteNotExistingUser() throws Exception {
+    mockMvc.perform(get("/deleteUser/1000")).andExpect(status().is3xxRedirection());
+  }
+
+  @Test
+  @WithMockUser(username = "administrator", password = "password", authorities = "ADMIN")
+  public void testB7GetAdminPage() throws Exception {
     mockMvc.perform(get(AdminPageController.ADMIN_PAGE)).andExpect(status().isOk());
   }
 

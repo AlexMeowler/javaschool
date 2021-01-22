@@ -2,7 +2,6 @@ package org.retal.controller;
 
 import org.apache.log4j.Logger;
 import org.springframework.core.annotation.AnnotationUtils;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -32,7 +31,6 @@ public class GlobalExceptionHandler {
    * @return view for error page
    */
   @ExceptionHandler(value = Exception.class)
-  @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
   public RedirectView customErrorPage(Exception e, RedirectAttributes redir) {
     log.error(e, e);
     ResponseStatus status = AnnotationUtils.findAnnotation(e.getClass(), ResponseStatus.class);

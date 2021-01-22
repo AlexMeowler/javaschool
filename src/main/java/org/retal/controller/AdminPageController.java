@@ -176,8 +176,14 @@ public class AdminPageController {
   @GetMapping(value = "/editUser/{id}")
   public RedirectView edit(@PathVariable Integer id, RedirectAttributes redir) {
     RedirectView redirectView = new RedirectView("/editUser", true);
-    redir.addFlashAttribute("user", userService.getUser(id));
-    redir.addFlashAttribute("we", sessionInfo.getCurrentUser());
+    User we = sessionInfo.getCurrentUser();
+    User target = userService.getUser(id);
+    if (userService.userHasRightsToEditOrDeleteUser(we, target)) {
+      redir.addFlashAttribute("user", target);
+      redir.addFlashAttribute("we", we);
+    } else {
+      redirectView.setUrl("/403/" + we.getLogin());
+    }
     return redirectView;
   }
 
@@ -209,12 +215,15 @@ public class AdminPageController {
       UserInfoDTO userInfoDTO, CityDTO cityDTO, RedirectAttributes redir) {
     RedirectView redirectView = new RedirectView(ADMIN_PAGE, true);
     User user = mapUserRelatedDTOsToEntity(userDTO, userInfoDTO, cityDTO);
-    userService.updateUser(user, bindingResult, userDTO.getPassword());
+    String redirect = userService.updateUser(user, bindingResult, userDTO.getPassword());
     if (bindingResult.hasErrors()) {
       log.warn("Validation fail when editing user");
       redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + "user", bindingResult);
       redir.addFlashAttribute("user", user);
       redirectView.setUrl("/editUser");
+    }
+    if (!redirect.isEmpty()) {
+      redirectView.setUrl(redirect);
     }
     return redirectView;
   }

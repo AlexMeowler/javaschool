@@ -109,7 +109,7 @@ public class UserService {
   public String deleteUser(User target) {
 <span class="fc" id="L110">    User caller = sessionInfo.getCurrentUser();</span>
 <span class="fc" id="L111">    String redirect = &quot;&quot;;</span>
-<span class="pc bpc" id="L112" title="1 of 2 branches missed.">    if (userHasRightsToEditOrDeleteUser(caller, target)) {</span>
+<span class="fc bfc" id="L112" title="All 2 branches covered.">    if (userHasRightsToEditOrDeleteUser(caller, target)) {</span>
 <span class="fc" id="L113">      UserInfo userInfo = target.getUserInfo();</span>
 <span class="fc bfc" id="L114" title="All 4 branches covered.">      if (userInfo.getCar() == null &amp;&amp; userInfo.getOrder() == null) {</span>
 <span class="fc" id="L115">        userDAO.delete(target);</span>
@@ -117,8 +117,8 @@ public class UserService {
 <span class="fc" id="L117">        redirect = DELETION_UPDATION_ERROR;</span>
       }
 <span class="fc" id="L119">    } else {</span>
-<span class="nc" id="L120">      log.warn(&quot;Attempt to delete user without sufficient permissions&quot;);</span>
-<span class="nc" id="L121">      redirect = &quot;/403&quot;;</span>
+<span class="fc" id="L120">      log.warn(&quot;Attempt to delete user without sufficient permissions&quot;);</span>
+<span class="fc" id="L121">      redirect = &quot;/403&quot;;</span>
     }
 <span class="fc" id="L123">    return redirect;</span>
   }
@@ -146,20 +146,22 @@ public class UserService {
 <span class="fc" id="L146">      bindingResult.reject(&quot;userUnavailable&quot;,</span>
 <span class="fc" id="L147">          &quot;User could not be updated due to assigned order or being driving car&quot;);</span>
     }
-<span class="pc bpc" id="L149" title="1 of 4 branches missed.">    if (!bindingResult.hasErrors() &amp;&amp; userHasRightsToEditOrDeleteUser(caller, target)) {</span>
-<span class="fc bfc" id="L150" title="All 2 branches covered.">      if (password.isEmpty()) {</span>
-<span class="fc" id="L151">        User copy = userDAO.read(updatedUser.getId());</span>
-<span class="fc" id="L152">        copy.setLogin(updatedUser.getLogin());</span>
-<span class="fc" id="L153">        copy.setRole(updatedUser.getRole());</span>
-<span class="fc" id="L154">        copy.setUserInfo(updatedUser.getUserInfo());</span>
-<span class="fc" id="L155">        updatedUser = copy;</span>
+<span class="fc bfc" id="L149" title="All 2 branches covered.">    if (userHasRightsToEditOrDeleteUser(caller, target)) {</span>
+<span class="fc bfc" id="L150" title="All 2 branches covered.">      if (!bindingResult.hasErrors()) {</span>
+<span class="pc bpc" id="L151" title="1 of 2 branches missed.">        if (password.isEmpty()) {</span>
+<span class="fc" id="L152">          User copy = userDAO.read(updatedUser.getId());</span>
+<span class="fc" id="L153">          copy.setLogin(updatedUser.getLogin());</span>
+<span class="fc" id="L154">          copy.setRole(updatedUser.getRole());</span>
+<span class="fc" id="L155">          copy.setUserInfo(updatedUser.getUserInfo());</span>
+<span class="fc" id="L156">          updatedUser = copy;</span>
+        }
+<span class="fc" id="L158">        userDAO.update(updatedUser);</span>
       }
-<span class="fc" id="L157">      userDAO.update(updatedUser);</span>
-<span class="fc" id="L158">    } else {</span>
-<span class="fc" id="L159">      log.warn(&quot;Attempt to edit user without sufficient permissions&quot;);</span>
-<span class="fc" id="L160">      redirect = &quot;/403&quot;;</span>
+<span class="fc" id="L160">    } else {</span>
+<span class="fc" id="L161">      log.warn(&quot;Attempt to edit user without sufficient permissions&quot;);</span>
+<span class="fc" id="L162">      redirect = &quot;/403/&quot; + caller.getLogin();</span>
     }
-<span class="fc" id="L162">    return redirect;</span>
+<span class="fc" id="L164">    return redirect;</span>
   }
 
   /**
@@ -169,15 +171,16 @@ public class UserService {
    * @param target user B
    * @return true is user A has right to edit or delete user B, false otherwise
    */
-  private boolean userHasRightsToEditOrDeleteUser(User caller, User target) {
-<span class="fc" id="L173">    String callerRoleString = caller.getRole().toUpperCase();</span>
-<span class="fc" id="L174">    String targetRoleString =</span>
-<span class="pc bpc" id="L175" title="1 of 2 branches missed.">        target != null ? target.getRole().toUpperCase() : UserRole.DRIVER.toString().toUpperCase();</span>
-<span class="fc" id="L176">    UserRole callerRole = UserRole.valueOf(callerRoleString);</span>
-<span class="fc" id="L177">    UserRole targetRole = UserRole.valueOf(targetRoleString);</span>
-<span class="pc bpc" id="L178" title="1 of 2 branches missed.">    boolean hasHigherRank = callerRole.ordinal() &gt; targetRole.ordinal();</span>
-<span class="fc" id="L179">    boolean isAdmin = caller.getRole().equalsIgnoreCase(UserRole.ADMIN.toString());</span>
-<span class="pc bpc" id="L180" title="2 of 4 branches missed.">    return hasHigherRank || isAdmin;</span>
+  public boolean userHasRightsToEditOrDeleteUser(User caller, User target) {
+<span class="fc" id="L175">    String callerRoleString = caller.getRole().toUpperCase();</span>
+<span class="fc" id="L176">    String targetRoleString = target.getRole().toUpperCase();</span>
+    // target.getRole() != null ? target.getRole().toUpperCase() :
+    // UserRole.DRIVER.toString().toUpperCase();
+<span class="fc" id="L179">    UserRole callerRole = UserRole.valueOf(callerRoleString);</span>
+<span class="fc" id="L180">    UserRole targetRole = UserRole.valueOf(targetRoleString);</span>
+<span class="fc bfc" id="L181" title="All 2 branches covered.">    boolean hasHigherRank = callerRole.ordinal() &gt; targetRole.ordinal();</span>
+<span class="fc" id="L182">    boolean isAdmin = caller.getRole().equalsIgnoreCase(UserRole.ADMIN.toString());</span>
+<span class="fc bfc" id="L183" title="All 4 branches covered.">    return hasHigherRank || isAdmin;</span>
   }
 
   /**
@@ -186,49 +189,49 @@ public class UserService {
    */
   public void addDriversFromFile() {
     try {
-<span class="fc" id="L189">      BufferedReader namesReader = new BufferedReader(</span>
-<span class="fc" id="L190">          new InputStreamReader(UserService.class.getResourceAsStream(&quot;/names.txt&quot;)));</span>
-<span class="fc" id="L191">      BufferedReader surnamesReader = new BufferedReader(</span>
-<span class="fc" id="L192">          new InputStreamReader(UserService.class.getResourceAsStream(&quot;/surnames.txt&quot;)));</span>
+<span class="fc" id="L192">      BufferedReader namesReader = new BufferedReader(</span>
+<span class="fc" id="L193">          new InputStreamReader(UserService.class.getResourceAsStream(&quot;/names.txt&quot;)));</span>
+<span class="fc" id="L194">      BufferedReader surnamesReader = new BufferedReader(</span>
+<span class="fc" id="L195">          new InputStreamReader(UserService.class.getResourceAsStream(&quot;/surnames.txt&quot;)));</span>
       String name;
       String surname;
-<span class="fc" id="L195">      List&lt;City&gt; cities = cityService.getAllCities();</span>
-<span class="fc" id="L196">      int i = 0;</span>
-<span class="pc bpc" id="L197" title="1 of 4 branches missed.">      while (i &lt; cities.size() &amp;&amp; (name = namesReader.readLine()) != null</span>
-<span class="pc bpc" id="L198" title="1 of 2 branches missed.">          &amp;&amp; (surname = surnamesReader.readLine()) != null) {</span>
-<span class="fc" id="L199">        User user = new User();</span>
-<span class="fc" id="L200">        UserInfo userInfo = new UserInfo();</span>
-<span class="fc" id="L201">        String login = &quot;d&quot; + name.substring(0, 3) + surname.substring(0, 3);</span>
-<span class="fc" id="L202">        user.setLogin(login);</span>
-<span class="fc" id="L203">        user.setPassword(login);</span>
-<span class="fc" id="L204">        user.setRole(UserRole.DRIVER.toString().toLowerCase());</span>
-<span class="fc" id="L205">        user.setUserInfo(userInfo);</span>
-<span class="fc" id="L206">        userInfo.setName(name);</span>
-<span class="fc" id="L207">        userInfo.setSurname(surname);</span>
-<span class="fc" id="L208">        userInfo.setStatus(DriverStatus.ON_SHIFT.toString().toLowerCase());</span>
-<span class="fc" id="L209">        userInfo.setCity(cities.get(i));</span>
-<span class="fc" id="L210">        userDAO.add(user);</span>
-<span class="fc" id="L211">        i++;</span>
+<span class="fc" id="L198">      List&lt;City&gt; cities = cityService.getAllCities();</span>
+<span class="fc" id="L199">      int i = 0;</span>
+<span class="pc bpc" id="L200" title="1 of 4 branches missed.">      while (i &lt; cities.size() &amp;&amp; (name = namesReader.readLine()) != null</span>
+<span class="pc bpc" id="L201" title="1 of 2 branches missed.">          &amp;&amp; (surname = surnamesReader.readLine()) != null) {</span>
+<span class="fc" id="L202">        User user = new User();</span>
+<span class="fc" id="L203">        UserInfo userInfo = new UserInfo();</span>
+<span class="fc" id="L204">        String login = &quot;d&quot; + name.substring(0, 3) + surname.substring(0, 3);</span>
+<span class="fc" id="L205">        user.setLogin(login);</span>
+<span class="fc" id="L206">        user.setPassword(login);</span>
+<span class="fc" id="L207">        user.setRole(UserRole.DRIVER.toString().toLowerCase());</span>
+<span class="fc" id="L208">        user.setUserInfo(userInfo);</span>
+<span class="fc" id="L209">        userInfo.setName(name);</span>
+<span class="fc" id="L210">        userInfo.setSurname(surname);</span>
+<span class="fc" id="L211">        userInfo.setStatus(DriverStatus.ON_SHIFT.toString().toLowerCase());</span>
+<span class="fc" id="L212">        userInfo.setCity(cities.get(i));</span>
+<span class="fc" id="L213">        userDAO.add(user);</span>
+<span class="fc" id="L214">        i++;</span>
       }
-<span class="fc" id="L213">      namesReader.close();</span>
-<span class="fc" id="L214">      surnamesReader.close();</span>
-<span class="pc" id="L215">    } catch (IOException e) {</span>
-<span class="nc" id="L216">      String message = &quot;File names.txt or surnames.txt not found&quot;;</span>
-<span class="nc" id="L217">      log.error(message);</span>
-<span class="nc" id="L218">      throw new ResponseStatusException(HttpStatus.NOT_FOUND, message);</span>
+<span class="fc" id="L216">      namesReader.close();</span>
+<span class="fc" id="L217">      surnamesReader.close();</span>
+<span class="pc" id="L218">    } catch (IOException e) {</span>
+<span class="nc" id="L219">      String message = &quot;File names.txt or surnames.txt not found&quot;;</span>
+<span class="nc" id="L220">      log.error(message);</span>
+<span class="nc" id="L221">      throw new ResponseStatusException(HttpStatus.NOT_FOUND, message);</span>
     }
-<span class="fc" id="L220">  }</span>
+<span class="fc" id="L223">  }</span>
 
   /**
    * Sets the amount of hours at work during current month at 0 for all users. This method is only
    * called when month change occurred.
    */
   public void setUsersWorkedHoursToZero() {
-<span class="nc bnc" id="L227" title="All 2 branches missed.">    for (User u : userDAO.readAll()) {</span>
-<span class="nc" id="L228">      u.getUserInfo().setHoursWorked(0);</span>
-<span class="nc" id="L229">      userDAO.update(u);</span>
+<span class="nc bnc" id="L230" title="All 2 branches missed.">    for (User u : userDAO.readAll()) {</span>
+<span class="nc" id="L231">      u.getUserInfo().setHoursWorked(0);</span>
+<span class="nc" id="L232">      userDAO.update(u);</span>
     }
-<span class="nc" id="L231">  }</span>
+<span class="nc" id="L234">  }</span>
 
 
 }

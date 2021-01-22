@@ -176,9 +176,15 @@ public class AdminPageController {
   @GetMapping(value = &quot;/editUser/{id}&quot;)
   public RedirectView edit(@PathVariable Integer id, RedirectAttributes redir) {
 <span class="fc" id="L178">    RedirectView redirectView = new RedirectView(&quot;/editUser&quot;, true);</span>
-<span class="fc" id="L179">    redir.addFlashAttribute(&quot;user&quot;, userService.getUser(id));</span>
-<span class="fc" id="L180">    redir.addFlashAttribute(&quot;we&quot;, sessionInfo.getCurrentUser());</span>
-<span class="fc" id="L181">    return redirectView;</span>
+<span class="fc" id="L179">    User we = sessionInfo.getCurrentUser();</span>
+<span class="fc" id="L180">    User target = userService.getUser(id);</span>
+<span class="fc bfc" id="L181" title="All 2 branches covered.">    if (userService.userHasRightsToEditOrDeleteUser(we, target)) {</span>
+<span class="fc" id="L182">      redir.addFlashAttribute(&quot;user&quot;, target);</span>
+<span class="fc" id="L183">      redir.addFlashAttribute(&quot;we&quot;, we);</span>
+<span class="fc" id="L184">    } else {</span>
+<span class="fc" id="L185">      redirectView.setUrl(&quot;/403/&quot; + we.getLogin());</span>
+    }
+<span class="fc" id="L187">    return redirectView;</span>
   }
 
   /**
@@ -188,14 +194,14 @@ public class AdminPageController {
    */
   @GetMapping(value = &quot;/editUser&quot;)
   public String editForm(Model model) {
-<span class="fc" id="L191">    BindingResult result =</span>
-<span class="fc" id="L192">        (BindingResult) model.asMap().get(BindingResult.MODEL_KEY_PREFIX + &quot;user&quot;);</span>
-<span class="fc" id="L193">    Map&lt;String, String&gt; errors = UserValidator.convertErrorsToHashMap(result);</span>
-<span class="fc" id="L194">    model.addAllAttributes(errors);</span>
-<span class="fc" id="L195">    model.addAttribute(&quot;editUser&quot;, &quot;/submitEditedUser&quot;);</span>
-<span class="fc" id="L196">    List&lt;City&gt; cities = cityService.getAllCities();</span>
-<span class="fc" id="L197">    model.addAttribute(&quot;cityList&quot;, cities);</span>
-<span class="fc" id="L198">    return &quot;editUser&quot;;</span>
+<span class="fc" id="L197">    BindingResult result =</span>
+<span class="fc" id="L198">        (BindingResult) model.asMap().get(BindingResult.MODEL_KEY_PREFIX + &quot;user&quot;);</span>
+<span class="fc" id="L199">    Map&lt;String, String&gt; errors = UserValidator.convertErrorsToHashMap(result);</span>
+<span class="fc" id="L200">    model.addAllAttributes(errors);</span>
+<span class="fc" id="L201">    model.addAttribute(&quot;editUser&quot;, &quot;/submitEditedUser&quot;);</span>
+<span class="fc" id="L202">    List&lt;City&gt; cities = cityService.getAllCities();</span>
+<span class="fc" id="L203">    model.addAttribute(&quot;cityList&quot;, cities);</span>
+<span class="fc" id="L204">    return &quot;editUser&quot;;</span>
   }
 
   /**
@@ -207,16 +213,19 @@ public class AdminPageController {
   @PostMapping(value = &quot;/submitEditedUser&quot;)
   public RedirectView finishEditing(UserDTO userDTO, BindingResult bindingResult,
       UserInfoDTO userInfoDTO, CityDTO cityDTO, RedirectAttributes redir) {
-<span class="fc" id="L210">    RedirectView redirectView = new RedirectView(ADMIN_PAGE, true);</span>
-<span class="fc" id="L211">    User user = mapUserRelatedDTOsToEntity(userDTO, userInfoDTO, cityDTO);</span>
-<span class="fc" id="L212">    userService.updateUser(user, bindingResult, userDTO.getPassword());</span>
-<span class="fc bfc" id="L213" title="All 2 branches covered.">    if (bindingResult.hasErrors()) {</span>
-<span class="fc" id="L214">      log.warn(&quot;Validation fail when editing user&quot;);</span>
-<span class="fc" id="L215">      redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + &quot;user&quot;, bindingResult);</span>
-<span class="fc" id="L216">      redir.addFlashAttribute(&quot;user&quot;, user);</span>
-<span class="fc" id="L217">      redirectView.setUrl(&quot;/editUser&quot;);</span>
+<span class="fc" id="L216">    RedirectView redirectView = new RedirectView(ADMIN_PAGE, true);</span>
+<span class="fc" id="L217">    User user = mapUserRelatedDTOsToEntity(userDTO, userInfoDTO, cityDTO);</span>
+<span class="fc" id="L218">    String redirect = userService.updateUser(user, bindingResult, userDTO.getPassword());</span>
+<span class="fc bfc" id="L219" title="All 2 branches covered.">    if (bindingResult.hasErrors()) {</span>
+<span class="fc" id="L220">      log.warn(&quot;Validation fail when editing user&quot;);</span>
+<span class="fc" id="L221">      redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + &quot;user&quot;, bindingResult);</span>
+<span class="fc" id="L222">      redir.addFlashAttribute(&quot;user&quot;, user);</span>
+<span class="fc" id="L223">      redirectView.setUrl(&quot;/editUser&quot;);</span>
     }
-<span class="fc" id="L219">    return redirectView;</span>
+<span class="fc bfc" id="L225" title="All 2 branches covered.">    if (!redirect.isEmpty()) {</span>
+<span class="fc" id="L226">      redirectView.setUrl(redirect);</span>
+    }
+<span class="fc" id="L228">    return redirectView;</span>
   }
 
   /**
@@ -228,17 +237,17 @@ public class AdminPageController {
   @PostMapping(value = &quot;/addNewCargo&quot;)
   public RedirectView addNewCargo(CargoDTO cargoDTO, BindingResult bindingResult,
       RedirectAttributes redir, @RequestParam(name = &quot;mass&quot;) String weight) {
-<span class="fc" id="L231">    redir.addFlashAttribute(&quot;visiblecargo&quot;, &quot;true&quot;);</span>
-<span class="fc" id="L232">    Cargo cargo = new Cargo(cargoDTO);</span>
-<span class="fc" id="L233">    cargo.setStatus(CargoStatus.PREPARED.toString().toLowerCase());</span>
-<span class="fc" id="L234">    cargoAndOrdersService.addNewCargo(cargo, bindingResult, weight);</span>
-<span class="fc" id="L235">    RedirectView redirectView = new RedirectView(ADMIN_PAGE, true);</span>
-<span class="fc bfc" id="L236" title="All 2 branches covered.">    if (bindingResult.hasErrors()) {</span>
-<span class="fc" id="L237">      log.warn(&quot;Validation fail when adding new cargo&quot;);</span>
-<span class="fc" id="L238">      redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + &quot;cargo&quot;, bindingResult);</span>
-<span class="fc" id="L239">      redir.addFlashAttribute(&quot;cargo&quot;, cargo);</span>
+<span class="fc" id="L240">    redir.addFlashAttribute(&quot;visiblecargo&quot;, &quot;true&quot;);</span>
+<span class="fc" id="L241">    Cargo cargo = new Cargo(cargoDTO);</span>
+<span class="fc" id="L242">    cargo.setStatus(CargoStatus.PREPARED.toString().toLowerCase());</span>
+<span class="fc" id="L243">    cargoAndOrdersService.addNewCargo(cargo, bindingResult, weight);</span>
+<span class="fc" id="L244">    RedirectView redirectView = new RedirectView(ADMIN_PAGE, true);</span>
+<span class="fc bfc" id="L245" title="All 2 branches covered.">    if (bindingResult.hasErrors()) {</span>
+<span class="fc" id="L246">      log.warn(&quot;Validation fail when adding new cargo&quot;);</span>
+<span class="fc" id="L247">      redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + &quot;cargo&quot;, bindingResult);</span>
+<span class="fc" id="L248">      redir.addFlashAttribute(&quot;cargo&quot;, cargo);</span>
     }
-<span class="fc" id="L241">    return redirectView;</span>
+<span class="fc" id="L250">    return redirectView;</span>
   }
 
   /**
@@ -252,12 +261,12 @@ public class AdminPageController {
    */
   private User mapUserRelatedDTOsToEntity(UserDTO userDTO, UserInfoDTO userInfoDTO,
       CityDTO cityDTO) {
-<span class="fc" id="L255">    User user = new User(userDTO);</span>
-<span class="fc" id="L256">    UserInfo userInfo = new UserInfo(userInfoDTO);</span>
-<span class="fc" id="L257">    City currentCity = new City(cityDTO);</span>
-<span class="fc" id="L258">    userInfo.setCity(currentCity);</span>
-<span class="fc" id="L259">    user.setUserInfo(userInfo);</span>
-<span class="fc" id="L260">    return user;</span>
+<span class="fc" id="L264">    User user = new User(userDTO);</span>
+<span class="fc" id="L265">    UserInfo userInfo = new UserInfo(userInfoDTO);</span>
+<span class="fc" id="L266">    City currentCity = new City(cityDTO);</span>
+<span class="fc" id="L267">    userInfo.setCity(currentCity);</span>
+<span class="fc" id="L268">    user.setUserInfo(userInfo);</span>
+<span class="fc" id="L269">    return user;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

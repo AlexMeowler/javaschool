@@ -40,8 +40,8 @@ public class CarService {
    * Creates an instance of this class using constructor-based dependency injection.
    */
   @Autowired
-  public CarService(CarDAO carDAO, OrderDAO orderDAO, CityService cityService,
-<span class="fc" id="L44">      CarValidator carValidator) {</span>
+<span class="fc" id="L43">  public CarService(CarDAO carDAO, OrderDAO orderDAO, CityService cityService,</span>
+      CarValidator carValidator) {
 <span class="fc" id="L45">    this.carDAO = carDAO;</span>
 <span class="fc" id="L46">    this.orderDAO = orderDAO;</span>
 <span class="fc" id="L47">    this.cityService = cityService;</span>
@@ -53,7 +53,7 @@ public class CarService {
   }
 
   public Car getCar(String primaryKey) {
-<span class="nc" id="L56">    return carDAO.read(primaryKey);</span>
+<span class="fc" id="L56">    return carDAO.read(primaryKey);</span>
   }
 
   /**
@@ -65,15 +65,15 @@ public class CarService {
    * @param shiftlength shift length (user input) to be parsed
    */
   public void addNewCar(Car car, BindingResult bindingResult, String capacity, String shiftlength) {
-<span class="nc" id="L68">    doInitialDataValidation(car, bindingResult, capacity, shiftlength);</span>
-<span class="nc" id="L69">    Car correlationDB = carDAO.read(car.getRegistrationId());</span>
-<span class="nc bnc" id="L70" title="All 2 branches missed.">    if (correlationDB != null) {</span>
-<span class="nc" id="L71">      bindingResult.reject(&quot;uniqueCarId&quot;, &quot;Car ID must be unique&quot;);</span>
+<span class="fc" id="L68">    doInitialDataValidation(car, bindingResult, capacity, shiftlength);</span>
+<span class="fc" id="L69">    Car correlationDB = carDAO.read(car.getRegistrationId());</span>
+<span class="fc bfc" id="L70" title="All 2 branches covered.">    if (correlationDB != null) {</span>
+<span class="fc" id="L71">      bindingResult.reject(&quot;uniqueCarId&quot;, &quot;Car ID must be unique&quot;);</span>
     }
-<span class="nc bnc" id="L73" title="All 2 branches missed.">    if (!bindingResult.hasErrors()) {</span>
-<span class="nc" id="L74">      carDAO.add(car);</span>
+<span class="fc bfc" id="L73" title="All 2 branches covered.">    if (!bindingResult.hasErrors()) {</span>
+<span class="fc" id="L74">      carDAO.add(car);</span>
     }
-<span class="nc" id="L76">  }</span>
+<span class="fc" id="L76">  }</span>
 
   /**
    * Deletes car from database. Can not delete car if it's assigned to order.
@@ -82,12 +82,12 @@ public class CarService {
    * @return true if deletion was successful, false otherwise
    */
   public boolean deleteCar(Car car) {
-<span class="nc" id="L85">    boolean status = false;</span>
-<span class="nc bnc" id="L86" title="All 4 branches missed.">    if (car.getOrder() == null &amp;&amp; car.getDriver() == null) {</span>
-<span class="nc" id="L87">      status = true;</span>
-<span class="nc" id="L88">      carDAO.delete(car);</span>
+<span class="fc" id="L85">    boolean status = false;</span>
+<span class="fc bfc" id="L86" title="All 4 branches covered.">    if (car.getOrder() == null &amp;&amp; car.getDriver() == null) {</span>
+<span class="fc" id="L87">      status = true;</span>
+<span class="fc" id="L88">      carDAO.delete(car);</span>
     }
-<span class="nc" id="L90">    return status;</span>
+<span class="fc" id="L90">    return status;</span>
   }
 
   /**
@@ -96,17 +96,17 @@ public class CarService {
    * @param car car {@linkplain org.retal.domain.Car Car} to be updated
    */
   public void updateCar(Car car, BindingResult bindingResult, String capacity, String shiftlength) {
-<span class="nc" id="L99">    log.info(&quot;Attempt to update car ID = &quot; + car.getRegistrationId());</span>
-<span class="nc" id="L100">    doInitialDataValidation(car, bindingResult, capacity, shiftlength);</span>
-<span class="nc" id="L101">    Car persistedCar = carDAO.read(car.getRegistrationId());</span>
-<span class="nc bnc" id="L102" title="All 4 branches missed.">    if (persistedCar.getOrder() != null || persistedCar.getDriver() != null) {</span>
-<span class="nc" id="L103">      bindingResult.reject(&quot;carUnavailable&quot;,</span>
-          &quot;Car could not be updated due to assigned order or being driven by someone&quot;);
+<span class="fc" id="L99">    log.info(&quot;Attempt to update car ID = &quot; + car.getRegistrationId());</span>
+<span class="fc" id="L100">    doInitialDataValidation(car, bindingResult, capacity, shiftlength);</span>
+<span class="fc" id="L101">    Car persistedCar = carDAO.read(car.getRegistrationId());</span>
+<span class="fc bfc" id="L102" title="All 4 branches covered.">    if (persistedCar.getOrder() != null || persistedCar.getDriver() != null) {</span>
+<span class="fc" id="L103">      bindingResult.reject(&quot;carUnavailable&quot;,</span>
+<span class="fc" id="L104">          &quot;Car could not be updated due to assigned order or being driven by someone&quot;);</span>
     }
-<span class="nc bnc" id="L106" title="All 2 branches missed.">    if (!bindingResult.hasErrors()) {</span>
-<span class="nc" id="L107">      carDAO.update(car);</span>
+<span class="fc bfc" id="L106" title="All 2 branches covered.">    if (!bindingResult.hasErrors()) {</span>
+<span class="fc" id="L107">      carDAO.update(car);</span>
     }
-<span class="nc" id="L109">  }</span>
+<span class="fc" id="L109">  }</span>
 
   /**
    * Parses String objects and validates other input.
@@ -119,19 +119,19 @@ public class CarService {
   private void doInitialDataValidation(Car car, BindingResult bindingResult, String capacity,
       String shiftlength) {
     try {
-<span class="nc" id="L122">      Integer shiftLength = Integer.parseInt(shiftlength);</span>
-<span class="nc" id="L123">      car.setShiftLength(shiftLength);</span>
-<span class="nc" id="L124">    } catch (NumberFormatException e) {</span>
-<span class="nc" id="L125">      bindingResult.reject(&quot;shiftLength&quot;, &quot;Shift length must be positive integer&quot;);</span>
-<span class="nc" id="L126">    }</span>
+<span class="fc" id="L122">      Integer shiftLength = Integer.parseInt(shiftlength);</span>
+<span class="fc" id="L123">      car.setShiftLength(shiftLength);</span>
+<span class="fc" id="L124">    } catch (NumberFormatException e) {</span>
+<span class="fc" id="L125">      bindingResult.reject(&quot;shiftLength&quot;, &quot;Shift length must be positive integer&quot;);</span>
+    }
     try {
-<span class="nc" id="L128">      Float capacityTons = Float.parseFloat(capacity);</span>
-<span class="nc" id="L129">      car.setCapacityTons(capacityTons);</span>
-<span class="nc" id="L130">    } catch (NumberFormatException e) {</span>
-<span class="nc" id="L131">      bindingResult.reject(&quot;capacityTons&quot;, &quot;Capacity must be positive decimal&quot;);</span>
-<span class="nc" id="L132">    }</span>
-<span class="nc" id="L133">    carValidator.validate(car, bindingResult);</span>
-<span class="nc" id="L134">  }</span>
+<span class="fc" id="L128">      Float capacityTons = Float.parseFloat(capacity);</span>
+<span class="fc" id="L129">      car.setCapacityTons(capacityTons);</span>
+<span class="fc" id="L130">    } catch (NumberFormatException e) {</span>
+<span class="fc" id="L131">      bindingResult.reject(&quot;capacityTons&quot;, &quot;Capacity must be positive decimal&quot;);</span>
+    }
+<span class="fc" id="L133">    carValidator.validate(car, bindingResult);</span>
+<span class="fc" id="L134">  }</span>
 
   /**
    * Generates one car for each city and adds it to database.
@@ -148,7 +148,7 @@ public class CarService {
 <span class="fc" id="L148">      car.setRegistrationId(registrationLetters + registrationNumber);</span>
 <span class="fc" id="L149">      car.setShiftLength(12 + rand.nextInt(13));</span>
 <span class="fc" id="L150">      carDAO.add(car);</span>
-<span class="fc" id="L151">    }</span>
+    }
 <span class="fc" id="L152">  }</span>
 
   /**
@@ -165,9 +165,9 @@ public class CarService {
 <span class="nc" id="L165">            .filter(c -&gt; c.getLocation().equals(order.getCar().getLocation()))</span>
 <span class="nc bnc" id="L166" title="All 2 branches missed.">            .filter(c -&gt; c.getShiftLength() &gt;= order.getRequiredShiftLength())</span>
 <span class="nc" id="L167">            .collect(Collectors.toList());</span>
-<span class="nc bnc" id="L168" title="All 2 branches missed.">    String message =</span>
-<span class="nc" id="L169">        availableCars != null ? availableCars.size() + &quot; cars are fit for order ID=&quot; + order.getId()</span>
-            : &quot;null&quot;;
+<span class="nc" id="L168">    String message =</span>
+<span class="nc bnc" id="L169" title="All 2 branches missed.">        availableCars != null ? availableCars.size() + &quot; cars are fit for order ID=&quot; + order.getId()</span>
+<span class="nc" id="L170">            : &quot;null&quot;;</span>
 <span class="nc" id="L171">    log.debug(message);</span>
 <span class="nc" id="L172">    return availableCars;</span>
   }

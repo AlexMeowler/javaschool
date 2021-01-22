@@ -46,27 +46,33 @@ public class CargoValidator implements Validator {
 <span class="fc bfc" id="L46" title="All 4 branches covered.">    if (weight != null &amp;&amp; weight &lt; 0) {</span>
 <span class="fc" id="L47">      throwError(errors, &quot;mass&quot;, &quot;Cargo weight length must non-negative integer.&quot;);</span>
     }
-<span class="fc" id="L49">    String maliciousInputMessage = &quot;&quot;;</span>
-<span class="fc" id="L50">    maliciousInputMessage =</span>
-<span class="fc" id="L51">        setIfEmpty(maliciousInputMessage, UserValidator.checkForMaliciousInput(cargo.getName()));</span>
-<span class="fc" id="L52">    maliciousInputMessage = setIfEmpty(maliciousInputMessage,</span>
-<span class="fc" id="L53">        UserValidator.checkForMaliciousInput(cargo.getDescription()));</span>
-<span class="fc bfc" id="L54" title="All 2 branches covered.">    if (!maliciousInputMessage.isEmpty()) {</span>
-<span class="fc" id="L55">      throwError(errors, &quot;cargoMaliciousInput&quot;, maliciousInputMessage);</span>
+<span class="fc" id="L49">    String response = UserValidator.checkForMaliciousInput(cargo.getName());</span>
+<span class="fc bfc" id="L50" title="All 2 branches covered.">    if (!response.isEmpty()) {</span>
+<span class="fc" id="L51">      cargo.setName(&quot;&quot;);</span>
     }
-<span class="fc" id="L57">  }</span>
+<span class="fc" id="L53">    String maliciousInputMessage = response;</span>
+<span class="fc" id="L54">    maliciousInputMessage = setIfEmpty(maliciousInputMessage, response);</span>
+<span class="fc" id="L55">    response = UserValidator.checkForMaliciousInput(cargo.getDescription());</span>
+<span class="fc bfc" id="L56" title="All 2 branches covered.">    if (!response.isEmpty()) {</span>
+<span class="fc" id="L57">      cargo.setDescription(&quot;&quot;);</span>
+    }
+<span class="fc" id="L59">    maliciousInputMessage = setIfEmpty(maliciousInputMessage, response);</span>
+<span class="fc bfc" id="L60" title="All 2 branches covered.">    if (!maliciousInputMessage.isEmpty()) {</span>
+<span class="fc" id="L61">      throwError(errors, &quot;cargoMaliciousInput&quot;, maliciousInputMessage);</span>
+    }
+<span class="fc" id="L63">  }</span>
 
   private String setIfEmpty(String givenString, String givenResult) {
-<span class="fc bfc" id="L60" title="All 2 branches covered.">    if (givenString.isEmpty()) {</span>
-<span class="fc" id="L61">      return givenResult;</span>
+<span class="fc bfc" id="L66" title="All 2 branches covered.">    if (givenString.isEmpty()) {</span>
+<span class="fc" id="L67">      return givenResult;</span>
     } else {
-<span class="fc" id="L63">      return givenString;</span>
+<span class="fc" id="L69">      return givenString;</span>
     }
   }
 
   private void throwError(Errors errors, String property, String message) {
-<span class="fc" id="L68">    log.debug(property + &quot; : &quot; + message);</span>
-<span class="fc" id="L69">    errors.reject(property, message);</span>
-<span class="fc" id="L70">  }</span>
+<span class="fc" id="L74">    log.debug(property + &quot; : &quot; + message);</span>
+<span class="fc" id="L75">    errors.reject(property, message);</span>
+<span class="fc" id="L76">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>
