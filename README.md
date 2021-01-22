@@ -6,7 +6,7 @@ Java School Public Repository
 
 # VERSION 1.0.6
 
-Minor bug fixes.
+Minor bug fixes. Covered manager page controller. Next step is the most difficult one - to cover "main part" of application - orders creation and processing.
 
 # TODO
 
