@@ -5,8 +5,6 @@ import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
@@ -18,7 +16,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.util.Random;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
@@ -32,7 +31,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.retal.config.spring.RootConfig;
 import org.retal.config.spring.WebConfig;
-import org.retal.controller.TestCase4AdminPageController.RunnableWithExceptionThrows;
 import org.retal.dao.CarDAO;
 import org.retal.dao.CargoDAO;
 import org.retal.dao.CityDAO;
@@ -64,7 +62,6 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.context.WebApplicationContext;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -90,8 +87,6 @@ public class TestCase6CargoAndOrdersPageController {
   private static final Logger log = Logger.getLogger(TestCase6CargoAndOrdersPageController.class);
 
   private static int counter = 1;
-
-  private Random random = new Random();
 
 
   @Configuration
@@ -189,8 +184,9 @@ public class TestCase6CargoAndOrdersPageController {
     new UserService(new UserDAO(), null, null, cityService).addDriversFromFile();
     new CarService(new CarDAO(), null, cityService, null).generateCarForEachCity();
     CargoDAO cargoDAO = new CargoDAO();
-    for (int i = 0; i < 5; i++) {
-      addCargo(cargoDAO, "Cargo" + i, 200 + i * 100, "Desc" + i);
+    int n = 10;
+    for (int i = 0; i < n; i++) {
+      addCargo(cargoDAO, "Cargo" + i, 200 + i * 50, "Desc" + i);
     }
   }
 
@@ -227,19 +223,6 @@ public class TestCase6CargoAndOrdersPageController {
     for (int i = 0; i < names.length; i++) {
       params.add(names[i], values[i]);
     }
-    return params;
-  }
-
-  private MultiValueMap<String, String> generateCarParameters() {
-    MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-    char firstLetter = (char) ('A' + (char) random.nextInt(26));
-    char secondLetter = (char) ('A' + (char) random.nextInt(26));
-    params.add("registrationId", Character.toString(firstLetter) + Character.toString(secondLetter)
-        + (10000 + random.nextInt(90000)));
-    params.add("shift", Integer.toString(15 + random.nextInt(31)));
-    params.add("capacity", Float.toString((float) (10 + random.nextInt(41)) / 10));
-    params.add("isWorking", "true");
-    params.add("currentCity", "Moscow");
     return params;
   }
 
@@ -314,5 +297,340 @@ public class TestCase6CargoAndOrdersPageController {
         .andExpect(status().is3xxRedirection()).andExpect(redirectedUrl("/cargoAndOrders"))
         .andExpect(flash().attribute("routePoints", notNullValue()))
         .andExpect(flash().attribute("counter_value", notNullValue()));
+  }
+
+  @Test
+  @WithMockUser(username = "manager", password = "manager", authorities = "MANAGER")
+  public void testA4AddNewOrderFormValidationFail() throws Exception {
+    int n = 2;
+    String[] names = new String[n * 3];
+    String[] values = new String[n * 3];
+    names[0] = "list[0].cityName";
+    values[0] = "a1";
+    names[1] = "list[0].cargoId";
+    values[1] = "123";
+    names[2] = "list[0].isLoading";
+    values[2] = "abc";
+    names[3] = "list[1].cityName";
+    values[3] = "Moscow";
+    names[4] = "list[1].cargoId";
+    values[4] = "100";
+    names[5] = "list[1].isLoading";
+    values[5] = "true";
+    MultiValueMap<String, String> params = generateOrderParameters(names, values);
+    mockMvc.perform(post("/addNewOrder").params(params).with(csrf()))
+        .andExpect(status().is3xxRedirection()).andExpect(redirectedUrl("/cargoAndOrders"))
+        .andExpect(flash().attribute("routePoints", notNullValue()))
+        .andExpect(flash().attribute("counter_value", notNullValue()));
+    n = 1;
+    names = new String[n * 3];
+    values = new String[n * 3];
+    names[0] = "list[0].cityName";
+    values[0] = "Moscow";
+    names[1] = "list[0].cargoId";
+    values[1] = "1";
+    names[2] = "list[0].isLoading";
+    values[2] = "abc";
+    params = generateOrderParameters(names, values);
+    mockMvc.perform(post("/addNewOrder").params(params).with(csrf()))
+        .andExpect(status().is3xxRedirection()).andExpect(redirectedUrl("/cargoAndOrders"))
+        .andExpect(flash().attribute("routePoints", notNullValue()))
+        .andExpect(flash().attribute("counter_value", notNullValue()));
+  }
+
+  @Test
+  @WithMockUser(username = "manager", password = "manager", authorities = "MANAGER")
+  public void testA5AddNewOrderFormWithinTheSameCity() throws Exception {
+    int n = 2;
+    String[] names = new String[n * 3];
+    String[] values = new String[n * 3];
+    Integer id = cargoDAO.readAll().stream().filter(c -> c.getPoints().size() == 0)
+        .collect(Collectors.toList()).get(0).getId();
+    for (int i = 0; i < n * 3; i += 3) {
+      names[i] = "list[" + (i / 3) + "].cityName";
+      names[i + 1] = "list[" + (i / 3) + "].cargoId";
+      names[i + 2] = "list[" + (i / 3) + "].isLoading";
+      values[i] = TestCase1DAO.CITY_NAMES[0];
+      values[i + 1] = id.toString();
+      values[i + 2] = Boolean.valueOf(i / 3 == 0).toString();
+    }
+    MultiValueMap<String, String> params = generateOrderParameters(names, values);
+    mockMvc.perform(post("/addNewOrder").params(params).with(csrf()))
+        .andExpect(status().is3xxRedirection()).andExpect(redirectedUrl("/cargoAndOrders"))
+        .andExpect(flash().attribute("routePoints", notNullValue()))
+        .andExpect(flash().attribute("counter_value", notNullValue()));
+  }
+
+  @Test
+  @WithMockUser(username = "manager", password = "manager", authorities = "MANAGER")
+  public void testA6AddNewOrderFormLoadingAndUnloadingMismatch() throws Exception {
+    int n = 2;
+    String[] names = new String[n * 3];
+    String[] values = new String[n * 3];
+    Integer id = cargoDAO.readAll().stream().filter(c -> c.getPoints().size() == 0)
+        .collect(Collectors.toList()).get(0).getId();
+    for (int i = 0; i < n * 3; i += 3) {
+      names[i] = "list[" + (i / 3) + "].cityName";
+      names[i + 1] = "list[" + (i / 3) + "].cargoId";
+      names[i + 2] = "list[" + (i / 3) + "].isLoading";
+      values[i] = TestCase1DAO.CITY_NAMES[i / 3];
+      values[i + 1] = id.toString();
+      values[i + 2] = "true";
+    }
+    MultiValueMap<String, String> params = generateOrderParameters(names, values);
+    mockMvc.perform(post("/addNewOrder").params(params).with(csrf()))
+        .andExpect(status().is3xxRedirection()).andExpect(redirectedUrl("/cargoAndOrders"))
+        .andExpect(flash().attribute("routePoints", notNullValue()))
+        .andExpect(flash().attribute("counter_value", notNullValue()));
+  }
+
+  @Test
+  @WithMockUser(username = "manager", password = "manager", authorities = "MANAGER")
+  public void testA7AddNewOrderFormMultipleLoadingAndUnloading() throws Exception {
+    int n = 4;
+    String[] names = new String[n * 3];
+    String[] values = new String[n * 3];
+    Integer id = cargoDAO.readAll().stream().filter(c -> c.getPoints().size() == 0)
+        .collect(Collectors.toList()).get(0).getId();
+    for (int i = 0; i < n * 3; i += 3) {
+      names[i] = "list[" + (i / 3) + "].cityName";
+      names[i + 1] = "list[" + (i / 3) + "].cargoId";
+      names[i + 2] = "list[" + (i / 3) + "].isLoading";
+      values[i] = TestCase1DAO.CITY_NAMES[i / 3];
+      values[i + 1] = id.toString();
+      values[i + 2] = Boolean.valueOf((i / 3) % 2 == 0).toString();
+    }
+    MultiValueMap<String, String> params = generateOrderParameters(names, values);
+    mockMvc.perform(post("/addNewOrder").params(params).with(csrf()))
+        .andExpect(status().is3xxRedirection()).andExpect(redirectedUrl("/cargoAndOrders"))
+        .andExpect(flash().attribute("routePoints", notNullValue()))
+        .andExpect(flash().attribute("counter_value", notNullValue()));
+  }
+
+  @Test
+  @WithMockUser(username = "manager", password = "manager", authorities = "MANAGER")
+  public void testA8GetCargoAndOrdersPage() throws Exception {
+    mockMvc.perform(get("/cargoAndOrders"))
+        .andExpect(model().attribute("cargoList", notNullValue()))
+        .andExpect(model().attribute("cityList", notNullValue()))
+        .andExpect(model().attribute("ordersList", notNullValue()))
+        .andExpect(model().attribute("current_user_name", notNullValue()))
+        .andExpect(status().isOk()).andExpect(forwardedUrl("/pages/cargo_orders.jsp"));
+  }
+
+  @SuppressWarnings("unchecked")
+  @Test
+  @WithMockUser(username = "manager", password = "manager", authorities = "MANAGER")
+  public void testA9GetCargoAndOrdersPageWithReplacementCarsAvailable() throws Exception {
+    City city = orderDAO.readAll().get(0).getCar().getLocation();
+    Car car = new Car();
+    car.setCapacityTons(1000f);
+    car.setLocation(city);
+    car.setIsWorking(true);
+    car.setShiftLength(1000);
+    car.setRegistrationId("ZZ12345");
+    carDAO.add(car);
+    MvcResult result = mockMvc.perform(get("/cargoAndOrders")).andExpect(status().isOk())
+        .andExpect(forwardedUrl("/pages/cargo_orders.jsp")).andReturn();
+    Map<String, Object> model = result.getModelAndView().getModel();
+    assertTrue(((List<Boolean>) model.get("hasCarsAvailable")).get(0));
+  }
+
+  @Test
+  @WithMockUser(username = "manager", password = "manager", authorities = "MANAGER")
+  public void testB1ReassignCarToOrderFail() throws Exception {
+    MvcResult result = mockMvc.perform(get("/changeCarForOrder/2b_ZZ12345"))
+        .andExpect(status().isOk()).andReturn();
+    assertNotEquals(result.getResponse().getContentAsString(), "");
+    assertNotEquals(orderDAO.readAll().get(0).getCar().getRegistrationId(), "ZZ12345");
+  }
+
+  @Test
+  @WithMockUser(username = "manager", password = "manager", authorities = "MANAGER")
+  public void testB2ReassignCarToNotFoundOrderFail() throws Exception {
+    MvcResult result = mockMvc.perform(get("/changeCarForOrder/100_ZZ12345"))
+        .andExpect(status().isOk()).andReturn();
+    assertNotEquals(result.getResponse().getContentAsString(), "");
+    assertNotEquals(orderDAO.readAll().get(0).getCar().getRegistrationId(), "ZZ12345");
+  }
+
+  @Test
+  @WithMockUser(username = "manager", password = "manager", authorities = "MANAGER")
+  public void testB3ReassignNonExistentCarToOrderFail() throws Exception {
+    MvcResult result =
+        mockMvc.perform(get("/changeCarForOrder/1_LK00000")).andExpect(status().isOk()).andReturn();
+    assertNotEquals(result.getResponse().getContentAsString(), "");
+    assertNotEquals(orderDAO.readAll().get(0).getCar().getRegistrationId(), "LK00000");
+  }
+
+  @Test
+  @WithMockUser(username = "manager", password = "manager", authorities = "MANAGER")
+  public void testB4ReassignCarToCompletedOrderFail() throws Exception {
+    Order order = orderDAO.readAll().get(0);
+    Session session = DAO.start();
+    order.setIsCompleted(true);
+    orderDAO.setSession(session);
+    orderDAO.update(order);
+    orderDAO.setSession(null);
+    DAO.end(session);
+    MvcResult result =
+        mockMvc.perform(get("/changeCarForOrder/1_ZZ12345")).andExpect(status().isOk()).andReturn();
+    assertNotEquals(result.getResponse().getContentAsString(), "");
+    assertNotEquals(orderDAO.readAll().get(0).getCar().getRegistrationId(), "ZZ12345");
+    session = DAO.start();
+    order.setIsCompleted(false);
+    orderDAO.setSession(session);
+    orderDAO.update(order);
+    orderDAO.setSession(null);
+    DAO.end(session);
+  }
+
+  @Test
+  @WithMockUser(username = "manager", password = "manager", authorities = "MANAGER")
+  public void testB5ReassignCarToOrder() throws Exception {
+    MvcResult result =
+        mockMvc.perform(get("/changeCarForOrder/1_ZZ12345")).andExpect(status().isOk()).andReturn();
+    assertEquals(result.getResponse().getContentAsString(), "");
+    assertEquals(orderDAO.readAll().get(0).getCar().getRegistrationId(), "ZZ12345");
+  }
+
+  @SuppressWarnings("unchecked")
+  @Test
+  @WithMockUser(username = "manager", password = "manager", authorities = "MANAGER")
+  public void testB6GetCargoAndOrdersPageWithNullReplacementCarsAvailableForCompletedOrder()
+      throws Exception {
+    Order order = orderDAO.readAll().get(0);
+    Session session = DAO.start();
+    order.setIsCompleted(true);
+    orderDAO.setSession(session);
+    orderDAO.update(order);
+    orderDAO.setSession(null);
+    DAO.end(session);
+    MvcResult result = mockMvc.perform(get("/cargoAndOrders")).andExpect(status().isOk())
+        .andExpect(forwardedUrl("/pages/cargo_orders.jsp")).andReturn();
+    Map<String, Object> model = result.getModelAndView().getModel();
+    assertFalse(((List<Boolean>) model.get("hasCarsAvailable")).get(0));
+    session = DAO.start();
+    order.setIsCompleted(false);
+    orderDAO.setSession(session);
+    orderDAO.update(order);
+    orderDAO.setSession(null);
+    DAO.end(session);
+  }
+
+  @Test
+  @WithMockUser(username = "manager", password = "manager", authorities = "MANAGER")
+  public void testB7AddNewOrderFormTwoCargoNoErrors() throws Exception {
+    String[] cities = {"Moscow", "Yaroslavl", "Cheboksary", "Saint-Petersburg"};
+    Car car = new Car();
+    car.setRegistrationId("MO22832");
+    car.setCapacityTons(12f);
+    car.setShiftLength(15);
+    car.setIsWorking(true);
+    car.setLocation(cityDAO.read(cities[0]));
+    carDAO.add(car);
+    int n = 4;
+    String[] names = new String[n * 3];
+    String[] values = new String[n * 3];
+    List<Cargo> cargo = cargoDAO.readAll().stream().filter(c -> c.getPoints().size() == 0)
+        .collect(Collectors.toList());
+    for (int i = 0; i < n * 3; i += 3) {
+      names[i] = "list[" + (i / 3) + "].cityName";
+      names[i + 1] = "list[" + (i / 3) + "].cargoId";
+      names[i + 2] = "list[" + (i / 3) + "].isLoading";
+      values[i] = cities[i / 3];
+      values[i + 1] = Integer.toString(cargo.get(i / 5).getId());
+      values[i + 2] = Boolean.valueOf((i / 3) % 2 == 0).toString();
+    }
+    MultiValueMap<String, String> params = generateOrderParameters(names, values);
+    mockMvc.perform(post("/addNewOrder").params(params).with(csrf()))
+        .andExpect(status().is3xxRedirection()).andExpect(redirectedUrl("/cargoAndOrders"))
+        .andExpect(flash().attribute("routePoints", nullValue()))
+        .andExpect(flash().attribute("counter_value", nullValue()));
+  }
+  
+  @Test
+  @WithMockUser(username = "manager", password = "manager", authorities = "MANAGER")
+  public void testB8AddNewOrderCalculationFail() throws Exception {
+    String[] cities = {"Kazan", "Cheboksary", "Cheboksary", "Kazan"};
+    int n = 4;
+    String[] names = new String[n * 3];
+    String[] values = new String[n * 3];
+    List<Cargo> cargo = cargoDAO.readAll().stream().filter(c -> c.getPoints().size() == 0)
+        .collect(Collectors.toList());
+    for (int i = 0; i < n * 3; i += 3) {
+      names[i] = "list[" + (i / 3) + "].cityName";
+      names[i + 1] = "list[" + (i / 3) + "].cargoId";
+      names[i + 2] = "list[" + (i / 3) + "].isLoading";
+      values[i] = cities[i / 3];
+      values[i + 1] = Integer.toString(cargo.get(i / 5).getId());
+      values[i + 2] = Boolean.valueOf((i / 3) % 2 == 0).toString();
+    }
+    MultiValueMap<String, String> params = generateOrderParameters(names, values);
+    mockMvc.perform(post("/addNewOrder").params(params).with(csrf()))
+        .andExpect(status().is3xxRedirection()).andExpect(redirectedUrl("/cargoAndOrders"))
+        .andExpect(flash().attribute("routePoints", notNullValue()))
+        .andExpect(flash().attribute("counter_value", notNullValue()));
+  }
+
+  @Test
+  @WithMockUser(username = "manager", password = "manager", authorities = "MANAGER")
+  public void testB9AddNewOrderFormCycle() throws Exception {
+    String[] cities = {"Kazan", "Cheboksary", "Cheboksary", "Kazan"};
+    for (int i = 0; i < 2; i++) {
+      Car car = new Car();
+      car.setCapacityTons(12f);
+      car.setShiftLength(15);
+      car.setIsWorking(true);
+      car.setRegistrationId(cities[i].substring(0, 2).toUpperCase() + "99999");
+      car.setLocation(cityDAO.read(cities[i]));
+      carDAO.add(car);
+      for (UserInfo driver : cityDAO.read(cities[i]).getUserInfos()) {
+        driver.setOrder(null);
+        userDAO.update(driver.getUser());
+      }
+    }
+    int n = 4;
+    String[] names = new String[n * 3];
+    String[] values = new String[n * 3];
+    List<Cargo> cargo = cargoDAO.readAll().stream().filter(c -> c.getPoints().size() == 0)
+        .collect(Collectors.toList());
+    for (int i = 0; i < n * 3; i += 3) {
+      names[i] = "list[" + (i / 3) + "].cityName";
+      names[i + 1] = "list[" + (i / 3) + "].cargoId";
+      names[i + 2] = "list[" + (i / 3) + "].isLoading";
+      values[i] = cities[i / 3];
+      values[i + 1] = Integer.toString(cargo.get(i / 5).getId());
+      values[i + 2] = Boolean.valueOf((i / 3) % 2 == 0).toString();
+    }
+    MultiValueMap<String, String> params = generateOrderParameters(names, values);
+    mockMvc.perform(post("/addNewOrder").params(params).with(csrf()))
+        .andExpect(status().is3xxRedirection()).andExpect(redirectedUrl("/cargoAndOrders"))
+        .andExpect(flash().attribute("routePoints", nullValue()))
+        .andExpect(flash().attribute("counter_value", nullValue()));
+  }
+  
+  @Test
+  @WithMockUser(username = "manager", password = "manager", authorities = "MANAGER")
+  public void testC1AddNewOrderWithDijkstraCalculation() throws Exception {
+    int n = 2;
+    String[] names = new String[n * 3];
+    String[] values = new String[n * 3];
+    String[] cities = {"Ryazan", "Penza"};
+    Integer id = cargoDAO.readAll().stream().filter(c -> c.getPoints().size() == 0)
+        .collect(Collectors.toList()).get(0).getId();
+    for (int i = 0; i < n * 3; i += 3) {
+      names[i] = "list[" + (i / 3) + "].cityName";
+      names[i + 1] = "list[" + (i / 3) + "].cargoId";
+      names[i + 2] = "list[" + (i / 3) + "].isLoading";
+      values[i] = cities[i / 3];
+      values[i + 1] = id.toString();
+      values[i + 2] = Boolean.valueOf(i / 3 == 0).toString();
+    }
+    MultiValueMap<String, String> params = generateOrderParameters(names, values);
+    mockMvc.perform(post("/addNewOrder").params(params).with(csrf()))
+        .andExpect(status().is3xxRedirection()).andExpect(redirectedUrl("/cargoAndOrders"))
+        .andExpect(flash().attribute("routePoints", nullValue()))
+        .andExpect(flash().attribute("counter_value", nullValue()));
   }
 }

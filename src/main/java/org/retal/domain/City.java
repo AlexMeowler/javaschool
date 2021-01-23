@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -38,11 +39,11 @@ public class City {
   @Column(name = "city")
   private String currentCity;
 
-  @OneToMany(mappedBy = "city")
+  @OneToMany(mappedBy = "city", fetch = FetchType.EAGER)
   @JsonIgnore
   private Set<UserInfo> userInfos;
 
-  @OneToMany(mappedBy = "location")
+  @OneToMany(mappedBy = "location", fetch = FetchType.EAGER)
   @JsonIgnore
   private Set<Car> cars;
 

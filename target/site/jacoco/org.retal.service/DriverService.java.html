@@ -49,9 +49,9 @@ public class DriverService {
    * Creates an instance of this class using constructor-based dependency injection.
    */
   @Autowired
-<span class="fc" id="L52">  public DriverService(SessionInfo sessionInfo, UserDAO userDAO, CityDAO cityDAO, CarDAO carDAO,</span>
+  public DriverService(SessionInfo sessionInfo, UserDAO userDAO, CityDAO cityDAO, CarDAO carDAO,
       OrderRouteProgressionDAO orderRouteProgressionDAO,
-      CargoAndOrdersService cargoAndOrdersService) {
+<span class="fc" id="L54">      CargoAndOrdersService cargoAndOrdersService) {</span>
 <span class="fc" id="L55">    this.sessionInfo = sessionInfo;</span>
 <span class="fc" id="L56">    this.userDAO = userDAO;</span>
 <span class="fc" id="L57">    this.cityDAO = cityDAO;</span>
@@ -67,30 +67,30 @@ public class DriverService {
    * @param bindingResult object to store validation result
    */
   public void changeStatus(String newStatus, BindingResult bindingResult) {
-<span class="fc" id="L70">    User driver = sessionInfo.getCurrentUser();</span>
-<span class="fc" id="L71">    newStatus = newStatus.toLowerCase().replace(&quot; &quot;, &quot;_&quot;);</span>
-<span class="fc" id="L72">    DriverStatus status = null;</span>
+<span class="nc" id="L70">    User driver = sessionInfo.getCurrentUser();</span>
+<span class="nc" id="L71">    newStatus = newStatus.toLowerCase().replace(&quot; &quot;, &quot;_&quot;);</span>
+<span class="nc" id="L72">    DriverStatus status = null;</span>
     try {
-<span class="fc" id="L74">      status = DriverStatus.valueOf(newStatus.toUpperCase());</span>
-<span class="pc" id="L75">    } catch (IllegalArgumentException e) {</span>
+<span class="nc" id="L74">      status = DriverStatus.valueOf(newStatus.toUpperCase());</span>
+<span class="nc" id="L75">    } catch (IllegalArgumentException e) {</span>
 <span class="nc" id="L76">      bindingResult.reject(&quot;argument&quot;,</span>
-<span class="nc" id="L77">          &quot;Illegal argument for status, please don't try to change page code.&quot;);</span>
+          &quot;Illegal argument for status, please don't try to change page code.&quot;);
 <span class="nc" id="L78">      log.error(&quot;Illegal argument for driver status&quot;);</span>
-    }
-<span class="pc bpc" id="L80" title="1 of 2 branches missed.">    if (status != null) {</span>
-<span class="pc bpc" id="L81" title="4 of 5 branches missed.">      switch (status) {</span>
+<span class="nc" id="L79">    }</span>
+<span class="nc bnc" id="L80" title="All 2 branches missed.">    if (status != null) {</span>
+<span class="nc bnc" id="L81" title="All 5 branches missed.">      switch (status) {</span>
         case DRIVING:
 <span class="nc bnc" id="L83" title="All 2 branches missed.">          if (driver.getUserInfo().getOrder() != null) {</span>
 <span class="nc" id="L84">            Car car = driver.getUserInfo().getOrder().getCar();</span>
 <span class="nc bnc" id="L85" title="All 4 branches missed.">            if (car.getDriver() == null || car.getDriver().getId() == driver.getId()) {</span>
 <span class="nc" id="L86">              driver.getUserInfo().setCar(car);</span>
-<span class="nc" id="L87">            } else {</span>
+            } else {
 <span class="nc" id="L88">              bindingResult.reject(&quot;car&quot;,</span>
-<span class="nc" id="L89">                  &quot;Could not select car, assigned car is being drived by someone else.&quot;);</span>
+                  &quot;Could not select car, assigned car is being drived by someone else.&quot;);
             }
 <span class="nc" id="L91">          } else {</span>
 <span class="nc" id="L92">            bindingResult.reject(&quot;car&quot;,</span>
-<span class="nc" id="L93">                &quot;Could not change status, no order (and therefore, no car) is assigned&quot;</span>
+                &quot;Could not change status, no order (and therefore, no car) is assigned&quot;
                     + &quot; to you at this time.&quot;);
           }
 <span class="nc" id="L96">          break;</span>
@@ -98,8 +98,8 @@ public class DriverService {
 <span class="nc" id="L98">          driver.getUserInfo().setCar(null);</span>
 <span class="nc" id="L99">          break;</span>
         case ON_SHIFT:
-<span class="fc" id="L101">          driver.getUserInfo().setCar(null);</span>
-<span class="fc" id="L102">          break;</span>
+<span class="nc" id="L101">          driver.getUserInfo().setCar(null);</span>
+<span class="nc" id="L102">          break;</span>
         case RESTING:
 <span class="nc" id="L104">          unassignDriverIfPossible(driver);</span>
 <span class="nc" id="L105">          driver.getUserInfo().setCar(null);</span>
@@ -107,13 +107,13 @@ public class DriverService {
         default:
           break;
       }
-<span class="pc bpc" id="L110" title="1 of 2 branches missed.">      if (!bindingResult.hasErrors()) {</span>
-<span class="fc" id="L111">        newStatus = newStatus.replace(&quot;_&quot;, &quot; &quot;);</span>
-<span class="fc" id="L112">        driver.getUserInfo().setStatus(newStatus);</span>
-<span class="fc" id="L113">        userDAO.update(driver);</span>
+<span class="nc bnc" id="L110" title="All 2 branches missed.">      if (!bindingResult.hasErrors()) {</span>
+<span class="nc" id="L111">        newStatus = newStatus.replace(&quot;_&quot;, &quot; &quot;);</span>
+<span class="nc" id="L112">        driver.getUserInfo().setStatus(newStatus);</span>
+<span class="nc" id="L113">        userDAO.update(driver);</span>
       }
     }
-<span class="fc" id="L116">  }</span>
+<span class="nc" id="L116">  }</span>
 
   /**
    * Changes location of driver.
@@ -130,23 +130,23 @@ public class DriverService {
 <span class="nc bnc" id="L130" title="All 2 branches missed.">    for (RoutePoint rp : driverCity.getPoints()) {</span>
 <span class="nc bnc" id="L131" title="All 2 branches missed.">      String statusToAvoid = rp.getIsLoading() ? &quot;prepared&quot; : &quot;loaded&quot;;</span>
 <span class="nc bnc" id="L132" title="All 2 branches missed.">      canChangeLocation &amp;= !rp.getCargo().getStatus().equalsIgnoreCase(statusToAvoid);</span>
-    }
+<span class="nc" id="L133">    }</span>
 <span class="nc" id="L134">    session.close();</span>
 <span class="nc bnc" id="L135" title="All 2 branches missed.">    if (!canChangeLocation) {</span>
 <span class="nc" id="L136">      bindingResult.reject(&quot;cargoManagement&quot;,</span>
-<span class="nc" id="L137">          &quot;Not all assigned to current city cargo is loaded/unloaded, please double-check.&quot;);</span>
+          &quot;Not all assigned to current city cargo is loaded/unloaded, please double-check.&quot;);
     }
 <span class="nc" id="L139">    String userCity = driver.getUserInfo().getCity().getCurrentCity();</span>
 <span class="nc" id="L140">    String[] cities = driver.getUserInfo().getOrder().getRoute().split(Order.ROUTE_DELIMETER);</span>
 <span class="nc" id="L141">    int index = driver.getUserInfo().getOrder().getOrderRouteProgression().getRouteCounter() + 1;</span>
 <span class="nc bnc" id="L142" title="All 2 branches missed.">    int length = index &lt; cities.length</span>
 <span class="nc" id="L143">        ? cargoAndOrdersService.lengthBetweenTwoCities(userCity, cities[index])</span>
-<span class="nc" id="L144">        : 0;</span>
+        : 0;
 <span class="nc" id="L145">    length = (int) Math.round((double) length / CargoAndOrdersService.AVERAGE_CAR_SPEED);</span>
 <span class="nc" id="L146">    Integer hoursDrived = driver.getUserInfo().getHoursDrived();</span>
 <span class="nc bnc" id="L147" title="All 2 branches missed.">    if (hoursDrived != null) {</span>
 <span class="nc" id="L148">      hoursDrived += length;</span>
-<span class="nc" id="L149">    } else {</span>
+    } else {
 <span class="nc" id="L150">      hoursDrived = length;</span>
     }
 <span class="nc" id="L152">    Integer hoursWorked = driver.getUserInfo().getHoursWorked() + length;</span>
@@ -172,10 +172,10 @@ public class DriverService {
 <span class="nc" id="L172">            driver.getUserInfo().getOrder().getOrderRouteProgression();</span>
 <span class="nc" id="L173">        orderRouteProgression.incrementCounter();</span>
 <span class="nc" id="L174">        orderRouteProgressionDAO.update(orderRouteProgression);</span>
-      }
-<span class="nc" id="L176">    } else {</span>
+<span class="nc" id="L175">      }</span>
+    } else {
 <span class="nc" id="L177">      bindingResult.reject(&quot;city&quot;,</span>
-<span class="nc" id="L178">          &quot;Illegal next city argument. Please don't try to change page code.&quot;);</span>
+          &quot;Illegal next city argument. Please don't try to change page code.&quot;);
 <span class="nc" id="L179">      log.warn(&quot;Illegal next city on route of order id=&quot; + driver.getUserInfo().getOrder().getId());</span>
     }
 <span class="nc" id="L181">  }</span>
@@ -189,13 +189,13 @@ public class DriverService {
 <span class="nc" id="L189">        index = i + 1;</span>
       }
     }
-<span class="nc" id="L192">    int length =</span>
-<span class="nc bnc" id="L193" title="All 2 branches missed.">        index != -1 ? cargoAndOrdersService.lengthBetweenTwoCities(userCity, cities[index]) : 0;</span>
+<span class="nc bnc" id="L192" title="All 2 branches missed.">    int length =</span>
+<span class="nc" id="L193">        index != -1 ? cargoAndOrdersService.lengthBetweenTwoCities(userCity, cities[index]) : 0;</span>
 <span class="nc" id="L194">    length = (int) Math.round((double) length / CargoAndOrdersService.AVERAGE_CAR_SPEED);</span>
 <span class="nc" id="L195">    Integer hoursDrived = driver.getUserInfo().getHoursDrived();</span>
 <span class="nc bnc" id="L196" title="All 2 branches missed.">    if (hoursDrived != null) {</span>
 <span class="nc" id="L197">      hoursDrived += length;</span>
-<span class="nc" id="L198">    } else {</span>
+    } else {
 <span class="nc" id="L199">      hoursDrived = length;</span>
     }
 <span class="nc bnc" id="L201" title="All 4 branches missed.">    if (index != -1 &amp;&amp; hoursDrived &gt; driver.getUserInfo().getOrder().getCar().getShiftLength()) {</span>

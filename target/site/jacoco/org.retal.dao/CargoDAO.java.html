@@ -28,32 +28,33 @@ import org.springframework.stereotype.Component;
 <span class="fc" id="L28">    Integer id = (Integer) keys[0];</span>
 <span class="fc" id="L29">    Session session = DAO.start();</span>
 <span class="fc" id="L30">    Cargo cargo = session.get(Cargo.class, id);</span>
-<span class="fc" id="L31">    DAO.end(session);</span>
-<span class="fc" id="L32">    return cargo;</span>
+<span class="fc bfc" id="L31" title="All 2 branches covered.">    log.debug(cargo != null ? cargo.toString() : &quot;Cargo not found&quot;);</span>
+<span class="fc" id="L32">    DAO.end(session);</span>
+<span class="fc" id="L33">    return cargo;</span>
   }
 
   @Override
   public List&lt;Cargo&gt; readAll() {
-<span class="fc" id="L37">    Session session = DAO.start();</span>
-<span class="fc" id="L38">    List&lt;Cargo&gt; cargos =</span>
-<span class="fc" id="L39">        session.createNativeQuery(&quot;SELECT * FROM CARGO&quot;, Cargo.class).getResultList();</span>
-<span class="fc" id="L40">    log.info(cargos.size() + &quot; cargos retrieved&quot;);</span>
-<span class="fc" id="L41">    DAO.end(session);</span>
-<span class="fc" id="L42">    return cargos;</span>
+<span class="fc" id="L38">    Session session = DAO.start();</span>
+<span class="fc" id="L39">    List&lt;Cargo&gt; cargos =</span>
+<span class="fc" id="L40">        session.createNativeQuery(&quot;SELECT * FROM CARGO&quot;, Cargo.class).getResultList();</span>
+<span class="fc" id="L41">    log.info(cargos.size() + &quot; cargos retrieved&quot;);</span>
+<span class="fc" id="L42">    DAO.end(session);</span>
+<span class="fc" id="L43">    return cargos;</span>
   }
 
   @Override
   public void delete(Cargo t) {
-<span class="fc" id="L47">    throw new MethodUndefinedException();</span>
+<span class="fc" id="L48">    throw new MethodUndefinedException();</span>
   }
 
   @Override
   public void update(Cargo t) {
-<span class="fc" id="L52">    Session session = DAO.start();</span>
-<span class="fc" id="L53">    session.update(t);</span>
-<span class="fc" id="L54">    session.flush();</span>
-<span class="fc" id="L55">    DAO.end(session);</span>
-<span class="fc" id="L56">  }</span>
+<span class="fc" id="L53">    Session session = DAO.start();</span>
+<span class="fc" id="L54">    session.update(t);</span>
+<span class="fc" id="L55">    session.flush();</span>
+<span class="fc" id="L56">    DAO.end(session);</span>
+<span class="fc" id="L57">  }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

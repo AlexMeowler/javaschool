@@ -348,11 +348,9 @@ public class CargoAndOrdersService {
       log.info("Mapped " + list.size() + " DTOs to entities");
       List<CityDistance> distances = cityDistanceDAO.readAll();
       List<City> cities = cityDAO.readAll();
-      Session session = HibernateSessionFactory.getSessionFactory().openSession();
       Set<RoutePoint> points = new HashSet<>(list);
       Object[] carAndDriversAndPath =
-          findAppropriateCarAndDriversAndCalculatePath(list, distances, cities, session);
-      session.close();
+          findAppropriateCarAndDriversAndCalculatePath(list, distances, cities);
       Car selectedCar = (Car) carAndDriversAndPath[0];
       @SuppressWarnings("unchecked")
       List<User> drivers = (List<User>) carAndDriversAndPath[1];
@@ -377,7 +375,7 @@ public class CargoAndOrdersService {
         }
       }
       if (!bindingResult.hasErrors()) {
-        session = HibernateSessionFactory.getSessionFactory().openSession();
+        Session session = HibernateSessionFactory.getSessionFactory().openSession();
         Order order = new Order();
         order.setCar(selectedCar);
         order.setPoints(points);
@@ -431,15 +429,13 @@ public class CargoAndOrdersService {
    * @param distances list of all {@linkplain org.retal.domain.CityDistance CityDistance} entities
    *        from database
    * @param cities list of all {@linkplain org.retal.domain.City City} entities.
-   * @param session active {@linkplain org.hibernate.Session Session}, required for persisting some
-   *        entities with lazy fetch type
    * @return Object array of size 3: Object[0] is selected {@linkplain org.retal.domain.Car Car},
    *         Object[1] is List<{@linkplain org.retal.domain.User User} (selected drivers), Object[3]
    *         is String (shortest path, cities are divided by ";"), Object[4] is Float (required
    *         capacity, used in showing error message). Path and required capacity are never null.
    */
   public Object[] findAppropriateCarAndDriversAndCalculatePath(List<RoutePoint> list,
-      List<CityDistance> distances, List<City> cities, Session session) {
+      List<CityDistance> distances, List<City> cities) {
     log.info("Searching for cars and paths...");
     Set<City> allRoutePointCities = new HashSet<>();
     List<String> cityNames =
@@ -600,10 +596,9 @@ public class CargoAndOrdersService {
     List<List<User>> selectedDriversList = new ArrayList<>();
     for (City city : rpCities) {
       if (city.getCurrentCity().equals(firstCity)) {
-        session.persist(city);
         for (Car car : city.getCars()) {
           List<User> drivers =
-              tryToAssignDriversForOrder(shortestPath, shortestPathMatrix, rpCities, car, session);
+              tryToAssignDriversForOrder(shortestPath, shortestPathMatrix, rpCities, car);
           if (car.getOrder() == null && car.getIsWorking()
               && car.getCapacityTons() >= requiredCapacity && drivers != null) {
             selectedCarList.add(car);
@@ -611,7 +606,6 @@ public class CargoAndOrdersService {
             break;
           }
         }
-        session.detach(city);
         break;
       }
     }
@@ -1037,7 +1031,7 @@ public class CargoAndOrdersService {
    * @return list of drivers available for assigning to order
    */
   private List<User> tryToAssignDriversForOrder(String path, int[][] matrix, List<City> rpCities,
-      Car selectedCar, Session session) {
+      Car selectedCar) {
     if (selectedCar == null) {
       return null;
     }
@@ -1050,16 +1044,14 @@ public class CargoAndOrdersService {
     final int n = cities.length;
     int[] distances = new int[n - 1];
     // list of capable drivers from each city on route
-    List<List<User>> drivers = new ArrayList<List<User>>(n - 1);
+    List<List<User>> drivers = new ArrayList<List<User>>();
     for (int i = 0; i < n - 1; i++) {
       int indexCurrentCity = cityNames.indexOf(cities[i]);
       int indexNextCity = cityNames.indexOf(cities[i + 1]);
       distances[i] = matrix[indexCurrentCity][indexNextCity];
       // adding drivers
-      session.persist(rpCities.get(indexCurrentCity));
       List<User> cityDrivers = rpCities.get(indexCurrentCity).getUserInfos().stream()
           .map(ui -> ui.getUser()).filter(this::isDriverCapable).collect(Collectors.toList());
-      session.detach(rpCities.get(indexCurrentCity));
       drivers.add(i, cityDrivers);
     }
     log.debug(drivers.toString());

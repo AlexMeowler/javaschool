@@ -40,14 +40,14 @@ public class UserService {
 
 <span class="fc" id="L41">  private static final Logger log = Logger.getLogger(UserService.class);</span>
 
-<span class="fc" id="L43">  public static final String DELETION_UPDATION_ERROR = &quot;ERROR&quot;;</span>
+  public static final String DELETION_UPDATION_ERROR = &quot;ERROR&quot;;
 
   /**
    * Creates an instance of this class using constructor-based dependency injection.
    */
   @Autowired
-<span class="fc" id="L49">  public UserService(UserDAO userDAO, SessionInfo sessionInfo, UserValidator userValidator,</span>
-      CityService cityService) {
+  public UserService(UserDAO userDAO, SessionInfo sessionInfo, UserValidator userValidator,
+<span class="fc" id="L50">      CityService cityService) {</span>
 <span class="fc" id="L51">    this.userDAO = userDAO;</span>
 <span class="fc" id="L52">    this.sessionInfo = sessionInfo;</span>
 <span class="fc" id="L53">    this.userValidator = userValidator;</span>
@@ -113,7 +113,7 @@ public class UserService {
 <span class="fc" id="L113">      UserInfo userInfo = target.getUserInfo();</span>
 <span class="fc bfc" id="L114" title="All 4 branches covered.">      if (userInfo.getCar() == null &amp;&amp; userInfo.getOrder() == null) {</span>
 <span class="fc" id="L115">        userDAO.delete(target);</span>
-<span class="fc" id="L116">      } else {</span>
+      } else {
 <span class="fc" id="L117">        redirect = DELETION_UPDATION_ERROR;</span>
       }
 <span class="fc" id="L119">    } else {</span>
@@ -144,7 +144,7 @@ public class UserService {
 <span class="fc" id="L144">    UserInfo userInfo = target.getUserInfo();</span>
 <span class="fc bfc" id="L145" title="All 4 branches covered.">    if (userInfo.getOrder() != null || userInfo.getCar() != null) {</span>
 <span class="fc" id="L146">      bindingResult.reject(&quot;userUnavailable&quot;,</span>
-<span class="fc" id="L147">          &quot;User could not be updated due to assigned order or being driving car&quot;);</span>
+          &quot;User could not be updated due to assigned order or being driving car&quot;);
     }
 <span class="fc bfc" id="L149" title="All 2 branches covered.">    if (userHasRightsToEditOrDeleteUser(caller, target)) {</span>
 <span class="fc bfc" id="L150" title="All 2 branches covered.">      if (!bindingResult.hasErrors()) {</span>
@@ -157,7 +157,7 @@ public class UserService {
         }
 <span class="fc" id="L158">        userDAO.update(updatedUser);</span>
       }
-<span class="fc" id="L160">    } else {</span>
+    } else {
 <span class="fc" id="L161">      log.warn(&quot;Attempt to edit user without sufficient permissions&quot;);</span>
 <span class="fc" id="L162">      redirect = &quot;/403/&quot; + caller.getLogin();</span>
     }
@@ -212,14 +212,14 @@ public class UserService {
 <span class="fc" id="L212">        userInfo.setCity(cities.get(i));</span>
 <span class="fc" id="L213">        userDAO.add(user);</span>
 <span class="fc" id="L214">        i++;</span>
-      }
+<span class="fc" id="L215">      }</span>
 <span class="fc" id="L216">      namesReader.close();</span>
 <span class="fc" id="L217">      surnamesReader.close();</span>
-<span class="pc" id="L218">    } catch (IOException e) {</span>
+<span class="nc" id="L218">    } catch (IOException e) {</span>
 <span class="nc" id="L219">      String message = &quot;File names.txt or surnames.txt not found&quot;;</span>
 <span class="nc" id="L220">      log.error(message);</span>
 <span class="nc" id="L221">      throw new ResponseStatusException(HttpStatus.NOT_FOUND, message);</span>
-    }
+<span class="fc" id="L222">    }</span>
 <span class="fc" id="L223">  }</span>
 
   /**
@@ -230,7 +230,7 @@ public class UserService {
 <span class="nc bnc" id="L230" title="All 2 branches missed.">    for (User u : userDAO.readAll()) {</span>
 <span class="nc" id="L231">      u.getUserInfo().setHoursWorked(0);</span>
 <span class="nc" id="L232">      userDAO.update(u);</span>
-    }
+<span class="nc" id="L233">    }</span>
 <span class="nc" id="L234">  }</span>
 
 

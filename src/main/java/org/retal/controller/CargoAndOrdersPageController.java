@@ -134,7 +134,7 @@ public class CargoAndOrdersPageController {
   public RedirectView addNewOrder(RoutePointListWrapper list, BindingResult bindingResult,
       RedirectAttributes redir) {
     redir.addFlashAttribute("visible", "true");
-    if(list.getList() == null) {
+    if (list.getList() == null) {
       list.setList(new ArrayList<RoutePointDTO>());
     }
     cargoAndOrdersService.createOrderAndRoutePoints(list, bindingResult);

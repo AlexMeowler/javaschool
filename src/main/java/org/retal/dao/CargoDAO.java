@@ -28,6 +28,7 @@ public class CargoDAO implements DAO<Cargo> {
     Integer id = (Integer) keys[0];
     Session session = DAO.start();
     Cargo cargo = session.get(Cargo.class, id);
+    log.debug(cargo != null ? cargo.toString() : "Cargo not found");
     DAO.end(session);
     return cargo;
   }
