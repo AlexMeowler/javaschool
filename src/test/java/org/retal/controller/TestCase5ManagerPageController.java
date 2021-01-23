@@ -576,7 +576,7 @@ public class TestCase5ManagerPageController {
 
   @Test
   @WithMockUser(username = "manager", password = "manager", authorities = "MANAGER")
-  public void testE1GetHomePage() throws Exception {
+  public void testC5GetHomePage() throws Exception {
     mockMvc.perform(get(ManagerPageController.MANAGER_PAGE)).andExpect(status().isOk())
         .andExpect(model().attribute("current_user_name", "manager manager"));
   }

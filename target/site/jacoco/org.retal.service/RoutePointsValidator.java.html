@@ -46,61 +46,61 @@ public class RoutePointsValidator implements Validator {
 
   @Override
   public void validate(Object target, Errors errors) {
-<span class="nc" id="L49">    log.info(&quot;Validating route points&quot;);</span>
-<span class="nc" id="L50">    RoutePointListWrapper wrapper = (RoutePointListWrapper) target;</span>
-<span class="nc" id="L51">    List&lt;RoutePointDTO&gt; points = wrapper.getList();</span>
-<span class="nc bnc" id="L52" title="All 2 branches missed.">    if (points.size() == 0) {</span>
-<span class="nc" id="L53">      errors.reject(&quot;emptyInput&quot;, &quot;Please add route points.&quot;);</span>
+<span class="fc" id="L49">    log.info(&quot;Validating route points&quot;);</span>
+<span class="fc" id="L50">    RoutePointListWrapper wrapper = (RoutePointListWrapper) target;</span>
+<span class="fc" id="L51">    List&lt;RoutePointDTO&gt; points = wrapper.getList();</span>
+<span class="fc bfc" id="L52" title="All 2 branches covered.">    if (points.size() == 0) {</span>
+<span class="fc" id="L53">      errors.reject(&quot;emptyInput&quot;, &quot;Please add route points.&quot;);</span>
     }
-<span class="nc bnc" id="L55" title="All 2 branches missed.">    for (int i = 0; i &lt; points.size(); i++) {</span>
-<span class="nc" id="L56">      RoutePointDTO rp = points.get(i);</span>
-<span class="nc" id="L57">      Cargo cargo = cargoDAO.read(rp.getCargoId());</span>
-<span class="nc bnc" id="L58" title="All 6 branches missed.">      if (cityDAO.read(rp.getCityName()) == null || cargo == null || rp.getIsLoading() == null) {</span>
-<span class="nc" id="L59">        rp.setError(&quot;Invalid value(s). Please don't try to change page code.&quot;);</span>
-<span class="nc" id="L60">        errors.reject(&quot;codeChange&quot;, &quot;Page code has been changed.&quot;);</span>
+<span class="fc bfc" id="L55" title="All 2 branches covered.">    for (int i = 0; i &lt; points.size(); i++) {</span>
+<span class="fc" id="L56">      RoutePointDTO rp = points.get(i);</span>
+<span class="fc" id="L57">      Cargo cargo = cargoDAO.read(rp.getCargoId());</span>
+<span class="pc bpc" id="L58" title="2 of 6 branches missed.">      if (cityDAO.read(rp.getCityName()) == null || cargo == null || rp.getIsLoading() == null) {</span>
+<span class="fc" id="L59">        rp.setError(&quot;Invalid value(s). Please don't try to change page code.&quot;);</span>
+<span class="fc" id="L60">        errors.reject(&quot;codeChange&quot;, &quot;Page code has been changed.&quot;);</span>
       }
-<span class="nc bnc" id="L62" title="All 4 branches missed.">      if (cargo != null &amp;&amp; cargo.getPoints().size() != 0) {</span>
+<span class="pc bpc" id="L62" title="2 of 4 branches missed.">      if (cargo != null &amp;&amp; cargo.getPoints().size() != 0) {</span>
 <span class="nc" id="L63">        rp.setError(&quot;Can't select cargo from other order. Please don't try to change page code.&quot;);</span>
 <span class="nc" id="L64">        errors.reject(&quot;codeChange&quot;, &quot;Can't select cargo from other order.&quot;);</span>
       }
     }
-<span class="nc bnc" id="L67" title="All 2 branches missed.">    if (!errors.hasErrors()) {</span>
+<span class="fc bfc" id="L67" title="All 2 branches covered.">    if (!errors.hasErrors()) {</span>
       // this is for rule 'every cargo is loaded in A and dropped in B'
       // Integer[0] - rank, load +1 unload -1; Integer[1] - total encounters, must be 2
-<span class="nc" id="L70">      Map&lt;Integer, Integer[]&gt; cargoEntries = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L70">      Map&lt;Integer, Integer[]&gt; cargoEntries = new HashMap&lt;&gt;();</span>
       // Set&lt;String&gt; - to avoid dropping and loading of one cargo in the same city
-<span class="nc" id="L72">      Map&lt;Integer, Set&lt;String&gt;&gt; cargoCitiesEntries = new HashMap&lt;&gt;();</span>
-<span class="nc bnc" id="L73" title="All 2 branches missed.">      for (RoutePointDTO rp : points) {</span>
-<span class="nc" id="L74">        Integer cargo = rp.getCargoId();</span>
-<span class="nc bnc" id="L75" title="All 2 branches missed.">        int sign = rp.getIsLoading() ? 1 : -1;</span>
-<span class="nc bnc" id="L76" title="All 2 branches missed.">        if (cargoEntries.containsKey(cargo)) {</span>
-<span class="nc" id="L77">          Integer[] values = cargoEntries.get(cargo);</span>
-<span class="nc" id="L78">          values[0] += sign;</span>
-<span class="nc" id="L79">          values[1]++;</span>
-<span class="nc bnc" id="L80" title="All 2 branches missed.">          if (!cargoCitiesEntries.get(cargo).contains(rp.getCityName())) {</span>
-<span class="nc" id="L81">            cargoCitiesEntries.get(cargo).add(rp.getCityName());</span>
-<span class="nc" id="L82">          } else {</span>
+<span class="fc" id="L72">      Map&lt;Integer, Set&lt;String&gt;&gt; cargoCitiesEntries = new HashMap&lt;&gt;();</span>
+<span class="fc bfc" id="L73" title="All 2 branches covered.">      for (RoutePointDTO rp : points) {</span>
+<span class="fc" id="L74">        Integer cargo = rp.getCargoId();</span>
+<span class="fc bfc" id="L75" title="All 2 branches covered.">        int sign = rp.getIsLoading() ? 1 : -1;</span>
+<span class="fc bfc" id="L76" title="All 2 branches covered.">        if (cargoEntries.containsKey(cargo)) {</span>
+<span class="fc" id="L77">          Integer[] values = cargoEntries.get(cargo);</span>
+<span class="fc" id="L78">          values[0] += sign;</span>
+<span class="fc" id="L79">          values[1]++;</span>
+<span class="pc bpc" id="L80" title="1 of 2 branches missed.">          if (!cargoCitiesEntries.get(cargo).contains(rp.getCityName())) {</span>
+<span class="fc" id="L81">            cargoCitiesEntries.get(cargo).add(rp.getCityName());</span>
+<span class="fc" id="L82">          } else {</span>
 <span class="nc" id="L83">            errors.reject(&quot;globalCity&quot;, &quot;Sorry, but we don't do logistics within the same city.&quot;);</span>
           }
 <span class="nc" id="L85">        } else {</span>
-<span class="nc" id="L86">          cargoEntries.put(cargo, new Integer[] {sign, 1});</span>
-<span class="nc" id="L87">          Set&lt;String&gt; set = new HashSet&lt;&gt;();</span>
-<span class="nc" id="L88">          set.add(rp.getCityName());</span>
-<span class="nc" id="L89">          cargoCitiesEntries.put(cargo, set);</span>
+<span class="fc" id="L86">          cargoEntries.put(cargo, new Integer[] {sign, 1});</span>
+<span class="fc" id="L87">          Set&lt;String&gt; set = new HashSet&lt;&gt;();</span>
+<span class="fc" id="L88">          set.add(rp.getCityName());</span>
+<span class="fc" id="L89">          cargoCitiesEntries.put(cargo, set);</span>
         }
       }
-<span class="nc" id="L92">      cargoEntries</span>
-<span class="nc" id="L93">          .forEach((a, b) -&gt; log.debug(&quot;[&quot; + a.toString() + &quot;; &quot; + Arrays.toString(b) + &quot;]&quot;));</span>
-<span class="nc" id="L94">      boolean allCargosAreLoadingAndUnloading = true;</span>
-<span class="nc bnc" id="L95" title="All 2 branches missed.">      for (Map.Entry&lt;Integer, Integer[]&gt; e : cargoEntries.entrySet()) {</span>
-<span class="nc" id="L96">        Integer[] values = e.getValue();</span>
-<span class="nc bnc" id="L97" title="All 4 branches missed.">        allCargosAreLoadingAndUnloading &amp;= values[0] == 0 &amp;&amp; values[1] == 2;</span>
+<span class="fc" id="L92">      cargoEntries</span>
+<span class="fc" id="L93">          .forEach((a, b) -&gt; log.debug(&quot;[&quot; + a.toString() + &quot;; &quot; + Arrays.toString(b) + &quot;]&quot;));</span>
+<span class="fc" id="L94">      boolean allCargosAreLoadingAndUnloading = true;</span>
+<span class="fc bfc" id="L95" title="All 2 branches covered.">      for (Map.Entry&lt;Integer, Integer[]&gt; e : cargoEntries.entrySet()) {</span>
+<span class="fc" id="L96">        Integer[] values = e.getValue();</span>
+<span class="pc bpc" id="L97" title="2 of 4 branches missed.">        allCargosAreLoadingAndUnloading &amp;= values[0] == 0 &amp;&amp; values[1] == 2;</span>
       }
-<span class="nc bnc" id="L99" title="All 2 branches missed.">      if (!allCargosAreLoadingAndUnloading) {</span>
+<span class="pc bpc" id="L99" title="1 of 2 branches missed.">      if (!allCargosAreLoadingAndUnloading) {</span>
 <span class="nc" id="L100">        errors.reject(&quot;globalCargo&quot;,</span>
 <span class="nc" id="L101">            &quot;All cargo must be loaded somewhere and unloaded somewhere else.&quot;);</span>
       }
     }
-<span class="nc" id="L104">  }</span>
+<span class="fc" id="L104">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>
