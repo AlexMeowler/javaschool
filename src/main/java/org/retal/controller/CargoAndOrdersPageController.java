@@ -10,6 +10,7 @@ import org.retal.domain.Order;
 import org.retal.domain.SessionInfo;
 import org.retal.domain.User;
 import org.retal.domain.UserInfo;
+import org.retal.dto.RoutePointDTO;
 import org.retal.dto.RoutePointListWrapper;
 import org.retal.service.CarService;
 import org.retal.service.CargoAndOrdersService;
@@ -133,6 +134,9 @@ public class CargoAndOrdersPageController {
   public RedirectView addNewOrder(RoutePointListWrapper list, BindingResult bindingResult,
       RedirectAttributes redir) {
     redir.addFlashAttribute("visible", "true");
+    if(list.getList() == null) {
+      list.setList(new ArrayList<RoutePointDTO>());
+    }
     cargoAndOrdersService.createOrderAndRoutePoints(list, bindingResult);
     if (bindingResult.hasErrors()) {
       redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + "routePoints", bindingResult);

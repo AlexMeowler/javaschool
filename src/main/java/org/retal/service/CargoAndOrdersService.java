@@ -1139,6 +1139,7 @@ public class CargoAndOrdersService {
    */
   private boolean isDriverCapable(User user) {
     boolean isDriver = user.getRole().equalsIgnoreCase(UserRole.DRIVER.toString());
+    log.debug(user.getUserInfo() != null ? user.getUserInfo().toString() : "null");
     boolean isOnShift =
         user.getUserInfo().getStatus().equalsIgnoreCase(DriverStatus.ON_SHIFT.toString());
     boolean hasAssignedOrder = user.getUserInfo().getOrder() != null;

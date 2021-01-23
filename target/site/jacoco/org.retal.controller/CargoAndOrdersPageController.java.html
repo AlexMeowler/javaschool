@@ -10,6 +10,7 @@ import org.retal.domain.Order;
 import org.retal.domain.SessionInfo;
 import org.retal.domain.User;
 import org.retal.domain.UserInfo;
+import org.retal.dto.RoutePointDTO;
 import org.retal.dto.RoutePointListWrapper;
 import org.retal.service.CarService;
 import org.retal.service.CargoAndOrdersService;
@@ -41,41 +42,41 @@ public class CargoAndOrdersPageController {
    * Creates an instance of this class using constructor-based dependency injection.
    */
   @Autowired
-<span class="fc" id="L44">  public CargoAndOrdersPageController(SessionInfo sessionInfo,</span>
+<span class="fc" id="L45">  public CargoAndOrdersPageController(SessionInfo sessionInfo,</span>
       CargoAndOrdersService cargoAndOrdersService, CityService cityService, CarService carService) {
-<span class="fc" id="L46">    this.sessionInfo = sessionInfo;</span>
-<span class="fc" id="L47">    this.cargoAndOrdersService = cargoAndOrdersService;</span>
-<span class="fc" id="L48">    this.cityService = cityService;</span>
-<span class="fc" id="L49">    this.carService = carService;</span>
-<span class="fc" id="L50">  }</span>
+<span class="fc" id="L47">    this.sessionInfo = sessionInfo;</span>
+<span class="fc" id="L48">    this.cargoAndOrdersService = cargoAndOrdersService;</span>
+<span class="fc" id="L49">    this.cityService = cityService;</span>
+<span class="fc" id="L50">    this.carService = carService;</span>
+<span class="fc" id="L51">  }</span>
 
   /**
    * Method responsible for showing the main page for cargo and orders.
    */
   @GetMapping(value = &quot;/cargoAndOrders&quot;)
   public String getCargoAndOrdersPage(Model model) {
-<span class="nc" id="L57">    BindingResult result =</span>
-<span class="nc" id="L58">        (BindingResult) model.asMap().get(BindingResult.MODEL_KEY_PREFIX + &quot;routePoints&quot;);</span>
-<span class="nc" id="L59">    Map&lt;String, String&gt; errors = UserValidator.convertErrorsToHashMap(result);</span>
-<span class="nc" id="L60">    model.addAllAttributes(errors);</span>
-<span class="nc" id="L61">    User user = sessionInfo.getCurrentUser();</span>
-<span class="nc" id="L62">    UserInfo userInfo = user.getUserInfo();</span>
-<span class="nc" id="L63">    model.addAttribute(&quot;current_user_name&quot;, userInfo.getName() + &quot; &quot; + userInfo.getSurname());</span>
-<span class="nc" id="L64">    model.addAttribute(&quot;cargoList&quot;, cargoAndOrdersService.getAllCargo());</span>
-<span class="nc" id="L65">    model.addAttribute(&quot;availableCargoList&quot;, getAllCitiesAndAssignableCargo()[1]);</span>
-<span class="nc" id="L66">    List&lt;Order&gt; orders = cargoAndOrdersService.getAllOrders();</span>
-<span class="nc" id="L67">    model.addAttribute(&quot;ordersList&quot;, orders);</span>
-<span class="nc" id="L68">    model.addAttribute(&quot;cityList&quot;, cityService.getAllCities());</span>
-<span class="nc" id="L69">    List&lt;Boolean&gt; isOrderStarted = new ArrayList&lt;&gt;();</span>
-<span class="nc" id="L70">    List&lt;Boolean&gt; hasCarsAvailable = new ArrayList&lt;&gt;();</span>
-<span class="nc" id="L71">    orders.forEach(o -&gt; {</span>
-<span class="nc" id="L72">      isOrderStarted.add(cargoAndOrdersService.isOrderStarted(o));</span>
-<span class="nc" id="L73">      List&lt;Car&gt; cars = getAvailableCarsForOrder(o.getId());</span>
-<span class="nc bnc" id="L74" title="All 4 branches missed.">      hasCarsAvailable.add(cars != null &amp;&amp; cars.size() != 0);</span>
-<span class="nc" id="L75">    });</span>
-<span class="nc" id="L76">    model.addAttribute(&quot;orderStarted&quot;, isOrderStarted);</span>
-<span class="nc" id="L77">    model.addAttribute(&quot;hasCarsAvailable&quot;, hasCarsAvailable);</span>
-<span class="nc" id="L78">    return &quot;cargo_orders&quot;;</span>
+<span class="nc" id="L58">    BindingResult result =</span>
+<span class="nc" id="L59">        (BindingResult) model.asMap().get(BindingResult.MODEL_KEY_PREFIX + &quot;routePoints&quot;);</span>
+<span class="nc" id="L60">    Map&lt;String, String&gt; errors = UserValidator.convertErrorsToHashMap(result);</span>
+<span class="nc" id="L61">    model.addAllAttributes(errors);</span>
+<span class="nc" id="L62">    User user = sessionInfo.getCurrentUser();</span>
+<span class="nc" id="L63">    UserInfo userInfo = user.getUserInfo();</span>
+<span class="nc" id="L64">    model.addAttribute(&quot;current_user_name&quot;, userInfo.getName() + &quot; &quot; + userInfo.getSurname());</span>
+<span class="nc" id="L65">    model.addAttribute(&quot;cargoList&quot;, cargoAndOrdersService.getAllCargo());</span>
+<span class="nc" id="L66">    model.addAttribute(&quot;availableCargoList&quot;, getAllCitiesAndAssignableCargo()[1]);</span>
+<span class="nc" id="L67">    List&lt;Order&gt; orders = cargoAndOrdersService.getAllOrders();</span>
+<span class="nc" id="L68">    model.addAttribute(&quot;ordersList&quot;, orders);</span>
+<span class="nc" id="L69">    model.addAttribute(&quot;cityList&quot;, cityService.getAllCities());</span>
+<span class="nc" id="L70">    List&lt;Boolean&gt; isOrderStarted = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L71">    List&lt;Boolean&gt; hasCarsAvailable = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L72">    orders.forEach(o -&gt; {</span>
+<span class="nc" id="L73">      isOrderStarted.add(cargoAndOrdersService.isOrderStarted(o));</span>
+<span class="nc" id="L74">      List&lt;Car&gt; cars = getAvailableCarsForOrder(o.getId());</span>
+<span class="nc bnc" id="L75" title="All 4 branches missed.">      hasCarsAvailable.add(cars != null &amp;&amp; cars.size() != 0);</span>
+<span class="nc" id="L76">    });</span>
+<span class="nc" id="L77">    model.addAttribute(&quot;orderStarted&quot;, isOrderStarted);</span>
+<span class="nc" id="L78">    model.addAttribute(&quot;hasCarsAvailable&quot;, hasCarsAvailable);</span>
+<span class="nc" id="L79">    return &quot;cargo_orders&quot;;</span>
   }
 
   /**
@@ -89,13 +90,13 @@ public class CargoAndOrdersPageController {
   @GetMapping(value = &quot;/getCityAndCargoInfo&quot;)
   @ResponseBody
   public List[] getAllCitiesAndAssignableCargo() {
-<span class="nc" id="L92">    List&lt;Cargo&gt; cargo = cargoAndOrdersService.getAllCargo().stream()</span>
-<span class="nc bnc" id="L93" title="All 2 branches missed.">        .filter(c -&gt; c.getPoints().size() == 0).collect(Collectors.toList());</span>
+<span class="fc" id="L93">    List&lt;Cargo&gt; cargo = cargoAndOrdersService.getAllCargo().stream()</span>
+<span class="fc bfc" id="L94" title="All 2 branches covered.">        .filter(c -&gt; c.getPoints().size() == 0).collect(Collectors.toList());</span>
     /*
      * for (int i = 0; i &lt; cargo.size(); i++) { if (cargo.get(i).getPoints().size() != 0) {
      * cargo.remove(i); i--; } }
      */
-<span class="nc" id="L98">    return new List[] {cityService.getAllCities(), cargo};</span>
+<span class="fc" id="L99">    return new List[] {cityService.getAllCities(), cargo};</span>
   }
 
   /**
@@ -107,7 +108,7 @@ public class CargoAndOrdersPageController {
   @GetMapping(value = &quot;/getCarsForOrder/{id}&quot;)
   @ResponseBody
   public List&lt;Car&gt; getAvailableCarsForOrder(@PathVariable Integer id) {
-<span class="nc" id="L110">    return carService.getAllAvailableCarsForOrderId(id);</span>
+<span class="nc" id="L111">    return carService.getAllAvailableCarsForOrderId(id);</span>
   }
 
   /**
@@ -121,7 +122,7 @@ public class CargoAndOrdersPageController {
   @GetMapping(value = &quot;/changeCarForOrder/{data}&quot;)
   @ResponseBody
   public String changeCarForOrder(@PathVariable String data) {
-<span class="nc" id="L124">    return cargoAndOrdersService.tryToChangeOrderCar(data);</span>
+<span class="nc" id="L125">    return cargoAndOrdersService.tryToChangeOrderCar(data);</span>
   }
 
   /**
@@ -132,15 +133,18 @@ public class CargoAndOrdersPageController {
   @PostMapping(value = &quot;/addNewOrder&quot;)
   public RedirectView addNewOrder(RoutePointListWrapper list, BindingResult bindingResult,
       RedirectAttributes redir) {
-<span class="nc" id="L135">    redir.addFlashAttribute(&quot;visible&quot;, &quot;true&quot;);</span>
-<span class="nc" id="L136">    cargoAndOrdersService.createOrderAndRoutePoints(list, bindingResult);</span>
-<span class="nc bnc" id="L137" title="All 2 branches missed.">    if (bindingResult.hasErrors()) {</span>
-<span class="nc" id="L138">      redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + &quot;routePoints&quot;, bindingResult);</span>
-<span class="nc" id="L139">      redir.addFlashAttribute(&quot;counter_value&quot;, list.getList().size());</span>
-<span class="nc" id="L140">      redir.addFlashAttribute(&quot;routePoints&quot;, list.getList());</span>
+<span class="fc" id="L136">    redir.addFlashAttribute(&quot;visible&quot;, &quot;true&quot;);</span>
+<span class="fc bfc" id="L137" title="All 2 branches covered.">    if(list.getList() == null) {</span>
+<span class="fc" id="L138">      list.setList(new ArrayList&lt;RoutePointDTO&gt;());</span>
     }
-<span class="nc" id="L142">    RedirectView redirectView = new RedirectView(&quot;/cargoAndOrders&quot;, true);</span>
-<span class="nc" id="L143">    return redirectView;</span>
+<span class="fc" id="L140">    cargoAndOrdersService.createOrderAndRoutePoints(list, bindingResult);</span>
+<span class="fc bfc" id="L141" title="All 2 branches covered.">    if (bindingResult.hasErrors()) {</span>
+<span class="fc" id="L142">      redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + &quot;routePoints&quot;, bindingResult);</span>
+<span class="fc" id="L143">      redir.addFlashAttribute(&quot;counter_value&quot;, list.getList().size());</span>
+<span class="fc" id="L144">      redir.addFlashAttribute(&quot;routePoints&quot;, list.getList());</span>
+    }
+<span class="fc" id="L146">    RedirectView redirectView = new RedirectView(&quot;/cargoAndOrders&quot;, true);</span>
+<span class="fc" id="L147">    return redirectView;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

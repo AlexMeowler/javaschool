@@ -58,7 +58,7 @@ public class TestCase1DAO {
   private RoutePointDAO routePointDAO;
 
   public static final String[] CITY_NAMES =
-      {"Mowcow", "Yaroslavl", "Omsk", "Samara", "Cheboksary", "Chelyabinsk"};
+      {"Moscow", "Yaroslavl", "Omsk", "Samara", "Cheboksary", "Chelyabinsk"};
 
 
   @Configuration
