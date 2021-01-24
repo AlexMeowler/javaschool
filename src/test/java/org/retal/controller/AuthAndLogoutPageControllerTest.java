@@ -31,11 +31,11 @@ import org.springframework.web.context.WebApplicationContext;
 @ContextConfiguration(classes = {WebConfig.class, RootConfig.class})
 @WebAppConfiguration
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class TestCase3AuthAndLogoutPageController {
+public class AuthAndLogoutPageControllerTest {
 
   private MockMvc mockMvc;
 
-  private static final Logger log = Logger.getLogger(TestCase4AdminPageController.class);
+  private static final Logger log = Logger.getLogger(AuthAndLogoutPageControllerTest.class);
 
   private static int counter = 1;
 
@@ -46,12 +46,12 @@ public class TestCase3AuthAndLogoutPageController {
 
   @BeforeClass
   public static void addUsersToDataBase() {
-    TestCase4AdminPageController.createAdminAndDriverUsers();
+    AdminPageControllerTest.createAdminAndDriverUsers();
   }
 
   @AfterClass
   public static void cleanup() {
-    TestCase4AdminPageController.cleanup();
+    AdminPageControllerTest.cleanup();
   }
 
   @Before

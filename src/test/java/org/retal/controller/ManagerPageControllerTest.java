@@ -32,13 +32,13 @@ import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.retal.config.spring.RootConfig;
 import org.retal.config.spring.WebConfig;
-import org.retal.controller.TestCase4AdminPageController.RunnableWithExceptionThrows;
+import org.retal.controller.AdminPageControllerTest.RunnableWithExceptionThrows;
 import org.retal.dao.CarDAO;
 import org.retal.dao.CityDAO;
 import org.retal.dao.CityDistanceDAO;
 import org.retal.dao.DAO;
+import org.retal.dao.DAOTest;
 import org.retal.dao.OrderDAO;
-import org.retal.dao.TestCase1DAO;
 import org.retal.dao.UserDAO;
 import org.retal.domain.Car;
 import org.retal.domain.City;
@@ -67,7 +67,7 @@ import org.springframework.web.context.WebApplicationContext;
 @ContextConfiguration(classes = {WebConfig.class, RootConfig.class})
 @WebAppConfiguration
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class TestCase5ManagerPageController {
+public class ManagerPageControllerTest {
 
   private MockMvc mockMvc;
 
@@ -77,7 +77,7 @@ public class TestCase5ManagerPageController {
 
   private OrderDAO orderDAO;
 
-  private static final Logger log = Logger.getLogger(TestCase5ManagerPageController.class);
+  private static final Logger log = Logger.getLogger(ManagerPageControllerTest.class);
 
   private static int counter = 1;
 
@@ -128,7 +128,7 @@ public class TestCase5ManagerPageController {
    */
   @BeforeClass
   public static void createAdminAndManagerUserAndFillDataBase() {
-    TestCase4AdminPageController.createAdminAndDriverUsers();
+    AdminPageControllerTest.createAdminAndDriverUsers();
     User user = new User();
     user.setLogin("manager");
     user.setPassword("managerpass");
@@ -155,7 +155,7 @@ public class TestCase5ManagerPageController {
    */
   @AfterClass
   public static void cleanup() {
-    TestCase4AdminPageController.cleanup();
+    AdminPageControllerTest.cleanup();
   }
 
   @Before
@@ -249,7 +249,7 @@ public class TestCase5ManagerPageController {
     Order order = new Order();
     order.setCar(car);
     order.setIsCompleted(false);
-    order.setRoute(TestCase1DAO.CITY_NAMES[0] + Order.ROUTE_DELIMETER + TestCase1DAO.CITY_NAMES[1]);
+    order.setRoute(DAOTest.CITY_NAMES[0] + Order.ROUTE_DELIMETER + DAOTest.CITY_NAMES[1]);
     order.setRequiredCapacity(0.3f);
     order.setRequiredShiftLength(3);
     orderDAO.add(order);

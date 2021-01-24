@@ -16,7 +16,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.retal.config.spring.RootConfig;
 import org.retal.config.spring.WebConfig;
-import org.retal.controller.TestCase4AdminPageController;
+import org.retal.controller.AdminPageControllerTest;
 import org.retal.domain.Car;
 import org.retal.domain.Cargo;
 import org.retal.domain.City;
@@ -39,7 +39,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 @ContextConfiguration(classes = {WebConfig.class, RootConfig.class})
 @WebAppConfiguration
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class TestCase1DAO {
+public class DAOTest {
 
   private UserDAO userDAO;
 
@@ -150,7 +150,7 @@ public class TestCase1DAO {
    */
   @AfterClass
   public static void cleanup() {
-    TestCase4AdminPageController.cleanup();
+    AdminPageControllerTest.cleanup();
   }
 
   @Test

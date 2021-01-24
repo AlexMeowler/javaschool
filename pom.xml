@@ -239,7 +239,6 @@
 					<version>2.22.1</version>
 					<configuration>
 						<argLine>${argLine}</argLine>
-						<runOrder>alphabetical</runOrder>
 						<trimStackTrace>false</trimStackTrace>
 					</configuration>
 					<executions>

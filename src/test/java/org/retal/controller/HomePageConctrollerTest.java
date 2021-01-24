@@ -5,8 +5,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,23 +23,13 @@ import org.springframework.web.context.WebApplicationContext;
 @ContextConfiguration(classes = {WebConfig.class, RootConfig.class})
 @WebAppConfiguration
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class TestCase1HomePageConctroller {
+public class HomePageConctrollerTest {
 
   private MockMvc mockMvc;
 
   @Autowired
   public void setMockMvc(WebApplicationContext wac) {
     mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
-  }
-
-  @BeforeClass
-  public static void fillDB() {
-
-  }
-
-  @AfterClass
-  public static void cleanup() {
-
   }
 
   @Test

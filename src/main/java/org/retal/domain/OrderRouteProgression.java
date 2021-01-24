@@ -71,7 +71,7 @@ public class OrderRouteProgression {
 
   @Override
   public int hashCode() {
-    return (routeCounter + 1) * (int) Math.pow(id + 1, 2);
+    return (routeCounter + 1) * (int) Math.pow((double) id + 1, 2);
   }
 
   @Override

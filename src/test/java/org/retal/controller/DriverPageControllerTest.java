@@ -51,7 +51,7 @@ import org.springframework.web.context.WebApplicationContext;
 @ContextConfiguration(classes = {WebConfig.class, RootConfig.class})
 @WebAppConfiguration
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class TestCase7DriverPageController {
+public class DriverPageControllerTest {
   private MockMvc mockMvc;
 
   private UserDAO userDAO;
@@ -64,7 +64,7 @@ public class TestCase7DriverPageController {
 
   private CityDAO cityDAO;
 
-  private static final Logger log = Logger.getLogger(TestCase6CargoAndOrdersPageController.class);
+  private static final Logger log = Logger.getLogger(DriverPageControllerTest.class);
 
   private static int counter = 0;
 
@@ -133,7 +133,7 @@ public class TestCase7DriverPageController {
    */
   @BeforeClass
   public static void fillDataBase() {
-    TestCase6CargoAndOrdersPageController.createManagerUserAndFillDataBase();
+    CargoAndOrdersPageControllerTest.createManagerUserAndFillDataBase();
   }
 
   /**
@@ -141,7 +141,7 @@ public class TestCase7DriverPageController {
    */
   @AfterClass
   public static void cleanup() {
-    TestCase4AdminPageController.cleanup();
+    AdminPageControllerTest.cleanup();
   }
 
   @Before
@@ -168,7 +168,7 @@ public class TestCase7DriverPageController {
         .collect(Collectors.toList())) {
       carDAO.delete(car);
     }
-    TestCase6CargoAndOrdersPageController tests = new TestCase6CargoAndOrdersPageController();
+    CargoAndOrdersPageControllerTest tests = new CargoAndOrdersPageControllerTest();
     tests.setCarDAO(carDAO);
     tests.setCityDAO(cityDAO);
     tests.setUserDAO(userDAO);

@@ -24,7 +24,7 @@ import org.springframework.web.context.WebApplicationContext;
 @ContextConfiguration(classes = {WebConfig.class, RootConfig.class})
 @WebAppConfiguration
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class TestCase2ErrorPageControllerAndExceptionHandler {
+public class ErrorPageControllerAndExceptionHandlerTest {
 
   private MockMvc mockMvc;
 

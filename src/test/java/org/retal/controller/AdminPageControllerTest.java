@@ -33,8 +33,8 @@ import org.retal.dao.CarDAO;
 import org.retal.dao.CargoDAO;
 import org.retal.dao.CityDAO;
 import org.retal.dao.DAO;
+import org.retal.dao.DAOTest;
 import org.retal.dao.OrderDAO;
-import org.retal.dao.TestCase1DAO;
 import org.retal.dao.UserDAO;
 import org.retal.domain.Car;
 import org.retal.domain.City;
@@ -60,7 +60,7 @@ import org.springframework.web.context.WebApplicationContext;
 @ContextConfiguration(classes = {WebConfig.class, RootConfig.class})
 @WebAppConfiguration
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class TestCase4AdminPageController {
+public class AdminPageControllerTest {
 
   private MockMvc mockMvc;
 
@@ -72,7 +72,7 @@ public class TestCase4AdminPageController {
 
   private CargoDAO cargoDAO;
 
-  private static final Logger log = Logger.getLogger(TestCase4AdminPageController.class);
+  private static final Logger log = Logger.getLogger(AdminPageControllerTest.class);
 
   private static int counter = 1;
 
@@ -274,7 +274,7 @@ public class TestCase4AdminPageController {
     Order order = new Order();
     order.setCar(car);
     order.setIsCompleted(false);
-    order.setRoute(TestCase1DAO.CITY_NAMES[0] + Order.ROUTE_DELIMETER + TestCase1DAO.CITY_NAMES[1]);
+    order.setRoute(DAOTest.CITY_NAMES[0] + Order.ROUTE_DELIMETER + DAOTest.CITY_NAMES[1]);
     order.setRequiredCapacity(0.3f);
     order.setRequiredShiftLength(3);
     orderDAO.add(order);

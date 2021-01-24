@@ -186,11 +186,22 @@ public class UserService {
    * city.
    */
   public void addDriversFromFile() {
+    addDriversFromFile("names", "surnames");
+  }
+
+  /**
+   * Load names and surnames from text files and generates drivers based on them. One driver per
+   * city.
+   * 
+   * @param namesFileName name of text file with names
+   * @param surnamesFileName name of text file with surnames
+   */
+  public void addDriversFromFile(String namesFileName, String surnamesFileName) {
     try {
-      BufferedReader namesReader = new BufferedReader(
-          new InputStreamReader(UserService.class.getResourceAsStream("/names.txt")));
-      BufferedReader surnamesReader = new BufferedReader(
-          new InputStreamReader(UserService.class.getResourceAsStream("/surnames.txt")));
+      BufferedReader namesReader = new BufferedReader(new InputStreamReader(
+          UserService.class.getResourceAsStream("/" + namesFileName + ".txt")));
+      BufferedReader surnamesReader = new BufferedReader(new InputStreamReader(
+          UserService.class.getResourceAsStream("/" + surnamesFileName + ".txt")));
       String name;
       String surname;
       List<City> cities = cityService.getAllCities();
@@ -214,9 +225,11 @@ public class UserService {
       namesReader.close();
       surnamesReader.close();
     } catch (IOException e) {
+      String message = "I/O error has occurred";
+      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, message, e);
+    } catch (NullPointerException e) {
       String message = "File names.txt or surnames.txt not found";
-      log.error(message);
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, message);
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, message, e);
     }
   }
 

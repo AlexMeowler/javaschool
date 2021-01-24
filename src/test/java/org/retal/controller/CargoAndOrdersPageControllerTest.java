@@ -36,9 +36,9 @@ import org.retal.dao.CargoDAO;
 import org.retal.dao.CityDAO;
 import org.retal.dao.CityDistanceDAO;
 import org.retal.dao.DAO;
+import org.retal.dao.DAOTest;
 import org.retal.dao.OrderDAO;
 import org.retal.dao.RoutePointDAO;
-import org.retal.dao.TestCase1DAO;
 import org.retal.dao.UserDAO;
 import org.retal.domain.Car;
 import org.retal.domain.Cargo;
@@ -68,7 +68,7 @@ import org.springframework.web.context.WebApplicationContext;
 @ContextConfiguration(classes = {WebConfig.class, RootConfig.class})
 @WebAppConfiguration
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class TestCase6CargoAndOrdersPageController {
+public class CargoAndOrdersPageControllerTest {
 
   private MockMvc mockMvc;
 
@@ -84,7 +84,7 @@ public class TestCase6CargoAndOrdersPageController {
 
   private CityDAO cityDAO;
 
-  private static final Logger log = Logger.getLogger(TestCase6CargoAndOrdersPageController.class);
+  private static final Logger log = Logger.getLogger(CargoAndOrdersPageControllerTest.class);
 
   private static int counter = 1;
 
@@ -204,7 +204,7 @@ public class TestCase6CargoAndOrdersPageController {
    */
   @AfterClass
   public static void cleanup() {
-    TestCase4AdminPageController.cleanup();
+    AdminPageControllerTest.cleanup();
   }
 
   @Before
@@ -235,7 +235,7 @@ public class TestCase6CargoAndOrdersPageController {
     Order order = new Order();
     order.setCar(car);
     order.setIsCompleted(false);
-    order.setRoute(TestCase1DAO.CITY_NAMES[0] + Order.ROUTE_DELIMETER + TestCase1DAO.CITY_NAMES[1]);
+    order.setRoute(DAOTest.CITY_NAMES[0] + Order.ROUTE_DELIMETER + DAOTest.CITY_NAMES[1]);
     order.setRequiredCapacity(0.3f);
     order.setRequiredShiftLength(3);
     orderDAO.add(order);
@@ -277,7 +277,7 @@ public class TestCase6CargoAndOrdersPageController {
       names[i] = "list[" + (i / 3) + "].cityName";
       names[i + 1] = "list[" + (i / 3) + "].cargoId";
       names[i + 2] = "list[" + (i / 3) + "].isLoading";
-      values[i] = TestCase1DAO.CITY_NAMES[i / 3];
+      values[i] = DAOTest.CITY_NAMES[i / 3];
       values[i + 1] = id.toString();
       values[i + 2] = Boolean.valueOf(i / 3 == 0).toString();
     }
@@ -350,7 +350,7 @@ public class TestCase6CargoAndOrdersPageController {
       names[i] = "list[" + (i / 3) + "].cityName";
       names[i + 1] = "list[" + (i / 3) + "].cargoId";
       names[i + 2] = "list[" + (i / 3) + "].isLoading";
-      values[i] = TestCase1DAO.CITY_NAMES[0];
+      values[i] = DAOTest.CITY_NAMES[0];
       values[i + 1] = id.toString();
       values[i + 2] = Boolean.valueOf(i / 3 == 0).toString();
     }
@@ -373,7 +373,7 @@ public class TestCase6CargoAndOrdersPageController {
       names[i] = "list[" + (i / 3) + "].cityName";
       names[i + 1] = "list[" + (i / 3) + "].cargoId";
       names[i + 2] = "list[" + (i / 3) + "].isLoading";
-      values[i] = TestCase1DAO.CITY_NAMES[i / 3];
+      values[i] = DAOTest.CITY_NAMES[i / 3];
       values[i + 1] = id.toString();
       values[i + 2] = "true";
     }
@@ -396,7 +396,7 @@ public class TestCase6CargoAndOrdersPageController {
       names[i] = "list[" + (i / 3) + "].cityName";
       names[i + 1] = "list[" + (i / 3) + "].cargoId";
       names[i + 2] = "list[" + (i / 3) + "].isLoading";
-      values[i] = TestCase1DAO.CITY_NAMES[i / 3];
+      values[i] = DAOTest.CITY_NAMES[i / 3];
       values[i + 1] = id.toString();
       values[i + 2] = Boolean.valueOf((i / 3) % 2 == 0).toString();
     }

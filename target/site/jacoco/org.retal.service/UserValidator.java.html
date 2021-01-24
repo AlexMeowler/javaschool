@@ -32,7 +32,7 @@ public class UserValidator implements Validator {
           + &quot;|( or)|( and)|( alter)|( update)|(create )|(drop )|(table )|(add )|(database )&quot;
           + &quot;|(select )|(where )|(join )|(or )|(and )|(alter )|(update )|( create )|( drop )&quot;
           + &quot;|( table )|( add )|( database )|( select )|( where )|( join )|( or )|( and )&quot;
-<span class="fc" id="L35">          + &quot;|( alter )|( update )&quot;;</span>
+          + &quot;|( alter )|( update )&quot;;
 
   @Autowired
 <span class="fc" id="L38">  public UserValidator(javax.validation.Validator validator, CityDAO cityDAO) {</span>
@@ -42,7 +42,7 @@ public class UserValidator implements Validator {
 
   @Override
   public boolean supports(Class&lt;?&gt; clazz) {
-<span class="nc" id="L45">    return UserWrapper.class.isAssignableFrom(clazz);</span>
+<span class="fc" id="L45">    return UserWrapper.class.isAssignableFrom(clazz);</span>
   }
 
   @Override
@@ -55,7 +55,7 @@ public class UserValidator implements Validator {
 <span class="fc" id="L55">      String propertyPath = violation.getPropertyPath().toString();</span>
 <span class="fc" id="L56">      String message = violation.getMessage();</span>
 <span class="fc" id="L57">      throwError(errors, propertyPath, message);</span>
-    }
+<span class="fc" id="L58">    }</span>
 <span class="fc" id="L59">    log.info(&quot;Validating user info&quot;);</span>
 <span class="fc" id="L60">    UserInfo userInfo = user.getUserInfo();</span>
 <span class="fc" id="L61">    validates = validator.validate(userInfo);</span>
@@ -63,7 +63,7 @@ public class UserValidator implements Validator {
 <span class="fc" id="L63">      String propertyPath = violation.getPropertyPath().toString();</span>
 <span class="fc" id="L64">      String message = violation.getMessage();</span>
 <span class="fc" id="L65">      throwError(errors, propertyPath, message);</span>
-    }
+<span class="fc" id="L66">    }</span>
 <span class="fc" id="L67">    Pattern digits = Pattern.compile(&quot;\\d+&quot;);</span>
 <span class="fc bfc" id="L68" title="All 2 branches covered.">    if (digits.matcher(userInfo.getName()).find()) {</span>
 <span class="fc" id="L69">      throwError(errors, &quot;noDigitsName&quot;, &quot;Name must not contain digits.&quot;);</span>
@@ -160,7 +160,7 @@ public class UserValidator implements Validator {
 <span class="fc bfc" id="L160" title="All 2 branches covered.">      for (ObjectError o : bindingResult.getAllErrors()) {</span>
 <span class="fc" id="L161">        map.put(&quot;error_&quot; + o.getCode(), o.getDefaultMessage());</span>
 <span class="fc" id="L162">        log.debug(o.getCode() + &quot;:&quot; + o.getDefaultMessage());</span>
-      }
+<span class="fc" id="L163">      }</span>
     }
 <span class="fc" id="L165">    return map;</span>
   }
