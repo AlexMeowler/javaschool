@@ -7,8 +7,8 @@ Java School Public Repository
 # SonarQube report
 ![SonarQube report](sonar.png?raw=true "SonarQube Report")
 
-# VERSION 1.1.0
+# VERSION 1.1.1
 
-Finished writing tests. Minor bug fixes. Total coverage in 98% now (excluding domain and DTO layers).
+Minor bug fixes. Improved regular expression for recognizing malicious input. Annealing end temperature is decreased back to 76 degrees.
 
 # TODO

@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DAO.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Logiweb Service</a> &gt; <a href="index.source.html" class="el_package">org.retal.dao</a> &gt; <span class="el_source">DAO.java</span></div><h1>DAO.java</h1><pre class="source lang-java linenums">package org.retal.dao;
+
+import java.util.List;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.retal.domain.HibernateSessionFactory;
+import org.retal.domain.MethodUndefinedException;
+
+/**
+ * Generic interface for basic CRUD operations. If method is not implemented properly due to some
+ * reasons, it should throw {@link MethodUndefinedException}.
+ * 
+ * @author Alexander Retivov
+ *
+ * @param &lt;T&gt; Entity class for which interface is implemented
+ */
+public interface DAO&lt;T&gt; {
+  /**
+   * Adds entity to database.
+   * 
+   * @param t entity object to add
+   */
+  public void add(T t);
+
+  /**
+   * Reads entity from database using its primary key (composite keys are supported). If no entity
+   * found with given primary key, null is returned. It is recommended to validate keys input with
+   * {@link DAO#validatePrimaryKeys(Class[], Object...)}, since they are given as
+   * {@linkplain java.lang.Object Object} instances.
+   * 
+   * @param keys set of primary keys for identifying entity
+   * @return found entity object or null
+   * @throws IllegalArgumentException is keys input is invalid
+   */
+  public T read(Object... keys) throws IllegalArgumentException;
+
+  /**
+   * Reads all entities from database. This method is optional to override, but if it is called with
+   * its default implementation, an exception will be thrown.
+   * 
+   * @return List of all entities read from database
+   * @throws MethodUndefinedException if default method implementation is called
+   * 
+   */
+  public default List&lt;T&gt; readAll() throws MethodUndefinedException {
+<span class="fc" id="L46">    throw new MethodUndefinedException();</span>
+  }
+
+  /**
+   * Deletes given entity from database.
+   * 
+   * @param t entity to be deleted
+   */
+  public void delete(T t);
+
+  /**
+   * Updates entity in database with corresponding primary key to given entity.
+   * 
+   * @param t given entity to update database with
+   */
+  public void update(T t);
+
+  /**
+   * Validates primary key input in {@link DAO#read(Object...)}. If input is invalid, an exception
+   * is thrown. This method &lt;b&gt;should not&lt;/b&gt; be overridden.
+   * 
+   * @param classes - primary key classes.
+   * @param objects - primary key.
+   * @throws IllegalArgumentException if the input is invalid
+   * 
+   */
+  public static void validatePrimaryKeys(Class&lt;?&gt;[] classes, Object... objects)
+      throws IllegalArgumentException {
+<span class="fc bfc" id="L74" title="All 2 branches covered.">    boolean isValid = objects.length == classes.length;</span>
+<span class="fc bfc" id="L75" title="All 2 branches covered.">    for (int i = 0; i &lt; classes.length; i++) {</span>
+<span class="fc" id="L76">      isValid &amp;= classes[i].isInstance(objects[i]);</span>
+    }
+<span class="fc bfc" id="L78" title="All 2 branches covered.">    if (!isValid) {</span>
+<span class="fc" id="L79">      String message = &quot;&quot;;</span>
+<span class="fc bfc" id="L80" title="All 2 branches covered.">      for (Class&lt;?&gt; c : classes) {</span>
+<span class="fc" id="L81">        message += c.getName() + &quot;, &quot;;</span>
+      }
+<span class="fc" id="L83">      message = message.substring(0, message.length() - 2);</span>
+<span class="fc" id="L84">      throw new IllegalArgumentException(&quot;Primary key must be &quot; + message);</span>
+    }
+<span class="fc" id="L86">  }</span>
+
+  /**
+   * Utility method which starts session and begins transaction for that session.
+   * 
+   * @return open {@linkplain org.hibernate.Session Session}
+   */
+  public static Session start() {
+<span class="fc" id="L94">    Session session = HibernateSessionFactory.getSessionFactory().openSession();</span>
+<span class="fc" id="L95">    session.beginTransaction();</span>
+<span class="fc" id="L96">    return session;</span>
+  }
+
+  /**
+   * Utility method which commits transaction (if transaction is started) for given session and
+   * closes given it.
+   * 
+   * @param session open {@linkplain org.hibernate.Session Session} to close
+   */
+  public static void end(Session session) {
+<span class="fc" id="L106">    Transaction transaction = session.getTransaction();</span>
+<span class="fc bfc" id="L107" title="All 2 branches covered.">    if (transaction.isActive()) {</span>
+<span class="fc" id="L108">      transaction.commit();</span>
+    }
+<span class="fc" id="L110">    session.close();</span>
+<span class="fc" id="L111">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

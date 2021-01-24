@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DriverPageController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Logiweb Service</a> &gt; <a href="index.source.html" class="el_package">org.retal.controller</a> &gt; <span class="el_source">DriverPageController.java</span></div><h1>DriverPageController.java</h1><pre class="source lang-java linenums">package org.retal.controller;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import org.retal.domain.Order;
+import org.retal.domain.SessionInfo;
+import org.retal.domain.User;
+import org.retal.domain.enums.DriverStatus;
+import org.retal.service.CargoAndOrdersService;
+import org.retal.service.DriverService;
+import org.retal.service.UserValidator;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindException;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.RedirectView;
+
+@Controller
+public class DriverPageController {
+
+  private final SessionInfo sessionInfo;
+
+  private final DriverService driverService;
+
+  private final CargoAndOrdersService cargoAndOrdersService;
+  
+  public static final String DRIVER_PAGE = &quot;/driverPage&quot;;
+
+  /**
+   * Creates an instance of this class using constructor-based dependency injection.
+   */
+  @Autowired
+  public DriverPageController(SessionInfo sessionInfo, DriverService driverService,
+<span class="fc" id="L40">      CargoAndOrdersService cargoAndOrdersService) {</span>
+<span class="fc" id="L41">    this.sessionInfo = sessionInfo;</span>
+<span class="fc" id="L42">    this.driverService = driverService;</span>
+<span class="fc" id="L43">    this.cargoAndOrdersService = cargoAndOrdersService;</span>
+<span class="fc" id="L44">  }</span>
+
+  /**
+   * Method responsible for showing driver page with all required information.
+   */
+  @GetMapping(DRIVER_PAGE)
+  public String getDriverPage(Model model) {
+<span class="fc" id="L51">    sessionInfo.refreshUser();</span>
+<span class="fc" id="L52">    BindingResult result =</span>
+<span class="fc" id="L53">        (BindingResult) model.asMap().get(BindingResult.MODEL_KEY_PREFIX + &quot;driver&quot;);</span>
+<span class="fc" id="L54">    Map&lt;String, String&gt; errors = UserValidator.convertErrorsToHashMap(result);</span>
+<span class="fc" id="L55">    model.addAllAttributes(errors);</span>
+<span class="fc" id="L56">    User user = sessionInfo.getCurrentUser();</span>
+<span class="fc bfc" id="L57" title="All 2 branches covered.">    if (user.getUserInfo().getOrder() != null) {</span>
+<span class="fc" id="L58">      Order order = cargoAndOrdersService.getOrder(user.getUserInfo().getOrder().getId());</span>
+<span class="fc" id="L59">      model.addAttribute(&quot;order&quot;, order);</span>
+<span class="fc" id="L60">      List&lt;String&gt; routeList = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L61">      String nextHop = null;</span>
+<span class="fc" id="L62">      int nextHopLength = -1;</span>
+<span class="fc" id="L63">      String[] cities = order.getRoute().split(Order.ROUTE_DELIMETER);</span>
+<span class="fc" id="L64">      Collections.addAll(routeList, cities);</span>
+<span class="fc" id="L65">      String userCity = user.getUserInfo().getCity().getCurrentCity();</span>
+<span class="fc" id="L66">      int index = user.getUserInfo().getOrder().getOrderRouteProgression().getRouteCounter() + 1;</span>
+<span class="fc" id="L67">      model.addAttribute(&quot;routeCounter&quot;, index - 1);</span>
+<span class="pc bpc" id="L68" title="1 of 2 branches missed.">      if (index &lt; cities.length) {</span>
+<span class="fc" id="L69">        nextHop = cities[index];</span>
+<span class="fc" id="L70">        nextHopLength = cargoAndOrdersService.lengthBetweenTwoCities(userCity, cities[index]);</span>
+<span class="fc" id="L71">        nextHopLength =</span>
+<span class="fc" id="L72">            (int) Math.round((double) nextHopLength / CargoAndOrdersService.AVERAGE_CAR_SPEED);</span>
+      }
+<span class="fc" id="L74">      model.addAttribute(&quot;routeList&quot;, routeList);</span>
+<span class="fc" id="L75">      model.addAttribute(&quot;nextHop&quot;, nextHop);</span>
+<span class="fc" id="L76">      model.addAttribute(&quot;nextHopLength&quot;, nextHopLength);</span>
+    }
+<span class="fc" id="L78">    model.addAttribute(&quot;user&quot;, user);</span>
+<span class="fc" id="L79">    List&lt;String&gt; statuses = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L80" title="All 2 branches covered.">    for (DriverStatus ds : DriverStatus.values()) {</span>
+<span class="fc" id="L81">      statuses.add(ds.toString().replace(&quot; &quot;, &quot;_&quot;).toLowerCase());</span>
+    }
+<span class="fc" id="L83">    model.addAttribute(&quot;statuses&quot;, statuses);</span>
+<span class="fc" id="L84">    return &quot;driverPage&quot;;</span>
+  }
+
+  /**
+   * Method for changing driver status using {@linkplain org.retal.service.DriverService service
+   * layer}.
+   */
+  @GetMapping(value = &quot;/changeStatus/{status}&quot;)
+  public RedirectView changeStatus(@PathVariable String status, RedirectAttributes redir) {
+<span class="fc" id="L93">    RedirectView redirectView = new RedirectView(DRIVER_PAGE, true);</span>
+<span class="fc" id="L94">    BindingResult bindingResult = new BindException(status, &quot;status&quot;);</span>
+<span class="fc" id="L95">    driverService.changeStatus(status, bindingResult);</span>
+<span class="fc" id="L96">    addErrorsAsFlashAttributes(redir, bindingResult);</span>
+<span class="fc" id="L97">    return redirectView;</span>
+  }
+
+  /**
+   * Method for changing location of driver (aka simulation of moving).
+   */
+  @GetMapping(value = &quot;/changeLocation&quot;)
+  public RedirectView changeLocation(RedirectAttributes redir) {
+<span class="fc" id="L105">    RedirectView redirectView = new RedirectView(DRIVER_PAGE, true);</span>
+<span class="fc" id="L106">    BindingResult bindingResult = new BindException(new Object(), &quot;city&quot;);</span>
+<span class="fc" id="L107">    driverService.changeLocation(bindingResult);</span>
+<span class="fc" id="L108">    addErrorsAsFlashAttributes(redir, bindingResult);</span>
+<span class="fc" id="L109">    return redirectView;</span>
+  }
+
+  /**
+   * Method responsible for updating cargo status (e.g. loaded, unloaded).
+   */
+  @GetMapping(value = &quot;/updateCargo/{id}&quot;)
+  public RedirectView updateCargo(@PathVariable Integer id, RedirectAttributes redir) {
+<span class="fc" id="L117">    BindingResult bindingResult = new BindException(id, &quot;id&quot;);</span>
+<span class="fc" id="L118">    driverService.changeStatus(DriverStatus.LOADING_AND_UNLOADING_CARGO.toString(), bindingResult);</span>
+<span class="fc" id="L119">    boolean isOrderCompleted =</span>
+<span class="fc" id="L120">        cargoAndOrdersService.updateCargoAndCheckOrderCompletion(id, bindingResult);</span>
+<span class="fc bfc" id="L121" title="All 2 branches covered.">    if (isOrderCompleted) {</span>
+<span class="fc" id="L122">      driverService.changeStatus(DriverStatus.ON_SHIFT.toString(), bindingResult);</span>
+    }
+<span class="fc" id="L124">    RedirectView redirectView = new RedirectView(DRIVER_PAGE, true);</span>
+<span class="fc" id="L125">    addErrorsAsFlashAttributes(redir, bindingResult);</span>
+<span class="fc" id="L126">    return redirectView;</span>
+  }
+
+  /**
+   * Method for mapping {@linkplain org.springframework.validation.BindingResult BindingResult} to
+   * {@linkplain org.springframework.web.servlet.mvc.support.RedirectAttributes RedirectAttributes}
+   * for showing errors for users on page.
+   */
+  private void addErrorsAsFlashAttributes(RedirectAttributes redir, BindingResult bindingResult) {
+<span class="fc bfc" id="L135" title="All 2 branches covered.">    if (bindingResult.hasErrors()) {</span>
+<span class="fc" id="L136">      redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + &quot;driver&quot;, bindingResult);</span>
+    }
+<span class="fc" id="L138">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>
