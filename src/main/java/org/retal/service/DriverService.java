@@ -2,8 +2,6 @@ package org.retal.service;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.Set;
-import java.util.stream.Collectors;
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
 import org.retal.dao.CarDAO;
@@ -129,14 +127,9 @@ public class DriverService {
     boolean canChangeLocation = true;
     City driverCity = driver.getUserInfo().getCity();
     session.persist(driverCity);
-    Set<RoutePoint> points = driverCity.getPoints().stream()
-        .filter(rp -> rp.getOrder().getId() == driver.getUserInfo().getOrder().getId())
-        .collect(Collectors.toSet());
-    for (RoutePoint rp : points) {
+    for (RoutePoint rp : driverCity.getPoints()) {
       String statusToAvoid = rp.getIsLoading() ? "prepared" : "loaded";
-      log.debug(rp.getCargo().getId() + ";" + rp.getCargo().getStatus());
       canChangeLocation &= !rp.getCargo().getStatus().equalsIgnoreCase(statusToAvoid);
-      log.debug(canChangeLocation);
     }
     session.close();
     if (!canChangeLocation) {

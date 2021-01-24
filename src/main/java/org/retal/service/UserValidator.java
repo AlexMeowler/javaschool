@@ -28,10 +28,9 @@ public class UserValidator implements Validator {
   private CityDAO cityDAO;
 
   public static final String MALICIOUS_REGEX =
-      "([\\W&&[^ -]]+)|( create$)|( drop$)|( table$)|( add$)|( database$)|( select$)|"
-          + "( where$)|( join$)|( or$)|( and$)|( alter$)|( update$)|(^create )|(^drop )|(^table )|"
-          + "(^add )|(^database )"
-          + "|(^select )|(^where )|(^join )|(^or )|(^and )|(^alter )|(^update )|( create )|( drop )"
+      "([\\W&&[^ -]]+)|( create)|( drop)|( table)|( add)|( database)|( select)|( where)|( join)"
+          + "|( or)|( and)|( alter)|( update)|(create )|(drop )|(table )|(add )|(database )"
+          + "|(select )|(where )|(join )|(or )|(and )|(alter )|(update )|( create )|( drop )"
           + "|( table )|( add )|( database )|( select )|( where )|( join )|( or )|( and )"
           + "|( alter )|( update )";
 

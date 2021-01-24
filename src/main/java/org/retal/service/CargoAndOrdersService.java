@@ -55,7 +55,7 @@ import org.springframework.validation.Validator;
 public class CargoAndOrdersService {
 
   private static final int ANNEALING_START_TEMPERAURE = 1000;
-  private static final int ANNEALING_END_TEMPERATURE = 76;
+  private static final int ANNEALING_END_TEMPERATURE = 100;
   private static final int MONTH_HOURS_LIMIT = 176;
   public static final int AVERAGE_CAR_SPEED = 80;
 
@@ -1087,6 +1087,11 @@ public class CargoAndOrdersService {
         driver = drivers.get(selectedDriverCity).get(counters[selectedDriverCity]);
       } else {
         log.debug("Deleting last entry from chain");
+        /*
+         * for(int i = 0; i < drivers.size(); i++) {
+         * if(drivers.get(i).contains(driversChain.get(driversChain.size() - 1))) {
+         * selectedDriverCity = i; currentCityIndex = i; break; } }
+         */
         currentCityIndex--;
         selectedDriverCity = currentCityIndex;
         driversChain.remove(driversChain.size() - 1);
@@ -1141,6 +1146,7 @@ public class CargoAndOrdersService {
    */
   private boolean isDriverCapable(User user) {
     boolean isDriver = user.getRole().equalsIgnoreCase(UserRole.DRIVER.toString());
+    log.debug(user.getUserInfo() != null ? user.getUserInfo().toString() : "null");
     boolean isOnShift =
         user.getUserInfo().getStatus().equalsIgnoreCase(DriverStatus.ON_SHIFT.toString());
     boolean hasAssignedOrder = user.getUserInfo().getOrder() != null;

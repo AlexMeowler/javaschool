@@ -523,7 +523,7 @@ public class TestCase6CargoAndOrdersPageController {
   public void testB7AddNewOrderFormTwoCargoNoErrors() throws Exception {
     String[] cities = {"Moscow", "Yaroslavl", "Cheboksary", "Saint-Petersburg"};
     Car car = new Car();
-    car.setRegistrationId("MO00001");
+    car.setRegistrationId("MO22832");
     car.setCapacityTons(12f);
     car.setShiftLength(15);
     car.setIsWorking(true);
@@ -582,7 +582,7 @@ public class TestCase6CargoAndOrdersPageController {
       car.setCapacityTons(12f);
       car.setShiftLength(3);
       car.setIsWorking(true);
-      car.setRegistrationId(cities[i].substring(0, 2).toUpperCase() + "00002");
+      car.setRegistrationId(cities[i].substring(0, 2).toUpperCase() + "99999");
       car.setLocation(cityDAO.read(cities[i]));
       carDAO.add(car);
       for (UserInfo driver : cityDAO.read(cities[i]).getUserInfos()) {
@@ -646,7 +646,7 @@ public class TestCase6CargoAndOrdersPageController {
       car.setCapacityTons(12f);
       car.setShiftLength(13);
       car.setIsWorking(true);
-      car.setRegistrationId(cities[i].substring(0, 2).toUpperCase() + "00003");
+      car.setRegistrationId(cities[i].substring(0, 2).toUpperCase() + "76543");
       car.setLocation(cityDAO.read(cities[i]));
       carDAO.add(car);
       for (UserInfo driver : cityDAO.read(cities[i]).getUserInfos()) {
@@ -683,7 +683,7 @@ public class TestCase6CargoAndOrdersPageController {
       car.setCapacityTons(12f);
       car.setShiftLength(13);
       car.setIsWorking(true);
-      car.setRegistrationId(cities[i].substring(0, 2).toUpperCase() + "00004");
+      car.setRegistrationId(cities[i].substring(0, 2).toUpperCase() + "44444");
       car.setLocation(cityDAO.read(cities[i]));
       carDAO.add(car);
       for (UserInfo driver : cityDAO.read(cities[i]).getUserInfos()) {
@@ -722,7 +722,7 @@ public class TestCase6CargoAndOrdersPageController {
       car.setCapacityTons(12f);
       car.setShiftLength(13);
       car.setIsWorking(true);
-      car.setRegistrationId(cities[i].substring(0, 2).toUpperCase() + "00005");
+      car.setRegistrationId(cities[i].substring(0, 2).toUpperCase() + "92506");
       car.setLocation(cityDAO.read(cities[i]));
       carDAO.add(car);
       for (UserInfo driver : cityDAO.read(cities[i]).getUserInfos()) {

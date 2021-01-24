@@ -177,7 +177,7 @@ public class TestCase7DriverPageController {
     tests.testB9AddNewOrderFormCycle();
     Order order = orderDAO.read(1);
     assertNotNull(order);
-    assertEquals(carDAO.read("CH00002"), order.getCar());
+    assertEquals(carDAO.read("CH99999"), order.getCar());
     // first driver is dMaxKuz
     // second is dIlyNov
   }
