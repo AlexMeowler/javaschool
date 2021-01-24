@@ -193,6 +193,7 @@ public class UserService {
 <span class="fc" id="L193">          new InputStreamReader(UserService.class.getResourceAsStream(&quot;/surnames.txt&quot;)));</span>
       String name;
       String surname;
+<<<<<<< Updated upstream
 <span class="fc" id="L196">      List&lt;City&gt; cities = cityService.getAllCities();</span>
 <span class="fc" id="L197">      int i = 0;</span>
 <span class="pc bpc" id="L198" title="1 of 4 branches missed.">      while (i &lt; cities.size() &amp;&amp; (name = namesReader.readLine()) != null</span>
@@ -219,17 +220,55 @@ public class UserService {
 <span class="nc" id="L219">      throw new ResponseStatusException(HttpStatus.NOT_FOUND, message);</span>
     }
 <span class="fc" id="L221">  }</span>
+=======
+<span class="fc" id="L207">      List&lt;City&gt; cities = cityService.getAllCities();</span>
+<span class="fc" id="L208">      int i = 0;</span>
+<span class="pc bpc" id="L209" title="1 of 4 branches missed.">      while (i &lt; cities.size() &amp;&amp; (name = namesReader.readLine()) != null</span>
+<span class="pc bpc" id="L210" title="1 of 2 branches missed.">          &amp;&amp; (surname = surnamesReader.readLine()) != null) {</span>
+<span class="fc" id="L211">        User user = new User();</span>
+<span class="fc" id="L212">        UserInfo userInfo = new UserInfo();</span>
+<span class="fc" id="L213">        String login = &quot;d&quot; + name.substring(0, 3) + surname.substring(0, 3);</span>
+<span class="fc" id="L214">        user.setLogin(login);</span>
+<span class="fc" id="L215">        user.setPassword(login);</span>
+<span class="fc" id="L216">        user.setRole(UserRole.DRIVER.toString().toLowerCase());</span>
+<span class="fc" id="L217">        user.setUserInfo(userInfo);</span>
+<span class="fc" id="L218">        userInfo.setName(name);</span>
+<span class="fc" id="L219">        userInfo.setSurname(surname);</span>
+<span class="fc" id="L220">        userInfo.setStatus(DriverStatus.ON_SHIFT.toString().toLowerCase());</span>
+<span class="fc" id="L221">        userInfo.setCity(cities.get(i));</span>
+<span class="fc" id="L222">        userDAO.add(user);</span>
+<span class="fc" id="L223">        i++;</span>
+      }
+<span class="fc" id="L225">      namesReader.close();</span>
+<span class="fc" id="L226">      surnamesReader.close();</span>
+<span class="pc" id="L227">    } catch (IOException e) {</span>
+<span class="nc" id="L228">      String message = &quot;I/O error has occurred&quot;;</span>
+<span class="nc" id="L229">      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, message, e);</span>
+<span class="fc" id="L230">    } catch (NullPointerException e) {</span>
+<span class="fc" id="L231">      String message = &quot;File &quot; + namesFileName + &quot;.txt or &quot; + surnamesFileName + &quot;.txt not found&quot;;</span>
+<span class="fc" id="L232">      throw new ResponseStatusException(HttpStatus.NOT_FOUND, message, e);</span>
+    }
+<span class="fc" id="L234">  }</span>
+>>>>>>> Stashed changes
 
   /**
    * Sets the amount of hours at work during current month at 0 for all users. This method is only
    * called when month change occurred.
    */
   public void setUsersWorkedHoursToZero() {
+<<<<<<< Updated upstream
 <span class="nc bnc" id="L228" title="All 2 branches missed.">    for (User u : userDAO.readAll()) {</span>
 <span class="nc" id="L229">      u.getUserInfo().setHoursWorked(0);</span>
 <span class="nc" id="L230">      userDAO.update(u);</span>
     }
 <span class="nc" id="L232">  }</span>
+=======
+<span class="fc bfc" id="L241" title="All 2 branches covered.">    for (User u : userDAO.readAll()) {</span>
+<span class="fc" id="L242">      u.getUserInfo().setHoursWorked(0);</span>
+<span class="fc" id="L243">      userDAO.update(u);</span>
+    }
+<span class="fc" id="L245">  }</span>
+>>>>>>> Stashed changes
 
 
 }

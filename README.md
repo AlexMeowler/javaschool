@@ -6,7 +6,13 @@ Java School Public Repository
 
 # VERSION 1.0.7
 
+<<<<<<< Updated upstream
 Covered cargo and orders page controller (with service). Code coverage is now >80%. Last controller and service remains - driver's.
+=======
+# VERSION 1.1.1
+
+Improved regular expression for  recognizing malicious input. Changed annealing end temperature back to 76 degrees.
+>>>>>>> Stashed changes
 
 # TODO
 
