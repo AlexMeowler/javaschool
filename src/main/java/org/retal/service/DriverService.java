@@ -94,9 +94,6 @@ public class DriverService {
                     + " to you at this time.");
           }
           break;
-        /*
-         * case LOADING_AND_UNLOADING_CARGO: driver.getUserInfo().setCar(null); break;
-         */
         case ON_SHIFT:
           driver.getUserInfo().setCar(null);
           break;
@@ -185,20 +182,20 @@ public class DriverService {
   }
 
   private void unassignDriverIfPossible(User driver) {
-    String userCity = driver.getUserInfo().getCity().getCurrentCity();
-    String[] cities = driver.getUserInfo().getOrder().getRoute().split(Order.ROUTE_DELIMETER);
+    String driverCity = driver.getUserInfo().getCity().getCurrentCity();
+    String[] routeCities = driver.getUserInfo().getOrder().getRoute().split(Order.ROUTE_DELIMETER);
     int index = driver.getUserInfo().getOrder().getOrderRouteProgression().getRouteCounter() + 1;
-    int length = index < cities.length
-        ? cargoAndOrdersService.lengthBetweenTwoCities(userCity, cities[index])
+    int pathLength = index < routeCities.length
+        ? cargoAndOrdersService.lengthBetweenTwoCities(driverCity, routeCities[index])
         : 0;
-    length = (int) Math.round((double) length / CargoAndOrdersService.AVERAGE_CAR_SPEED);
+    pathLength = (int) Math.round((double) pathLength / CargoAndOrdersService.AVERAGE_CAR_SPEED);
     Integer hoursDrived = driver.getUserInfo().getHoursDrived();
     if (hoursDrived != null) {
-      hoursDrived += length;
+      hoursDrived += pathLength;
     } else {
-      hoursDrived = length;
+      hoursDrived = pathLength;
     }
-    if (index < cities.length
+    if (index < routeCities.length
         && hoursDrived > driver.getUserInfo().getOrder().getCar().getShiftLength()) {
       driver.getUserInfo().setOrder(null);
       driver.getUserInfo().setHoursDrived(null);
