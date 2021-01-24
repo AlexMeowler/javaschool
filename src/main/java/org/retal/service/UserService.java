@@ -228,7 +228,7 @@ public class UserService {
       String message = "I/O error has occurred";
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, message, e);
     } catch (NullPointerException e) {
-      String message = "File names.txt or surnames.txt not found";
+      String message = "File " + namesFileName + ".txt or " + surnamesFileName + ".txt not found";
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, message, e);
     }
   }

@@ -40,7 +40,7 @@ public class CityService {
    * Loads cities from text file to database.
    */
   public void addCitiesFromFile() {
-    addCitiesFromFile("cityNames");
+    addCitiesFromFile("citynames");
   }
 
   /**
@@ -63,7 +63,7 @@ public class CityService {
       String message = "I/O error has occurred";
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, message, e);
     } catch (NullPointerException e) {
-      String message = "File names.txt or surnames.txt not found";
+      String message = "File" + cityNamesFileName + ".txt not found";
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, message, e);
     }
   }
@@ -98,7 +98,7 @@ public class CityService {
       String message = "I/O error has occurred";
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, message, e);
     } catch (NullPointerException e) {
-      String message = "File names.txt or surnames.txt not found";
+      String message = "File " + distancesFileName + ".txt not found";
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, message, e);
     }
   }

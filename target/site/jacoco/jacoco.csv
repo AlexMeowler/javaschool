@@ -20,10 +20,10 @@ Logiweb Service,org.retal.controller,GlobalExceptionHandler,0,59,0,6,0,11,0,6,0,
 Logiweb Service,org.retal.service,CarService,2,347,2,24,0,66,2,26,0,15
 Logiweb Service,org.retal.service,DriverService,6,444,3,39,1,103,3,24,0,5
 Logiweb Service,org.retal.service,CargoAndOrdersService,97,2974,25,268,19,587,25,157,1,34
-Logiweb Service,org.retal.service,CityService,20,146,0,4,6,38,0,8,0,6
+Logiweb Service,org.retal.service,CityService,20,164,0,4,6,38,0,8,0,6
 Logiweb Service,org.retal.service,CarValidator,0,104,0,14,0,24,0,12,0,5
 Logiweb Service,org.retal.service,RoutePointsValidator,0,285,0,32,0,49,0,21,0,5
 Logiweb Service,org.retal.service,UserValidator,9,341,3,33,3,77,3,23,0,8
 Logiweb Service,org.retal.service,CargoValidator,0,123,0,14,0,33,0,13,0,6
 Logiweb Service,org.retal.service,UserAuthorizationService,0,68,0,2,0,13,0,4,0,3
-Logiweb Service,org.retal.service,UserService,10,456,2,38,3,99,2,31,0,13
+Logiweb Service,org.retal.service,UserService,10,469,2,38,3,99,2,31,0,13

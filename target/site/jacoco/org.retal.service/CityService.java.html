@@ -40,7 +40,7 @@ public class CityService {
    * Loads cities from text file to database.
    */
   public void addCitiesFromFile() {
-<span class="fc" id="L43">    addCitiesFromFile(&quot;cityNames&quot;);</span>
+<span class="fc" id="L43">    addCitiesFromFile(&quot;citynames&quot;);</span>
 <span class="fc" id="L44">  }</span>
 
   /**
@@ -63,7 +63,7 @@ public class CityService {
 <span class="nc" id="L63">      String message = &quot;I/O error has occurred&quot;;</span>
 <span class="nc" id="L64">      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, message, e);</span>
 <span class="fc" id="L65">    } catch (NullPointerException e) {</span>
-<span class="fc" id="L66">      String message = &quot;File names.txt or surnames.txt not found&quot;;</span>
+<span class="fc" id="L66">      String message = &quot;File&quot; + cityNamesFileName + &quot;.txt not found&quot;;</span>
 <span class="fc" id="L67">      throw new ResponseStatusException(HttpStatus.NOT_FOUND, message, e);</span>
 <span class="fc" id="L68">    }</span>
 <span class="fc" id="L69">  }</span>
@@ -98,7 +98,7 @@ public class CityService {
 <span class="nc" id="L98">      String message = &quot;I/O error has occurred&quot;;</span>
 <span class="nc" id="L99">      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, message, e);</span>
 <span class="fc" id="L100">    } catch (NullPointerException e) {</span>
-<span class="fc" id="L101">      String message = &quot;File names.txt or surnames.txt not found&quot;;</span>
+<span class="fc" id="L101">      String message = &quot;File &quot; + distancesFileName + &quot;.txt not found&quot;;</span>
 <span class="fc" id="L102">      throw new ResponseStatusException(HttpStatus.NOT_FOUND, message, e);</span>
 <span class="fc" id="L103">    }</span>
 <span class="fc" id="L104">  }</span>
