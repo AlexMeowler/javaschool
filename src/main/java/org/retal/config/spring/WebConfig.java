@@ -71,6 +71,7 @@ public class WebConfig {
 
       private static final long SLEEP_TIME_MINUTES = 1;
       
+      @Override
       public void run() {
         while (!isInterrupted()) {
           Calendar now = new GregorianCalendar();

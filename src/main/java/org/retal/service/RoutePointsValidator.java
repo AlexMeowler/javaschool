@@ -49,7 +49,7 @@ public class RoutePointsValidator implements Validator {
     log.info("Validating route points");
     RoutePointListWrapper wrapper = (RoutePointListWrapper) target;
     List<RoutePointDTO> points = wrapper.getList();
-    if (points.size() == 0) {
+    if (points.isEmpty()) {
       errors.reject("emptyInput", "Please add route points.");
     }
     for (int i = 0; i < points.size(); i++) {
@@ -59,7 +59,7 @@ public class RoutePointsValidator implements Validator {
         rp.setError("Invalid value(s). Please don't try to change page code.");
         errors.reject("codeChange", "Page code has been changed.");
       }
-      if (cargo != null && cargo.getPoints().size() != 0) {
+      if (cargo != null && !cargo.getPoints().isEmpty()) {
         rp.setError("Can't select cargo from other order. Please don't try to change page code.");
         errors.reject("codeChange", "Can't select cargo from other order.");
       }

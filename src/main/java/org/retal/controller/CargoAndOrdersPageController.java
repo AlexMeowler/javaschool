@@ -10,7 +10,6 @@ import org.retal.domain.Order;
 import org.retal.domain.SessionInfo;
 import org.retal.domain.User;
 import org.retal.domain.UserInfo;
-import org.retal.dto.RoutePointDTO;
 import org.retal.dto.RoutePointListWrapper;
 import org.retal.service.CarService;
 import org.retal.service.CargoAndOrdersService;
@@ -38,6 +37,8 @@ public class CargoAndOrdersPageController {
 
   private final CarService carService;
 
+  private static final String ROUTE_POINT_MODEL_ATTRIBUTE = "routePoints";
+
   /**
    * Creates an instance of this class using constructor-based dependency injection.
    */
@@ -55,8 +56,8 @@ public class CargoAndOrdersPageController {
    */
   @GetMapping(value = "/cargoAndOrders")
   public String getCargoAndOrdersPage(Model model) {
-    BindingResult result =
-        (BindingResult) model.asMap().get(BindingResult.MODEL_KEY_PREFIX + "routePoints");
+    BindingResult result = (BindingResult) model.asMap()
+        .get(BindingResult.MODEL_KEY_PREFIX + ROUTE_POINT_MODEL_ATTRIBUTE);
     Map<String, String> errors = UserValidator.convertErrorsToHashMap(result);
     model.addAllAttributes(errors);
     User user = sessionInfo.getCurrentUser();
@@ -72,7 +73,7 @@ public class CargoAndOrdersPageController {
     orders.forEach(o -> {
       isOrderStarted.add(cargoAndOrdersService.isOrderStarted(o));
       List<Car> cars = getAvailableCarsForOrder(o.getId());
-      hasCarsAvailable.add(cars != null && cars.size() != 0);
+      hasCarsAvailable.add(cars != null && !cars.isEmpty());
     });
     model.addAttribute("orderStarted", isOrderStarted);
     model.addAttribute("hasCarsAvailable", hasCarsAvailable);
@@ -91,11 +92,7 @@ public class CargoAndOrdersPageController {
   @ResponseBody
   public List[] getAllCitiesAndAssignableCargo() {
     List<Cargo> cargo = cargoAndOrdersService.getAllCargo().stream()
-        .filter(c -> c.getPoints().size() == 0).collect(Collectors.toList());
-    /*
-     * for (int i = 0; i < cargo.size(); i++) { if (cargo.get(i).getPoints().size() != 0) {
-     * cargo.remove(i); i--; } }
-     */
+        .filter(c -> c.getPoints().isEmpty()).collect(Collectors.toList());
     return new List[] {cityService.getAllCities(), cargo};
   }
 
@@ -135,15 +132,15 @@ public class CargoAndOrdersPageController {
       RedirectAttributes redir) {
     redir.addFlashAttribute("visible", "true");
     if (list.getList() == null) {
-      list.setList(new ArrayList<RoutePointDTO>());
+      list.setList(new ArrayList<>());
     }
     cargoAndOrdersService.createOrderAndRoutePoints(list, bindingResult);
     if (bindingResult.hasErrors()) {
-      redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + "routePoints", bindingResult);
+      redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + ROUTE_POINT_MODEL_ATTRIBUTE,
+          bindingResult);
       redir.addFlashAttribute("counter_value", list.getList().size());
-      redir.addFlashAttribute("routePoints", list.getList());
+      redir.addFlashAttribute(ROUTE_POINT_MODEL_ATTRIBUTE, list.getList());
     }
-    RedirectView redirectView = new RedirectView("/cargoAndOrders", true);
-    return redirectView;
+    return new RedirectView("/cargoAndOrders", true);
   }
 }

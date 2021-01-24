@@ -71,8 +71,8 @@ public class CityService {
       while ((line = reader.readLine()) != null) {
         CityDistance citydist = new CityDistance();
         String[] args = line.split(" ");
-        citydist.setCityA(args[0].replaceAll("_", " "));
-        citydist.setCityB(args[1].replaceAll("_", " "));
+        citydist.setCityA(args[0].replace("_", " "));
+        citydist.setCityB(args[1].replace("_", " "));
         citydist.setDistance((int) Double.parseDouble(args[2]));
         cityDistanceDAO.add(citydist);
       }

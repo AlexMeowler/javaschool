@@ -94,9 +94,9 @@ public class DriverService {
                     + " to you at this time.");
           }
           break;
-        case LOADING_AND_UNLOADING_CARGO:
-          driver.getUserInfo().setCar(null);
-          break;
+        /*
+         * case LOADING_AND_UNLOADING_CARGO: driver.getUserInfo().setCar(null); break;
+         */
         case ON_SHIFT:
           driver.getUserInfo().setCar(null);
           break;
@@ -104,6 +104,7 @@ public class DriverService {
           unassignDriverIfPossible(driver);
           driver.getUserInfo().setCar(null);
           break;
+        case LOADING_AND_UNLOADING_CARGO:
         default:
           break;
       }
@@ -118,10 +119,9 @@ public class DriverService {
   /**
    * Changes location of driver.
    * 
-   * @param city name of city to which location should be changed
    * @param bindingResult object for storing validating result
    */
-  public void changeLocation(String city, BindingResult bindingResult) {
+  public void changeLocation(BindingResult bindingResult) {
     User driver = sessionInfo.getCurrentUser();
     Session session = HibernateSessionFactory.getSessionFactory().openSession();
     boolean canChangeLocation = true;
@@ -158,9 +158,11 @@ public class DriverService {
     }
     if (index < cities.length
         && hoursDrived <= driver.getUserInfo().getOrder().getCar().getShiftLength()) {
+      String previousStatus = driver.getUserInfo().getStatus();
+      changeStatus(DriverStatus.DRIVING.toString(), bindingResult);
       if (!bindingResult.hasErrors()) {
-        changeStatus(DriverStatus.DRIVING.toString(), bindingResult);
-        City newCity = cityDAO.read(city);
+        City newCity = cityDAO
+            .read(driver.getUserInfo().getOrder().getRoute().split(Order.ROUTE_DELIMETER)[index]);
         driver.getUserInfo().setCity(newCity);
         driver.getUserInfo().setHoursWorked(hoursWorked);
         driver.getUserInfo().setHoursDrived(hoursDrived);
@@ -172,6 +174,8 @@ public class DriverService {
             driver.getUserInfo().getOrder().getOrderRouteProgression();
         orderRouteProgression.incrementCounter();
         orderRouteProgressionDAO.update(orderRouteProgression);
+      } else {
+        changeStatus(previousStatus, bindingResult);
       }
     } else {
       bindingResult.reject("city",
@@ -183,14 +187,10 @@ public class DriverService {
   private void unassignDriverIfPossible(User driver) {
     String userCity = driver.getUserInfo().getCity().getCurrentCity();
     String[] cities = driver.getUserInfo().getOrder().getRoute().split(Order.ROUTE_DELIMETER);
-    int index = -1;
-    for (int i = 0; i < cities.length - 1; i++) {
-      if (cities[i].equalsIgnoreCase(userCity)) {
-        index = i + 1;
-      }
-    }
-    int length =
-        index != -1 ? cargoAndOrdersService.lengthBetweenTwoCities(userCity, cities[index]) : 0;
+    int index = driver.getUserInfo().getOrder().getOrderRouteProgression().getRouteCounter() + 1;
+    int length = index < cities.length
+        ? cargoAndOrdersService.lengthBetweenTwoCities(userCity, cities[index])
+        : 0;
     length = (int) Math.round((double) length / CargoAndOrdersService.AVERAGE_CAR_SPEED);
     Integer hoursDrived = driver.getUserInfo().getHoursDrived();
     if (hoursDrived != null) {
@@ -198,7 +198,8 @@ public class DriverService {
     } else {
       hoursDrived = length;
     }
-    if (index != -1 && hoursDrived > driver.getUserInfo().getOrder().getCar().getShiftLength()) {
+    if (index < cities.length
+        && hoursDrived > driver.getUserInfo().getOrder().getCar().getShiftLength()) {
       driver.getUserInfo().setOrder(null);
       driver.getUserInfo().setHoursDrived(null);
     }

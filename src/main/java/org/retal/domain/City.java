@@ -104,6 +104,6 @@ public class City {
 
   @Override
   public String toString() {
-    return "City" + currentCity;
+    return "City " + currentCity;
   }
 }

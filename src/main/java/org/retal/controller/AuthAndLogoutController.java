@@ -20,7 +20,7 @@ public class AuthAndLogoutController {
 
   /**
    * Method responsible for calling Spring Security authentication procedures. Redirects to home
-   * page with flags for both invalid credentials and loggin out successfully.
+   * page with flags for both invalid credentials and logging out successfully.
    */
   @GetMapping(value = "/spring_auth")
   public RedirectView logInAuthGet(@RequestParam(value = "error", required = false) String error,
@@ -33,7 +33,6 @@ public class AuthAndLogoutController {
       log.info("logout success");
       redir.addFlashAttribute("message", "Logged out successfully");
     }
-    RedirectView redirectView = new RedirectView("/home", true);
-    return redirectView;
+    return new RedirectView("/home", true);
   }
 }

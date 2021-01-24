@@ -1,6 +1,7 @@
 package org.retal.controller;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import org.retal.domain.Order;
@@ -28,6 +29,8 @@ public class DriverPageController {
   private final DriverService driverService;
 
   private final CargoAndOrdersService cargoAndOrdersService;
+  
+  public static final String DRIVER_PAGE = "/driverPage";
 
   /**
    * Creates an instance of this class using constructor-based dependency injection.
@@ -43,7 +46,7 @@ public class DriverPageController {
   /**
    * Method responsible for showing driver page with all required information.
    */
-  @GetMapping("/driverPage")
+  @GetMapping(DRIVER_PAGE)
   public String getDriverPage(Model model) {
     sessionInfo.refreshUser();
     BindingResult result =
@@ -58,9 +61,7 @@ public class DriverPageController {
       String nextHop = null;
       int nextHopLength = -1;
       String[] cities = order.getRoute().split(Order.ROUTE_DELIMETER);
-      for (String city : cities) {
-        routeList.add(city);
-      }
+      Collections.addAll(routeList, cities);
       String userCity = user.getUserInfo().getCity().getCurrentCity();
       int index = user.getUserInfo().getOrder().getOrderRouteProgression().getRouteCounter() + 1;
       model.addAttribute("routeCounter", index - 1);
@@ -70,12 +71,6 @@ public class DriverPageController {
         nextHopLength =
             (int) Math.round((double) nextHopLength / CargoAndOrdersService.AVERAGE_CAR_SPEED);
       }
-      /*
-       * for (int i = 0; i < cities.length; i++) { routeList.add(cities[i]); // FIXME now working
-       * for cycles if (nextHop == null && i > 0 && cities[i - 1].equalsIgnoreCase(userCity)) {
-       * nextHop = cities[i]; nextHopLength = cargoAndOrdersService.lengthBetweenTwoCities(userCity,
-       * cities[i]); } }
-       */
       model.addAttribute("routeList", routeList);
       model.addAttribute("nextHop", nextHop);
       model.addAttribute("nextHopLength", nextHopLength);
@@ -95,7 +90,7 @@ public class DriverPageController {
    */
   @GetMapping(value = "/changeStatus/{status}")
   public RedirectView changeStatus(@PathVariable String status, RedirectAttributes redir) {
-    RedirectView redirectView = new RedirectView("/driverPage", true);
+    RedirectView redirectView = new RedirectView(DRIVER_PAGE, true);
     BindingResult bindingResult = new BindException(status, "status");
     driverService.changeStatus(status, bindingResult);
     addErrorsAsFlashAttributes(redir, bindingResult);
@@ -105,11 +100,11 @@ public class DriverPageController {
   /**
    * Method for changing location of driver (aka simulation of moving).
    */
-  @GetMapping(value = "/changeLocation/{city}")
-  public RedirectView changeLocation(@PathVariable String city, RedirectAttributes redir) {
-    RedirectView redirectView = new RedirectView("/driverPage", true);
-    BindingResult bindingResult = new BindException(city, "city");
-    driverService.changeLocation(city, bindingResult);
+  @GetMapping(value = "/changeLocation")
+  public RedirectView changeLocation(RedirectAttributes redir) {
+    RedirectView redirectView = new RedirectView(DRIVER_PAGE, true);
+    BindingResult bindingResult = new BindException(new Object(), "city");
+    driverService.changeLocation(bindingResult);
     addErrorsAsFlashAttributes(redir, bindingResult);
     return redirectView;
   }
@@ -126,7 +121,7 @@ public class DriverPageController {
     if (isOrderCompleted) {
       driverService.changeStatus(DriverStatus.ON_SHIFT.toString(), bindingResult);
     }
-    RedirectView redirectView = new RedirectView("/driverPage", true);
+    RedirectView redirectView = new RedirectView(DRIVER_PAGE, true);
     addErrorsAsFlashAttributes(redir, bindingResult);
     return redirectView;
   }

@@ -40,6 +40,8 @@ public class ManagerPageController {
   private final CityService cityService;
 
   public static final String MANAGER_PAGE = "/managerPage";
+  
+  private static final String CITY_LIST_ATTRIBUTE_NAME = "cityList";
 
   private static final Logger log = Logger.getLogger(ManagerPageController.class);
 
@@ -82,7 +84,7 @@ public class ManagerPageController {
     List<Car> cars = carService.getAllCars();
     model.addAttribute("carsList", cars);
     List<City> cities = cityService.getAllCities();
-    model.addAttribute("cityList", cities);
+    model.addAttribute(CITY_LIST_ATTRIBUTE_NAME, cities);
     return "managerPage";
   }
 
@@ -104,8 +106,7 @@ public class ManagerPageController {
       redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + "user", bindingResult);
       redir.addFlashAttribute("user", user);
     }
-    RedirectView redirectView = new RedirectView(MANAGER_PAGE, true);
-    return redirectView;
+    return new RedirectView(MANAGER_PAGE, true);
   }
 
   /**
@@ -161,7 +162,7 @@ public class ManagerPageController {
     model.addAllAttributes(errors);
     model.addAttribute("editUser", "/submitEditedDriver");
     List<City> cities = cityService.getAllCities();
-    model.addAttribute("cityList", cities);
+    model.addAttribute(CITY_LIST_ATTRIBUTE_NAME, cities);
     return "editUser";
   }
 
@@ -207,8 +208,7 @@ public class ManagerPageController {
       redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + "car", bindingResult);
       redir.addFlashAttribute("car", car);
     }
-    RedirectView redirectView = new RedirectView(MANAGER_PAGE, true);
-    return redirectView;
+    return new RedirectView(MANAGER_PAGE, true);
   }
 
   /**
@@ -252,7 +252,7 @@ public class ManagerPageController {
     Map<String, String> errors = UserValidator.convertErrorsToHashMap(result);
     model.addAllAttributes(errors);
     List<City> cities = cityService.getAllCities();
-    model.addAttribute("cityList", cities);
+    model.addAttribute(CITY_LIST_ATTRIBUTE_NAME, cities);
     return "editCar";
   }
 

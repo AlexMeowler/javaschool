@@ -104,7 +104,7 @@
 	<c:if test="${empty user.userInfo.hoursDrived or user.userInfo.hoursDrived + nextHopLength <= order.car.shiftLength}">
 		<c:if test="${not empty nextHop}">
 			<p>Next city on your route is <strong>${nextHop}</strong>, it should take about <strong>${nextHopLength}</strong> hours to reach it. 
-			<a href="<c:url value="/changeLocation/${nextHop}"/>">Change location</a></p>
+			<a href="<c:url value="/changeLocation"/>">Change location</a></p>
 		</c:if>
 		<c:if test="${empty nextHop}">
 			<p>No next route point available.</p>

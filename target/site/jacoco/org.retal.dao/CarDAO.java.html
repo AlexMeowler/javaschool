@@ -21,7 +21,7 @@ import org.springframework.stereotype.Component;
 <span class="fc" id="L21">  }</span>
 
   @Override
-  public Car read(Object... keys) throws IllegalArgumentException {
+  public Car read(Object... keys) {
 <span class="fc" id="L25">    DAO.validatePrimaryKeys(new Class&lt;?&gt;[] {String.class}, keys);</span>
 <span class="fc" id="L26">    String id = (String) keys[0];</span>
 <span class="fc" id="L27">    Session session = DAO.start();</span>

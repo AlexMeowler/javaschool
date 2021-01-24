@@ -21,7 +21,7 @@ public class CarDAO implements DAO<Car> {
   }
 
   @Override
-  public Car read(Object... keys) throws IllegalArgumentException {
+  public Car read(Object... keys) {
     DAO.validatePrimaryKeys(new Class<?>[] {String.class}, keys);
     String id = (String) keys[0];
     Session session = DAO.start();

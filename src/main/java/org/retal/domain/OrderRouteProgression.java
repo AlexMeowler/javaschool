@@ -70,6 +70,11 @@ public class OrderRouteProgression {
   }
 
   @Override
+  public int hashCode() {
+    return (routeCounter + 1) * (int) Math.pow(id + 1, 2);
+  }
+
+  @Override
   public String toString() {
     return "Progression for order id = " + id + " is " + routeCounter;
   }

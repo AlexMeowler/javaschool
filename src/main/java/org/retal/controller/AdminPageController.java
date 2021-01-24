@@ -50,6 +50,8 @@ public class AdminPageController {
 
   public static final String ADMIN_PAGE = "/adminPage";
 
+  public static final String CARGO_MODEL_ATTRIBUTE = "cargo";
+
   private static final Logger log = Logger.getLogger(AdminPageController.class);
 
   /**
@@ -77,7 +79,8 @@ public class AdminPageController {
       log.debug(e.getKey() + ":" + e.getValue());
     }
     model.addAllAttributes(errors);
-    result = (BindingResult) model.asMap().get(BindingResult.MODEL_KEY_PREFIX + "cargo");
+    result =
+        (BindingResult) model.asMap().get(BindingResult.MODEL_KEY_PREFIX + CARGO_MODEL_ATTRIBUTE);
     errors = UserValidator.convertErrorsToHashMap(result);
     for (Map.Entry<String, String> e : errors.entrySet()) {
       log.debug(e.getKey() + ":" + e.getValue());
@@ -176,13 +179,13 @@ public class AdminPageController {
   @GetMapping(value = "/editUser/{id}")
   public RedirectView edit(@PathVariable Integer id, RedirectAttributes redir) {
     RedirectView redirectView = new RedirectView("/editUser", true);
-    User we = sessionInfo.getCurrentUser();
-    User target = userService.getUser(id);
-    if (userService.userHasRightsToEditOrDeleteUser(we, target)) {
-      redir.addFlashAttribute("user", target);
-      redir.addFlashAttribute("we", we);
+    User currentUser = sessionInfo.getCurrentUser();
+    User targetUser = userService.getUser(id);
+    if (userService.userHasRightsToEditOrDeleteUser(currentUser, targetUser)) {
+      redir.addFlashAttribute("user", targetUser);
+      redir.addFlashAttribute("we", currentUser);
     } else {
-      redirectView.setUrl("/403/" + we.getLogin());
+      redirectView.setUrl("/403/" + currentUser.getLogin());
     }
     return redirectView;
   }
@@ -212,18 +215,18 @@ public class AdminPageController {
    */
   @PostMapping(value = "/submitEditedUser")
   public RedirectView finishEditing(UserDTO userDTO, BindingResult bindingResult,
-      UserInfoDTO userInfoDTO, CityDTO cityDTO, RedirectAttributes redir) {
+      UserInfoDTO userInfoDTO, CityDTO cityDTO, RedirectAttributes redirectAttributes) {
     RedirectView redirectView = new RedirectView(ADMIN_PAGE, true);
     User user = mapUserRelatedDTOsToEntity(userDTO, userInfoDTO, cityDTO);
-    String redirect = userService.updateUser(user, bindingResult, userDTO.getPassword());
+    String redirectAddress = userService.updateUser(user, bindingResult, userDTO.getPassword());
     if (bindingResult.hasErrors()) {
       log.warn("Validation fail when editing user");
-      redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + "user", bindingResult);
-      redir.addFlashAttribute("user", user);
+      redirectAttributes.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + "user", bindingResult);
+      redirectAttributes.addFlashAttribute("user", user);
       redirectView.setUrl("/editUser");
     }
-    if (!redirect.isEmpty()) {
-      redirectView.setUrl(redirect);
+    if (!redirectAddress.isEmpty()) {
+      redirectView.setUrl(redirectAddress);
     }
     return redirectView;
   }
@@ -244,8 +247,9 @@ public class AdminPageController {
     RedirectView redirectView = new RedirectView(ADMIN_PAGE, true);
     if (bindingResult.hasErrors()) {
       log.warn("Validation fail when adding new cargo");
-      redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + "cargo", bindingResult);
-      redir.addFlashAttribute("cargo", cargo);
+      redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + CARGO_MODEL_ATTRIBUTE,
+          bindingResult);
+      redir.addFlashAttribute(CARGO_MODEL_ATTRIBUTE, cargo);
     }
     return redirectView;
   }

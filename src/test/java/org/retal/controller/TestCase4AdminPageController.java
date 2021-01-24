@@ -320,7 +320,7 @@ public class TestCase4AdminPageController {
 
   @Test
   @WithMockUser(username = "administrator", password = "password", authorities = "ADMIN")
-  public void testA7SubmitEditedUser() throws Exception {
+  public void testA7SubmitEditedUserWithEmptyassword() throws Exception {
     MultiValueMap<String, String> params = generateUserParameters();
     String name = "changedName";
     params.set("name", name);
@@ -394,7 +394,7 @@ public class TestCase4AdminPageController {
 
   @Test
   @WithMockUser(username = "driver123", password = "password", authorities = "DRIVER")
-  public void testB0ForgeEditUserAddress() throws Exception {
+  public void testB1ForgeEditUserAddress() throws Exception {
     Integer id = userDAO.findUser("administrator").getId();
     mockMvc.perform(get("/editUser/" + id)).andExpect(status().is3xxRedirection())
         .andExpect(redirectedUrl("/403/driver123"));
@@ -412,10 +412,31 @@ public class TestCase4AdminPageController {
         .andExpect(flash().attribute(BindingResult.MODEL_KEY_PREFIX + "user", notNullValue()));
     assertNotEquals(userDAO.findUser(params.getFirst("login")).getUserInfo().getName(), name);
   }
+  
+  @Test
+  @WithMockUser(username = "administrator", password = "password", authorities = "ADMIN")
+  public void testB3SubmitEditedUserWithChangedPassword() throws Exception {
+    MultiValueMap<String, String> params = generateUserParameters();
+    String name = "changedName";
+    params.set("name", name);
+    params.set("login", "changedLogin");
+    params.set("password", "123123123");
+    params.set("id",
+        Integer.toString(userDAO.findUser(generateUserParameters().getFirst("login")).getId()));
+    mockMvc.perform(post("/submitEditedUser").params(params).with(csrf()))
+        .andExpect(status().is3xxRedirection())
+        .andExpect(redirectedUrl(AdminPageController.ADMIN_PAGE))
+        .andExpect(flash().attribute(BindingResult.MODEL_KEY_PREFIX + "user", nullValue()));
+    User user = userDAO.findUser(params.getFirst("login"));
+    assertEquals(user.getUserInfo().getName(), name);
+    user.setLogin(generateUserParameters().getFirst("login"));
+    user.setPassword(generateUserParameters().getFirst("password"));
+    userDAO.update(user);
+  }
 
   @Test
   @WithMockUser(username = "administrator", password = "password", authorities = "ADMIN")
-  public void testB3DeleteUser() throws Exception {
+  public void testB4DeleteUser() throws Exception {
     Integer id = userDAO.findUser(generateUserParameters().getFirst("login")).getId();
     mockMvc.perform(get("/deleteUser/" + id)).andExpect(status().is3xxRedirection())
         .andExpect(flash().attribute("error_userDeletionFailed", nullValue()));
@@ -424,17 +445,17 @@ public class TestCase4AdminPageController {
 
   @Test
   @WithMockUser(username = "administrator", password = "password", authorities = "ADMIN")
-  public void testB4AddNewCargoForm() throws Exception {
+  public void testB5AddNewCargoForm() throws Exception {
     MultiValueMap<String, String> params = generateCargoParameters();
     mockMvc.perform(post("/addNewCargo").params(params).with(csrf()))
         .andExpect(status().is3xxRedirection())
         .andExpect(flash().attribute(BindingResult.MODEL_KEY_PREFIX + "cargo", nullValue()));
-    assertEquals(cargoDAO.readAll().size(), 1);
+    assertEquals(1, cargoDAO.readAll().size());
   }
 
   @Test
   @WithMockUser(username = "administrator", password = "password", authorities = "ADMIN")
-  public void testB5AddNewCargoFormValidationFailAndRedirectToAdminPageWithFlashAttributes()
+  public void testB6AddNewCargoFormValidationFailAndRedirectToAdminPageWithFlashAttributes()
       throws Exception {
     MultiValueMap<String, String> params = generateUserParameters();
     params.set("name", "");
@@ -445,7 +466,7 @@ public class TestCase4AdminPageController {
         .andExpect(redirectedUrl(AdminPageController.ADMIN_PAGE))
         .andExpect(flash().attribute(BindingResult.MODEL_KEY_PREFIX + "cargo", notNullValue()))
         .andReturn();
-    assertEquals(cargoDAO.readAll().size(), 1);
+    assertEquals(1, cargoDAO.readAll().size());
     mockMvc.perform(get(AdminPageController.ADMIN_PAGE).flashAttrs(result.getFlashMap()))
         .andExpect(status().isOk());
     params = generateUserParameters();
@@ -457,25 +478,25 @@ public class TestCase4AdminPageController {
         .andExpect(redirectedUrl(AdminPageController.ADMIN_PAGE))
         .andExpect(flash().attribute(BindingResult.MODEL_KEY_PREFIX + "cargo", notNullValue()))
         .andReturn();
-    assertEquals(cargoDAO.readAll().size(), 1);
+    assertEquals(1, cargoDAO.readAll().size());
     params.set("name", "<script>alert(\"abc\")</script>");
     result = mockMvc.perform(post("/addNewCargo").params(params).with(csrf()))
         .andExpect(status().is3xxRedirection())
         .andExpect(redirectedUrl(AdminPageController.ADMIN_PAGE))
         .andExpect(flash().attribute(BindingResult.MODEL_KEY_PREFIX + "cargo", notNullValue()))
         .andReturn();
-    assertEquals(cargoDAO.readAll().size(), 1);
+    assertEquals(1, cargoDAO.readAll().size());
   }
 
   @Test
   @WithMockUser(username = "administrator", password = "password", authorities = "ADMIN")
-  public void testB6DeleteNotExistingUser() throws Exception {
+  public void testB7DeleteNotExistingUser() throws Exception {
     mockMvc.perform(get("/deleteUser/1000")).andExpect(status().is3xxRedirection());
   }
 
   @Test
   @WithMockUser(username = "administrator", password = "password", authorities = "ADMIN")
-  public void testB7GetAdminPage() throws Exception {
+  public void testB8GetAdminPage() throws Exception {
     mockMvc.perform(get(AdminPageController.ADMIN_PAGE)).andExpect(status().isOk());
   }
 

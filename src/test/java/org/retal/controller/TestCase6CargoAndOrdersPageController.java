@@ -184,9 +184,9 @@ public class TestCase6CargoAndOrdersPageController {
     new UserService(new UserDAO(), null, null, cityService).addDriversFromFile();
     new CarService(new CarDAO(), null, cityService, null).generateCarForEachCity();
     CargoDAO cargoDAO = new CargoDAO();
-    int n = 10;
+    int n = 30;
     for (int i = 0; i < n; i++) {
-      addCargo(cargoDAO, "Cargo" + i, 200 + i * 50, "Desc" + i);
+      addCargo(cargoDAO, "Cargo" + i, 200 + i * 20, "Desc" + i);
     }
   }
 
@@ -271,7 +271,7 @@ public class TestCase6CargoAndOrdersPageController {
     int n = 2;
     String[] names = new String[n * 3];
     String[] values = new String[n * 3];
-    Integer id = cargoDAO.readAll().stream().filter(c -> c.getPoints().size() == 0)
+    Integer id = cargoDAO.readAll().stream().filter(c -> c.getPoints().isEmpty())
         .collect(Collectors.toList()).get(0).getId();
     for (int i = 0; i < n * 3; i += 3) {
       names[i] = "list[" + (i / 3) + "].cityName";
@@ -344,7 +344,7 @@ public class TestCase6CargoAndOrdersPageController {
     int n = 2;
     String[] names = new String[n * 3];
     String[] values = new String[n * 3];
-    Integer id = cargoDAO.readAll().stream().filter(c -> c.getPoints().size() == 0)
+    Integer id = cargoDAO.readAll().stream().filter(c -> c.getPoints().isEmpty())
         .collect(Collectors.toList()).get(0).getId();
     for (int i = 0; i < n * 3; i += 3) {
       names[i] = "list[" + (i / 3) + "].cityName";
@@ -367,7 +367,7 @@ public class TestCase6CargoAndOrdersPageController {
     int n = 2;
     String[] names = new String[n * 3];
     String[] values = new String[n * 3];
-    Integer id = cargoDAO.readAll().stream().filter(c -> c.getPoints().size() == 0)
+    Integer id = cargoDAO.readAll().stream().filter(c -> c.getPoints().isEmpty())
         .collect(Collectors.toList()).get(0).getId();
     for (int i = 0; i < n * 3; i += 3) {
       names[i] = "list[" + (i / 3) + "].cityName";
@@ -390,7 +390,7 @@ public class TestCase6CargoAndOrdersPageController {
     int n = 4;
     String[] names = new String[n * 3];
     String[] values = new String[n * 3];
-    Integer id = cargoDAO.readAll().stream().filter(c -> c.getPoints().size() == 0)
+    Integer id = cargoDAO.readAll().stream().filter(c -> c.getPoints().isEmpty())
         .collect(Collectors.toList()).get(0).getId();
     for (int i = 0; i < n * 3; i += 3) {
       names[i] = "list[" + (i / 3) + "].cityName";
@@ -490,8 +490,8 @@ public class TestCase6CargoAndOrdersPageController {
   public void testB5ReassignCarToOrder() throws Exception {
     MvcResult result =
         mockMvc.perform(get("/changeCarForOrder/1_ZZ12345")).andExpect(status().isOk()).andReturn();
-    assertEquals(result.getResponse().getContentAsString(), "");
-    assertEquals(orderDAO.readAll().get(0).getCar().getRegistrationId(), "ZZ12345");
+    assertEquals("", result.getResponse().getContentAsString());
+    assertEquals("ZZ12345", orderDAO.readAll().get(0).getCar().getRegistrationId());
   }
 
   @SuppressWarnings("unchecked")
@@ -532,7 +532,7 @@ public class TestCase6CargoAndOrdersPageController {
     int n = 4;
     String[] names = new String[n * 3];
     String[] values = new String[n * 3];
-    List<Cargo> cargo = cargoDAO.readAll().stream().filter(c -> c.getPoints().size() == 0)
+    List<Cargo> cargo = cargoDAO.readAll().stream().filter(c -> c.getPoints().isEmpty())
         .collect(Collectors.toList());
     for (int i = 0; i < n * 3; i += 3) {
       names[i] = "list[" + (i / 3) + "].cityName";
@@ -548,7 +548,7 @@ public class TestCase6CargoAndOrdersPageController {
         .andExpect(flash().attribute("routePoints", nullValue()))
         .andExpect(flash().attribute("counter_value", nullValue()));
   }
-  
+
   @Test
   @WithMockUser(username = "manager", password = "manager", authorities = "MANAGER")
   public void testB8AddNewOrderCalculationFail() throws Exception {
@@ -556,7 +556,7 @@ public class TestCase6CargoAndOrdersPageController {
     int n = 4;
     String[] names = new String[n * 3];
     String[] values = new String[n * 3];
-    List<Cargo> cargo = cargoDAO.readAll().stream().filter(c -> c.getPoints().size() == 0)
+    List<Cargo> cargo = cargoDAO.readAll().stream().filter(c -> c.getPoints().isEmpty())
         .collect(Collectors.toList());
     for (int i = 0; i < n * 3; i += 3) {
       names[i] = "list[" + (i / 3) + "].cityName";
@@ -580,7 +580,7 @@ public class TestCase6CargoAndOrdersPageController {
     for (int i = 0; i < 2; i++) {
       Car car = new Car();
       car.setCapacityTons(12f);
-      car.setShiftLength(15);
+      car.setShiftLength(3);
       car.setIsWorking(true);
       car.setRegistrationId(cities[i].substring(0, 2).toUpperCase() + "99999");
       car.setLocation(cityDAO.read(cities[i]));
@@ -593,7 +593,7 @@ public class TestCase6CargoAndOrdersPageController {
     int n = 4;
     String[] names = new String[n * 3];
     String[] values = new String[n * 3];
-    List<Cargo> cargo = cargoDAO.readAll().stream().filter(c -> c.getPoints().size() == 0)
+    List<Cargo> cargo = cargoDAO.readAll().stream().filter(c -> c.getPoints().isEmpty())
         .collect(Collectors.toList());
     for (int i = 0; i < n * 3; i += 3) {
       names[i] = "list[" + (i / 3) + "].cityName";
@@ -609,7 +609,7 @@ public class TestCase6CargoAndOrdersPageController {
         .andExpect(flash().attribute("routePoints", nullValue()))
         .andExpect(flash().attribute("counter_value", nullValue()));
   }
-  
+
   @Test
   @WithMockUser(username = "manager", password = "manager", authorities = "MANAGER")
   public void testC1AddNewOrderWithDijkstraCalculation() throws Exception {
@@ -617,7 +617,7 @@ public class TestCase6CargoAndOrdersPageController {
     String[] names = new String[n * 3];
     String[] values = new String[n * 3];
     String[] cities = {"Ryazan", "Penza"};
-    Integer id = cargoDAO.readAll().stream().filter(c -> c.getPoints().size() == 0)
+    Integer id = cargoDAO.readAll().stream().filter(c -> c.getPoints().isEmpty())
         .collect(Collectors.toList()).get(0).getId();
     for (int i = 0; i < n * 3; i += 3) {
       names[i] = "list[" + (i / 3) + "].cityName";
@@ -632,5 +632,119 @@ public class TestCase6CargoAndOrdersPageController {
         .andExpect(status().is3xxRedirection()).andExpect(redirectedUrl("/cargoAndOrders"))
         .andExpect(flash().attribute("routePoints", nullValue()))
         .andExpect(flash().attribute("counter_value", nullValue()));
+  }
+
+  @Test
+  @WithMockUser(username = "manager", password = "manager", authorities = "MANAGER")
+  public void testC2AddNewOrderFullCycle() throws Exception {
+    int n = 6;
+    String[] names = new String[n * 3];
+    String[] values = new String[n * 3];
+    String[] cities = {"Moscow", "Yaroslavl", "Yaroslavl", "Cheboksary", "Cheboksary", "Moscow"};
+    for (int i = 1; i < cities.length; i += 2) {
+      Car car = new Car();
+      car.setCapacityTons(12f);
+      car.setShiftLength(13);
+      car.setIsWorking(true);
+      car.setRegistrationId(cities[i].substring(0, 2).toUpperCase() + "76543");
+      car.setLocation(cityDAO.read(cities[i]));
+      carDAO.add(car);
+      for (UserInfo driver : cityDAO.read(cities[i]).getUserInfos()) {
+        driver.setOrder(null);
+        userDAO.update(driver.getUser());
+      }
+    }
+    List<Cargo> cargo = cargoDAO.readAll().stream().filter(c -> c.getPoints().isEmpty())
+        .collect(Collectors.toList());
+    for (int i = 0; i < n * 3; i += 3) {
+      names[i] = "list[" + (i / 3) + "].cityName";
+      names[i + 1] = "list[" + (i / 3) + "].cargoId";
+      names[i + 2] = "list[" + (i / 3) + "].isLoading";
+      values[i] = cities[i / 3];
+      values[i + 1] = Integer.toString(cargo.get(i / 6).getId());
+      values[i + 2] = Boolean.valueOf((i / 3) % 2 == 0).toString();
+    }
+    MultiValueMap<String, String> params = generateOrderParameters(names, values);
+    mockMvc.perform(post("/addNewOrder").params(params).with(csrf()))
+        .andExpect(status().is3xxRedirection()).andExpect(redirectedUrl("/cargoAndOrders"))
+        .andExpect(flash().attribute("routePoints", nullValue()))
+        .andExpect(flash().attribute("counter_value", nullValue()));
+  }
+
+  @Test
+  @WithMockUser(username = "manager", password = "manager", authorities = "MANAGER")
+  public void testC3AddNewOrderPartCycle() throws Exception {
+    int n = 6;
+    String[] names = new String[n * 3];
+    String[] values = new String[n * 3];
+    String[] cities = {"Moscow", "Yaroslavl", "Cheboksary", "Kazan", "Kazan", "Cheboksary"};
+    for (int i = 0; i < cities.length; i += 2) {
+      Car car = new Car();
+      car.setCapacityTons(12f);
+      car.setShiftLength(13);
+      car.setIsWorking(true);
+      car.setRegistrationId(cities[i].substring(0, 2).toUpperCase() + "44444");
+      car.setLocation(cityDAO.read(cities[i]));
+      carDAO.add(car);
+      for (UserInfo driver : cityDAO.read(cities[i]).getUserInfos()) {
+        driver.setOrder(null);
+        userDAO.update(driver.getUser());
+      }
+    }
+    List<Cargo> cargo = cargoDAO.readAll().stream().filter(c -> c.getPoints().isEmpty())
+        .collect(Collectors.toList());
+    for (int i = 0; i < n * 3; i += 3) {
+      names[i] = "list[" + (i / 3) + "].cityName";
+      names[i + 1] = "list[" + (i / 3) + "].cargoId";
+      names[i + 2] = "list[" + (i / 3) + "].isLoading";
+      values[i] = cities[i / 3];
+      values[i + 1] = Integer.toString(cargo.get(i / 6).getId());
+      values[i + 2] = Boolean.valueOf((i / 3) % 2 == 0).toString();
+    }
+    MultiValueMap<String, String> params = generateOrderParameters(names, values);
+    mockMvc.perform(post("/addNewOrder").params(params).with(csrf()))
+        .andExpect(status().is3xxRedirection()).andExpect(redirectedUrl("/cargoAndOrders"))
+        .andExpect(flash().attribute("routePoints", nullValue()))
+        .andExpect(flash().attribute("counter_value", nullValue()));
+    log.debug(orderDAO.readAll().get(orderDAO.readAll().size() - 1).getRoute());
+  }
+
+  @Test
+  @WithMockUser(username = "manager", password = "manager", authorities = "MANAGER")
+  public void testC4AddNewOrderTwoCycles() throws Exception {
+    int n = 8;
+    String[] names = new String[n * 3];
+    String[] values = new String[n * 3];
+    String[] cities = {"Moscow", "Yaroslavl", "Yaroslavl", "Moscow", "Cheboksary", "Kazan", "Kazan",
+        "Cheboksary"};
+    for (int i = 1; i < cities.length; i += 2) {
+      Car car = new Car();
+      car.setCapacityTons(12f);
+      car.setShiftLength(13);
+      car.setIsWorking(true);
+      car.setRegistrationId(cities[i].substring(0, 2).toUpperCase() + "92506");
+      car.setLocation(cityDAO.read(cities[i]));
+      carDAO.add(car);
+      for (UserInfo driver : cityDAO.read(cities[i]).getUserInfos()) {
+        driver.setOrder(null);
+        userDAO.update(driver.getUser());
+      }
+    }
+    List<Cargo> cargo = cargoDAO.readAll().stream().filter(c -> c.getPoints().isEmpty())
+        .collect(Collectors.toList());
+    for (int i = 0; i < n * 3; i += 3) {
+      names[i] = "list[" + (i / 3) + "].cityName";
+      names[i + 1] = "list[" + (i / 3) + "].cargoId";
+      names[i + 2] = "list[" + (i / 3) + "].isLoading";
+      values[i] = cities[i / 3];
+      values[i + 1] = Integer.toString(cargo.get(i / 6).getId());
+      values[i + 2] = Boolean.valueOf((i / 3) % 2 == 0).toString();
+    }
+    MultiValueMap<String, String> params = generateOrderParameters(names, values);
+    mockMvc.perform(post("/addNewOrder").params(params).with(csrf()))
+        .andExpect(status().is3xxRedirection()).andExpect(redirectedUrl("/cargoAndOrders"))
+        .andExpect(flash().attribute("routePoints", nullValue()))
+        .andExpect(flash().attribute("counter_value", nullValue()));
+    log.debug(orderDAO.read(orderDAO.readAll().size() - 1));
   }
 }

@@ -33,8 +33,7 @@ public class ErrorPagesController {
   @GetMapping("/403/{name}")
   public RedirectView accessDeniedNamed(@PathVariable String name, RedirectAttributes redir) {
     redir.addFlashAttribute("username", name);
-    RedirectView redirectView = new RedirectView("/403", true);
-    return redirectView;
+    return new RedirectView("/403", true);
   }
 
   /**

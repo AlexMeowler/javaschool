@@ -40,8 +40,8 @@ public class CarService {
    * Creates an instance of this class using constructor-based dependency injection.
    */
   @Autowired
-  public CarService(CarDAO carDAO, OrderDAO orderDAO, CityService cityService,
-<span class="fc" id="L44">      CarValidator carValidator) {</span>
+<span class="fc" id="L43">  public CarService(CarDAO carDAO, OrderDAO orderDAO, CityService cityService,</span>
+      CarValidator carValidator) {
 <span class="fc" id="L45">    this.carDAO = carDAO;</span>
 <span class="fc" id="L46">    this.orderDAO = orderDAO;</span>
 <span class="fc" id="L47">    this.cityService = cityService;</span>
@@ -101,7 +101,7 @@ public class CarService {
 <span class="fc" id="L101">    Car persistedCar = carDAO.read(car.getRegistrationId());</span>
 <span class="fc bfc" id="L102" title="All 4 branches covered.">    if (persistedCar.getOrder() != null || persistedCar.getDriver() != null) {</span>
 <span class="fc" id="L103">      bindingResult.reject(&quot;carUnavailable&quot;,</span>
-          &quot;Car could not be updated due to assigned order or being driven by someone&quot;);
+<span class="fc" id="L104">          &quot;Car could not be updated due to assigned order or being driven by someone&quot;);</span>
     }
 <span class="fc bfc" id="L106" title="All 2 branches covered.">    if (!bindingResult.hasErrors()) {</span>
 <span class="fc" id="L107">      carDAO.update(car);</span>
@@ -123,13 +123,13 @@ public class CarService {
 <span class="fc" id="L123">      car.setShiftLength(shiftLength);</span>
 <span class="fc" id="L124">    } catch (NumberFormatException e) {</span>
 <span class="fc" id="L125">      bindingResult.reject(&quot;shiftLength&quot;, &quot;Shift length must be positive integer&quot;);</span>
-<span class="fc" id="L126">    }</span>
+    }
     try {
 <span class="fc" id="L128">      Float capacityTons = Float.parseFloat(capacity);</span>
 <span class="fc" id="L129">      car.setCapacityTons(capacityTons);</span>
 <span class="fc" id="L130">    } catch (NumberFormatException e) {</span>
 <span class="fc" id="L131">      bindingResult.reject(&quot;capacityTons&quot;, &quot;Capacity must be positive decimal&quot;);</span>
-<span class="fc" id="L132">    }</span>
+    }
 <span class="fc" id="L133">    carValidator.validate(car, bindingResult);</span>
 <span class="fc" id="L134">  }</span>
 
@@ -148,7 +148,7 @@ public class CarService {
 <span class="fc" id="L148">      car.setRegistrationId(registrationLetters + registrationNumber);</span>
 <span class="fc" id="L149">      car.setShiftLength(12 + rand.nextInt(13));</span>
 <span class="fc" id="L150">      carDAO.add(car);</span>
-<span class="fc" id="L151">    }</span>
+    }
 <span class="fc" id="L152">  }</span>
 
   /**
@@ -165,9 +165,9 @@ public class CarService {
 <span class="fc" id="L165">            .filter(c -&gt; c.getLocation().equals(order.getCar().getLocation()))</span>
 <span class="pc bpc" id="L166" title="1 of 2 branches missed.">            .filter(c -&gt; c.getShiftLength() &gt;= order.getRequiredShiftLength())</span>
 <span class="fc" id="L167">            .collect(Collectors.toList());</span>
-<span class="fc bfc" id="L168" title="All 2 branches covered.">    String message =</span>
-<span class="fc" id="L169">        availableCars != null ? availableCars.size() + &quot; cars are fit for order ID=&quot; + order.getId()</span>
-            : &quot;null&quot;;
+<span class="fc" id="L168">    String message =</span>
+<span class="fc bfc" id="L169" title="All 2 branches covered.">        availableCars != null ? availableCars.size() + &quot; cars are fit for order ID=&quot; + order.getId()</span>
+<span class="fc" id="L170">            : &quot;null&quot;;</span>
 <span class="fc" id="L171">    log.debug(message);</span>
 <span class="fc" id="L172">    return availableCars;</span>
   }

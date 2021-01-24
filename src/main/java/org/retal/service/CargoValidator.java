@@ -51,7 +51,7 @@ public class CargoValidator implements Validator {
       cargo.setName("");
     }
     String maliciousInputMessage = response;
-    maliciousInputMessage = setIfEmpty(maliciousInputMessage, response);
+    //maliciousInputMessage = setIfEmpty(maliciousInputMessage, response);
     response = UserValidator.checkForMaliciousInput(cargo.getDescription());
     if (!response.isEmpty()) {
       cargo.setDescription("");

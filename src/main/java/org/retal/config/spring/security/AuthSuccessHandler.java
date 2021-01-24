@@ -49,14 +49,5 @@ public class AuthSuccessHandler implements AuthenticationSuccessHandler {
     roleChecker.checkAndRedirect("ADMIN", "/adminPage");
     roleChecker.checkAndRedirect("MANAGER", "/managerPage");
     roleChecker.checkAndRedirect("DRIVER", "/driverPage");
-    /*if (roles.contains("ADMIN")) {
-      response.sendRedirect(request.getContextPath() + "/adminPage");
-    }
-    if (roles.contains("MANAGER")) {
-      response.sendRedirect(request.getContextPath() + "/managerPage");
-    }
-    if (roles.contains("DRIVER")) {
-      response.sendRedirect(request.getContextPath() + "/driverPage");
-    }*/
   }
 }

@@ -180,7 +180,7 @@ public class TestCase1DAO {
   public void test4CityReadAll() {
     List<City> cities = cityDAO.readAll();
     for (String name : CITY_NAMES) {
-      assertTrue(cities.stream().filter(c -> c.getCurrentCity().equals(name)).count() == 1);
+      assertEquals(1, cities.stream().filter(c -> c.getCurrentCity().equals(name)).count());
     }
   }
 
@@ -231,7 +231,7 @@ public class TestCase1DAO {
   @Test
   public void testA2UserUpdate() {
     List<User> users = userDAO.readAll();
-    assertTrue(users.size() == 1);
+    assertEquals(1, users.size());
   }
 
   @Test
@@ -243,7 +243,7 @@ public class TestCase1DAO {
   @Test
   public void testA4UserGetAllWithRole() {
     List<User> admins = userDAO.readAllWithRole("admin");
-    assertTrue(admins.size() == 1);
+    assertEquals(1, admins.size());
   }
 
   @Test
@@ -311,7 +311,9 @@ public class TestCase1DAO {
     Car car = carDAO.readAll().get(0);
     car.setLocation(cityDAO.read(CITY_NAMES[1]));
     carDAO.update(car);
+    assertEquals(car.getLocation(), carDAO.read(car.getRegistrationId()).getLocation());
     carDAO.delete(car);
+    assertNull(carDAO.read(car.getRegistrationId()));
   }
 
   @Test
@@ -322,8 +324,8 @@ public class TestCase1DAO {
     cd.setDistance(100);
     cityDistanceDAO.add(cd);
     int distance = cityDistanceDAO.read(CITY_NAMES[0], CITY_NAMES[1]).getDistance();
-    assertEquals(distance, 100);
-    assertEquals(cityDistanceDAO.readAll().size(), 1);
+    assertEquals(100, distance);
+    assertEquals(1, cityDistanceDAO.readAll().size());
   }
 
   @Test(expected = MethodUndefinedException.class)
@@ -454,7 +456,7 @@ public class TestCase1DAO {
   @Test
   public void testD1OrderReadAll() {
     List<Order> orders = orderDAO.readAll();
-    assertEquals(orders.size(), 1);
+    assertEquals(1, orders.size());
     assertNotEquals(orders.get(0).getPoints().size(), 0);
     assertNotEquals(orders.get(0).getCargo().size(), 0);
   }

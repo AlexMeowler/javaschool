@@ -174,8 +174,6 @@ public class UserService {
   public boolean userHasRightsToEditOrDeleteUser(User caller, User target) {
     String callerRoleString = caller.getRole().toUpperCase();
     String targetRoleString = target.getRole().toUpperCase();
-    // target.getRole() != null ? target.getRole().toUpperCase() :
-    // UserRole.DRIVER.toString().toUpperCase();
     UserRole callerRole = UserRole.valueOf(callerRoleString);
     UserRole targetRole = UserRole.valueOf(targetRoleString);
     boolean hasHigherRank = callerRole.ordinal() > targetRole.ordinal();
