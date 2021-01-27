@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GlobalExceptionHandler.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">logiweb</a> &gt; <a href="index.source.html" class="el_package">org.retal.logiweb.controller</a> &gt; <span class="el_source">GlobalExceptionHandler.java</span></div><h1>GlobalExceptionHandler.java</h1><pre class="source lang-java linenums">package org.retal.logiweb.controller;
+
+import org.apache.log4j.Logger;
+import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.RedirectView;
+
+/**
+ * Exception handler to redirect users to user-friendly error page.
+ * 
+ * @author Alexander Retivov
+ *
+ */
+@ControllerAdvice
+<span class="fc" id="L19">public class GlobalExceptionHandler {</span>
+
+  public static final String ERROR_PAGE = &quot;errorPage&quot;;
+
+<span class="fc" id="L23">  private static final Logger log = Logger.getLogger(GlobalExceptionHandler.class);</span>
+
+  /**
+   * Handler for all types of exceptions. This method logs given exception and redirects to error
+   * page.
+   * 
+   * @param e exception being thrown somewhere
+   * @param redir redirect attributes object to pass HTTP error code
+   * @return view for error page
+   */
+  @ExceptionHandler(value = Exception.class)
+  public RedirectView customErrorPage(Exception e, RedirectAttributes redir) {
+<span class="fc" id="L35">    log.error(e, e);</span>
+<span class="fc" id="L36">    ResponseStatus status = AnnotationUtils.findAnnotation(e.getClass(), ResponseStatus.class);</span>
+<span class="fc bfc" id="L37" title="All 2 branches covered.">    Integer code = status != null ? status.code().value() : 500;</span>
+<span class="fc bfc" id="L38" title="All 4 branches covered.">    code = status == null &amp;&amp; e instanceof ResponseStatusException</span>
+<span class="fc" id="L39">        ? ((ResponseStatusException) e).getRawStatusCode()</span>
+<span class="fc" id="L40">        : code;</span>
+<span class="fc" id="L41">    RedirectView redirectView = new RedirectView(ERROR_PAGE, true);</span>
+<span class="fc" id="L42">    redir.addFlashAttribute(&quot;errorCode&quot;, &quot;Error &quot; + code);</span>
+<span class="fc" id="L43">    return redirectView;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

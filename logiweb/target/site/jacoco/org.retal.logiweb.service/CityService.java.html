@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CityService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">logiweb</a> &gt; <a href="index.source.html" class="el_package">org.retal.logiweb.service</a> &gt; <span class="el_source">CityService.java</span></div><h1>CityService.java</h1><pre class="source lang-java linenums">package org.retal.logiweb.service;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.List;
+import org.retal.logiweb.dao.CityDAO;
+import org.retal.logiweb.dao.CityDistanceDAO;
+import org.retal.logiweb.domain.City;
+import org.retal.logiweb.domain.CityDistance;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
+/**
+ * Service, containing business-logic methods regarding {@linkplain org.retal.logiweb.domain.City City} and
+ * {@linkplain org.retal.logiweb.domain.CityDistance CityDistance} entities.
+ * 
+ * @author Alexander Retivov
+ *
+ */
+@Service
+public class CityService {
+
+  private final CityDAO cityDAO;
+
+  private final CityDistanceDAO cityDistanceDAO;
+
+  /**
+   * Creates an instance of this class using constructor-based dependency injection.
+   */
+  @Autowired
+<span class="fc" id="L34">  public CityService(CityDAO cityDAO, CityDistanceDAO cityDistanceDAO) {</span>
+<span class="fc" id="L35">    this.cityDAO = cityDAO;</span>
+<span class="fc" id="L36">    this.cityDistanceDAO = cityDistanceDAO;</span>
+<span class="fc" id="L37">  }</span>
+
+  /**
+   * Loads cities from text file to database.
+   */
+  public void addCitiesFromFile() {
+<span class="fc" id="L43">    addCitiesFromFile(&quot;citynames&quot;);</span>
+<span class="fc" id="L44">  }</span>
+
+  /**
+   * Loads cities from text file to database.
+   * 
+   * @param cityNamesFileName name of the text file which contains information about cities
+   */
+  public void addCitiesFromFile(String cityNamesFileName) {
+    try {
+<span class="fc" id="L53">      BufferedReader reader = new BufferedReader(new InputStreamReader(</span>
+<span class="fc" id="L54">          CityService.class.getResourceAsStream(&quot;/&quot; + cityNamesFileName + &quot;.txt&quot;)));</span>
+      String line;
+<span class="fc bfc" id="L56" title="All 2 branches covered.">      while ((line = reader.readLine()) != null) {</span>
+<span class="fc" id="L57">        City city = new City();</span>
+<span class="fc" id="L58">        city.setCurrentCity(line);</span>
+<span class="fc" id="L59">        cityDAO.add(city);</span>
+<span class="fc" id="L60">      }</span>
+<span class="fc" id="L61">      reader.close();</span>
+<span class="nc" id="L62">    } catch (IOException e) {</span>
+<span class="nc" id="L63">      String message = &quot;I/O error has occurred&quot;;</span>
+<span class="nc" id="L64">      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, message, e);</span>
+<span class="fc" id="L65">    } catch (NullPointerException e) {</span>
+<span class="fc" id="L66">      String message = &quot;File&quot; + cityNamesFileName + &quot;.txt not found&quot;;</span>
+<span class="fc" id="L67">      throw new ResponseStatusException(HttpStatus.NOT_FOUND, message, e);</span>
+<span class="fc" id="L68">    }</span>
+<span class="fc" id="L69">  }</span>
+
+  /**
+   * Loads city distances from text file to database.
+   */
+  public void addDistancesFromFile() {
+<span class="fc" id="L75">    addDistancesFromFile(&quot;graph&quot;);</span>
+<span class="fc" id="L76">  }</span>
+
+  /**
+   * Loads city distances from text file to database.
+   * 
+   * @param distancesFileName name of text file with information about distances between cities
+   */
+  public void addDistancesFromFile(String distancesFileName) {
+    try {
+<span class="fc" id="L85">      BufferedReader reader = new BufferedReader(new InputStreamReader(</span>
+<span class="fc" id="L86">          CityService.class.getResourceAsStream(&quot;/&quot; + distancesFileName + &quot;.txt&quot;)));</span>
+      String line;
+<span class="fc bfc" id="L88" title="All 2 branches covered.">      while ((line = reader.readLine()) != null) {</span>
+<span class="fc" id="L89">        CityDistance citydist = new CityDistance();</span>
+<span class="fc" id="L90">        String[] args = line.split(&quot; &quot;);</span>
+<span class="fc" id="L91">        citydist.setCityA(args[0].replace(&quot;_&quot;, &quot; &quot;));</span>
+<span class="fc" id="L92">        citydist.setCityB(args[1].replace(&quot;_&quot;, &quot; &quot;));</span>
+<span class="fc" id="L93">        citydist.setDistance((int) Double.parseDouble(args[2]));</span>
+<span class="fc" id="L94">        cityDistanceDAO.add(citydist);</span>
+<span class="fc" id="L95">      }</span>
+<span class="fc" id="L96">      reader.close();</span>
+<span class="nc" id="L97">    } catch (IOException e) {</span>
+<span class="nc" id="L98">      String message = &quot;I/O error has occurred&quot;;</span>
+<span class="nc" id="L99">      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, message, e);</span>
+<span class="fc" id="L100">    } catch (NullPointerException e) {</span>
+<span class="fc" id="L101">      String message = &quot;File &quot; + distancesFileName + &quot;.txt not found&quot;;</span>
+<span class="fc" id="L102">      throw new ResponseStatusException(HttpStatus.NOT_FOUND, message, e);</span>
+<span class="fc" id="L103">    }</span>
+<span class="fc" id="L104">  }</span>
+
+  public List&lt;City&gt; getAllCities() {
+<span class="fc" id="L107">    return cityDAO.readAll();</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

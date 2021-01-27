@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CarService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">logiweb</a> &gt; <a href="index.source.html" class="el_package">org.retal.logiweb.service</a> &gt; <span class="el_source">CarService.java</span></div><h1>CarService.java</h1><pre class="source lang-java linenums">package org.retal.logiweb.service;
+
+import java.util.List;
+import java.util.Random;
+import java.util.stream.Collectors;
+import org.apache.log4j.Logger;
+import org.retal.logiweb.dao.CarDAO;
+import org.retal.logiweb.dao.OrderDAO;
+import org.retal.logiweb.domain.Car;
+import org.retal.logiweb.domain.City;
+import org.retal.logiweb.domain.Order;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.Validator;
+
+/**
+ * Service, containing business-logic methods regarding {@linkplain org.retal.logiweb.domain.Car Car}
+ * entities.
+ * 
+ * @author Alexander Retivov
+ *
+ */
+@Service
+public class CarService {
+
+  private final CarDAO carDAO;
+
+  private final OrderDAO orderDAO;
+
+  private final CityService cityService;
+
+  private final Validator carValidator;
+
+<span class="fc" id="L35">  private final Random rand = new Random();</span>
+
+<span class="fc" id="L37">  private static final Logger log = Logger.getLogger(CarService.class);</span>
+
+  /**
+   * Creates an instance of this class using constructor-based dependency injection.
+   */
+  @Autowired
+  public CarService(CarDAO carDAO, OrderDAO orderDAO, CityService cityService,
+<span class="fc" id="L44">      CarValidator carValidator) {</span>
+<span class="fc" id="L45">    this.carDAO = carDAO;</span>
+<span class="fc" id="L46">    this.orderDAO = orderDAO;</span>
+<span class="fc" id="L47">    this.cityService = cityService;</span>
+<span class="fc" id="L48">    this.carValidator = carValidator;</span>
+<span class="fc" id="L49">  }</span>
+
+  public List&lt;Car&gt; getAllCars() {
+<span class="fc" id="L52">    return carDAO.readAll();</span>
+  }
+
+  public Car getCar(String primaryKey) {
+<span class="fc" id="L56">    return carDAO.read(primaryKey);</span>
+  }
+
+  /**
+   * Validates and adds new car to database.
+   * 
+   * @param car {@linkplain org.retal.logiweb.domain.Car Car} to be added
+   * @param bindingResult object to store validation result
+   * @param capacity car capacity (user input) to be parsed
+   * @param shiftlength shift length (user input) to be parsed
+   */
+  public void addNewCar(Car car, BindingResult bindingResult, String capacity, String shiftlength) {
+<span class="fc" id="L68">    doInitialDataValidation(car, bindingResult, capacity, shiftlength);</span>
+<span class="fc" id="L69">    Car correlationDB = carDAO.read(car.getRegistrationId());</span>
+<span class="fc bfc" id="L70" title="All 2 branches covered.">    if (correlationDB != null) {</span>
+<span class="fc" id="L71">      bindingResult.reject(&quot;uniqueCarId&quot;, &quot;Car ID must be unique&quot;);</span>
+    }
+<span class="fc bfc" id="L73" title="All 2 branches covered.">    if (!bindingResult.hasErrors()) {</span>
+<span class="fc" id="L74">      carDAO.add(car);</span>
+    }
+<span class="fc" id="L76">  }</span>
+
+  /**
+   * Deletes car from database. Can not delete car if it's assigned to order.
+   * 
+   * @param car car {@linkplain org.retal.logiweb.domain.Car Car} to be deleted
+   * @return true if deletion was successful, false otherwise
+   */
+  public boolean deleteCar(Car car) {
+<span class="fc" id="L85">    boolean status = false;</span>
+<span class="fc bfc" id="L86" title="All 4 branches covered.">    if (car.getOrder() == null &amp;&amp; car.getDriver() == null) {</span>
+<span class="fc" id="L87">      status = true;</span>
+<span class="fc" id="L88">      carDAO.delete(car);</span>
+    }
+<span class="fc" id="L90">    return status;</span>
+  }
+
+  /**
+   * Updates car in database.
+   * 
+   * @param car car {@linkplain org.retal.logiweb.domain.Car Car} to be updated
+   */
+  public void updateCar(Car car, BindingResult bindingResult, String capacity, String shiftlength) {
+<span class="fc" id="L99">    log.info(&quot;Attempt to update car ID = &quot; + car.getRegistrationId());</span>
+<span class="fc" id="L100">    doInitialDataValidation(car, bindingResult, capacity, shiftlength);</span>
+<span class="fc" id="L101">    Car persistedCar = carDAO.read(car.getRegistrationId());</span>
+<span class="fc bfc" id="L102" title="All 4 branches covered.">    if (persistedCar.getOrder() != null || persistedCar.getDriver() != null) {</span>
+<span class="fc" id="L103">      bindingResult.reject(&quot;carUnavailable&quot;,</span>
+          &quot;Car could not be updated due to assigned order or being driven by someone&quot;);
+    }
+<span class="fc bfc" id="L106" title="All 2 branches covered.">    if (!bindingResult.hasErrors()) {</span>
+<span class="fc" id="L107">      carDAO.update(car);</span>
+    }
+<span class="fc" id="L109">  }</span>
+
+  /**
+   * Parses String objects and validates other input.
+   * 
+   * @param car {@linkplain org.retal.logiweb.domain.Car Car} to be validated
+   * @param bindingResult object to store validation result
+   * @param capacity required capacity string to be parsed
+   * @param shiftlength shift length string to be parsed
+   */
+  private void doInitialDataValidation(Car car, BindingResult bindingResult, String capacity,
+      String shiftlength) {
+    try {
+<span class="fc" id="L122">      Integer shiftLength = Integer.parseInt(shiftlength);</span>
+<span class="fc" id="L123">      car.setShiftLength(shiftLength);</span>
+<span class="fc" id="L124">    } catch (NumberFormatException e) {</span>
+<span class="fc" id="L125">      bindingResult.reject(&quot;shiftLength&quot;, &quot;Shift length must be positive integer&quot;);</span>
+<span class="fc" id="L126">    }</span>
+    try {
+<span class="fc" id="L128">      Float capacityTons = Float.parseFloat(capacity);</span>
+<span class="fc" id="L129">      car.setCapacityTons(capacityTons);</span>
+<span class="fc" id="L130">    } catch (NumberFormatException e) {</span>
+<span class="fc" id="L131">      bindingResult.reject(&quot;capacityTons&quot;, &quot;Capacity must be positive decimal&quot;);</span>
+<span class="fc" id="L132">    }</span>
+<span class="fc" id="L133">    carValidator.validate(car, bindingResult);</span>
+<span class="fc" id="L134">  }</span>
+
+  /**
+   * Generates one car for each city and adds it to database.
+   */
+  public void generateCarForEachCity() {
+<span class="fc" id="L140">    List&lt;City&gt; cities = cityService.getAllCities();</span>
+<span class="fc bfc" id="L141" title="All 2 branches covered.">    for (City c : cities) {</span>
+<span class="fc" id="L142">      Car car = new Car();</span>
+<span class="fc" id="L143">      car.setIsWorking(true);</span>
+<span class="fc" id="L144">      car.setLocation(c);</span>
+<span class="fc" id="L145">      car.setCapacityTons((float) (1 + rand.nextInt(41) * 1.0 / 10));</span>
+<span class="fc" id="L146">      String registrationLetters = c.getCurrentCity().substring(0, 2).toUpperCase();</span>
+<span class="fc" id="L147">      String registrationNumber = &quot;&quot; + (10000 + rand.nextInt(90000));</span>
+<span class="fc" id="L148">      car.setRegistrationId(registrationLetters + registrationNumber);</span>
+<span class="fc" id="L149">      car.setShiftLength(12 + rand.nextInt(13));</span>
+<span class="fc" id="L150">      carDAO.add(car);</span>
+<span class="fc" id="L151">    }</span>
+<span class="fc" id="L152">  }</span>
+
+  /**
+   * Gets all available cars for given order ID.
+   * 
+   * @param id {@linkplain org.retal.logiweb.domain.Order Order} related ID
+   * @return list of all cars which can be re-assigned to that order or null if order is completed
+   */
+  public List&lt;Car&gt; getAllAvailableCarsForOrderId(Integer id) {
+<span class="fc" id="L161">    Order order = orderDAO.read(id);</span>
+<span class="fc bfc" id="L162" title="All 2 branches covered.">    List&lt;Car&gt; availableCars = order.getIsCompleted() ? null</span>
+<span class="fc bfc" id="L163" title="All 2 branches covered.">        : carDAO.readAll().stream().filter(c -&gt; c.getIsWorking()).filter(c -&gt; c.getOrder() == null)</span>
+<span class="pc bpc" id="L164" title="1 of 2 branches missed.">            .filter(c -&gt; c.getCapacityTons() &gt;= order.getRequiredCapacity())</span>
+<span class="fc" id="L165">            .filter(c -&gt; c.getLocation().equals(order.getCar().getLocation()))</span>
+<span class="pc bpc" id="L166" title="1 of 2 branches missed.">            .filter(c -&gt; c.getShiftLength() &gt;= order.getRequiredShiftLength())</span>
+<span class="fc" id="L167">            .collect(Collectors.toList());</span>
+    String message =
+<span class="fc bfc" id="L169" title="All 2 branches covered.">        availableCars != null ? availableCars.size() + &quot; cars are fit for order ID=&quot; + order.getId()</span>
+<span class="fc" id="L170">            : &quot;null&quot;;</span>
+<span class="fc" id="L171">    log.debug(message);</span>
+<span class="fc" id="L172">    return availableCars;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>
