@@ -87,10 +87,10 @@ public class CargoAndOrdersService {
    * Creates an instance of this class using constructor-based dependency injection.
    */
   @Autowired
-  public CargoAndOrdersService(CargoDAO cargoDAO, CityDAO cityDAO, CityDistanceDAO cityDistanceDAO,
+<span class="fc" id="L90">  public CargoAndOrdersService(CargoDAO cargoDAO, CityDAO cityDAO, CityDistanceDAO cityDistanceDAO,</span>
       OrderDAO orderDAO, UserDAO userDAO, OrderRouteProgressionDAO orderRouteProgressionDAO,
       CarService carService, RoutePointDAO routePointDAO, CargoValidator cargoValidator,
-<span class="fc" id="L93">      RoutePointsValidator routePointsValidator, SessionInfo sessionInfo) {</span>
+      RoutePointsValidator routePointsValidator, SessionInfo sessionInfo) {
 <span class="fc" id="L94">    this.cargoDAO = cargoDAO;</span>
 <span class="fc" id="L95">    this.cityDAO = cityDAO;</span>
 <span class="fc" id="L96">    this.cityDistanceDAO = cityDistanceDAO;</span>
@@ -129,7 +129,7 @@ public class CargoAndOrdersService {
 <span class="fc" id="L129">    boolean cargoChanged = false;</span>
 <span class="fc bfc" id="L130" title="All 2 branches covered.">    for (Cargo cargo : order.getCargo()) {</span>
 <span class="pc bpc" id="L131" title="1 of 2 branches missed.">      cargoChanged |= !cargo.getStatus().equalsIgnoreCase(CargoStatus.PREPARED.toString());</span>
-<span class="fc" id="L132">    }</span>
+    }
 <span class="fc bfc" id="L133" title="All 2 branches covered.">    return !order.getIsCompleted() &amp;&amp; (!order.getCar().getLocation().getCurrentCity()</span>
 <span class="pc bpc" id="L134" title="1 of 4 branches missed.">        .equals(order.getRoute().split(Order.ROUTE_DELIMETER)[0]) || cargoChanged);</span>
   }
@@ -154,7 +154,7 @@ public class CargoAndOrdersService {
 <span class="fc" id="L154">      car = carService.getCar(input[1]);</span>
 <span class="fc" id="L155">    } catch (Exception e) {</span>
 <span class="fc" id="L156">      errorMessage = &quot;Invalid argument, please don't try to change page code.&quot;;</span>
-<span class="fc" id="L157">    }</span>
+    }
 <span class="fc bfc" id="L158" title="All 6 branches covered.">    if (car == null || order == null || order.getIsCompleted()) {</span>
 <span class="fc" id="L159">      errorMessage = &quot;Invalid argument, please don't try to change page code.&quot;;</span>
     }
@@ -197,7 +197,7 @@ public class CargoAndOrdersService {
 <span class="fc" id="L197">      cargo.setMass(weightInt);</span>
 <span class="fc" id="L198">    } catch (NumberFormatException e) {</span>
 <span class="fc" id="L199">      bindingResult.reject(&quot;mass&quot;, &quot;Cargo weight length must be non-negative integer&quot;);</span>
-<span class="fc" id="L200">    }</span>
+    }
 <span class="fc" id="L201">    cargoValidator.validate(cargo, bindingResult);</span>
 <span class="fc bfc" id="L202" title="All 2 branches covered.">    if (!bindingResult.hasErrors()) {</span>
 <span class="fc" id="L203">      cargoDAO.add(cargo);</span>
@@ -220,7 +220,7 @@ public class CargoAndOrdersService {
 <span class="fc bfc" id="L220" title="All 2 branches covered.">    if (cargo == null) {</span>
 <span class="fc" id="L221">      bindingResult.reject(&quot;globalCargo&quot;, &quot;Cargo not found&quot;);</span>
 <span class="fc" id="L222">      log.warn(&quot;Cargo not found&quot;);</span>
-    } else {
+<span class="fc" id="L223">    } else {</span>
 <span class="fc bfc" id="L224" title="All 2 branches covered.">      if (!order.getCargo().contains(cargo)) {</span>
 <span class="fc" id="L225">        bindingResult.reject(&quot;globalCargo&quot;, &quot;Attempt to change unassigned to your current&quot;</span>
             + &quot; order cargo. Please don't try to cahnge page code&quot;);
@@ -246,7 +246,7 @@ public class CargoAndOrdersService {
 <span class="fc bfc" id="L246" title="All 2 branches covered.">      if (!bindingResult.hasErrors()) {</span>
 <span class="fc" id="L247">        String newStatus = status.toString().toLowerCase();</span>
 <span class="fc" id="L248">        log.info(&quot;Cargo id=&quot; + cargo.getId() + &quot;: changed status from &quot; + cargo.getStatus() + &quot; to &quot;</span>
-            + newStatus);
+<span class="fc" id="L249">            + newStatus);</span>
 <span class="fc" id="L250">        cargo.setStatus(newStatus);</span>
 <span class="fc" id="L251">        cargoDAO.update(cargo);</span>
 <span class="fc" id="L252">        return checkOrderForCompletion(order);</span>
@@ -267,7 +267,7 @@ public class CargoAndOrdersService {
 <span class="fc bfc" id="L267" title="All 2 branches covered.">    for (Cargo c : order.getCargo()) {</span>
 <span class="fc" id="L268">      log.debug(c.getStatus());</span>
 <span class="fc" id="L269">      isCompleted &amp;= c.getStatus().equalsIgnoreCase(CargoStatus.UNLOADED.toString());</span>
-<span class="fc" id="L270">    }</span>
+    }
 <span class="fc bfc" id="L271" title="All 2 branches covered.">    if (isCompleted) {</span>
 <span class="fc bfc" id="L272" title="All 2 branches covered.">      for (UserInfo driverInfo : order.getDriverInfo()) {</span>
 <span class="fc" id="L273">        log.debug(driverInfo.getUser().toString());</span>
@@ -275,7 +275,7 @@ public class CargoAndOrdersService {
 <span class="fc" id="L275">        driverInfo.setCar(null);</span>
 <span class="fc" id="L276">        driverInfo.setHoursDrived(null);</span>
 <span class="fc" id="L277">        userDAO.update(driverInfo.getUser());</span>
-<span class="fc" id="L278">      }</span>
+      }
 <span class="fc" id="L279">      orderRouteProgressionDAO.delete(order.getOrderRouteProgression());</span>
 <span class="fc" id="L280">      order.setIsCompleted(isCompleted);</span>
 <span class="fc" id="L281">      order.setCar(null);</span>
@@ -326,7 +326,7 @@ public class CargoAndOrdersService {
 <span class="fc" id="L326">      rp.setCity(cityDAO.read(rpDTO.getCityName()));</span>
 <span class="fc" id="L327">      rp.setCargo(cargoDAO.read(rpDTO.getCargoId()));</span>
 <span class="fc" id="L328">      entityList.add(rp);</span>
-<span class="fc" id="L329">    }</span>
+    }
 <span class="fc" id="L330">    return entityList;</span>
   }
 
@@ -360,18 +360,18 @@ public class CargoAndOrdersService {
       // then algorithm would have been in an infinite loop
 <span class="pc bpc" id="L361" title="2 of 4 branches missed.">      if (route == null || route.isEmpty()) {</span>
 <span class="nc" id="L362">        bindingResult.reject(&quot;globalRoute&quot;, &quot;Could not calculate route.&quot;);</span>
-      } else {
+<span class="nc" id="L363">      } else {</span>
 <span class="fc bfc" id="L364" title="All 2 branches covered.">        if (selectedCar == null) {</span>
 <span class="fc" id="L365">          bindingResult.reject(&quot;globalCar&quot;,</span>
-              &quot;Could not select car. Please make sure there is&quot; + &quot; working car in &quot;
+<span class="fc" id="L366">              &quot;Could not select car. Please make sure there is&quot; + &quot; working car in &quot;</span>
 <span class="fc" id="L367">                  + route.split(Order.ROUTE_DELIMETER)[0] + &quot; which has capacity of &quot;</span>
-                  + requiredCapacity + &quot; tons.&quot;);
+<span class="fc" id="L368">                  + requiredCapacity + &quot; tons.&quot;);</span>
         }
 <span class="fc bfc" id="L370" title="All 2 branches covered.">        if (drivers == null) {</span>
 <span class="fc" id="L371">          bindingResult.reject(&quot;globalDrivers&quot;,</span>
-              &quot;Could not select drivers. Please make sure there are&quot;
+<span class="fc" id="L372">              &quot;Could not select drivers. Please make sure there are&quot;</span>
 <span class="fc" id="L373">                  + &quot; available drivers on route &quot; + route.replace(Order.ROUTE_DELIMETER, &quot;-&gt;&quot;)</span>
-                  + &quot;.&quot;);
+<span class="fc" id="L374">                  + &quot;.&quot;);</span>
         }
       }
 <span class="fc bfc" id="L377" title="All 2 branches covered.">      if (!bindingResult.hasErrors()) {</span>
@@ -391,12 +391,12 @@ public class CargoAndOrdersService {
 <span class="fc bfc" id="L391" title="All 2 branches covered.">        for (User driver : drivers) {</span>
 <span class="fc" id="L392">          driver.getUserInfo().setOrder(order);</span>
 <span class="fc" id="L393">          userDAO.update(driver);</span>
-<span class="fc" id="L394">        }</span>
+        }
 <span class="fc" id="L395">        routePointDAO.setSession(session);</span>
 <span class="fc bfc" id="L396" title="All 2 branches covered.">        for (RoutePoint rp : points) {</span>
 <span class="fc" id="L397">          rp.setOrder(order);</span>
 <span class="fc" id="L398">          routePointDAO.add(rp);</span>
-<span class="fc" id="L399">        }</span>
+        }
 <span class="fc" id="L400">        transaction.commit();</span>
 <span class="fc" id="L401">        orderDAO.setSession(null);</span>
 <span class="fc" id="L402">        routePointDAO.setSession(null);</span>
@@ -446,7 +446,7 @@ public class CargoAndOrdersService {
     // adding all unique cities to set
 <span class="fc bfc" id="L447" title="All 2 branches covered.">    for (RoutePoint rp : list) {</span>
 <span class="fc" id="L448">      allRoutePointCities.add(rp.getCity());</span>
-<span class="fc" id="L449">    }</span>
+    }
 <span class="fc" id="L450">    List&lt;City&gt; rpCities = new ArrayList&lt;&gt;(allRoutePointCities);</span>
     // filling two lists with city indexes for loading and unloading cargo indexed i
 <span class="fc bfc" id="L452" title="All 2 branches covered.">    for (RoutePoint rp : list) {</span>
@@ -456,13 +456,13 @@ public class CargoAndOrdersService {
 <span class="fc" id="L456">            loadingCities.add(rpCities.indexOf(rp.getCity()));</span>
 <span class="fc" id="L457">            unloadingCities.add(rpCities.indexOf(rp2.getCity()));</span>
           }
-<span class="fc" id="L459">        }</span>
+        }
       }
-<span class="fc" id="L461">    }</span>
+    }
 <span class="fc" id="L462">    String t = &quot;&quot;;</span>
 <span class="fc bfc" id="L463" title="All 2 branches covered.">    for (City c : rpCities) {</span>
 <span class="fc" id="L464">      t += c.getCurrentCity() + &quot; &quot;;</span>
-<span class="fc" id="L465">    }</span>
+    }
 <span class="fc" id="L466">    log.debug(t);</span>
 <span class="fc" id="L467">    log.debug(loadingCities.toString());</span>
 <span class="fc" id="L468">    log.debug(unloadingCities.toString());</span>
@@ -493,7 +493,7 @@ public class CargoAndOrdersService {
           // simulated annealing algorithm is used for calculating path
 <span class="fc" id="L494">          int[] annealing = findOptimalPathUsingAnnealingImitation(matrix,</span>
 <span class="fc" id="L495">              ANNEALING_START_TEMPERAURE, ANNEALING_END_TEMPERATURE, rpCities.indexOf(rp.getCity()),</span>
-              loadingCities, unloadingCities, false);
+<span class="fc" id="L496">              loadingCities, unloadingCities, false);</span>
 <span class="fc" id="L497">          String route = &quot;&quot;;</span>
 <span class="fc" id="L498">          int length = 0;</span>
 <span class="fc bfc" id="L499" title="All 2 branches covered.">          for (int path : annealing) {</span>
@@ -510,7 +510,7 @@ public class CargoAndOrdersService {
 <span class="fc" id="L510">          log.debug(&quot;Cycle detected&quot;);</span>
         }
       }
-<span class="fc" id="L513">    }</span>
+    }
     // if we have full cycle (i.e. each city is both city of loading and unloading come cargo)
     // for example:
     // cargo 1 - load in A; drop in B
@@ -537,7 +537,7 @@ public class CargoAndOrdersService {
 <span class="fc" id="L537">            resolvePathsForMatrix(matrix, bigMatrix, cityNames, rpCities);</span>
 <span class="fc" id="L538">            log.info(&quot;Calculating optimized route for cycle (annealing algorithm)...&quot;);</span>
 <span class="fc" id="L539">            int[] annealingPaths = findOptimalPathUsingAnnealingImitation(matrix,</span>
-                ANNEALING_START_TEMPERAURE, ANNEALING_END_TEMPERATURE,
+<span class="fc" id="L540">                ANNEALING_START_TEMPERAURE, ANNEALING_END_TEMPERATURE,</span>
 <span class="fc" id="L541">                rpCities.indexOf(rp.getCity()), loadingCities, unloadingCities, true);</span>
 <span class="fc" id="L542">            String path = &quot;&quot;;</span>
 <span class="fc" id="L543">            int length = 0;</span>
@@ -553,7 +553,7 @@ public class CargoAndOrdersService {
 <span class="fc" id="L553">            optimalRoutesMatrixes.put(path, matrix);</span>
           }
         }
-<span class="fc" id="L556">      }</span>
+      }
     }
     // now we have to find the shortest optimal route
 <span class="fc" id="L559">    String shortestPath = &quot;&quot;;</span>
@@ -565,7 +565,7 @@ public class CargoAndOrdersService {
 <span class="fc" id="L565">        shortestPathLength = e.getValue();</span>
 <span class="fc" id="L566">        shortestPathMatrix = optimalRoutesMatrixes.get(shortestPath);</span>
       }
-<span class="fc" id="L568">    }</span>
+    }
     // calculating required capacity when following path
 <span class="fc" id="L570">    String[] shortestPathCities = shortestPath.split(&quot; &quot;);</span>
 <span class="fc" id="L571">    float requiredCapacity = 0;</span>
@@ -574,7 +574,7 @@ public class CargoAndOrdersService {
 <span class="fc bfc" id="L574" title="All 4 branches covered.">      if (rp.getCity().getCurrentCity().equals(shortestPathCities[0]) &amp;&amp; rp.getIsLoading()) {</span>
 <span class="fc" id="L575">        currentCapacity = currentCapacity + rp.getCargo().getMass();</span>
       }
-<span class="fc" id="L577">    }</span>
+    }
 <span class="fc" id="L578">    requiredCapacity = currentCapacity;</span>
 <span class="fc" id="L579">    log.debug(&quot;Starting capacity(kg) - &quot; + requiredCapacity);</span>
 <span class="fc bfc" id="L580" title="All 2 branches covered.">    for (int i = 1; i &lt; shortestPathCities.length - 1; i++) {</span>
@@ -586,7 +586,7 @@ public class CargoAndOrdersService {
 <span class="fc" id="L586">            requiredCapacity = currentCapacity;</span>
           }
         }
-<span class="fc" id="L589">      }</span>
+      }
     }
 <span class="fc" id="L591">    requiredCapacity /= 1000;</span>
 <span class="fc" id="L592">    log.debug(&quot;Required capacity - &quot; + requiredCapacity + &quot; tons&quot;);</span>
@@ -605,10 +605,10 @@ public class CargoAndOrdersService {
 <span class="fc" id="L605">            selectedDriversList.add(drivers);</span>
 <span class="fc" id="L606">            break;</span>
           }
-<span class="fc" id="L608">        }</span>
+        }
 <span class="fc" id="L609">        break;</span>
       }
-<span class="fc" id="L611">    }</span>
+    }
     // selecting car with minimal fitting capacity
 <span class="fc" id="L613">    log.debug(&quot;Matching cars: &quot; + selectedCarList.toString());</span>
 <span class="fc" id="L614">    Car selectedCar = selectedCarList.stream()</span>
@@ -622,7 +622,7 @@ public class CargoAndOrdersService {
 <span class="fc bfc" id="L622" title="All 2 branches covered.">    String driversMessage = selectedDrivers != null ? selectedDrivers.toString() : &quot;null&quot;;</span>
 <span class="fc bfc" id="L623" title="All 2 branches covered.">    String carMessage = selectedCar != null ? selectedCar.toString() : &quot;null&quot;;</span>
 <span class="fc" id="L624">    log.debug(&quot;Selected drivers, car and route - &quot; + driversMessage + &quot;; &quot; + carMessage + &quot;; &quot;</span>
-        + shortestPath);
+<span class="fc" id="L625">        + shortestPath);</span>
 <span class="fc" id="L626">    return new Object[] {selectedCar, selectedDrivers, shortestPath, requiredCapacity};</span>
   }
 
@@ -686,7 +686,7 @@ public class CargoAndOrdersService {
 <span class="fc bfc" id="L686" title="All 2 branches covered.">      for (boolean flag : visited) {</span>
 <span class="fc" id="L687">        allVisited &amp;= flag;</span>
       }
-<span class="fc" id="L689">    }</span>
+    }
 <span class="fc" id="L690">    log.debug(&quot;Dijkstra: visited all cities; distance is &quot; + weights[to]);</span>
 <span class="fc" id="L691">    int current = to;</span>
 <span class="fc bfc" id="L692" title="All 2 branches covered.">    while (current != from) {</span>
@@ -747,7 +747,7 @@ public class CargoAndOrdersService {
                 }
               }
             }
-<span class="fc" id="L750">          }</span>
+          }
         }
       }
 <span class="fc bfc" id="L753" title="All 2 branches covered.">      if (visited[i]) {</span>
@@ -770,7 +770,7 @@ public class CargoAndOrdersService {
 <span class="fc" id="L770">        k++;</span>
 <span class="fc bfc" id="L771" title="All 2 branches covered.">        if (loadingCities.indexOf(i) != -1) {</span>
 <span class="fc" id="L772">          i = unloadingCities.get(loadingCities.indexOf(i));</span>
-        } else {
+<span class="fc" id="L773">        } else {</span>
 <span class="fc" id="L774">          int index = unloadingCities.indexOf(i);</span>
 <span class="fc" id="L775">          int x = loadingCities.get(index);</span>
 <span class="fc bfc" id="L776" title="All 2 branches covered.">          for (int j = 0; j &lt; loadingCities.size(); j++) {</span>
@@ -783,7 +783,7 @@ public class CargoAndOrdersService {
 <span class="nc" id="L783">              break;</span>
             }
           }
-<span class="fc" id="L786">        }</span>
+        }
         // log.debug(Arrays.toString(answer));
       }
 <span class="fc" id="L789">      boolean allVisited = true;</span>
@@ -827,7 +827,7 @@ public class CargoAndOrdersService {
 <span class="fc bfc" id="L827" title="All 2 branches covered.">      if (candidateEnergy &lt; currentEnergy) {</span>
 <span class="fc" id="L828">        currentEnergy = candidateEnergy;</span>
 <span class="fc" id="L829">        route = routeCandidate;</span>
-      } else {
+<span class="fc" id="L830">      } else {</span>
 <span class="fc" id="L831">        double p = getTranstionProbability(candidateEnergy - currentEnergy, currentTemperature);</span>
 <span class="fc bfc" id="L832" title="All 2 branches covered.">        if (makeTransit(p)) {</span>
 <span class="fc" id="L833">          currentEnergy = candidateEnergy;</span>
@@ -837,7 +837,7 @@ public class CargoAndOrdersService {
 <span class="fc" id="L837">      currentTemperature = decreaseTemperature(initialTemperature, k);</span>
       // log.debug(&quot;k = &quot; + k + &quot;; T = &quot; + currentTemperature);
 <span class="fc" id="L839">      k++;</span>
-<span class="fc" id="L840">    }</span>
+    }
 <span class="fc" id="L841">    log.debug(&quot;Annealing ended&quot;);</span>
 <span class="fc" id="L842">    return route;</span>
   }
@@ -887,7 +887,7 @@ public class CargoAndOrdersService {
 <span class="fc" id="L887">          sequenceCorrect &amp;=</span>
 <span class="fc bfc" id="L888" title="All 2 branches covered.">              state.indexOf(loadingCities.get(i)) &lt; state.indexOf(unloadingCities.get(i));</span>
         }
-      } else {
+<span class="fc" id="L890">      } else {</span>
 <span class="fc" id="L891">        adaptCandidateForCycleProcessing(state, loadingCities, unloadingCities);</span>
       }
     }
@@ -996,7 +996,7 @@ public class CargoAndOrdersService {
 <span class="fc" id="L996">      int j = cityNames.indexOf(cd.getCityB());</span>
 <span class="fc" id="L997">      matrix[i][j] = cd.getDistance();</span>
 <span class="fc" id="L998">      matrix[j][i] = cd.getDistance();</span>
-<span class="fc" id="L999">    }</span>
+    }
 <span class="fc" id="L1000">  }</span>
 
   /**
@@ -1017,7 +1017,7 @@ public class CargoAndOrdersService {
 <span class="fc bfc" id="L1017" title="All 2 branches covered.">        if (bigMatrix[k][m] != Integer.MAX_VALUE / 2) {</span>
 <span class="fc" id="L1018">          matrix[i][j] = bigMatrix[k][m];</span>
 <span class="fc" id="L1019">          matrix[j][i] = bigMatrix[k][m];</span>
-        } else {
+<span class="fc" id="L1020">        } else {</span>
 <span class="fc" id="L1021">          List&lt;Integer&gt; route = new ArrayList&lt;&gt;();</span>
 <span class="fc" id="L1022">          log.info(&quot;Trying to calulate path between &quot; + rpCities.get(i).getCurrentCity() + &quot; and &quot;</span>
 <span class="fc" id="L1023">              + rpCities.get(j).getCurrentCity());</span>
@@ -1027,7 +1027,7 @@ public class CargoAndOrdersService {
 <span class="fc" id="L1027">          String path = &quot;&quot;;</span>
 <span class="fc bfc" id="L1028" title="All 2 branches covered.">          for (Integer x : route) {</span>
 <span class="fc" id="L1029">            path += x + &quot; &quot;;</span>
-<span class="fc" id="L1030">          }</span>
+          }
 <span class="fc" id="L1031">          log.debug(path);</span>
         }
       }
@@ -1085,7 +1085,7 @@ public class CargoAndOrdersService {
 <span class="pc bpc" id="L1085" title="1 of 2 branches missed.">      if (counters[selectedDriverCity] &lt; drivers.get(selectedDriverCity).size()) {</span>
 <span class="fc" id="L1086">        log.debug(&quot;Selecting driver&quot;);</span>
 <span class="fc" id="L1087">        driver = drivers.get(selectedDriverCity).get(counters[selectedDriverCity]);</span>
-      } else {
+<span class="fc" id="L1088">      } else {</span>
 <span class="nc" id="L1089">        log.debug(&quot;Deleting last entry from chain&quot;);</span>
 <span class="nc" id="L1090">        currentCityIndex--;</span>
 <span class="nc" id="L1091">        selectedDriverCity = currentCityIndex;</span>
@@ -1118,17 +1118,17 @@ public class CargoAndOrdersService {
 <span class="fc" id="L1118">        currentCityIndex++;</span>
 <span class="fc" id="L1119">        driversChain.add(driver);</span>
 <span class="fc" id="L1120">        calendarChain.add(calendar);</span>
-      } else {
+<span class="fc" id="L1121">      } else {</span>
 <span class="fc" id="L1122">        hoursAtDriving = 0;</span>
 <span class="fc bfc" id="L1123" title="All 2 branches covered.">        if (selectedDriverCity != currentCityIndex) {</span>
 <span class="fc" id="L1124">          log.debug(&quot;City has changed&quot;);</span>
 <span class="fc" id="L1125">          selectedDriverCity = currentCityIndex;</span>
-        } else {
+<span class="fc" id="L1126">        } else {</span>
 <span class="fc" id="L1127">          log.debug(&quot;City hasn't changed, switching to next driver&quot;);</span>
 <span class="fc" id="L1128">          counters[selectedDriverCity]++;</span>
         }
       }
-<span class="fc" id="L1131">    }</span>
+    }
 <span class="fc bfc" id="L1132" title="All 2 branches covered.">    return currentCityIndex == n - 1 ? driversChain : null;</span>
   }
 

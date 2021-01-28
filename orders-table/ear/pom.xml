@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.retal</groupId>
+		<artifactId>orders-table</artifactId>
+		<version>${project.version}</version>
+	</parent>
+
+	<artifactId>ear</artifactId>
+	<packaging>ear</packaging>
+
+	<name>ear assembly</name>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.retal</groupId>
+			<artifactId>ejbs</artifactId>
+			<type>ejb</type>
+		</dependency>
+		<dependency>
+			<groupId>org.retal</groupId>
+			<artifactId>servlet</artifactId>
+			<type>war</type>
+		</dependency>
+		<dependency>
+			<groupId>org.retal</groupId>
+			<artifactId>primary-source</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>javax</groupId>
+			<artifactId>javaee-api</artifactId>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-ear-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifest>
+							<addClasspath>true</addClasspath>
+						</manifest>
+					</archive>
+					<version>8</version>
+					<modules>
+						<webModule>
+							<groupId>org.retal</groupId>
+							<artifactId>servlet</artifactId>
+							<contextRoot>/table</contextRoot>
+						</webModule>
+					</modules>
+				</configuration>
+			</plugin>
+			<!-- https://mvnrepository.com/artifact/org.wildfly.plugins/wildfly-maven-plugin -->
+			<plugin>
+				<groupId>org.wildfly.plugins</groupId>
+				<artifactId>wildfly-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>deploy-to-wildfly</id>
+						<phase>install</phase>
+						<goals>
+							<goal>deploy</goal>
+						</goals>
+						<configuration>
+							<force>true</force>
+							<id>WildFlyServer</id>
+							<port>10090</port>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>

@@ -147,7 +147,7 @@
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
-			</dependency>
+		</dependency>
 	</dependencies>
 	<build>
 		<finalName>javaschool</finalName>
@@ -202,11 +202,21 @@
 				<groupId>org.apache.tomcat.maven</groupId>
 				<artifactId>tomcat7-maven-plugin</artifactId>
 				<configuration>
+					<update>true</update>
 					<url>http://localhost:8080/manager/text</url>
 					<server>TomcatServer</server>
 					<path>/logiweb</path>
 					<port>8080</port>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.wildfly.plugins</groupId>
+				<artifactId>wildfly-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>do-not-deploy-to-wildfly</id>
+					</execution>
+				</executions>
 			</plugin>
 			<plugin>
 				<artifactId>maven-surefire-plugin</artifactId>
