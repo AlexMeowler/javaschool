@@ -1,4 +1,0 @@
-logiweb/target/site/apidocs/** linguist-documentation
-logiweb/target/site/jacoco/** linguist-documentation
-logiweb/src/main/webapp/js/bootstrap** linguist-vendored
-logiweb/src/main/webapp/css/bootstrap** linguist-vendored

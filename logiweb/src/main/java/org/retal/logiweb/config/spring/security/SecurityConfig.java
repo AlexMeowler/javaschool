@@ -33,7 +33,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
   /**
    * This method sets up password encoding for user authorization. Currently used password encodes
-   * is {@linkplain org.retal.logiweb.config.spring.security.SHA512PasswordEncoder SHA512PasswordEncoder}
+   * is {@linkplain org.retal.logiweb.config.spring.security.SHA512PasswordEncoder
+   * SHA512PasswordEncoder}
    */
   @Autowired
   public void registerGlobalAuthentication(AuthenticationManagerBuilder auth) throws Exception {
@@ -66,10 +67,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             "/changeCarForOrder/*")
         .hasAnyAuthority(UserRole.MANAGER.toString(), UserRole.ADMIN.toString())
         .antMatchers("/driverPage", "/changeStatus/*", "/changeLocation/*", "/updateCargo/*")
-        .hasAuthority(UserRole.DRIVER.toString())
-        .antMatchers("/log_out").hasAuthority(UserRole.DRIVER.toString()).anyRequest()
-        .authenticated().and().exceptionHandling()
-        .authenticationEntryPoint(authEntryPointAndAccessDeniedHandler)
+        .hasAuthority(UserRole.DRIVER.toString()).antMatchers("/log_out")
+        .hasAuthority(UserRole.DRIVER.toString()).anyRequest().authenticated().and()
+        .exceptionHandling().authenticationEntryPoint(authEntryPointAndAccessDeniedHandler)
         .accessDeniedHandler(authEntryPointAndAccessDeniedHandler);
     http.formLogin().loginPage("/home").loginProcessingUrl("/spring_auth")
         .successHandler(authSuccessHandler).failureUrl("/spring_auth?error")

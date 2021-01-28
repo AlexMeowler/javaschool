@@ -29,7 +29,7 @@ public class DriverPageController {
   private final DriverService driverService;
 
   private final CargoAndOrdersService cargoAndOrdersService;
-  
+
   public static final String DRIVER_PAGE = "/driverPage";
 
   /**
@@ -85,8 +85,8 @@ public class DriverPageController {
   }
 
   /**
-   * Method for changing driver status using {@linkplain org.retal.logiweb.service.DriverService service
-   * layer}.
+   * Method for changing driver status using {@linkplain org.retal.logiweb.service.DriverService
+   * service layer}.
    */
   @GetMapping(value = "/changeStatus/{status}")
   public RedirectView changeStatus(@PathVariable String status, RedirectAttributes redir) {

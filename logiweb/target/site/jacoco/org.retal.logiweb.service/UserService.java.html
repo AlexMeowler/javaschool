@@ -21,8 +21,8 @@ import org.springframework.validation.Validator;
 import org.springframework.web.server.ResponseStatusException;
 
 /**
- * Service, containing business-logic methods regarding {@linkplain org.retal.logiweb.domain.User User} and
- * {@linkplain org.retal.logiweb.domain.UserInfo UserInfo} entities.
+ * Service, containing business-logic methods regarding {@linkplain org.retal.logiweb.domain.User
+ * User} and {@linkplain org.retal.logiweb.domain.UserInfo UserInfo} entities.
  * 
  * @author Alexander Retivov
  *
@@ -40,14 +40,14 @@ public class UserService {
 
 <span class="fc" id="L41">  private static final Logger log = Logger.getLogger(UserService.class);</span>
 
-<span class="fc" id="L43">  public static final String DELETION_UPDATION_ERROR = &quot;ERROR&quot;;</span>
+  public static final String DELETION_UPDATION_ERROR = &quot;ERROR&quot;;
 
   /**
    * Creates an instance of this class using constructor-based dependency injection.
    */
   @Autowired
-<span class="fc" id="L49">  public UserService(UserDAO userDAO, SessionInfo sessionInfo, UserValidator userValidator,</span>
-      CityService cityService) {
+  public UserService(UserDAO userDAO, SessionInfo sessionInfo, UserValidator userValidator,
+<span class="fc" id="L50">      CityService cityService) {</span>
 <span class="fc" id="L51">    this.userDAO = userDAO;</span>
 <span class="fc" id="L52">    this.sessionInfo = sessionInfo;</span>
 <span class="fc" id="L53">    this.userValidator = userValidator;</span>
@@ -113,7 +113,7 @@ public class UserService {
 <span class="fc" id="L113">      UserInfo userInfo = target.getUserInfo();</span>
 <span class="fc bfc" id="L114" title="All 4 branches covered.">      if (userInfo.getCar() == null &amp;&amp; userInfo.getOrder() == null) {</span>
 <span class="fc" id="L115">        userDAO.delete(target);</span>
-<span class="fc" id="L116">      } else {</span>
+      } else {
 <span class="fc" id="L117">        redirect = DELETION_UPDATION_ERROR;</span>
       }
 <span class="fc" id="L119">    } else {</span>
@@ -144,7 +144,7 @@ public class UserService {
 <span class="fc" id="L144">    UserInfo userInfo = target.getUserInfo();</span>
 <span class="fc bfc" id="L145" title="All 4 branches covered.">    if (userInfo.getOrder() != null || userInfo.getCar() != null) {</span>
 <span class="fc" id="L146">      bindingResult.reject(&quot;userUnavailable&quot;,</span>
-<span class="fc" id="L147">          &quot;User could not be updated due to assigned order or being driving car&quot;);</span>
+          &quot;User could not be updated due to assigned order or being driving car&quot;);
     }
 <span class="fc bfc" id="L149" title="All 2 branches covered.">    if (userHasRightsToEditOrDeleteUser(caller, target)) {</span>
 <span class="fc bfc" id="L150" title="All 2 branches covered.">      if (!bindingResult.hasErrors()) {</span>
@@ -157,7 +157,7 @@ public class UserService {
         }
 <span class="fc" id="L158">        userDAO.update(updatedUser);</span>
       }
-<span class="fc" id="L160">    } else {</span>
+    } else {
 <span class="fc" id="L161">      log.warn(&quot;Attempt to edit user without sufficient permissions&quot;);</span>
 <span class="fc" id="L162">      redirect = &quot;/403/&quot; + caller.getLogin();</span>
     }
@@ -221,16 +221,16 @@ public class UserService {
 <span class="fc" id="L221">        userInfo.setCity(cities.get(i));</span>
 <span class="fc" id="L222">        userDAO.add(user);</span>
 <span class="fc" id="L223">        i++;</span>
-      }
+<span class="fc" id="L224">      }</span>
 <span class="fc" id="L225">      namesReader.close();</span>
 <span class="fc" id="L226">      surnamesReader.close();</span>
-<span class="pc" id="L227">    } catch (IOException e) {</span>
+<span class="nc" id="L227">    } catch (IOException e) {</span>
 <span class="nc" id="L228">      String message = &quot;I/O error has occurred&quot;;</span>
 <span class="nc" id="L229">      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, message, e);</span>
 <span class="fc" id="L230">    } catch (NullPointerException e) {</span>
 <span class="fc" id="L231">      String message = &quot;File &quot; + namesFileName + &quot;.txt or &quot; + surnamesFileName + &quot;.txt not found&quot;;</span>
 <span class="fc" id="L232">      throw new ResponseStatusException(HttpStatus.NOT_FOUND, message, e);</span>
-    }
+<span class="fc" id="L233">    }</span>
 <span class="fc" id="L234">  }</span>
 
   /**
@@ -241,7 +241,7 @@ public class UserService {
 <span class="fc bfc" id="L241" title="All 2 branches covered.">    for (User u : userDAO.readAll()) {</span>
 <span class="fc" id="L242">      u.getUserInfo().setHoursWorked(0);</span>
 <span class="fc" id="L243">      userDAO.update(u);</span>
-    }
+<span class="fc" id="L244">    }</span>
 <span class="fc" id="L245">  }</span>
 
 

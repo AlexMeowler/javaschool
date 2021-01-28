@@ -14,8 +14,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 /**
- * Service, containing business-logic methods regarding {@linkplain org.retal.logiweb.domain.City City} and
- * {@linkplain org.retal.logiweb.domain.CityDistance CityDistance} entities.
+ * Service, containing business-logic methods regarding {@linkplain org.retal.logiweb.domain.City
+ * City} and {@linkplain org.retal.logiweb.domain.CityDistance CityDistance} entities.
  * 
  * @author Alexander Retivov
  *

@@ -44,9 +44,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.Validator;
 
 /**
- * Service, containing business-logic methods regarding {@linkplain org.retal.logiweb.domain.Cargo Cargo}
- * and {@linkplain org.retal.logiweb.domain.Order Order} with {@linkplain org.retal.logiweb.domain.RoutePoint
- * RoutePoint} entities.
+ * Service, containing business-logic methods regarding {@linkplain org.retal.logiweb.domain.Cargo
+ * Cargo} and {@linkplain org.retal.logiweb.domain.Order Order} with
+ * {@linkplain org.retal.logiweb.domain.RoutePoint RoutePoint} entities.
  * 
  * @author Alexander Retivov
  *
@@ -331,13 +331,13 @@ public class CargoAndOrdersService {
   }
 
   /**
-   * Validates {@linkplain org.retal.logiweb.domain.RoutePoint RoutePoint} input and if no errors found,
-   * attempts to calculate optimal path and assign car and drivers according to that path. If path,
-   * car and drivers are selected, then {@linkplain org.retal.logiweb.domain.Order Order} is created and
-   * saved to database.
+   * Validates {@linkplain org.retal.logiweb.domain.RoutePoint RoutePoint} input and if no errors
+   * found, attempts to calculate optimal path and assign car and drivers according to that path. If
+   * path, car and drivers are selected, then {@linkplain org.retal.logiweb.domain.Order Order} is
+   * created and saved to database.
    * 
-   * @param wrapper {@linkplain org.retal.logiweb.dto.RoutePointListWrapper wrapper} for list of route
-   *        points to be validated and used for order creation
+   * @param wrapper {@linkplain org.retal.logiweb.dto.RoutePointListWrapper wrapper} for list of
+   *        route points to be validated and used for order creation
    * @param bindingResult object for storing validation result
    */
   public void createOrderAndRoutePoints(RoutePointListWrapper wrapper,
@@ -426,13 +426,14 @@ public class CargoAndOrdersService {
    * @see <a href="https://en.wikipedia.org/wiki/Traveling_salesman_problem">Traveling salesman
    *      problem</a>
    * @param list list of {@linkplain org.retal.logiweb.domain.RoutePoint RoutePoint} entities
-   * @param distances list of all {@linkplain org.retal.logiweb.domain.CityDistance CityDistance} entities
-   *        from database
+   * @param distances list of all {@linkplain org.retal.logiweb.domain.CityDistance CityDistance}
+   *        entities from database
    * @param cities list of all {@linkplain org.retal.logiweb.domain.City City} entities.
-   * @return Object array of size 3: Object[0] is selected {@linkplain org.retal.logiweb.domain.Car Car},
-   *         Object[1] is List<{@linkplain org.retal.logiweb.domain.User User} (selected drivers), Object[3]
-   *         is String (shortest path, cities are divided by ";"), Object[4] is Float (required
-   *         capacity, used in showing error message). Path and required capacity are never null.
+   * @return Object array of size 3: Object[0] is selected {@linkplain org.retal.logiweb.domain.Car
+   *         Car}, Object[1] is List<{@linkplain org.retal.logiweb.domain.User User} (selected
+   *         drivers), Object[3] is String (shortest path, cities are divided by ";"), Object[4] is
+   *         Float (required capacity, used in showing error message). Path and required capacity
+   *         are never null.
    */
   public Object[] findAppropriateCarAndDriversAndCalculatePath(List<RoutePoint> list,
       List<CityDistance> distances, List<City> cities) {
@@ -734,9 +735,9 @@ public class CargoAndOrdersService {
             int counter = 0;
             for (int j = 0; j < visited.length; j++) {
               counter = !visited[j] ? counter + 1 : counter;
-              /*if (!visited[j]) {
-                counter++;
-              }*/
+              /*
+               * if (!visited[j]) { counter++; }
+               */
             }
             if (counter > 1) {
               visited[i] = true;

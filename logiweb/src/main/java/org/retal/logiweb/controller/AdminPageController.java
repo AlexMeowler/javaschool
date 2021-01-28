@@ -208,8 +208,9 @@ public class AdminPageController {
   }
 
   /**
-   * Method responsible for submitting edited user to {@linkplain org.retal.logiweb.service.UserService
-   * service layer} which will update user if input is valid.
+   * Method responsible for submitting edited user to
+   * {@linkplain org.retal.logiweb.service.UserService service layer} which will update user if
+   * input is valid.
    * 
    * @see org.retal.logiweb.domain.User
    */

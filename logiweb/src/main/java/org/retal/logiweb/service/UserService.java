@@ -21,8 +21,8 @@ import org.springframework.validation.Validator;
 import org.springframework.web.server.ResponseStatusException;
 
 /**
- * Service, containing business-logic methods regarding {@linkplain org.retal.logiweb.domain.User User} and
- * {@linkplain org.retal.logiweb.domain.UserInfo UserInfo} entities.
+ * Service, containing business-logic methods regarding {@linkplain org.retal.logiweb.domain.User
+ * User} and {@linkplain org.retal.logiweb.domain.UserInfo UserInfo} entities.
  * 
  * @author Alexander Retivov
  *

@@ -83,9 +83,9 @@ public class CargoAndOrdersPageController {
   /**
    * Method for AJAX requests. Required for adding orders (form is generated dynamically using JS).
    * 
-   * @return List array of 2 elements. List[0] is all {@linkplain org.retal.logiweb.domain.City cities} from
-   *         database. List[1] is all {@linkplain org.retal.logiweb.domain.Cargo cargo} available for
-   *         creating order.
+   * @return List array of 2 elements. List[0] is all {@linkplain org.retal.logiweb.domain.City
+   *         cities} from database. List[1] is all {@linkplain org.retal.logiweb.domain.Cargo cargo}
+   *         available for creating order.
    */
   @SuppressWarnings("rawtypes")
   @GetMapping(value = "/getCityAndCargoInfo")
@@ -100,7 +100,8 @@ public class CargoAndOrdersPageController {
    * Method for AJAX requests. Required for reassigning car for order.
    * 
    * @param id {@linkplain org.retal.logiweb.domain.Order Order} primary key
-   * @return List of {@linkplain org.retal.logiweb.domain.Car Cars} available for assigning to this order.
+   * @return List of {@linkplain org.retal.logiweb.domain.Car Cars} available for assigning to this
+   *         order.
    */
   @GetMapping(value = "/getCarsForOrder/{id}")
   @ResponseBody
@@ -111,8 +112,8 @@ public class CargoAndOrdersPageController {
   /**
    * Method for AJAX requests. Required for changing assigned car for order
    * 
-   * @param data input data of pattern "A_B" where A is {@linkplain org.retal.logiweb.domain.Order Order} ID
-   *        and B is {@linkplain org.retal.logiweb.domain.Car Car} registration ID
+   * @param data input data of pattern "A_B" where A is {@linkplain org.retal.logiweb.domain.Order
+   *        Order} ID and B is {@linkplain org.retal.logiweb.domain.Car Car} registration ID
    * @return error message if operation failed and null if operation succeeded.
    * @see org.retal.logiweb.service.CargoAndOrdersService
    */

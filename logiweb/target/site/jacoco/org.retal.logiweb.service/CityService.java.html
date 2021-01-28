@@ -14,8 +14,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 /**
- * Service, containing business-logic methods regarding {@linkplain org.retal.logiweb.domain.City City} and
- * {@linkplain org.retal.logiweb.domain.CityDistance CityDistance} entities.
+ * Service, containing business-logic methods regarding {@linkplain org.retal.logiweb.domain.City
+ * City} and {@linkplain org.retal.logiweb.domain.CityDistance CityDistance} entities.
  * 
  * @author Alexander Retivov
  *
@@ -57,15 +57,15 @@ public class CityService {
 <span class="fc" id="L57">        City city = new City();</span>
 <span class="fc" id="L58">        city.setCurrentCity(line);</span>
 <span class="fc" id="L59">        cityDAO.add(city);</span>
-      }
+<span class="fc" id="L60">      }</span>
 <span class="fc" id="L61">      reader.close();</span>
-<span class="pc" id="L62">    } catch (IOException e) {</span>
+<span class="nc" id="L62">    } catch (IOException e) {</span>
 <span class="nc" id="L63">      String message = &quot;I/O error has occurred&quot;;</span>
 <span class="nc" id="L64">      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, message, e);</span>
 <span class="fc" id="L65">    } catch (NullPointerException e) {</span>
 <span class="fc" id="L66">      String message = &quot;File&quot; + cityNamesFileName + &quot;.txt not found&quot;;</span>
 <span class="fc" id="L67">      throw new ResponseStatusException(HttpStatus.NOT_FOUND, message, e);</span>
-    }
+<span class="fc" id="L68">    }</span>
 <span class="fc" id="L69">  }</span>
 
   /**
@@ -92,15 +92,15 @@ public class CityService {
 <span class="fc" id="L92">        citydist.setCityB(args[1].replace(&quot;_&quot;, &quot; &quot;));</span>
 <span class="fc" id="L93">        citydist.setDistance((int) Double.parseDouble(args[2]));</span>
 <span class="fc" id="L94">        cityDistanceDAO.add(citydist);</span>
-      }
+<span class="fc" id="L95">      }</span>
 <span class="fc" id="L96">      reader.close();</span>
-<span class="pc" id="L97">    } catch (IOException e) {</span>
+<span class="nc" id="L97">    } catch (IOException e) {</span>
 <span class="nc" id="L98">      String message = &quot;I/O error has occurred&quot;;</span>
 <span class="nc" id="L99">      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, message, e);</span>
 <span class="fc" id="L100">    } catch (NullPointerException e) {</span>
 <span class="fc" id="L101">      String message = &quot;File &quot; + distancesFileName + &quot;.txt not found&quot;;</span>
 <span class="fc" id="L102">      throw new ResponseStatusException(HttpStatus.NOT_FOUND, message, e);</span>
-    }
+<span class="fc" id="L103">    }</span>
 <span class="fc" id="L104">  }</span>
 
   public List&lt;City&gt; getAllCities() {

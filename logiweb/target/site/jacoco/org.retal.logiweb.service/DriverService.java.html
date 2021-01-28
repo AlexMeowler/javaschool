@@ -24,8 +24,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
 /**
- * Service, containing business-logic methods regarding {@linkplain org.retal.logiweb.domain.User User}
- * entities with role 'driver'.
+ * Service, containing business-logic methods regarding {@linkplain org.retal.logiweb.domain.User
+ * User} entities with role 'driver'.
  * 
  * @author Alexander Retivov
  *
@@ -51,9 +51,9 @@ public class DriverService {
    * Creates an instance of this class using constructor-based dependency injection.
    */
   @Autowired
-<span class="fc" id="L54">  public DriverService(SessionInfo sessionInfo, UserDAO userDAO, CityDAO cityDAO, CarDAO carDAO,</span>
+  public DriverService(SessionInfo sessionInfo, UserDAO userDAO, CityDAO cityDAO, CarDAO carDAO,
       OrderRouteProgressionDAO orderRouteProgressionDAO,
-      CargoAndOrdersService cargoAndOrdersService) {
+<span class="fc" id="L56">      CargoAndOrdersService cargoAndOrdersService) {</span>
 <span class="fc" id="L57">    this.sessionInfo = sessionInfo;</span>
 <span class="fc" id="L58">    this.userDAO = userDAO;</span>
 <span class="fc" id="L59">    this.cityDAO = cityDAO;</span>
@@ -76,9 +76,9 @@ public class DriverService {
 <span class="fc" id="L76">      status = DriverStatus.valueOf(newStatus.toUpperCase());</span>
 <span class="fc" id="L77">    } catch (IllegalArgumentException e) {</span>
 <span class="fc" id="L78">      bindingResult.reject(&quot;argument&quot;,</span>
-<span class="fc" id="L79">          &quot;Illegal argument for status, please don't try to change page code.&quot;);</span>
+          &quot;Illegal argument for status, please don't try to change page code.&quot;);
 <span class="fc" id="L80">      log.error(&quot;Illegal argument for driver status&quot;);</span>
-    }
+<span class="fc" id="L81">    }</span>
 <span class="fc bfc" id="L82" title="All 2 branches covered.">    if (status != null) {</span>
 <span class="fc bfc" id="L83" title="All 4 branches covered.">      switch (status) {</span>
         case DRIVING:
@@ -86,13 +86,13 @@ public class DriverService {
 <span class="fc" id="L86">            Car car = driver.getUserInfo().getOrder().getCar();</span>
 <span class="fc bfc" id="L87" title="All 4 branches covered.">            if (car.getDriver() == null || car.getDriver().getId() == driver.getId()) {</span>
 <span class="fc" id="L88">              driver.getUserInfo().setCar(car);</span>
-<span class="fc" id="L89">            } else {</span>
+            } else {
 <span class="fc" id="L90">              bindingResult.reject(&quot;car&quot;,</span>
-<span class="fc" id="L91">                  &quot;Could not select car, assigned car is being drived by someone else.&quot;);</span>
+                  &quot;Could not select car, assigned car is being drived by someone else.&quot;);
             }
 <span class="fc" id="L93">          } else {</span>
 <span class="fc" id="L94">            bindingResult.reject(&quot;car&quot;,</span>
-<span class="fc" id="L95">                &quot;Could not change status, no order (and therefore, no car) is assigned&quot;</span>
+                &quot;Could not change status, no order (and therefore, no car) is assigned&quot;
                     + &quot; to you at this time.&quot;);
           }
 <span class="fc" id="L98">          break;</span>
@@ -132,11 +132,11 @@ public class DriverService {
 <span class="fc bfc" id="L132" title="All 2 branches covered.">    for (RoutePoint rp : points) {</span>
 <span class="fc bfc" id="L133" title="All 2 branches covered.">      String statusToAvoid = rp.getIsLoading() ? &quot;prepared&quot; : &quot;loaded&quot;;</span>
 <span class="fc bfc" id="L134" title="All 2 branches covered.">      canChangeLocation &amp;= !rp.getCargo().getStatus().equalsIgnoreCase(statusToAvoid);</span>
-    }
+<span class="fc" id="L135">    }</span>
 <span class="fc" id="L136">    session.close();</span>
 <span class="fc bfc" id="L137" title="All 2 branches covered.">    if (!canChangeLocation) {</span>
 <span class="fc" id="L138">      bindingResult.reject(&quot;cargoManagement&quot;,</span>
-<span class="fc" id="L139">          &quot;Not all assigned to current city cargo is loaded/unloaded, please double-check.&quot;);</span>
+          &quot;Not all assigned to current city cargo is loaded/unloaded, please double-check.&quot;);
     }
 <span class="fc" id="L141">    String userCity = driver.getUserInfo().getCity().getCurrentCity();</span>
 <span class="fc" id="L142">    String[] cities = driver.getUserInfo().getOrder().getRoute().split(Order.ROUTE_DELIMETER);</span>
@@ -148,7 +148,7 @@ public class DriverService {
 <span class="fc" id="L148">    Integer hoursDrived = driver.getUserInfo().getHoursDrived();</span>
 <span class="fc bfc" id="L149" title="All 2 branches covered.">    if (hoursDrived != null) {</span>
 <span class="fc" id="L150">      hoursDrived += length;</span>
-<span class="fc" id="L151">    } else {</span>
+    } else {
 <span class="fc" id="L152">      hoursDrived = length;</span>
     }
 <span class="fc" id="L154">    Integer hoursWorked = driver.getUserInfo().getHoursWorked() + length;</span>
@@ -181,7 +181,7 @@ public class DriverService {
       }
 <span class="fc" id="L182">    } else {</span>
 <span class="fc" id="L183">      bindingResult.reject(&quot;city&quot;,</span>
-<span class="fc" id="L184">          &quot;Illegal next city argument. Please don't try to change page code.&quot;);</span>
+          &quot;Illegal next city argument. Please don't try to change page code.&quot;);
 <span class="fc" id="L185">      log.warn(&quot;Illegal next city on route of order id=&quot; + driver.getUserInfo().getOrder().getId());</span>
     }
 <span class="fc" id="L187">  }</span>
@@ -192,12 +192,12 @@ public class DriverService {
 <span class="fc" id="L192">    int index = driver.getUserInfo().getOrder().getOrderRouteProgression().getRouteCounter() + 1;</span>
 <span class="pc bpc" id="L193" title="1 of 2 branches missed.">    int pathLength = index &lt; routeCities.length</span>
 <span class="fc" id="L194">        ? cargoAndOrdersService.lengthBetweenTwoCities(driverCity, routeCities[index])</span>
-<span class="nc" id="L195">        : 0;</span>
+<span class="pc" id="L195">        : 0;</span>
 <span class="fc" id="L196">    pathLength = (int) Math.round((double) pathLength / CargoAndOrdersService.AVERAGE_CAR_SPEED);</span>
 <span class="fc" id="L197">    Integer hoursDrived = driver.getUserInfo().getHoursDrived();</span>
 <span class="fc bfc" id="L198" title="All 2 branches covered.">    if (hoursDrived != null) {</span>
 <span class="fc" id="L199">      hoursDrived += pathLength;</span>
-<span class="fc" id="L200">    } else {</span>
+    } else {
 <span class="fc" id="L201">      hoursDrived = pathLength;</span>
     }
 <span class="pc bpc" id="L203" title="1 of 2 branches missed.">    if (index &lt; routeCities.length</span>

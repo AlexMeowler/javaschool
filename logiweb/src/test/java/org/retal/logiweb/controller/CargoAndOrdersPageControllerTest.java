@@ -18,6 +18,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.stream.Collectors;
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
@@ -47,7 +48,6 @@ import org.retal.logiweb.domain.Order;
 import org.retal.logiweb.domain.RoutePoint;
 import org.retal.logiweb.domain.User;
 import org.retal.logiweb.domain.UserInfo;
-import org.retal.logiweb.service.CarService;
 import org.retal.logiweb.service.CityService;
 import org.retal.logiweb.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -182,7 +182,20 @@ public class CargoAndOrdersPageControllerTest {
     cityService.addCitiesFromFile();
     cityService.addDistancesFromFile();
     new UserService(new UserDAO(), null, null, cityService).addDriversFromFile();
-    new CarService(new CarDAO(), null, cityService, null).generateCarForEachCity();
+    List<City> cities = new CityDAO().readAll();
+    CarDAO carDAO = new CarDAO();
+    Random random = new Random();
+    for (City c : cities) {
+      Car car = new Car();
+      car.setIsWorking(true);
+      car.setLocation(c);
+      car.setCapacityTons((float) (1 + random.nextInt(41) * 1.0 / 10));
+      String registrationLetters = c.getCurrentCity().substring(0, 2).toUpperCase();
+      String registrationNumber = "" + (random.nextInt(10000));
+      car.setRegistrationId(registrationLetters + registrationNumber);
+      car.setShiftLength(12 + random.nextInt(13));
+      carDAO.add(car);
+    }
     CargoDAO cargoDAO = new CargoDAO();
     int n = 30;
     for (int i = 0; i < n; i++) {

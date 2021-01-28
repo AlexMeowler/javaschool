@@ -29,15 +29,15 @@ public class DriverPageController {
   private final DriverService driverService;
 
   private final CargoAndOrdersService cargoAndOrdersService;
-  
+
   public static final String DRIVER_PAGE = &quot;/driverPage&quot;;
 
   /**
    * Creates an instance of this class using constructor-based dependency injection.
    */
   @Autowired
-<span class="fc" id="L39">  public DriverPageController(SessionInfo sessionInfo, DriverService driverService,</span>
-      CargoAndOrdersService cargoAndOrdersService) {
+  public DriverPageController(SessionInfo sessionInfo, DriverService driverService,
+<span class="fc" id="L40">      CargoAndOrdersService cargoAndOrdersService) {</span>
 <span class="fc" id="L41">    this.sessionInfo = sessionInfo;</span>
 <span class="fc" id="L42">    this.driverService = driverService;</span>
 <span class="fc" id="L43">    this.cargoAndOrdersService = cargoAndOrdersService;</span>
@@ -85,8 +85,8 @@ public class DriverPageController {
   }
 
   /**
-   * Method for changing driver status using {@linkplain org.retal.logiweb.service.DriverService service
-   * layer}.
+   * Method for changing driver status using {@linkplain org.retal.logiweb.service.DriverService
+   * service layer}.
    */
   @GetMapping(value = &quot;/changeStatus/{status}&quot;)
   public RedirectView changeStatus(@PathVariable String status, RedirectAttributes redir) {

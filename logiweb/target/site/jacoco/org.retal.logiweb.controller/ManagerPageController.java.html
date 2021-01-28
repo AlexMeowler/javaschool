@@ -40,7 +40,7 @@ public class ManagerPageController {
   private final CityService cityService;
 
   public static final String MANAGER_PAGE = &quot;/managerPage&quot;;
-  
+
   private static final String CITY_LIST_ATTRIBUTE_NAME = &quot;cityList&quot;;
 
 <span class="fc" id="L46">  private static final Logger log = Logger.getLogger(ManagerPageController.class);</span>
@@ -49,8 +49,8 @@ public class ManagerPageController {
    * Creates an instance of this class using constructor-based dependency injection.
    */
   @Autowired
-<span class="fc" id="L52">  public ManagerPageController(SessionInfo sessionInfo, UserService userService,</span>
-      CarService carService, CityService cityService) {
+  public ManagerPageController(SessionInfo sessionInfo, UserService userService,
+<span class="fc" id="L53">      CarService carService, CityService cityService) {</span>
 <span class="fc" id="L54">    this.sessionInfo = sessionInfo;</span>
 <span class="fc" id="L55">    this.userService = userService;</span>
 <span class="fc" id="L56">    this.carService = carService;</span>
@@ -67,14 +67,14 @@ public class ManagerPageController {
 <span class="fc" id="L67">    Map&lt;String, String&gt; errors = UserValidator.convertErrorsToHashMap(userResult);</span>
 <span class="fc bfc" id="L68" title="All 2 branches covered.">    for (Map.Entry&lt;String, String&gt; e : errors.entrySet()) {</span>
 <span class="fc" id="L69">      log.debug(e.getKey() + &quot;:&quot; + e.getValue());</span>
-    }
+<span class="fc" id="L70">    }</span>
 <span class="fc" id="L71">    model.addAllAttributes(errors);</span>
 <span class="fc" id="L72">    BindingResult carResult =</span>
 <span class="fc" id="L73">        (BindingResult) model.asMap().get(BindingResult.MODEL_KEY_PREFIX + &quot;car&quot;);</span>
 <span class="fc" id="L74">    errors = UserValidator.convertErrorsToHashMap(carResult);</span>
 <span class="fc bfc" id="L75" title="All 2 branches covered.">    for (Map.Entry&lt;String, String&gt; e : errors.entrySet()) {</span>
 <span class="fc" id="L76">      log.debug(e.getKey() + &quot;:&quot; + e.getValue());</span>
-    }
+<span class="fc" id="L77">    }</span>
 <span class="fc" id="L78">    model.addAllAttributes(errors);</span>
 <span class="fc" id="L79">    User user = sessionInfo.getCurrentUser();</span>
 <span class="fc" id="L80">    UserInfo userInfo = user.getUserInfo();</span>
@@ -125,7 +125,7 @@ public class ManagerPageController {
     }
 <span class="fc bfc" id="L126" title="All 2 branches covered.">    if (url403.equals(UserService.DELETION_UPDATION_ERROR)) {</span>
 <span class="fc" id="L127">      redir.addFlashAttribute(&quot;error_userDeletionFailed&quot;,</span>
-<span class="fc" id="L128">          &quot;Could not delete driver due to assigned order or being driving car&quot;);</span>
+          &quot;Could not delete driver due to assigned order or being driving car&quot;);
     }
 <span class="fc" id="L130">    return redirectView;</span>
   }
@@ -143,7 +143,7 @@ public class ManagerPageController {
 <span class="fc bfc" id="L143" title="All 2 branches covered.">    if (userService.userHasRightsToEditOrDeleteUser(we, target)) {</span>
 <span class="fc" id="L144">      redir.addFlashAttribute(&quot;user&quot;, target);</span>
 <span class="fc" id="L145">      redir.addFlashAttribute(&quot;we&quot;, we);</span>
-<span class="fc" id="L146">    } else {</span>
+    } else {
 <span class="fc" id="L147">      redirectView.setUrl(&quot;/403/&quot; + we.getLogin());</span>
     }
 <span class="fc" id="L149">    return redirectView;</span>
@@ -167,27 +167,28 @@ public class ManagerPageController {
   }
 
   /**
-   * Method responsible for submitting edited driver to {@linkplain org.retal.logiweb.service.UserService
-   * service layer} which will update entity if input is valid.
+   * Method responsible for submitting edited driver to
+   * {@linkplain org.retal.logiweb.service.UserService service layer} which will update entity if
+   * input is valid.
    * 
    * @see org.retal.logiweb.domain.User
    */
   @PostMapping(value = &quot;/submitEditedDriver&quot;)
   public RedirectView finishDriverEditing(UserDTO userDTO, BindingResult bindingResult,
       UserInfoDTO userInfoDTO, CityDTO cityDTO, RedirectAttributes redir) {
-<span class="fc" id="L178">    RedirectView redirectView = new RedirectView(MANAGER_PAGE, true);</span>
-<span class="fc" id="L179">    User user = mapUserRelatedDTOsToDriverEntity(userDTO, userInfoDTO, cityDTO);</span>
-<span class="fc" id="L180">    String redirect = userService.updateUser(user, bindingResult, userDTO.getPassword());</span>
-<span class="fc bfc" id="L181" title="All 2 branches covered.">    if (bindingResult.hasErrors()) {</span>
-<span class="fc" id="L182">      log.warn(&quot;There were validation errors at editing driver&quot;);</span>
-<span class="fc" id="L183">      redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + &quot;user&quot;, bindingResult);</span>
-<span class="fc" id="L184">      redir.addFlashAttribute(&quot;user&quot;, user);</span>
-<span class="fc" id="L185">      redirectView.setUrl(&quot;/editDriver&quot;);</span>
+<span class="fc" id="L179">    RedirectView redirectView = new RedirectView(MANAGER_PAGE, true);</span>
+<span class="fc" id="L180">    User user = mapUserRelatedDTOsToDriverEntity(userDTO, userInfoDTO, cityDTO);</span>
+<span class="fc" id="L181">    String redirect = userService.updateUser(user, bindingResult, userDTO.getPassword());</span>
+<span class="fc bfc" id="L182" title="All 2 branches covered.">    if (bindingResult.hasErrors()) {</span>
+<span class="fc" id="L183">      log.warn(&quot;There were validation errors at editing driver&quot;);</span>
+<span class="fc" id="L184">      redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + &quot;user&quot;, bindingResult);</span>
+<span class="fc" id="L185">      redir.addFlashAttribute(&quot;user&quot;, user);</span>
+<span class="fc" id="L186">      redirectView.setUrl(&quot;/editDriver&quot;);</span>
     }
-<span class="fc bfc" id="L187" title="All 2 branches covered.">    if (!redirect.isEmpty()) {</span>
-<span class="fc" id="L188">      redirectView.setUrl(redirect);</span>
+<span class="fc bfc" id="L188" title="All 2 branches covered.">    if (!redirect.isEmpty()) {</span>
+<span class="fc" id="L189">      redirectView.setUrl(redirect);</span>
     }
-<span class="fc" id="L190">    return redirectView;</span>
+<span class="fc" id="L191">    return redirectView;</span>
   }
 
   /**
@@ -200,15 +201,15 @@ public class ManagerPageController {
   public RedirectView addNewCar(CarDTO carDTO, BindingResult bindingResult, CityDTO cityDTO,
       RedirectAttributes redir, @RequestParam(name = &quot;capacity&quot;) String capacity,
       @RequestParam(name = &quot;shift&quot;) String shiftLength) {
-<span class="fc" id="L203">    redir.addFlashAttribute(&quot;visiblecar&quot;, &quot;true&quot;);</span>
-<span class="fc" id="L204">    Car car = mapCarRelatedDTOsToCarEntity(carDTO, cityDTO);</span>
-<span class="fc" id="L205">    carService.addNewCar(car, bindingResult, capacity, shiftLength);</span>
-<span class="fc bfc" id="L206" title="All 2 branches covered.">    if (bindingResult.hasErrors()) {</span>
-<span class="fc" id="L207">      log.warn(&quot;There were validation errors at adding new car&quot;);</span>
-<span class="fc" id="L208">      redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + &quot;car&quot;, bindingResult);</span>
-<span class="fc" id="L209">      redir.addFlashAttribute(&quot;car&quot;, car);</span>
+<span class="fc" id="L204">    redir.addFlashAttribute(&quot;visiblecar&quot;, &quot;true&quot;);</span>
+<span class="fc" id="L205">    Car car = mapCarRelatedDTOsToCarEntity(carDTO, cityDTO);</span>
+<span class="fc" id="L206">    carService.addNewCar(car, bindingResult, capacity, shiftLength);</span>
+<span class="fc bfc" id="L207" title="All 2 branches covered.">    if (bindingResult.hasErrors()) {</span>
+<span class="fc" id="L208">      log.warn(&quot;There were validation errors at adding new car&quot;);</span>
+<span class="fc" id="L209">      redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + &quot;car&quot;, bindingResult);</span>
+<span class="fc" id="L210">      redir.addFlashAttribute(&quot;car&quot;, car);</span>
     }
-<span class="fc" id="L211">    return new RedirectView(MANAGER_PAGE, true);</span>
+<span class="fc" id="L212">    return new RedirectView(MANAGER_PAGE, true);</span>
   }
 
   /**
@@ -219,13 +220,13 @@ public class ManagerPageController {
    */
   @GetMapping(value = &quot;/deleteCar/{id}&quot;)
   public RedirectView deleteCar(@PathVariable String id, RedirectAttributes redir) {
-<span class="fc" id="L222">    RedirectView redirectView = new RedirectView(MANAGER_PAGE, true);</span>
-<span class="fc" id="L223">    Car car = carService.getCar(id);</span>
-<span class="fc bfc" id="L224" title="All 2 branches covered.">    if (!carService.deleteCar(car)) {</span>
-<span class="fc" id="L225">      redir.addFlashAttribute(&quot;error_carDeletionFailed&quot;,</span>
-<span class="fc" id="L226">          &quot;Could not delete car due to assigned order or being driven by someone&quot;);</span>
+<span class="fc" id="L223">    RedirectView redirectView = new RedirectView(MANAGER_PAGE, true);</span>
+<span class="fc" id="L224">    Car car = carService.getCar(id);</span>
+<span class="fc bfc" id="L225" title="All 2 branches covered.">    if (!carService.deleteCar(car)) {</span>
+<span class="fc" id="L226">      redir.addFlashAttribute(&quot;error_carDeletionFailed&quot;,</span>
+          &quot;Could not delete car due to assigned order or being driven by someone&quot;);
     }
-<span class="fc" id="L228">    return redirectView;</span>
+<span class="fc" id="L229">    return redirectView;</span>
   }
 
   /**
@@ -235,9 +236,9 @@ public class ManagerPageController {
    */
   @GetMapping(value = &quot;/editCar/{id}&quot;)
   public RedirectView editCar(@PathVariable String id, RedirectAttributes redir) {
-<span class="fc" id="L238">    RedirectView redirectView = new RedirectView(&quot;/editCar&quot;, true);</span>
-<span class="fc" id="L239">    redir.addFlashAttribute(&quot;car&quot;, carService.getCar(id));</span>
-<span class="fc" id="L240">    return redirectView;</span>
+<span class="fc" id="L239">    RedirectView redirectView = new RedirectView(&quot;/editCar&quot;, true);</span>
+<span class="fc" id="L240">    redir.addFlashAttribute(&quot;car&quot;, carService.getCar(id));</span>
+<span class="fc" id="L241">    return redirectView;</span>
   }
 
   /**
@@ -247,18 +248,19 @@ public class ManagerPageController {
    */
   @GetMapping(value = &quot;/editCar&quot;)
   public String carEditForm(Model model) {
-<span class="fc" id="L250">    BindingResult result =</span>
-<span class="fc" id="L251">        (BindingResult) model.asMap().get(BindingResult.MODEL_KEY_PREFIX + &quot;car&quot;);</span>
-<span class="fc" id="L252">    Map&lt;String, String&gt; errors = UserValidator.convertErrorsToHashMap(result);</span>
-<span class="fc" id="L253">    model.addAllAttributes(errors);</span>
-<span class="fc" id="L254">    List&lt;City&gt; cities = cityService.getAllCities();</span>
-<span class="fc" id="L255">    model.addAttribute(CITY_LIST_ATTRIBUTE_NAME, cities);</span>
-<span class="fc" id="L256">    return &quot;editCar&quot;;</span>
+<span class="fc" id="L251">    BindingResult result =</span>
+<span class="fc" id="L252">        (BindingResult) model.asMap().get(BindingResult.MODEL_KEY_PREFIX + &quot;car&quot;);</span>
+<span class="fc" id="L253">    Map&lt;String, String&gt; errors = UserValidator.convertErrorsToHashMap(result);</span>
+<span class="fc" id="L254">    model.addAllAttributes(errors);</span>
+<span class="fc" id="L255">    List&lt;City&gt; cities = cityService.getAllCities();</span>
+<span class="fc" id="L256">    model.addAttribute(CITY_LIST_ATTRIBUTE_NAME, cities);</span>
+<span class="fc" id="L257">    return &quot;editCar&quot;;</span>
   }
 
   /**
-   * Method responsible for submitting edited car to {@linkplain org.retal.logiweb.service.CarService
-   * service layer} which will update car if input is valid.
+   * Method responsible for submitting edited car to
+   * {@linkplain org.retal.logiweb.service.CarService service layer} which will update car if input
+   * is valid.
    * 
    * @see org.retal.logiweb.domain.Car
    */
@@ -266,16 +268,16 @@ public class ManagerPageController {
   public RedirectView finishCarEditing(CarDTO carDTO, BindingResult bindingResult,
       RedirectAttributes redir, @RequestParam(name = &quot;capacity&quot;) String capacity,
       @RequestParam(name = &quot;shift&quot;) String shiftLength, CityDTO cityDTO) {
-<span class="fc" id="L269">    RedirectView redirectView = new RedirectView(MANAGER_PAGE, true);</span>
-<span class="fc" id="L270">    Car car = mapCarRelatedDTOsToCarEntity(carDTO, cityDTO);</span>
-<span class="fc" id="L271">    carService.updateCar(car, bindingResult, capacity, shiftLength);</span>
-<span class="fc bfc" id="L272" title="All 2 branches covered.">    if (bindingResult.hasErrors()) {</span>
-<span class="fc" id="L273">      log.warn(&quot;There were validation errors at editing car&quot;);</span>
-<span class="fc" id="L274">      redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + &quot;car&quot;, bindingResult);</span>
-<span class="fc" id="L275">      redir.addFlashAttribute(&quot;car&quot;, car);</span>
-<span class="fc" id="L276">      redirectView.setUrl(&quot;/editCar&quot;);</span>
+<span class="fc" id="L271">    RedirectView redirectView = new RedirectView(MANAGER_PAGE, true);</span>
+<span class="fc" id="L272">    Car car = mapCarRelatedDTOsToCarEntity(carDTO, cityDTO);</span>
+<span class="fc" id="L273">    carService.updateCar(car, bindingResult, capacity, shiftLength);</span>
+<span class="fc bfc" id="L274" title="All 2 branches covered.">    if (bindingResult.hasErrors()) {</span>
+<span class="fc" id="L275">      log.warn(&quot;There were validation errors at editing car&quot;);</span>
+<span class="fc" id="L276">      redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + &quot;car&quot;, bindingResult);</span>
+<span class="fc" id="L277">      redir.addFlashAttribute(&quot;car&quot;, car);</span>
+<span class="fc" id="L278">      redirectView.setUrl(&quot;/editCar&quot;);</span>
     }
-<span class="fc" id="L278">    return redirectView;</span>
+<span class="fc" id="L280">    return redirectView;</span>
   }
 
   /**
@@ -289,28 +291,28 @@ public class ManagerPageController {
    */
   private User mapUserRelatedDTOsToDriverEntity(UserDTO userDTO, UserInfoDTO userInfoDTO,
       CityDTO cityDTO) {
-<span class="fc" id="L292">    User user = new User(userDTO);</span>
-<span class="fc" id="L293">    UserInfo userInfo = new UserInfo(userInfoDTO);</span>
-<span class="fc" id="L294">    City city = new City(cityDTO);</span>
-<span class="fc" id="L295">    user.setRole(UserRole.DRIVER.toString().toLowerCase());</span>
-<span class="fc" id="L296">    userInfo.setCity(city);</span>
-<span class="fc" id="L297">    user.setUserInfo(userInfo);</span>
-<span class="fc" id="L298">    return user;</span>
+<span class="fc" id="L294">    User user = new User(userDTO);</span>
+<span class="fc" id="L295">    UserInfo userInfo = new UserInfo(userInfoDTO);</span>
+<span class="fc" id="L296">    City city = new City(cityDTO);</span>
+<span class="fc" id="L297">    user.setRole(UserRole.DRIVER.toString().toLowerCase());</span>
+<span class="fc" id="L298">    userInfo.setCity(city);</span>
+<span class="fc" id="L299">    user.setUserInfo(userInfo);</span>
+<span class="fc" id="L300">    return user;</span>
   }
 
   /**
-   * Method for mapping car related DTOs (car, city) to {@linkplain org.retal.logiweb.domain.Car Car} entity
-   * with user role set to 'driver'.
+   * Method for mapping car related DTOs (car, city) to {@linkplain org.retal.logiweb.domain.Car
+   * Car} entity with user role set to 'driver'.
    * 
    * @param carDTO instance of {@linkplain org.retal.logiweb.dto.CarDTO}
    * @param cityDTO instance of {@linkplain org.retal.logiweb.dto.CityDTO}
    * @return transient instance of {@linkplain org.retal.logiweb.domain.Car Car} entity
    */
   private Car mapCarRelatedDTOsToCarEntity(CarDTO carDTO, CityDTO cityDTO) {
-<span class="fc" id="L310">    Car car = new Car(carDTO);</span>
-<span class="fc" id="L311">    City city = new City(cityDTO);</span>
-<span class="fc" id="L312">    car.setLocation(city);</span>
-<span class="fc" id="L313">    return car;</span>
+<span class="fc" id="L312">    Car car = new Car(carDTO);</span>
+<span class="fc" id="L313">    City city = new City(cityDTO);</span>
+<span class="fc" id="L314">    car.setLocation(city);</span>
+<span class="fc" id="L315">    return car;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

@@ -1,0 +1,4 @@
+target/site/apidocs/** linguist-documentation
+target/site/jacoco/** linguist-documentation
+src/main/webapp/js/bootstrap** linguist-vendored
+src/main/webapp/css/bootstrap** linguist-vendored

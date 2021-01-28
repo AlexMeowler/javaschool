@@ -7,8 +7,10 @@ Java School Public Repository
 # SonarQube report
 ![SonarQube report](sonar.png?raw=true "SonarQube Report")
 
-# VERSION 1.1.2
+# VERSION 1.1.3
 
-Maven project now is converted to multi-module project.
+I've set up MQ on my JBoss Server and tested it with MessageSender and OrderMessageListener.
 
 # TODO
+
+Add saving to local file on message receiving, implement JMS in Logiweb, add JSF

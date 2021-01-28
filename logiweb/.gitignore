@@ -1,1 +1,14 @@
-/target/
+nondev/
+sql_backup/
+target/*
+!target/site/
+!target/jacoco.exec
+src/main/resources/db.properties
+src/main/resources/citynames.txt
+src/main/resources/graph.txt
+src/main/resources/names.txt
+src/main/resources/surnames.txt
+.checkstyle
+.classpath
+.project
+.settings/*

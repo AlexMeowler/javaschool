@@ -9,8 +9,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 /**
- * Class containing {@linkplain org.retal.logiweb.domain.User User} object which refers to currently logged
- * in user.
+ * Class containing {@linkplain org.retal.logiweb.domain.User User} object which refers to currently
+ * logged in user.
  * 
  * @author Alexander Retivov
  *
@@ -29,10 +29,11 @@ public class SessionInfo {
   }
 
   /**
-   * Method for getting {@linkplain org.retal.logiweb.domain.User User} object of logged in user, based on
-   * session info.
+   * Method for getting {@linkplain org.retal.logiweb.domain.User User} object of logged in user,
+   * based on session info.
    * 
-   * @return user {@linkplain org.retal.logiweb.domain.User User} who is associated with the session.
+   * @return user {@linkplain org.retal.logiweb.domain.User User} who is associated with the
+   *         session.
    */
   public User getCurrentUser() {
     if (user == null) {
@@ -44,8 +45,8 @@ public class SessionInfo {
 
   /**
    * Updates user information by re-reading entity from database. If no
-   * {@linkplain org.retal.logiweb.domain.User User} if associated with this class instance, then nothing
-   * will happen.
+   * {@linkplain org.retal.logiweb.domain.User User} if associated with this class instance, then
+   * nothing will happen.
    */
   public void refreshUser() {
     if (user != null) {

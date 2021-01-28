@@ -40,7 +40,7 @@ public class ManagerPageController {
   private final CityService cityService;
 
   public static final String MANAGER_PAGE = "/managerPage";
-  
+
   private static final String CITY_LIST_ATTRIBUTE_NAME = "cityList";
 
   private static final Logger log = Logger.getLogger(ManagerPageController.class);
@@ -167,8 +167,9 @@ public class ManagerPageController {
   }
 
   /**
-   * Method responsible for submitting edited driver to {@linkplain org.retal.logiweb.service.UserService
-   * service layer} which will update entity if input is valid.
+   * Method responsible for submitting edited driver to
+   * {@linkplain org.retal.logiweb.service.UserService service layer} which will update entity if
+   * input is valid.
    * 
    * @see org.retal.logiweb.domain.User
    */
@@ -257,8 +258,9 @@ public class ManagerPageController {
   }
 
   /**
-   * Method responsible for submitting edited car to {@linkplain org.retal.logiweb.service.CarService
-   * service layer} which will update car if input is valid.
+   * Method responsible for submitting edited car to
+   * {@linkplain org.retal.logiweb.service.CarService service layer} which will update car if input
+   * is valid.
    * 
    * @see org.retal.logiweb.domain.Car
    */
@@ -299,8 +301,8 @@ public class ManagerPageController {
   }
 
   /**
-   * Method for mapping car related DTOs (car, city) to {@linkplain org.retal.logiweb.domain.Car Car} entity
-   * with user role set to 'driver'.
+   * Method for mapping car related DTOs (car, city) to {@linkplain org.retal.logiweb.domain.Car
+   * Car} entity with user role set to 'driver'.
    * 
    * @param carDTO instance of {@linkplain org.retal.logiweb.dto.CarDTO}
    * @param cityDTO instance of {@linkplain org.retal.logiweb.dto.CityDTO}

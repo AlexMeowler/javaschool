@@ -15,8 +15,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.Validator;
 
 /**
- * Service, containing business-logic methods regarding {@linkplain org.retal.logiweb.domain.Car Car}
- * entities.
+ * Service, containing business-logic methods regarding {@linkplain org.retal.logiweb.domain.Car
+ * Car} entities.
  * 
  * @author Alexander Retivov
  *
