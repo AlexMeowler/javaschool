@@ -41,7 +41,7 @@ public class CargoValidator implements Validator {
 <span class="fc" id="L41">      String propertyPath = violation.getPropertyPath().toString();</span>
 <span class="fc" id="L42">      String message = violation.getMessage();</span>
 <span class="fc" id="L43">      throwError(errors, propertyPath, message);</span>
-<span class="fc" id="L44">    }</span>
+    }
 <span class="fc" id="L45">    Integer weight = cargo.getMass();</span>
 <span class="fc bfc" id="L46" title="All 4 branches covered.">    if (weight != null &amp;&amp; weight &lt; 0) {</span>
 <span class="fc" id="L47">      throwError(errors, &quot;mass&quot;, &quot;Cargo weight length must non-negative integer.&quot;);</span>

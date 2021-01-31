@@ -29,7 +29,7 @@ public class MessageSender {
   public void test()  {
     try {
       log.info("----------STARTING INIT-------------");
-      Connection connection = connectionFactory.createConnection();
+      /*Connection connection = connectionFactory.createConnection();
       Session session = connection.createSession(Session.AUTO_ACKNOWLEDGE);
       MessageProducer messageProducer = session.createProducer(queue);
       ObjectMessage message = session.createObjectMessage();
@@ -38,7 +38,7 @@ public class MessageSender {
       message.setObject(entity);
       messageProducer.send(message);
       messageProducer.close();
-      connection.close();
+      connection.close();*/
     } catch (Exception e) {
       e.printStackTrace();
     }

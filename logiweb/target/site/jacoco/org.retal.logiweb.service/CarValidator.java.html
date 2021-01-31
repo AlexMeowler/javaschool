@@ -38,7 +38,7 @@ public class CarValidator implements Validator {
 <span class="fc" id="L38">    String id = car.getRegistrationId();</span>
 <span class="fc bfc" id="L39" title="All 2 branches covered.">    if (!id.matches(&quot;[A-Z]{2}\\d{5}&quot;)) {</span>
 <span class="fc" id="L40">      throwError(errors, &quot;registrationId&quot;,</span>
-          &quot;ID must have form of XXYYYYY, where X is A-Z letter and Y is 0-9 digit&quot;);
+<span class="fc" id="L41">          &quot;ID must have form of XXYYYYY, where X is A-Z letter and Y is 0-9 digit&quot;);</span>
     }
 <span class="fc" id="L43">    Integer shiftLength = car.getShiftLength();</span>
 <span class="fc bfc" id="L44" title="All 4 branches covered.">    if (shiftLength != null &amp;&amp; shiftLength &lt; 1) {</span>

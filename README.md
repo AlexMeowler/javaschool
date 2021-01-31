@@ -7,10 +7,10 @@ Java School Public Repository
 # SonarQube report
 ![SonarQube report](sonar.png?raw=true "SonarQube Report")
 
-# VERSION 1.1.3
+# VERSION 1.1.4
 
-I've set up MQ on my JBoss Server and tested it with MessageSender and OrderMessageListener.
+Configured JSF and beans for view.
 
 # TODO
 
-Add saving to local file on message receiving, implement JMS in Logiweb, add JSF
+Add saving data to local file on message receiving, implement JMS in Logiweb, JSF page front end.

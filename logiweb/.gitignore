@@ -12,3 +12,4 @@ src/main/resources/surnames.txt
 .classpath
 .project
 .settings/*
+/target/
