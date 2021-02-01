@@ -15,12 +15,12 @@ import org.retal.table.ejb.jms.message.NotificationMessage;
     @ActivationConfigProperty(propertyName = "acknowledgeMode", propertyValue = "Auto-acknowledge"),
     @ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue"),
     @ActivationConfigProperty(propertyName = "destination", propertyValue = "notificationsQueue")})
-public class OrderMessage implements MessageListener {
+public class NotificationReceiver implements MessageListener {
 
   @Resource
   private MessageDrivenContext context;
 
-  private static final Logger log = Logger.getLogger(OrderMessage.class);
+  private static final Logger log = Logger.getLogger(NotificationReceiver.class);
 
   @Override
   public void onMessage(Message message) {

@@ -4,7 +4,7 @@ import java.util.List;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.retal.logiweb.config.spring.app.hibernate.HibernateSessionFactory;
-import org.retal.logiweb.domain.MethodUndefinedException;
+import org.retal.logiweb.domain.entity.MethodUndefinedException;
 
 /**
  * Generic interface for basic CRUD operations. If method is not implemented properly due to some

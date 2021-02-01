@@ -6,9 +6,9 @@ import java.util.stream.Collectors;
 import org.apache.log4j.Logger;
 import org.retal.logiweb.dao.CarDAO;
 import org.retal.logiweb.dao.OrderDAO;
-import org.retal.logiweb.domain.Car;
-import org.retal.logiweb.domain.City;
-import org.retal.logiweb.domain.Order;
+import org.retal.logiweb.domain.entity.Car;
+import org.retal.logiweb.domain.entity.City;
+import org.retal.logiweb.domain.entity.Order;
 import org.retal.logiweb.service.validators.CarValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,7 +16,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.Validator;
 
 /**
- * Service, containing business-logic methods regarding {@linkplain org.retal.logiweb.domain.Car
+ * Service, containing business-logic methods regarding {@linkplain org.retal.logiweb.domain.entity.Car
  * Car} entities.
  * 
  * @author Alexander Retivov
@@ -60,7 +60,7 @@ public class CarService {
   /**
    * Validates and adds new car to database.
    * 
-   * @param car {@linkplain org.retal.logiweb.domain.Car Car} to be added
+   * @param car {@linkplain org.retal.logiweb.domain.entity.Car Car} to be added
    * @param bindingResult object to store validation result
    * @param capacity car capacity (user input) to be parsed
    * @param shiftlength shift length (user input) to be parsed
@@ -79,7 +79,7 @@ public class CarService {
   /**
    * Deletes car from database. Can not delete car if it's assigned to order.
    * 
-   * @param car car {@linkplain org.retal.logiweb.domain.Car Car} to be deleted
+   * @param car car {@linkplain org.retal.logiweb.domain.entity.Car Car} to be deleted
    * @return true if deletion was successful, false otherwise
    */
   public boolean deleteCar(Car car) {
@@ -94,7 +94,7 @@ public class CarService {
   /**
    * Updates car in database.
    * 
-   * @param car car {@linkplain org.retal.logiweb.domain.Car Car} to be updated
+   * @param car car {@linkplain org.retal.logiweb.domain.entity.Car Car} to be updated
    */
   public void updateCar(Car car, BindingResult bindingResult, String capacity, String shiftlength) {
     log.info("Attempt to update car ID = " + car.getRegistrationId());
@@ -112,7 +112,7 @@ public class CarService {
   /**
    * Parses String objects and validates other input.
    * 
-   * @param car {@linkplain org.retal.logiweb.domain.Car Car} to be validated
+   * @param car {@linkplain org.retal.logiweb.domain.entity.Car Car} to be validated
    * @param bindingResult object to store validation result
    * @param capacity required capacity string to be parsed
    * @param shiftlength shift length string to be parsed
@@ -155,7 +155,7 @@ public class CarService {
   /**
    * Gets all available cars for given order ID.
    * 
-   * @param id {@linkplain org.retal.logiweb.domain.Order Order} related ID
+   * @param id {@linkplain org.retal.logiweb.domain.entity.Order Order} related ID
    * @return list of all cars which can be re-assigned to that order or null if order is completed
    */
   public List<Car> getAllAvailableCarsForOrderId(Integer id) {

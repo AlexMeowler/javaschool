@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 import org.apache.log4j.Logger;
 import org.retal.logiweb.dao.UserDAO;
-import org.retal.logiweb.domain.User;
+import org.retal.logiweb.domain.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

@@ -1,4 +1,4 @@
-package org.retal.logiweb.domain;
+package org.retal.logiweb.domain.entity;
 
 /**
  * An exception which shows that invoked method has no realization. It is recommended to throw this

@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import org.retal.logiweb.domain.Order;
-import org.retal.logiweb.domain.SessionInfo;
-import org.retal.logiweb.domain.User;
+import org.retal.logiweb.domain.entity.Order;
+import org.retal.logiweb.domain.entity.SessionInfo;
+import org.retal.logiweb.domain.entity.User;
 import org.retal.logiweb.domain.enums.DriverStatus;
 import org.retal.logiweb.service.logic.CargoAndOrdersService;
 import org.retal.logiweb.service.logic.DriverService;
@@ -36,8 +36,8 @@ public class DriverPageController {
    * Creates an instance of this class using constructor-based dependency injection.
    */
   @Autowired
-<span class="fc" id="L39">  public DriverPageController(SessionInfo sessionInfo, DriverService driverService,</span>
-      CargoAndOrdersService cargoAndOrdersService) {
+  public DriverPageController(SessionInfo sessionInfo, DriverService driverService,
+<span class="fc" id="L40">      CargoAndOrdersService cargoAndOrdersService) {</span>
 <span class="fc" id="L41">    this.sessionInfo = sessionInfo;</span>
 <span class="fc" id="L42">    this.driverService = driverService;</span>
 <span class="fc" id="L43">    this.cargoAndOrdersService = cargoAndOrdersService;</span>

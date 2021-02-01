@@ -1,4 +1,4 @@
-package org.retal.logiweb.domain;
+package org.retal.logiweb.domain.entity;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;

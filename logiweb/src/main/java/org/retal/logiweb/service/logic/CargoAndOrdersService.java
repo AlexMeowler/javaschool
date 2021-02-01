@@ -23,16 +23,16 @@ import org.retal.logiweb.dao.OrderDAO;
 import org.retal.logiweb.dao.OrderRouteProgressionDAO;
 import org.retal.logiweb.dao.RoutePointDAO;
 import org.retal.logiweb.dao.UserDAO;
-import org.retal.logiweb.domain.Car;
-import org.retal.logiweb.domain.Cargo;
-import org.retal.logiweb.domain.City;
-import org.retal.logiweb.domain.CityDistance;
-import org.retal.logiweb.domain.Order;
-import org.retal.logiweb.domain.OrderRouteProgression;
-import org.retal.logiweb.domain.RoutePoint;
-import org.retal.logiweb.domain.SessionInfo;
-import org.retal.logiweb.domain.User;
-import org.retal.logiweb.domain.UserInfo;
+import org.retal.logiweb.domain.entity.Car;
+import org.retal.logiweb.domain.entity.Cargo;
+import org.retal.logiweb.domain.entity.City;
+import org.retal.logiweb.domain.entity.CityDistance;
+import org.retal.logiweb.domain.entity.Order;
+import org.retal.logiweb.domain.entity.OrderRouteProgression;
+import org.retal.logiweb.domain.entity.RoutePoint;
+import org.retal.logiweb.domain.entity.SessionInfo;
+import org.retal.logiweb.domain.entity.User;
+import org.retal.logiweb.domain.entity.UserInfo;
 import org.retal.logiweb.domain.enums.CargoStatus;
 import org.retal.logiweb.domain.enums.DriverStatus;
 import org.retal.logiweb.domain.enums.UserRole;
@@ -46,9 +46,10 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.Validator;
 
 /**
- * Service, containing business-logic methods regarding {@linkplain org.retal.logiweb.domain.Cargo
- * Cargo} and {@linkplain org.retal.logiweb.domain.Order Order} with
- * {@linkplain org.retal.logiweb.domain.RoutePoint RoutePoint} entities.
+ * Service, containing business-logic methods regarding
+ * {@linkplain org.retal.logiweb.domain.entity.Cargo Cargo} and
+ * {@linkplain org.retal.logiweb.domain.entity.Order Order} with
+ * {@linkplain org.retal.logiweb.domain.entity.RoutePoint RoutePoint} entities.
  * 
  * @author Alexander Retivov
  *
@@ -297,7 +298,7 @@ public class CargoAndOrdersService {
   /**
    * Checks if city where the driver is matches the city to load/unload cargo.
    * 
-   * @param cargo {@linkplain org.retal.logiweb.domain.Cargo Cargo} to be loaded/unloaded
+   * @param cargo {@linkplain org.retal.logiweb.domain.entity.Cargo Cargo} to be loaded/unloaded
    * @param isLoading true if we are looking for match between city of load and current location,
    *        false if we are looking for match between city of unload and current location
    * @param bindingResult object to store validation errors
@@ -315,10 +316,10 @@ public class CargoAndOrdersService {
 
   /**
    * Maps list of {@linkplain org.retal.logiweb.dto.RoutePointDTO RoutePointDTOs} to list of
-   * {@linkplain org.retal.logiweb.domain.RoutePoint RoutePoints}.
+   * {@linkplain org.retal.logiweb.domain.entity.RoutePoint RoutePoints}.
    * 
    * @param list of {@linkplain org.retal.logiweb.dto.RoutePointDTO RoutePointDTOs} to be mapped
-   * @return list of {@linkplain org.retal.logiweb.domain.RoutePoint RoutePoints}
+   * @return list of {@linkplain org.retal.logiweb.domain.entity.RoutePoint RoutePoints}
    */
   public List<RoutePoint> mapRoutePointDTOsToEntities(List<RoutePointDTO> list) {
     List<RoutePoint> entityList = new ArrayList<>();
@@ -333,10 +334,10 @@ public class CargoAndOrdersService {
   }
 
   /**
-   * Validates {@linkplain org.retal.logiweb.domain.RoutePoint RoutePoint} input and if no errors
-   * found, attempts to calculate optimal path and assign car and drivers according to that path. If
-   * path, car and drivers are selected, then {@linkplain org.retal.logiweb.domain.Order Order} is
-   * created and saved to database.
+   * Validates {@linkplain org.retal.logiweb.domain.entity.RoutePoint RoutePoint} input and if no
+   * errors found, attempts to calculate optimal path and assign car and drivers according to that
+   * path. If path, car and drivers are selected, then
+   * {@linkplain org.retal.logiweb.domain.entity.Order Order} is created and saved to database.
    * 
    * @param wrapper {@linkplain org.retal.logiweb.dto.RoutePointListWrapper wrapper} for list of
    *        route points to be validated and used for order creation
@@ -427,15 +428,16 @@ public class CargoAndOrdersService {
    * 
    * @see <a href="https://en.wikipedia.org/wiki/Traveling_salesman_problem">Traveling salesman
    *      problem</a>
-   * @param list list of {@linkplain org.retal.logiweb.domain.RoutePoint RoutePoint} entities
-   * @param distances list of all {@linkplain org.retal.logiweb.domain.CityDistance CityDistance}
-   *        entities from database
-   * @param cities list of all {@linkplain org.retal.logiweb.domain.City City} entities.
-   * @return Object array of size 3: Object[0] is selected {@linkplain org.retal.logiweb.domain.Car
-   *         Car}, Object[1] is List<{@linkplain org.retal.logiweb.domain.User User} (selected
-   *         drivers), Object[3] is String (shortest path, cities are divided by ";"), Object[4] is
-   *         Float (required capacity, used in showing error message). Path and required capacity
-   *         are never null.
+   * @param list list of {@linkplain org.retal.logiweb.domain.entity.RoutePoint RoutePoint} entities
+   * @param distances list of all {@linkplain org.retal.logiweb.domain.entity.CityDistance
+   *        CityDistance} entities from database
+   * @param cities list of all {@linkplain org.retal.logiweb.domain.entity.City City} entities.
+   * @return Object array of size 3: Object[0] is selected
+   *         {@linkplain org.retal.logiweb.domain.entity.Car Car}, Object[1] is
+   *         List<{@linkplain org.retal.logiweb.domain.entity.User User} (selected drivers),
+   *         Object[3] is String (shortest path, cities are divided by ";"), Object[4] is Float
+   *         (required capacity, used in showing error message). Path and required capacity are
+   *         never null.
    */
   public Object[] findAppropriateCarAndDriversAndCalculatePath(List<RoutePoint> list,
       List<CityDistance> distances, List<City> cities) {

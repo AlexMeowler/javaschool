@@ -3,7 +3,7 @@ package org.retal.logiweb.dao;
 import java.util.List;
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
-import org.retal.logiweb.domain.Car;
+import org.retal.logiweb.domain.entity.Car;
 import org.springframework.stereotype.Component;
 
 @Component

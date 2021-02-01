@@ -1,11 +1,5 @@
 package org.retal.logiweb.config.spring.web;
 
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import javax.annotation.PostConstruct;
-import org.apache.log4j.Logger;
-import org.retal.logiweb.service.logic.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;

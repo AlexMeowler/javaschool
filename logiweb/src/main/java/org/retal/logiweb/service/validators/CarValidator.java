@@ -2,14 +2,14 @@ package org.retal.logiweb.service.validators;
 
 import org.apache.log4j.Logger;
 import org.retal.logiweb.dao.CityDAO;
-import org.retal.logiweb.domain.Car;
+import org.retal.logiweb.domain.entity.Car;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
 /**
- * Custom {@linkplain org.retal.logiweb.domain.Car Car} validator.
+ * Custom {@linkplain org.retal.logiweb.domain.entity.Car Car} validator.
  * 
  * @author Alexander Retivov
  *

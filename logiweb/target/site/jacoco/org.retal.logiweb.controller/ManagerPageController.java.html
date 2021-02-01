@@ -3,11 +3,11 @@
 import java.util.List;
 import java.util.Map;
 import org.apache.log4j.Logger;
-import org.retal.logiweb.domain.Car;
-import org.retal.logiweb.domain.City;
-import org.retal.logiweb.domain.SessionInfo;
-import org.retal.logiweb.domain.User;
-import org.retal.logiweb.domain.UserInfo;
+import org.retal.logiweb.domain.entity.Car;
+import org.retal.logiweb.domain.entity.City;
+import org.retal.logiweb.domain.entity.SessionInfo;
+import org.retal.logiweb.domain.entity.User;
+import org.retal.logiweb.domain.entity.UserInfo;
 import org.retal.logiweb.domain.enums.UserRole;
 import org.retal.logiweb.dto.CarDTO;
 import org.retal.logiweb.dto.CityDTO;
@@ -49,8 +49,8 @@ public class ManagerPageController {
    * Creates an instance of this class using constructor-based dependency injection.
    */
   @Autowired
-<span class="fc" id="L52">  public ManagerPageController(SessionInfo sessionInfo, UserService userService,</span>
-      CarService carService, CityService cityService) {
+  public ManagerPageController(SessionInfo sessionInfo, UserService userService,
+<span class="fc" id="L53">      CarService carService, CityService cityService) {</span>
 <span class="fc" id="L54">    this.sessionInfo = sessionInfo;</span>
 <span class="fc" id="L55">    this.userService = userService;</span>
 <span class="fc" id="L56">    this.carService = carService;</span>
@@ -67,14 +67,14 @@ public class ManagerPageController {
 <span class="fc" id="L67">    Map&lt;String, String&gt; errors = UserValidator.convertErrorsToHashMap(userResult);</span>
 <span class="fc bfc" id="L68" title="All 2 branches covered.">    for (Map.Entry&lt;String, String&gt; e : errors.entrySet()) {</span>
 <span class="fc" id="L69">      log.debug(e.getKey() + &quot;:&quot; + e.getValue());</span>
-    }
+<span class="fc" id="L70">    }</span>
 <span class="fc" id="L71">    model.addAllAttributes(errors);</span>
 <span class="fc" id="L72">    BindingResult carResult =</span>
 <span class="fc" id="L73">        (BindingResult) model.asMap().get(BindingResult.MODEL_KEY_PREFIX + &quot;car&quot;);</span>
 <span class="fc" id="L74">    errors = UserValidator.convertErrorsToHashMap(carResult);</span>
 <span class="fc bfc" id="L75" title="All 2 branches covered.">    for (Map.Entry&lt;String, String&gt; e : errors.entrySet()) {</span>
 <span class="fc" id="L76">      log.debug(e.getKey() + &quot;:&quot; + e.getValue());</span>
-    }
+<span class="fc" id="L77">    }</span>
 <span class="fc" id="L78">    model.addAllAttributes(errors);</span>
 <span class="fc" id="L79">    User user = sessionInfo.getCurrentUser();</span>
 <span class="fc" id="L80">    UserInfo userInfo = user.getUserInfo();</span>
@@ -92,7 +92,7 @@ public class ManagerPageController {
    * Method responsible for adding new drivers to database using
    * {@linkplain org.retal.logiweb.service.logic.UserService service layer}.
    * 
-   * @see org.retal.logiweb.domain.User
+   * @see org.retal.logiweb.domain.entity.User
    */
   @PostMapping(value = &quot;/addNewDriver&quot;)
   public RedirectView addNewDriver(UserDTO userDTO, UserInfoDTO userInfoDTO, CityDTO cityDTO,
@@ -113,7 +113,7 @@ public class ManagerPageController {
    * Method responsible for attempt to delete driver from database when button is clicked using
    * {@linkplain org.retal.logiweb.service.logic.UserService service layer}.
    * 
-   * @see org.retal.logiweb.domain.User
+   * @see org.retal.logiweb.domain.entity.User
    */
   @GetMapping(value = &quot;/deleteDriver/{id}&quot;)
   public RedirectView deleteDriver(@PathVariable Integer id, RedirectAttributes redir) {
@@ -125,7 +125,7 @@ public class ManagerPageController {
     }
 <span class="fc bfc" id="L126" title="All 2 branches covered.">    if (url403.equals(UserService.DELETION_UPDATION_ERROR)) {</span>
 <span class="fc" id="L127">      redir.addFlashAttribute(&quot;error_userDeletionFailed&quot;,</span>
-<span class="fc" id="L128">          &quot;Could not delete driver due to assigned order or being driving car&quot;);</span>
+          &quot;Could not delete driver due to assigned order or being driving car&quot;);
     }
 <span class="fc" id="L130">    return redirectView;</span>
   }
@@ -133,7 +133,7 @@ public class ManagerPageController {
   /**
    * Method responsible for redirecting to driver editor page.
    * 
-   * @see org.retal.logiweb.domain.User
+   * @see org.retal.logiweb.domain.entity.User
    */
   @GetMapping(value = &quot;/editDriver/{id}&quot;)
   public RedirectView editDriver(@PathVariable Integer id, RedirectAttributes redir) {
@@ -143,7 +143,7 @@ public class ManagerPageController {
 <span class="fc bfc" id="L143" title="All 2 branches covered.">    if (userService.userHasRightsToEditOrDeleteUser(we, target)) {</span>
 <span class="fc" id="L144">      redir.addFlashAttribute(&quot;user&quot;, target);</span>
 <span class="fc" id="L145">      redir.addFlashAttribute(&quot;we&quot;, we);</span>
-<span class="fc" id="L146">    } else {</span>
+    } else {
 <span class="fc" id="L147">      redirectView.setUrl(&quot;/403/&quot; + we.getLogin());</span>
     }
 <span class="fc" id="L149">    return redirectView;</span>
@@ -152,7 +152,7 @@ public class ManagerPageController {
   /**
    * Method responsible for showing driver editor page.
    * 
-   * @see org.retal.logiweb.domain.User
+   * @see org.retal.logiweb.domain.entity.User
    */
   @GetMapping(value = &quot;/editDriver&quot;)
   public String driverEditForm(Model model) {
@@ -171,7 +171,7 @@ public class ManagerPageController {
    * {@linkplain org.retal.logiweb.service.logic.UserService service layer} which will update entity if
    * input is valid.
    * 
-   * @see org.retal.logiweb.domain.User
+   * @see org.retal.logiweb.domain.entity.User
    */
   @PostMapping(value = &quot;/submitEditedDriver&quot;)
   public RedirectView finishDriverEditing(UserDTO userDTO, BindingResult bindingResult,
@@ -195,7 +195,7 @@ public class ManagerPageController {
    * Method responsible for adding new cars to database using
    * {@linkplain org.retal.logiweb.service.logic.CarService service layer}.
    * 
-   * @see org.retal.logiweb.domain.Car
+   * @see org.retal.logiweb.domain.entity.Car
    */
   @PostMapping(value = &quot;/addNewCar&quot;)
   public RedirectView addNewCar(CarDTO carDTO, BindingResult bindingResult, CityDTO cityDTO,
@@ -216,7 +216,7 @@ public class ManagerPageController {
    * Method responsible for attempt to delete car from database when button is clicked using
    * {@linkplain org.retal.logiweb.service.logic.CarService service layer}.
    * 
-   * @see org.retal.logiweb.domain.Car
+   * @see org.retal.logiweb.domain.entity.Car
    */
   @GetMapping(value = &quot;/deleteCar/{id}&quot;)
   public RedirectView deleteCar(@PathVariable String id, RedirectAttributes redir) {
@@ -224,7 +224,7 @@ public class ManagerPageController {
 <span class="fc" id="L224">    Car car = carService.getCar(id);</span>
 <span class="fc bfc" id="L225" title="All 2 branches covered.">    if (!carService.deleteCar(car)) {</span>
 <span class="fc" id="L226">      redir.addFlashAttribute(&quot;error_carDeletionFailed&quot;,</span>
-<span class="fc" id="L227">          &quot;Could not delete car due to assigned order or being driven by someone&quot;);</span>
+          &quot;Could not delete car due to assigned order or being driven by someone&quot;);
     }
 <span class="fc" id="L229">    return redirectView;</span>
   }
@@ -232,7 +232,7 @@ public class ManagerPageController {
   /**
    * Method responsible for redirecting to car editor page.
    * 
-   * @see org.retal.logiweb.domain.Car
+   * @see org.retal.logiweb.domain.entity.Car
    */
   @GetMapping(value = &quot;/editCar/{id}&quot;)
   public RedirectView editCar(@PathVariable String id, RedirectAttributes redir) {
@@ -244,7 +244,7 @@ public class ManagerPageController {
   /**
    * Method responsible for showing car editor page.
    * 
-   * @see org.retal.logiweb.domain.Car
+   * @see org.retal.logiweb.domain.entity.Car
    */
   @GetMapping(value = &quot;/editCar&quot;)
   public String carEditForm(Model model) {
@@ -262,7 +262,7 @@ public class ManagerPageController {
    * {@linkplain org.retal.logiweb.service.logic.CarService service layer} which will update car if input
    * is valid.
    * 
-   * @see org.retal.logiweb.domain.Car
+   * @see org.retal.logiweb.domain.entity.Car
    */
   @PostMapping(value = &quot;/submitEditedCar&quot;)
   public RedirectView finishCarEditing(CarDTO carDTO, BindingResult bindingResult,
@@ -282,12 +282,12 @@ public class ManagerPageController {
 
   /**
    * Method for mapping user related DTOs (user, user info, city) to
-   * {@linkplain org.retal.logiweb.domain.User User} entity with user role set to 'driver'.
+   * {@linkplain org.retal.logiweb.domain.entity.User User} entity with user role set to 'driver'.
    * 
    * @param userDTO instance of {@linkplain org.retal.logiweb.dto.UserDTO}
    * @param userInfoDTO instance of {@linkplain org.retal.logiweb.dto.UserInfoDTO}
    * @param cityDTO instance of {@linkplain org.retal.logiweb.dto.CityDTO}
-   * @return transient instance of {@linkplain org.retal.logiweb.domain.User User} driver entity
+   * @return transient instance of {@linkplain org.retal.logiweb.domain.entity.User User} driver entity
    */
   private User mapUserRelatedDTOsToDriverEntity(UserDTO userDTO, UserInfoDTO userInfoDTO,
       CityDTO cityDTO) {
@@ -301,12 +301,12 @@ public class ManagerPageController {
   }
 
   /**
-   * Method for mapping car related DTOs (car, city) to {@linkplain org.retal.logiweb.domain.Car
+   * Method for mapping car related DTOs (car, city) to {@linkplain org.retal.logiweb.domain.entity.Car
    * Car} entity with user role set to 'driver'.
    * 
    * @param carDTO instance of {@linkplain org.retal.logiweb.dto.CarDTO}
    * @param cityDTO instance of {@linkplain org.retal.logiweb.dto.CityDTO}
-   * @return transient instance of {@linkplain org.retal.logiweb.domain.Car Car} entity
+   * @return transient instance of {@linkplain org.retal.logiweb.domain.entity.Car Car} entity
    */
   private Car mapCarRelatedDTOsToCarEntity(CarDTO carDTO, CityDTO cityDTO) {
 <span class="fc" id="L312">    Car car = new Car(carDTO);</span>

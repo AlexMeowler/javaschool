@@ -5,10 +5,10 @@ import java.util.List;
 import java.util.Set;
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
-import org.retal.logiweb.domain.Cargo;
-import org.retal.logiweb.domain.MethodUndefinedException;
-import org.retal.logiweb.domain.Order;
-import org.retal.logiweb.domain.RoutePoint;
+import org.retal.logiweb.domain.entity.Cargo;
+import org.retal.logiweb.domain.entity.MethodUndefinedException;
+import org.retal.logiweb.domain.entity.Order;
+import org.retal.logiweb.domain.entity.RoutePoint;
 import org.springframework.stereotype.Component;
 
 /**

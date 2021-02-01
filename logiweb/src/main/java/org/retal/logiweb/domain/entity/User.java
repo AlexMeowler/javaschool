@@ -1,4 +1,4 @@
-package org.retal.logiweb.domain;
+package org.retal.logiweb.domain.entity;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;

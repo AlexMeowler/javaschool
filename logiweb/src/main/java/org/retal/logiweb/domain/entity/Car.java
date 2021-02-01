@@ -1,4 +1,4 @@
-package org.retal.logiweb.domain;
+package org.retal.logiweb.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.Column;

@@ -3,11 +3,11 @@
 import java.util.List;
 import java.util.Map;
 import org.apache.log4j.Logger;
-import org.retal.logiweb.domain.Cargo;
-import org.retal.logiweb.domain.City;
-import org.retal.logiweb.domain.SessionInfo;
-import org.retal.logiweb.domain.User;
-import org.retal.logiweb.domain.UserInfo;
+import org.retal.logiweb.domain.entity.Cargo;
+import org.retal.logiweb.domain.entity.City;
+import org.retal.logiweb.domain.entity.SessionInfo;
+import org.retal.logiweb.domain.entity.User;
+import org.retal.logiweb.domain.entity.UserInfo;
 import org.retal.logiweb.domain.enums.CargoStatus;
 import org.retal.logiweb.dto.CargoDTO;
 import org.retal.logiweb.dto.CityDTO;
@@ -19,6 +19,7 @@ import org.retal.logiweb.service.logic.CargoAndOrdersService;
 import org.retal.logiweb.service.logic.CityService;
 import org.retal.logiweb.service.logic.UserService;
 import org.retal.logiweb.service.validators.UserValidator;
+import org.retal.table.ejb.jms.message.NotificationType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -53,64 +54,64 @@ public class AdminPageController {
 
   public static final String CARGO_MODEL_ATTRIBUTE = &quot;cargo&quot;;
 
-<span class="fc" id="L56">  private static final Logger log = Logger.getLogger(AdminPageController.class);</span>
+<span class="fc" id="L57">  private static final Logger log = Logger.getLogger(AdminPageController.class);</span>
   
   @Autowired
-  private NotificationSender notificationSender;
+  private NotificationSender sender;
 
   /**
    * Creates an instance of this class using constructor-based dependency injection.
    */
   @Autowired
-<span class="fc" id="L65">  public AdminPageController(UserService userService, SessionInfo sessionInfo,</span>
-      CityService cityService, CarService carService, CargoAndOrdersService cargoAndOrdersService) {
-<span class="fc" id="L67">    this.userService = userService;</span>
-<span class="fc" id="L68">    this.sessionInfo = sessionInfo;</span>
-<span class="fc" id="L69">    this.cityService = cityService;</span>
-<span class="fc" id="L70">    this.carService = carService;</span>
-<span class="fc" id="L71">    this.cargoAndOrdersService = cargoAndOrdersService;</span>
-<span class="fc" id="L72">  }</span>
+  public AdminPageController(UserService userService, SessionInfo sessionInfo,
+<span class="fc" id="L67">      CityService cityService, CarService carService, CargoAndOrdersService cargoAndOrdersService) {</span>
+<span class="fc" id="L68">    this.userService = userService;</span>
+<span class="fc" id="L69">    this.sessionInfo = sessionInfo;</span>
+<span class="fc" id="L70">    this.cityService = cityService;</span>
+<span class="fc" id="L71">    this.carService = carService;</span>
+<span class="fc" id="L72">    this.cargoAndOrdersService = cargoAndOrdersService;</span>
+<span class="fc" id="L73">  }</span>
 
   /**
    * Method responsible for showing the main administrator page.
    */
   @GetMapping(value = ADMIN_PAGE)
   public String getAdminPage(Model model) {
-<span class="fc" id="L79">    BindingResult result =</span>
-<span class="fc" id="L80">        (BindingResult) model.asMap().get(BindingResult.MODEL_KEY_PREFIX + &quot;user&quot;);</span>
-<span class="fc" id="L81">    Map&lt;String, String&gt; errors = UserValidator.convertErrorsToHashMap(result);</span>
-<span class="fc bfc" id="L82" title="All 2 branches covered.">    for (Map.Entry&lt;String, String&gt; e : errors.entrySet()) {</span>
-<span class="fc" id="L83">      log.debug(e.getKey() + &quot;:&quot; + e.getValue());</span>
-    }
-<span class="fc" id="L85">    model.addAllAttributes(errors);</span>
-<span class="fc" id="L86">    result =</span>
-<span class="fc" id="L87">        (BindingResult) model.asMap().get(BindingResult.MODEL_KEY_PREFIX + CARGO_MODEL_ATTRIBUTE);</span>
-<span class="fc" id="L88">    errors = UserValidator.convertErrorsToHashMap(result);</span>
-<span class="fc bfc" id="L89" title="All 2 branches covered.">    for (Map.Entry&lt;String, String&gt; e : errors.entrySet()) {</span>
-<span class="fc" id="L90">      log.debug(e.getKey() + &quot;:&quot; + e.getValue());</span>
-    }
-<span class="fc" id="L92">    model.addAllAttributes(errors);</span>
-<span class="fc" id="L93">    List&lt;User&gt; users = userService.getAllUsers();</span>
-<span class="fc" id="L94">    model.addAttribute(&quot;userList&quot;, users);</span>
-<span class="fc" id="L95">    List&lt;City&gt; cities = cityService.getAllCities();</span>
-<span class="fc" id="L96">    model.addAttribute(&quot;cityList&quot;, cities);</span>
-<span class="fc" id="L97">    model.addAttribute(&quot;cargoList&quot;, cargoAndOrdersService.getAllCargo());</span>
-<span class="fc" id="L98">    return &quot;adminPage&quot;;</span>
+<span class="fc" id="L80">    BindingResult result =</span>
+<span class="fc" id="L81">        (BindingResult) model.asMap().get(BindingResult.MODEL_KEY_PREFIX + &quot;user&quot;);</span>
+<span class="fc" id="L82">    Map&lt;String, String&gt; errors = UserValidator.convertErrorsToHashMap(result);</span>
+<span class="fc bfc" id="L83" title="All 2 branches covered.">    for (Map.Entry&lt;String, String&gt; e : errors.entrySet()) {</span>
+<span class="fc" id="L84">      log.debug(e.getKey() + &quot;:&quot; + e.getValue());</span>
+<span class="fc" id="L85">    }</span>
+<span class="fc" id="L86">    model.addAllAttributes(errors);</span>
+<span class="fc" id="L87">    result =</span>
+<span class="fc" id="L88">        (BindingResult) model.asMap().get(BindingResult.MODEL_KEY_PREFIX + CARGO_MODEL_ATTRIBUTE);</span>
+<span class="fc" id="L89">    errors = UserValidator.convertErrorsToHashMap(result);</span>
+<span class="fc bfc" id="L90" title="All 2 branches covered.">    for (Map.Entry&lt;String, String&gt; e : errors.entrySet()) {</span>
+<span class="fc" id="L91">      log.debug(e.getKey() + &quot;:&quot; + e.getValue());</span>
+<span class="fc" id="L92">    }</span>
+<span class="fc" id="L93">    model.addAllAttributes(errors);</span>
+<span class="fc" id="L94">    List&lt;User&gt; users = userService.getAllUsers();</span>
+<span class="fc" id="L95">    model.addAttribute(&quot;userList&quot;, users);</span>
+<span class="fc" id="L96">    List&lt;City&gt; cities = cityService.getAllCities();</span>
+<span class="fc" id="L97">    model.addAttribute(&quot;cityList&quot;, cities);</span>
+<span class="fc" id="L98">    model.addAttribute(&quot;cargoList&quot;, cargoAndOrdersService.getAllCargo());</span>
+<span class="fc" id="L99">    return &quot;adminPage&quot;;</span>
   }
 
   /**
    * Method responsible for adding cities and distances between them to database from file. It was
    * used only once, but will remain here in case of additional cities/distances are required.
    * 
-   * @see org.retal.logiweb.domain.City
-   * @see org.retal.logiweb.domain.CityDistance
+   * @see org.retal.logiweb.domain.entity.City
+   * @see org.retal.logiweb.domain.entity.CityDistance
    */
   @PostMapping(value = &quot;/addCityInfo&quot;)
   public RedirectView addCityInfo() {
-<span class="fc" id="L110">    RedirectView redirectView = new RedirectView(ADMIN_PAGE, true);</span>
-<span class="fc" id="L111">    cityService.addCitiesFromFile();</span>
-<span class="fc" id="L112">    cityService.addDistancesFromFile();</span>
-<span class="fc" id="L113">    return redirectView;</span>
+<span class="fc" id="L111">    RedirectView redirectView = new RedirectView(ADMIN_PAGE, true);</span>
+<span class="fc" id="L112">    cityService.addCitiesFromFile();</span>
+<span class="fc" id="L113">    cityService.addDistancesFromFile();</span>
+<span class="fc" id="L114">    return redirectView;</span>
   }
 
   /**
@@ -119,96 +120,96 @@ public class AdminPageController {
    */
   @PostMapping(value = &quot;/addDriverInfo&quot;)
   public RedirectView addDriverInfo() {
-<span class="fc" id="L122">    RedirectView redirectView = new RedirectView(ADMIN_PAGE, true);</span>
-<span class="fc" id="L123">    userService.addDriversFromFile();</span>
-<span class="fc" id="L124">    return redirectView;</span>
+<span class="fc" id="L123">    RedirectView redirectView = new RedirectView(ADMIN_PAGE, true);</span>
+<span class="fc" id="L124">    userService.addDriversFromFile();</span>
+<span class="fc" id="L125">    return redirectView;</span>
   }
 
   /**
    * Method responsible for generating one car for each city. It was used only once, but will remain
    * here in case of additional cars are required.
    * 
-   * @see org.retal.logiweb.domain.Car
+   * @see org.retal.logiweb.domain.entity.Car
    */
   @PostMapping(value = &quot;/addCarsInfo&quot;)
   public RedirectView addCarsInfo() {
-<span class="fc" id="L135">    RedirectView redirectView = new RedirectView(ADMIN_PAGE, true);</span>
-<span class="fc" id="L136">    carService.generateCarForEachCity();</span>
-<span class="fc" id="L137">    return redirectView;</span>
+<span class="fc" id="L136">    RedirectView redirectView = new RedirectView(ADMIN_PAGE, true);</span>
+<span class="fc" id="L137">    carService.generateCarForEachCity();</span>
+<span class="fc" id="L138">    return redirectView;</span>
   }
 
   /**
    * Method responsible for adding new user to database from form on page using
    * {@linkplain org.retal.logiweb.service.logic.UserService service layer}.
    * 
-   * @see org.retal.logiweb.domain.User
+   * @see org.retal.logiweb.domain.entity.User
    */
   @PostMapping(value = &quot;/addNewUser&quot;)
   public RedirectView addNewUser(UserDTO userDTO, BindingResult bindingResult,
       UserInfoDTO userInfoDTO, CityDTO cityDTO, RedirectAttributes redir) {
-<span class="fc" id="L149">    redir.addFlashAttribute(&quot;visible&quot;, &quot;true&quot;);</span>
-<span class="fc" id="L150">    User user = mapUserRelatedDTOsToEntity(userDTO, userInfoDTO, cityDTO);</span>
-<span class="fc" id="L151">    userService.addNewUser(user, bindingResult, userDTO.getPassword());</span>
-<span class="fc" id="L152">    RedirectView redirectView = new RedirectView(ADMIN_PAGE, true);</span>
-<span class="fc bfc" id="L153" title="All 2 branches covered.">    if (bindingResult.hasErrors()) {</span>
-<span class="fc" id="L154">      log.warn(&quot;Validation failed when adding new user&quot;);</span>
-<span class="fc" id="L155">      redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + &quot;user&quot;, bindingResult);</span>
-<span class="fc" id="L156">      redir.addFlashAttribute(&quot;user&quot;, user);</span>
+<span class="fc" id="L150">    redir.addFlashAttribute(&quot;visible&quot;, &quot;true&quot;);</span>
+<span class="fc" id="L151">    User user = mapUserRelatedDTOsToEntity(userDTO, userInfoDTO, cityDTO);</span>
+<span class="fc" id="L152">    userService.addNewUser(user, bindingResult, userDTO.getPassword());</span>
+<span class="fc" id="L153">    RedirectView redirectView = new RedirectView(ADMIN_PAGE, true);</span>
+<span class="fc bfc" id="L154" title="All 2 branches covered.">    if (bindingResult.hasErrors()) {</span>
+<span class="fc" id="L155">      log.warn(&quot;Validation failed when adding new user&quot;);</span>
+<span class="fc" id="L156">      redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + &quot;user&quot;, bindingResult);</span>
+<span class="fc" id="L157">      redir.addFlashAttribute(&quot;user&quot;, user);</span>
     }
-<span class="fc" id="L158">    return redirectView;</span>
+<span class="fc" id="L159">    return redirectView;</span>
   }
 
   /**
    * Method responsible for attempt to delete user from database when button is clicked using
    * {@linkplain org.retal.logiweb.service.logic.UserService service layer}.
    * 
-   * @see org.retal.logiweb.domain.User
+   * @see org.retal.logiweb.domain.entity.User
    */
   @GetMapping(value = &quot;/deleteUser/{id}&quot;)
   public RedirectView delete(@PathVariable Integer id, RedirectAttributes redir) {
-<span class="fc" id="L169">    RedirectView redirectView = new RedirectView(ADMIN_PAGE, true);</span>
-<span class="fc" id="L170">    String answer = userService.deleteUser(id);</span>
-<span class="fc bfc" id="L171" title="All 2 branches covered.">    if (answer.equals(UserService.DELETION_UPDATION_ERROR)) {</span>
-<span class="fc" id="L172">      redir.addFlashAttribute(&quot;error_userDeletionFailed&quot;,</span>
-<span class="fc" id="L173">          &quot;Could not delete user due to assigned order or being driving car&quot;);</span>
+<span class="fc" id="L170">    RedirectView redirectView = new RedirectView(ADMIN_PAGE, true);</span>
+<span class="fc" id="L171">    String answer = userService.deleteUser(id);</span>
+<span class="fc bfc" id="L172" title="All 2 branches covered.">    if (answer.equals(UserService.DELETION_UPDATION_ERROR)) {</span>
+<span class="fc" id="L173">      redir.addFlashAttribute(&quot;error_userDeletionFailed&quot;,</span>
+          &quot;Could not delete user due to assigned order or being driving car&quot;);
     }
-<span class="fc" id="L175">    return redirectView;</span>
+<span class="fc" id="L176">    return redirectView;</span>
   }
 
   /**
    * Method responsible for redirecting to user editor page.
    * 
-   * @see org.retal.logiweb.domain.User
+   * @see org.retal.logiweb.domain.entity.User
    */
   @GetMapping(value = &quot;/editUser/{id}&quot;)
   public RedirectView edit(@PathVariable Integer id, RedirectAttributes redir) {
-<span class="fc" id="L185">    RedirectView redirectView = new RedirectView(&quot;/editUser&quot;, true);</span>
-<span class="fc" id="L186">    User currentUser = sessionInfo.getCurrentUser();</span>
-<span class="fc" id="L187">    User targetUser = userService.getUser(id);</span>
-<span class="fc bfc" id="L188" title="All 2 branches covered.">    if (userService.userHasRightsToEditOrDeleteUser(currentUser, targetUser)) {</span>
-<span class="fc" id="L189">      redir.addFlashAttribute(&quot;user&quot;, targetUser);</span>
-<span class="fc" id="L190">      redir.addFlashAttribute(&quot;we&quot;, currentUser);</span>
-<span class="fc" id="L191">    } else {</span>
-<span class="fc" id="L192">      redirectView.setUrl(&quot;/403/&quot; + currentUser.getLogin());</span>
+<span class="fc" id="L186">    RedirectView redirectView = new RedirectView(&quot;/editUser&quot;, true);</span>
+<span class="fc" id="L187">    User currentUser = sessionInfo.getCurrentUser();</span>
+<span class="fc" id="L188">    User targetUser = userService.getUser(id);</span>
+<span class="fc bfc" id="L189" title="All 2 branches covered.">    if (userService.userHasRightsToEditOrDeleteUser(currentUser, targetUser)) {</span>
+<span class="fc" id="L190">      redir.addFlashAttribute(&quot;user&quot;, targetUser);</span>
+<span class="fc" id="L191">      redir.addFlashAttribute(&quot;we&quot;, currentUser);</span>
+    } else {
+<span class="fc" id="L193">      redirectView.setUrl(&quot;/403/&quot; + currentUser.getLogin());</span>
     }
-<span class="fc" id="L194">    return redirectView;</span>
+<span class="fc" id="L195">    return redirectView;</span>
   }
 
   /**
    * Method responsible for showing user editor page.
    * 
-   * @see org.retal.logiweb.domain.User
+   * @see org.retal.logiweb.domain.entity.User
    */
   @GetMapping(value = &quot;/editUser&quot;)
   public String editForm(Model model) {
-<span class="fc" id="L204">    BindingResult result =</span>
-<span class="fc" id="L205">        (BindingResult) model.asMap().get(BindingResult.MODEL_KEY_PREFIX + &quot;user&quot;);</span>
-<span class="fc" id="L206">    Map&lt;String, String&gt; errors = UserValidator.convertErrorsToHashMap(result);</span>
-<span class="fc" id="L207">    model.addAllAttributes(errors);</span>
-<span class="fc" id="L208">    model.addAttribute(&quot;editUser&quot;, &quot;/submitEditedUser&quot;);</span>
-<span class="fc" id="L209">    List&lt;City&gt; cities = cityService.getAllCities();</span>
-<span class="fc" id="L210">    model.addAttribute(&quot;cityList&quot;, cities);</span>
-<span class="fc" id="L211">    return &quot;editUser&quot;;</span>
+<span class="fc" id="L205">    BindingResult result =</span>
+<span class="fc" id="L206">        (BindingResult) model.asMap().get(BindingResult.MODEL_KEY_PREFIX + &quot;user&quot;);</span>
+<span class="fc" id="L207">    Map&lt;String, String&gt; errors = UserValidator.convertErrorsToHashMap(result);</span>
+<span class="fc" id="L208">    model.addAllAttributes(errors);</span>
+<span class="fc" id="L209">    model.addAttribute(&quot;editUser&quot;, &quot;/submitEditedUser&quot;);</span>
+<span class="fc" id="L210">    List&lt;City&gt; cities = cityService.getAllCities();</span>
+<span class="fc" id="L211">    model.addAttribute(&quot;cityList&quot;, cities);</span>
+<span class="fc" id="L212">    return &quot;editUser&quot;;</span>
   }
 
   /**
@@ -216,73 +217,73 @@ public class AdminPageController {
    * {@linkplain org.retal.logiweb.service.logic.UserService service layer} which will update user if
    * input is valid.
    * 
-   * @see org.retal.logiweb.domain.User
+   * @see org.retal.logiweb.domain.entity.User
    */
   @PostMapping(value = &quot;/submitEditedUser&quot;)
   public RedirectView finishEditing(UserDTO userDTO, BindingResult bindingResult,
       UserInfoDTO userInfoDTO, CityDTO cityDTO, RedirectAttributes redirectAttributes) {
-<span class="fc" id="L224">    RedirectView redirectView = new RedirectView(ADMIN_PAGE, true);</span>
-<span class="fc" id="L225">    User user = mapUserRelatedDTOsToEntity(userDTO, userInfoDTO, cityDTO);</span>
-<span class="fc" id="L226">    String redirectAddress = userService.updateUser(user, bindingResult, userDTO.getPassword());</span>
-<span class="fc bfc" id="L227" title="All 2 branches covered.">    if (bindingResult.hasErrors()) {</span>
-<span class="fc" id="L228">      log.warn(&quot;Validation fail when editing user&quot;);</span>
-<span class="fc" id="L229">      redirectAttributes.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + &quot;user&quot;, bindingResult);</span>
-<span class="fc" id="L230">      redirectAttributes.addFlashAttribute(&quot;user&quot;, user);</span>
-<span class="fc" id="L231">      redirectView.setUrl(&quot;/editUser&quot;);</span>
+<span class="fc" id="L225">    RedirectView redirectView = new RedirectView(ADMIN_PAGE, true);</span>
+<span class="fc" id="L226">    User user = mapUserRelatedDTOsToEntity(userDTO, userInfoDTO, cityDTO);</span>
+<span class="fc" id="L227">    String redirectAddress = userService.updateUser(user, bindingResult, userDTO.getPassword());</span>
+<span class="fc bfc" id="L228" title="All 2 branches covered.">    if (bindingResult.hasErrors()) {</span>
+<span class="fc" id="L229">      log.warn(&quot;Validation fail when editing user&quot;);</span>
+<span class="fc" id="L230">      redirectAttributes.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + &quot;user&quot;, bindingResult);</span>
+<span class="fc" id="L231">      redirectAttributes.addFlashAttribute(&quot;user&quot;, user);</span>
+<span class="fc" id="L232">      redirectView.setUrl(&quot;/editUser&quot;);</span>
     }
-<span class="fc bfc" id="L233" title="All 2 branches covered.">    if (!redirectAddress.isEmpty()) {</span>
-<span class="fc" id="L234">      redirectView.setUrl(redirectAddress);</span>
+<span class="fc bfc" id="L234" title="All 2 branches covered.">    if (!redirectAddress.isEmpty()) {</span>
+<span class="fc" id="L235">      redirectView.setUrl(redirectAddress);</span>
     }
-<span class="fc" id="L236">    return redirectView;</span>
+<span class="fc" id="L237">    return redirectView;</span>
   }
 
   /**
    * Method responsible for adding cargo entities using
    * {@linkplain org.retal.logiweb.service.logic.CargoAndOrdersService service layer}.
    * 
-   * @see org.retal.logiweb.domain.Cargo
+   * @see org.retal.logiweb.domain.entity.Cargo
    */
   @PostMapping(value = &quot;/addNewCargo&quot;)
   public RedirectView addNewCargo(CargoDTO cargoDTO, BindingResult bindingResult,
       RedirectAttributes redir, @RequestParam(name = &quot;mass&quot;) String weight) {
-<span class="fc" id="L248">    redir.addFlashAttribute(&quot;visiblecargo&quot;, &quot;true&quot;);</span>
-<span class="fc" id="L249">    Cargo cargo = new Cargo(cargoDTO);</span>
-<span class="fc" id="L250">    cargo.setStatus(CargoStatus.PREPARED.toString().toLowerCase());</span>
-<span class="fc" id="L251">    cargoAndOrdersService.addNewCargo(cargo, bindingResult, weight);</span>
-<span class="fc" id="L252">    RedirectView redirectView = new RedirectView(ADMIN_PAGE, true);</span>
-<span class="fc bfc" id="L253" title="All 2 branches covered.">    if (bindingResult.hasErrors()) {</span>
-<span class="fc" id="L254">      log.warn(&quot;Validation fail when adding new cargo&quot;);</span>
-<span class="fc" id="L255">      redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + CARGO_MODEL_ATTRIBUTE,</span>
-<span class="fc" id="L256">          bindingResult);</span>
-<span class="fc" id="L257">      redir.addFlashAttribute(CARGO_MODEL_ATTRIBUTE, cargo);</span>
+<span class="fc" id="L249">    redir.addFlashAttribute(&quot;visiblecargo&quot;, &quot;true&quot;);</span>
+<span class="fc" id="L250">    Cargo cargo = new Cargo(cargoDTO);</span>
+<span class="fc" id="L251">    cargo.setStatus(CargoStatus.PREPARED.toString().toLowerCase());</span>
+<span class="fc" id="L252">    cargoAndOrdersService.addNewCargo(cargo, bindingResult, weight);</span>
+<span class="fc" id="L253">    RedirectView redirectView = new RedirectView(ADMIN_PAGE, true);</span>
+<span class="fc bfc" id="L254" title="All 2 branches covered.">    if (bindingResult.hasErrors()) {</span>
+<span class="fc" id="L255">      log.warn(&quot;Validation fail when adding new cargo&quot;);</span>
+<span class="fc" id="L256">      redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + CARGO_MODEL_ATTRIBUTE,</span>
+          bindingResult);
+<span class="fc" id="L258">      redir.addFlashAttribute(CARGO_MODEL_ATTRIBUTE, cargo);</span>
     }
-<span class="fc" id="L259">    return redirectView;</span>
+<span class="fc" id="L260">    return redirectView;</span>
   }
   
-  @PostMapping(value = &quot;/testJMS&quot;)
+  @GetMapping(value = &quot;/jms&quot;)
   public RedirectView testJMS() {
-<span class="nc" id="L264">    RedirectView redirectView = new RedirectView(ADMIN_PAGE, true);</span>
-<span class="nc" id="L265">    notificationSender.send(new Object());</span>
-<span class="nc" id="L266">    return redirectView;</span>
+<span class="nc" id="L265">    RedirectView redirectView = new RedirectView(ADMIN_PAGE, true);</span>
+<span class="nc" id="L266">    sender.send(NotificationType.ORDERS_UPDATE);</span>
+<span class="nc" id="L267">    return redirectView;</span>
   }
 
   /**
    * Method for mapping user related DTOs (user, user info, city) to
-   * {@linkplain org.retal.logiweb.domain.User User} entity.
+   * {@linkplain org.retal.logiweb.domain.entity.User User} entity.
    * 
    * @param userDTO instance of {@linkplain org.retal.logiweb.dto.UserDTO}
    * @param userInfoDTO instance of {@linkplain org.retal.logiweb.dto.UserInfoDTO}
    * @param cityDTO instance of {@linkplain org.retal.logiweb.dto.CityDTO}
-   * @return transient instance of {@linkplain org.retal.logiweb.domain.User User} entity
+   * @return transient instance of {@linkplain org.retal.logiweb.domain.entity.User User} entity
    */
   private User mapUserRelatedDTOsToEntity(UserDTO userDTO, UserInfoDTO userInfoDTO,
       CityDTO cityDTO) {
-<span class="fc" id="L280">    User user = new User(userDTO);</span>
-<span class="fc" id="L281">    UserInfo userInfo = new UserInfo(userInfoDTO);</span>
-<span class="fc" id="L282">    City currentCity = new City(cityDTO);</span>
-<span class="fc" id="L283">    userInfo.setCity(currentCity);</span>
-<span class="fc" id="L284">    user.setUserInfo(userInfo);</span>
-<span class="fc" id="L285">    return user;</span>
+<span class="fc" id="L281">    User user = new User(userDTO);</span>
+<span class="fc" id="L282">    UserInfo userInfo = new UserInfo(userInfoDTO);</span>
+<span class="fc" id="L283">    City currentCity = new City(cityDTO);</span>
+<span class="fc" id="L284">    userInfo.setCity(currentCity);</span>
+<span class="fc" id="L285">    user.setUserInfo(userInfo);</span>
+<span class="fc" id="L286">    return user;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

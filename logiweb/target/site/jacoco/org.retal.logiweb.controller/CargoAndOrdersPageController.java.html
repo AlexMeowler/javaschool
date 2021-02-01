@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import org.retal.logiweb.domain.Car;
-import org.retal.logiweb.domain.Cargo;
-import org.retal.logiweb.domain.Order;
-import org.retal.logiweb.domain.SessionInfo;
-import org.retal.logiweb.domain.User;
-import org.retal.logiweb.domain.UserInfo;
+import org.retal.logiweb.domain.entity.Car;
+import org.retal.logiweb.domain.entity.Cargo;
+import org.retal.logiweb.domain.entity.Order;
+import org.retal.logiweb.domain.entity.SessionInfo;
+import org.retal.logiweb.domain.entity.User;
+import org.retal.logiweb.domain.entity.UserInfo;
 import org.retal.logiweb.dto.RoutePointListWrapper;
 import org.retal.logiweb.service.logic.CarService;
 import org.retal.logiweb.service.logic.CargoAndOrdersService;
@@ -43,8 +43,8 @@ public class CargoAndOrdersPageController {
    * Creates an instance of this class using constructor-based dependency injection.
    */
   @Autowired
-<span class="fc" id="L46">  public CargoAndOrdersPageController(SessionInfo sessionInfo,</span>
-      CargoAndOrdersService cargoAndOrdersService, CityService cityService, CarService carService) {
+  public CargoAndOrdersPageController(SessionInfo sessionInfo,
+<span class="fc" id="L47">      CargoAndOrdersService cargoAndOrdersService, CityService cityService, CarService carService) {</span>
 <span class="fc" id="L48">    this.sessionInfo = sessionInfo;</span>
 <span class="fc" id="L49">    this.cargoAndOrdersService = cargoAndOrdersService;</span>
 <span class="fc" id="L50">    this.cityService = cityService;</span>
@@ -83,8 +83,8 @@ public class CargoAndOrdersPageController {
   /**
    * Method for AJAX requests. Required for adding orders (form is generated dynamically using JS).
    * 
-   * @return List array of 2 elements. List[0] is all {@linkplain org.retal.logiweb.domain.City
-   *         cities} from database. List[1] is all {@linkplain org.retal.logiweb.domain.Cargo cargo}
+   * @return List array of 2 elements. List[0] is all {@linkplain org.retal.logiweb.domain.entity.City
+   *         cities} from database. List[1] is all {@linkplain org.retal.logiweb.domain.entity.Cargo cargo}
    *         available for creating order.
    */
   @SuppressWarnings(&quot;rawtypes&quot;)
@@ -99,8 +99,8 @@ public class CargoAndOrdersPageController {
   /**
    * Method for AJAX requests. Required for reassigning car for order.
    * 
-   * @param id {@linkplain org.retal.logiweb.domain.Order Order} primary key
-   * @return List of {@linkplain org.retal.logiweb.domain.Car Cars} available for assigning to this
+   * @param id {@linkplain org.retal.logiweb.domain.entity.Order Order} primary key
+   * @return List of {@linkplain org.retal.logiweb.domain.entity.Car Cars} available for assigning to this
    *         order.
    */
   @GetMapping(value = &quot;/getCarsForOrder/{id}&quot;)
@@ -112,8 +112,8 @@ public class CargoAndOrdersPageController {
   /**
    * Method for AJAX requests. Required for changing assigned car for order
    * 
-   * @param data input data of pattern &quot;A_B&quot; where A is {@linkplain org.retal.logiweb.domain.Order
-   *        Order} ID and B is {@linkplain org.retal.logiweb.domain.Car Car} registration ID
+   * @param data input data of pattern &quot;A_B&quot; where A is {@linkplain org.retal.logiweb.domain.entity.Order
+   *        Order} ID and B is {@linkplain org.retal.logiweb.domain.entity.Car Car} registration ID
    * @return error message if operation failed and null if operation succeeded.
    * @see org.retal.logiweb.service.logic.CargoAndOrdersService
    */
@@ -138,7 +138,7 @@ public class CargoAndOrdersPageController {
 <span class="fc" id="L138">    cargoAndOrdersService.createOrderAndRoutePoints(list, bindingResult);</span>
 <span class="fc bfc" id="L139" title="All 2 branches covered.">    if (bindingResult.hasErrors()) {</span>
 <span class="fc" id="L140">      redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + ROUTE_POINT_MODEL_ATTRIBUTE,</span>
-<span class="fc" id="L141">          bindingResult);</span>
+          bindingResult);
 <span class="fc" id="L142">      redir.addFlashAttribute(&quot;counter_value&quot;, list.getList().size());</span>
 <span class="fc" id="L143">      redir.addFlashAttribute(ROUTE_POINT_MODEL_ATTRIBUTE, list.getList());</span>
     }

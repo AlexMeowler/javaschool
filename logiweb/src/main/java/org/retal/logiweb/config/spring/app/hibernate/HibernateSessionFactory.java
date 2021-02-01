@@ -6,15 +6,15 @@ import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
-import org.retal.logiweb.domain.Car;
-import org.retal.logiweb.domain.Cargo;
-import org.retal.logiweb.domain.City;
-import org.retal.logiweb.domain.CityDistance;
-import org.retal.logiweb.domain.Order;
-import org.retal.logiweb.domain.OrderRouteProgression;
-import org.retal.logiweb.domain.RoutePoint;
-import org.retal.logiweb.domain.User;
-import org.retal.logiweb.domain.UserInfo;
+import org.retal.logiweb.domain.entity.Car;
+import org.retal.logiweb.domain.entity.Cargo;
+import org.retal.logiweb.domain.entity.City;
+import org.retal.logiweb.domain.entity.CityDistance;
+import org.retal.logiweb.domain.entity.Order;
+import org.retal.logiweb.domain.entity.OrderRouteProgression;
+import org.retal.logiweb.domain.entity.RoutePoint;
+import org.retal.logiweb.domain.entity.User;
+import org.retal.logiweb.domain.entity.UserInfo;
 
 /**
  * Class, responsible for configuring Hibernate and providing

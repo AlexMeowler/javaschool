@@ -5,9 +5,11 @@ org.retal.logiweb.config.spring.security
 org.retal.logiweb.config.spring.web
 org.retal.logiweb.controller
 org.retal.logiweb.dao
-org.retal.logiweb.domain
+org.retal.logiweb.domain.entity
 org.retal.logiweb.domain.enums
+org.retal.logiweb.domain.ws
 org.retal.logiweb.dto
 org.retal.logiweb.service.jms
 org.retal.logiweb.service.logic
 org.retal.logiweb.service.validators
+org.retal.logiweb.service.web

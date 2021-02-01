@@ -1,4 +1,4 @@
-package org.retal.logiweb.domain;
+package org.retal.logiweb.domain.entity;
 
 import java.io.Serializable;
 import javax.persistence.Column;

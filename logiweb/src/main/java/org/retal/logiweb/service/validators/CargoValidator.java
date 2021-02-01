@@ -3,14 +3,14 @@ package org.retal.logiweb.service.validators;
 import java.util.Set;
 import javax.validation.ConstraintViolation;
 import org.apache.log4j.Logger;
-import org.retal.logiweb.domain.Cargo;
+import org.retal.logiweb.domain.entity.Cargo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
 /**
- * Custom {@linkplain org.retal.logiweb.domain.Cargo Cargo} validator.
+ * Custom {@linkplain org.retal.logiweb.domain.entity.Cargo Cargo} validator.
  * 
  * @author Alexander Retivov
  *
