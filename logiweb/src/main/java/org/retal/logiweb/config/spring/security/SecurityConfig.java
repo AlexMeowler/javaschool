@@ -2,7 +2,7 @@ package org.retal.logiweb.config.spring.security;
 
 import org.retal.logiweb.controller.GlobalExceptionHandler;
 import org.retal.logiweb.domain.enums.UserRole;
-import org.retal.logiweb.service.UserAuthorizationService;
+import org.retal.logiweb.service.logic.UserAuthorizationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;

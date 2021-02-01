@@ -3,7 +3,7 @@ package org.retal.logiweb.dao;
 import java.util.List;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import org.retal.logiweb.domain.HibernateSessionFactory;
+import org.retal.logiweb.config.spring.app.hibernate.HibernateSessionFactory;
 import org.retal.logiweb.domain.MethodUndefinedException;
 
 /**

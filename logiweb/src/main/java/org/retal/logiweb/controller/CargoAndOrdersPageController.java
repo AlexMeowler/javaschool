@@ -11,10 +11,10 @@ import org.retal.logiweb.domain.SessionInfo;
 import org.retal.logiweb.domain.User;
 import org.retal.logiweb.domain.UserInfo;
 import org.retal.logiweb.dto.RoutePointListWrapper;
-import org.retal.logiweb.service.CarService;
-import org.retal.logiweb.service.CargoAndOrdersService;
-import org.retal.logiweb.service.CityService;
-import org.retal.logiweb.service.UserValidator;
+import org.retal.logiweb.service.logic.CarService;
+import org.retal.logiweb.service.logic.CargoAndOrdersService;
+import org.retal.logiweb.service.logic.CityService;
+import org.retal.logiweb.service.validators.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -115,7 +115,7 @@ public class CargoAndOrdersPageController {
    * @param data input data of pattern "A_B" where A is {@linkplain org.retal.logiweb.domain.Order
    *        Order} ID and B is {@linkplain org.retal.logiweb.domain.Car Car} registration ID
    * @return error message if operation failed and null if operation succeeded.
-   * @see org.retal.logiweb.service.CargoAndOrdersService
+   * @see org.retal.logiweb.service.logic.CargoAndOrdersService
    */
   @GetMapping(value = "/changeCarForOrder/{data}")
   @ResponseBody
@@ -125,7 +125,7 @@ public class CargoAndOrdersPageController {
 
   /**
    * Method responsible for adding new order from form using
-   * {@linkplain org.retal.logiweb.service.CargoAndOrdersService service layer}.
+   * {@linkplain org.retal.logiweb.service.logic.CargoAndOrdersService service layer}.
    * 
    */
   @PostMapping(value = "/addNewOrder")

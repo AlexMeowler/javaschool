@@ -4,4 +4,5 @@
 .settings/*
 /target
 scan.bat
-
+nondev/
+sql_backup/

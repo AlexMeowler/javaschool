@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?><project-modules id="moduleCoreId" project-version="1.5.0">
-            
+                
+    
     
     <wb-module deploy-name="javaschool">
-                        
+                                
+        
         
         <wb-resource deploy-path="/" source-path="/target/m2e-wtp/ear-resources"/>
-                        
+                                
+        
         
         <wb-resource deploy-path="/" source-path="/src/main/application" tag="defaultRootSource"/>
         <dependent-module archiveName="servlet-1.1.4.war" deploy-path="/" handle="module:/resource/servlet/servlet">
@@ -14,15 +17,17 @@
         <dependent-module archiveName="ejbs-1.1.4.jar" deploy-path="/" handle="module:/resource/ejbs/ejbs">
             <dependency-type>uses</dependency-type>
         </dependent-module>
-        <dependent-module archiveName="primary-source-1.1.4.jar" deploy-path="/" handle="module:/resource/primary-source/primary-source">
+        <dependent-module archiveName="primary-source-1.1.4.jar" deploy-path="/" handle="module:/classpath/var/M2_REPO/org/retal/primary-source/1.1.4/primary-source-1.1.4.jar">
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <dependent-module archiveName="log4j-1.2.17.jar" deploy-path="/" handle="module:/classpath/var/M2_REPO/log4j/log4j/1.2.17/log4j-1.2.17.jar">
             <dependency-type>uses</dependency-type>
         </dependent-module>
-                    
+                            
+    
     
     </wb-module>
-        
+            
+
 
 </project-modules>

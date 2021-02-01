@@ -1,9 +1,13 @@
-org.retal.logiweb.config
-org.retal.logiweb.config.spring
+org.retal.logiweb.config.spring.app.hibernate
+org.retal.logiweb.config.spring.app.jms
+org.retal.logiweb.config.spring.app.logic
 org.retal.logiweb.config.spring.security
+org.retal.logiweb.config.spring.web
 org.retal.logiweb.controller
 org.retal.logiweb.dao
 org.retal.logiweb.domain
 org.retal.logiweb.domain.enums
 org.retal.logiweb.dto
-org.retal.logiweb.service
+org.retal.logiweb.service.jms
+org.retal.logiweb.service.logic
+org.retal.logiweb.service.validators

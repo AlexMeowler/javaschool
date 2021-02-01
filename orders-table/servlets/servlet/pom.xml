@@ -18,11 +18,6 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>org.retal</groupId>
-			<artifactId>primary-source</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
 		</dependency>
@@ -46,6 +41,7 @@
 			<groupId>org.retal</groupId>
 			<artifactId>ejbs</artifactId>
 			<version>${project.version}</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>javax</groupId>

@@ -13,11 +13,12 @@ import org.retal.logiweb.dto.CargoDTO;
 import org.retal.logiweb.dto.CityDTO;
 import org.retal.logiweb.dto.UserDTO;
 import org.retal.logiweb.dto.UserInfoDTO;
-import org.retal.logiweb.service.CarService;
-import org.retal.logiweb.service.CargoAndOrdersService;
-import org.retal.logiweb.service.CityService;
-import org.retal.logiweb.service.UserService;
-import org.retal.logiweb.service.UserValidator;
+import org.retal.logiweb.service.jms.NotificationSender;
+import org.retal.logiweb.service.logic.CarService;
+import org.retal.logiweb.service.logic.CargoAndOrdersService;
+import org.retal.logiweb.service.logic.CityService;
+import org.retal.logiweb.service.logic.UserService;
+import org.retal.logiweb.service.validators.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -53,6 +54,9 @@ public class AdminPageController {
   public static final String CARGO_MODEL_ATTRIBUTE = "cargo";
 
   private static final Logger log = Logger.getLogger(AdminPageController.class);
+  
+  @Autowired
+  private NotificationSender notificationSender;
 
   /**
    * Creates an instance of this class using constructor-based dependency injection.
@@ -135,7 +139,7 @@ public class AdminPageController {
 
   /**
    * Method responsible for adding new user to database from form on page using
-   * {@linkplain org.retal.logiweb.service.UserService service layer}.
+   * {@linkplain org.retal.logiweb.service.logic.UserService service layer}.
    * 
    * @see org.retal.logiweb.domain.User
    */
@@ -156,7 +160,7 @@ public class AdminPageController {
 
   /**
    * Method responsible for attempt to delete user from database when button is clicked using
-   * {@linkplain org.retal.logiweb.service.UserService service layer}.
+   * {@linkplain org.retal.logiweb.service.logic.UserService service layer}.
    * 
    * @see org.retal.logiweb.domain.User
    */
@@ -209,7 +213,7 @@ public class AdminPageController {
 
   /**
    * Method responsible for submitting edited user to
-   * {@linkplain org.retal.logiweb.service.UserService service layer} which will update user if
+   * {@linkplain org.retal.logiweb.service.logic.UserService service layer} which will update user if
    * input is valid.
    * 
    * @see org.retal.logiweb.domain.User
@@ -234,7 +238,7 @@ public class AdminPageController {
 
   /**
    * Method responsible for adding cargo entities using
-   * {@linkplain org.retal.logiweb.service.CargoAndOrdersService service layer}.
+   * {@linkplain org.retal.logiweb.service.logic.CargoAndOrdersService service layer}.
    * 
    * @see org.retal.logiweb.domain.Cargo
    */
@@ -252,6 +256,13 @@ public class AdminPageController {
           bindingResult);
       redir.addFlashAttribute(CARGO_MODEL_ATTRIBUTE, cargo);
     }
+    return redirectView;
+  }
+  
+  @PostMapping(value = "/testJMS")
+  public RedirectView testJMS() {
+    RedirectView redirectView = new RedirectView(ADMIN_PAGE, true);
+    notificationSender.send(new Object());
     return redirectView;
   }
 

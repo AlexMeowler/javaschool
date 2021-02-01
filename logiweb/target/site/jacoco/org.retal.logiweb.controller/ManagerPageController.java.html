@@ -13,10 +13,10 @@ import org.retal.logiweb.dto.CarDTO;
 import org.retal.logiweb.dto.CityDTO;
 import org.retal.logiweb.dto.UserDTO;
 import org.retal.logiweb.dto.UserInfoDTO;
-import org.retal.logiweb.service.CarService;
-import org.retal.logiweb.service.CityService;
-import org.retal.logiweb.service.UserService;
-import org.retal.logiweb.service.UserValidator;
+import org.retal.logiweb.service.logic.CarService;
+import org.retal.logiweb.service.logic.CityService;
+import org.retal.logiweb.service.logic.UserService;
+import org.retal.logiweb.service.validators.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -90,7 +90,7 @@ public class ManagerPageController {
 
   /**
    * Method responsible for adding new drivers to database using
-   * {@linkplain org.retal.logiweb.service.UserService service layer}.
+   * {@linkplain org.retal.logiweb.service.logic.UserService service layer}.
    * 
    * @see org.retal.logiweb.domain.User
    */
@@ -111,7 +111,7 @@ public class ManagerPageController {
 
   /**
    * Method responsible for attempt to delete driver from database when button is clicked using
-   * {@linkplain org.retal.logiweb.service.UserService service layer}.
+   * {@linkplain org.retal.logiweb.service.logic.UserService service layer}.
    * 
    * @see org.retal.logiweb.domain.User
    */
@@ -168,7 +168,7 @@ public class ManagerPageController {
 
   /**
    * Method responsible for submitting edited driver to
-   * {@linkplain org.retal.logiweb.service.UserService service layer} which will update entity if
+   * {@linkplain org.retal.logiweb.service.logic.UserService service layer} which will update entity if
    * input is valid.
    * 
    * @see org.retal.logiweb.domain.User
@@ -193,7 +193,7 @@ public class ManagerPageController {
 
   /**
    * Method responsible for adding new cars to database using
-   * {@linkplain org.retal.logiweb.service.CarService service layer}.
+   * {@linkplain org.retal.logiweb.service.logic.CarService service layer}.
    * 
    * @see org.retal.logiweb.domain.Car
    */
@@ -214,7 +214,7 @@ public class ManagerPageController {
 
   /**
    * Method responsible for attempt to delete car from database when button is clicked using
-   * {@linkplain org.retal.logiweb.service.CarService service layer}.
+   * {@linkplain org.retal.logiweb.service.logic.CarService service layer}.
    * 
    * @see org.retal.logiweb.domain.Car
    */
@@ -259,7 +259,7 @@ public class ManagerPageController {
 
   /**
    * Method responsible for submitting edited car to
-   * {@linkplain org.retal.logiweb.service.CarService service layer} which will update car if input
+   * {@linkplain org.retal.logiweb.service.logic.CarService service layer} which will update car if input
    * is valid.
    * 
    * @see org.retal.logiweb.domain.Car

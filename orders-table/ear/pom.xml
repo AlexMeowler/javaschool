@@ -28,10 +28,6 @@
 			<type>war</type>
 		</dependency>
 		<dependency>
-			<groupId>org.retal</groupId>
-			<artifactId>primary-source</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>javax</groupId>
 			<artifactId>javaee-api</artifactId>
 		</dependency>

@@ -1,5 +1,3 @@
-nondev/
-sql_backup/
 target/*
 !target/site/
 !target/jacoco.exec

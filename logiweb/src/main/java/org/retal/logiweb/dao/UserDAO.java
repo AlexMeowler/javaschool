@@ -4,7 +4,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
 import org.retal.logiweb.domain.User;
-import org.retal.logiweb.service.UserValidator;
+import org.retal.logiweb.service.validators.UserValidator;
 import org.springframework.stereotype.Component;
 
 @Component
