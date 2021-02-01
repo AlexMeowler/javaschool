@@ -3,7 +3,7 @@ package org.retal.logiweb.dto;
 import java.util.List;
 
 /**
- * Wrapper for list of {@linkplain org.retal.logiweb.domain.RoutePoint RoutePoint}. Used in
+ * Wrapper for list of {@linkplain org.retal.logiweb.domain.entity.RoutePoint RoutePoint}. Used in
  * controllers to get input from form on page and in validation process.
  * 
  * @author Alexander Retivov

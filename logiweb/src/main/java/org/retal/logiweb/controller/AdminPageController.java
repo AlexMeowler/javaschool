@@ -3,21 +3,22 @@ package org.retal.logiweb.controller;
 import java.util.List;
 import java.util.Map;
 import org.apache.log4j.Logger;
-import org.retal.logiweb.domain.Cargo;
-import org.retal.logiweb.domain.City;
-import org.retal.logiweb.domain.SessionInfo;
-import org.retal.logiweb.domain.User;
-import org.retal.logiweb.domain.UserInfo;
+import org.retal.logiweb.domain.entity.Cargo;
+import org.retal.logiweb.domain.entity.City;
+import org.retal.logiweb.domain.entity.SessionInfo;
+import org.retal.logiweb.domain.entity.User;
+import org.retal.logiweb.domain.entity.UserInfo;
 import org.retal.logiweb.domain.enums.CargoStatus;
 import org.retal.logiweb.dto.CargoDTO;
 import org.retal.logiweb.dto.CityDTO;
 import org.retal.logiweb.dto.UserDTO;
 import org.retal.logiweb.dto.UserInfoDTO;
-import org.retal.logiweb.service.CarService;
-import org.retal.logiweb.service.CargoAndOrdersService;
-import org.retal.logiweb.service.CityService;
-import org.retal.logiweb.service.UserService;
-import org.retal.logiweb.service.UserValidator;
+import org.retal.logiweb.service.jms.NotificationSender;
+import org.retal.logiweb.service.logic.CarService;
+import org.retal.logiweb.service.logic.CargoAndOrdersService;
+import org.retal.logiweb.service.logic.CityService;
+import org.retal.logiweb.service.logic.UserService;
+import org.retal.logiweb.service.validation.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -98,8 +99,8 @@ public class AdminPageController {
    * Method responsible for adding cities and distances between them to database from file. It was
    * used only once, but will remain here in case of additional cities/distances are required.
    * 
-   * @see org.retal.logiweb.domain.City
-   * @see org.retal.logiweb.domain.CityDistance
+   * @see org.retal.logiweb.domain.entity.City
+   * @see org.retal.logiweb.domain.entity.CityDistance
    */
   @PostMapping(value = "/addCityInfo")
   public RedirectView addCityInfo() {
@@ -124,7 +125,7 @@ public class AdminPageController {
    * Method responsible for generating one car for each city. It was used only once, but will remain
    * here in case of additional cars are required.
    * 
-   * @see org.retal.logiweb.domain.Car
+   * @see org.retal.logiweb.domain.entity.Car
    */
   @PostMapping(value = "/addCarsInfo")
   public RedirectView addCarsInfo() {
@@ -135,9 +136,9 @@ public class AdminPageController {
 
   /**
    * Method responsible for adding new user to database from form on page using
-   * {@linkplain org.retal.logiweb.service.UserService service layer}.
+   * {@linkplain org.retal.logiweb.service.logic.UserService service layer}.
    * 
-   * @see org.retal.logiweb.domain.User
+   * @see org.retal.logiweb.domain.entity.User
    */
   @PostMapping(value = "/addNewUser")
   public RedirectView addNewUser(UserDTO userDTO, BindingResult bindingResult,
@@ -156,9 +157,9 @@ public class AdminPageController {
 
   /**
    * Method responsible for attempt to delete user from database when button is clicked using
-   * {@linkplain org.retal.logiweb.service.UserService service layer}.
+   * {@linkplain org.retal.logiweb.service.logic.UserService service layer}.
    * 
-   * @see org.retal.logiweb.domain.User
+   * @see org.retal.logiweb.domain.entity.User
    */
   @GetMapping(value = "/deleteUser/{id}")
   public RedirectView delete(@PathVariable Integer id, RedirectAttributes redir) {
@@ -174,7 +175,7 @@ public class AdminPageController {
   /**
    * Method responsible for redirecting to user editor page.
    * 
-   * @see org.retal.logiweb.domain.User
+   * @see org.retal.logiweb.domain.entity.User
    */
   @GetMapping(value = "/editUser/{id}")
   public RedirectView edit(@PathVariable Integer id, RedirectAttributes redir) {
@@ -193,7 +194,7 @@ public class AdminPageController {
   /**
    * Method responsible for showing user editor page.
    * 
-   * @see org.retal.logiweb.domain.User
+   * @see org.retal.logiweb.domain.entity.User
    */
   @GetMapping(value = "/editUser")
   public String editForm(Model model) {
@@ -209,10 +210,10 @@ public class AdminPageController {
 
   /**
    * Method responsible for submitting edited user to
-   * {@linkplain org.retal.logiweb.service.UserService service layer} which will update user if
-   * input is valid.
+   * {@linkplain org.retal.logiweb.service.logic.UserService service layer} which will update user
+   * if input is valid.
    * 
-   * @see org.retal.logiweb.domain.User
+   * @see org.retal.logiweb.domain.entity.User
    */
   @PostMapping(value = "/submitEditedUser")
   public RedirectView finishEditing(UserDTO userDTO, BindingResult bindingResult,
@@ -234,9 +235,9 @@ public class AdminPageController {
 
   /**
    * Method responsible for adding cargo entities using
-   * {@linkplain org.retal.logiweb.service.CargoAndOrdersService service layer}.
+   * {@linkplain org.retal.logiweb.service.logic.CargoAndOrdersService service layer}.
    * 
-   * @see org.retal.logiweb.domain.Cargo
+   * @see org.retal.logiweb.domain.entity.Cargo
    */
   @PostMapping(value = "/addNewCargo")
   public RedirectView addNewCargo(CargoDTO cargoDTO, BindingResult bindingResult,
@@ -257,12 +258,12 @@ public class AdminPageController {
 
   /**
    * Method for mapping user related DTOs (user, user info, city) to
-   * {@linkplain org.retal.logiweb.domain.User User} entity.
+   * {@linkplain org.retal.logiweb.domain.entity.User User} entity.
    * 
    * @param userDTO instance of {@linkplain org.retal.logiweb.dto.UserDTO}
    * @param userInfoDTO instance of {@linkplain org.retal.logiweb.dto.UserInfoDTO}
    * @param cityDTO instance of {@linkplain org.retal.logiweb.dto.CityDTO}
-   * @return transient instance of {@linkplain org.retal.logiweb.domain.User User} entity
+   * @return transient instance of {@linkplain org.retal.logiweb.domain.entity.User User} entity
    */
   private User mapUserRelatedDTOsToEntity(UserDTO userDTO, UserInfoDTO userInfoDTO,
       CityDTO cityDTO) {

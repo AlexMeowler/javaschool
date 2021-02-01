@@ -3,8 +3,8 @@ package org.retal.logiweb.dao;
 import java.util.List;
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
-import org.retal.logiweb.domain.Cargo;
-import org.retal.logiweb.domain.MethodUndefinedException;
+import org.retal.logiweb.domain.entity.Cargo;
+import org.retal.logiweb.domain.entity.MethodUndefinedException;
 import org.springframework.stereotype.Component;
 
 @Component

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:tns="http://retal.org/logiweb/ws"
+	targetNamespace="http://retal.org/logiweb/ws"
+	elementFormDefault="qualified">
+
+	<xs:element name="getLatestOrdersResponse">
+	</xs:element>
+
+	<xs:element name="getLatestOrdersRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="country" type="tns:orderList" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:complexType name="orderList">
+		<xs:sequence>
+			<xs:element name="order" maxOccurs="unbounded"
+				type="tns:order" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="order">
+		<xs:sequence>
+			<xs:element name="id" type="xs:int" />
+			<xs:element name="isCompleted" type="xs:boolean" />
+			<xs:element name="route" type="xs:string" />
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>
+<!-- 
+ @XmlElement
+  private int id;
+
+  @XmlElement
+  private Boolean isCompleted;
+
+  @XmlElement
+  private Car car;
+
+  @XmlElement
+  private String route;
+
+  @XmlElement
+  private Set<UserInfo> driverInfo;
+
+  @XmlElement
+  private OrderRouteProgression orderRouteProgression;
+
+  @XmlElement
+  private Set<Cargo> cargo; -->

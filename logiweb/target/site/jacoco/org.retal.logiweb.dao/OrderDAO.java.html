@@ -5,10 +5,10 @@ import java.util.List;
 import java.util.Set;
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
-import org.retal.logiweb.domain.Cargo;
-import org.retal.logiweb.domain.MethodUndefinedException;
-import org.retal.logiweb.domain.Order;
-import org.retal.logiweb.domain.RoutePoint;
+import org.retal.logiweb.domain.entity.Cargo;
+import org.retal.logiweb.domain.entity.MethodUndefinedException;
+import org.retal.logiweb.domain.entity.Order;
+import org.retal.logiweb.domain.entity.RoutePoint;
 import org.springframework.stereotype.Component;
 
 /**
@@ -44,7 +44,7 @@ import org.springframework.stereotype.Component;
 <span class="fc" id="L44">      Set&lt;Cargo&gt; cargo = new HashSet&lt;&gt;();</span>
 <span class="fc bfc" id="L45" title="All 2 branches covered.">      for (RoutePoint rp : order.getPoints()) {</span>
 <span class="fc" id="L46">        cargo.add(rp.getCargo());</span>
-      }
+<span class="fc" id="L47">      }</span>
 <span class="fc" id="L48">      order.setCargo(cargo);</span>
 <span class="fc" id="L49">      return order;</span>
     } else {
@@ -62,9 +62,9 @@ import org.springframework.stereotype.Component;
 <span class="fc" id="L62">      Set&lt;Cargo&gt; cargo = new HashSet&lt;&gt;();</span>
 <span class="fc bfc" id="L63" title="All 2 branches covered.">      for (RoutePoint rp : o.getPoints()) {</span>
 <span class="fc" id="L64">        cargo.add(rp.getCargo());</span>
-      }
+<span class="fc" id="L65">      }</span>
 <span class="fc" id="L66">      o.setCargo(cargo);</span>
-    }
+<span class="fc" id="L67">    }</span>
 <span class="fc" id="L68">    DAO.end(session);</span>
 <span class="fc" id="L69">    return orders;</span>
   }

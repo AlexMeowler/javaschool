@@ -7,7 +7,7 @@
 
 	<parent>
 		<groupId>org.retal</groupId>
-		<artifactId>orders-table</artifactId>
+		<artifactId>table</artifactId>
 		<version>1.1.4</version>
 	</parent>
 
@@ -26,10 +26,6 @@
 			<groupId>org.retal</groupId>
 			<artifactId>servlet</artifactId>
 			<type>war</type>
-		</dependency>
-		<dependency>
-			<groupId>org.retal</groupId>
-			<artifactId>primary-source</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>javax</groupId>
