@@ -3,20 +3,20 @@ package org.retal.logiweb.controller;
 import java.util.List;
 import java.util.Map;
 import org.apache.log4j.Logger;
-import org.retal.logiweb.domain.entity.Car;
-import org.retal.logiweb.domain.entity.City;
-import org.retal.logiweb.domain.entity.SessionInfo;
-import org.retal.logiweb.domain.entity.User;
-import org.retal.logiweb.domain.entity.UserInfo;
+import org.retal.logiweb.domain.Car;
+import org.retal.logiweb.domain.City;
+import org.retal.logiweb.domain.SessionInfo;
+import org.retal.logiweb.domain.User;
+import org.retal.logiweb.domain.UserInfo;
 import org.retal.logiweb.domain.enums.UserRole;
 import org.retal.logiweb.dto.CarDTO;
 import org.retal.logiweb.dto.CityDTO;
 import org.retal.logiweb.dto.UserDTO;
 import org.retal.logiweb.dto.UserInfoDTO;
-import org.retal.logiweb.service.logic.CarService;
-import org.retal.logiweb.service.logic.CityService;
-import org.retal.logiweb.service.logic.UserService;
-import org.retal.logiweb.service.validation.UserValidator;
+import org.retal.logiweb.service.CarService;
+import org.retal.logiweb.service.CityService;
+import org.retal.logiweb.service.UserService;
+import org.retal.logiweb.service.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -90,9 +90,9 @@ public class ManagerPageController {
 
   /**
    * Method responsible for adding new drivers to database using
-   * {@linkplain org.retal.logiweb.service.logic.UserService service layer}.
+   * {@linkplain org.retal.logiweb.service.UserService service layer}.
    * 
-   * @see org.retal.logiweb.domain.entity.User
+   * @see org.retal.logiweb.domain.User
    */
   @PostMapping(value = "/addNewDriver")
   public RedirectView addNewDriver(UserDTO userDTO, UserInfoDTO userInfoDTO, CityDTO cityDTO,
@@ -111,9 +111,9 @@ public class ManagerPageController {
 
   /**
    * Method responsible for attempt to delete driver from database when button is clicked using
-   * {@linkplain org.retal.logiweb.service.logic.UserService service layer}.
+   * {@linkplain org.retal.logiweb.service.UserService service layer}.
    * 
-   * @see org.retal.logiweb.domain.entity.User
+   * @see org.retal.logiweb.domain.User
    */
   @GetMapping(value = "/deleteDriver/{id}")
   public RedirectView deleteDriver(@PathVariable Integer id, RedirectAttributes redir) {
@@ -133,7 +133,7 @@ public class ManagerPageController {
   /**
    * Method responsible for redirecting to driver editor page.
    * 
-   * @see org.retal.logiweb.domain.entity.User
+   * @see org.retal.logiweb.domain.User
    */
   @GetMapping(value = "/editDriver/{id}")
   public RedirectView editDriver(@PathVariable Integer id, RedirectAttributes redir) {
@@ -152,7 +152,7 @@ public class ManagerPageController {
   /**
    * Method responsible for showing driver editor page.
    * 
-   * @see org.retal.logiweb.domain.entity.User
+   * @see org.retal.logiweb.domain.User
    */
   @GetMapping(value = "/editDriver")
   public String driverEditForm(Model model) {
@@ -168,10 +168,10 @@ public class ManagerPageController {
 
   /**
    * Method responsible for submitting edited driver to
-   * {@linkplain org.retal.logiweb.service.logic.UserService service layer} which will update entity if
+   * {@linkplain org.retal.logiweb.service.UserService service layer} which will update entity if
    * input is valid.
    * 
-   * @see org.retal.logiweb.domain.entity.User
+   * @see org.retal.logiweb.domain.User
    */
   @PostMapping(value = "/submitEditedDriver")
   public RedirectView finishDriverEditing(UserDTO userDTO, BindingResult bindingResult,
@@ -193,9 +193,9 @@ public class ManagerPageController {
 
   /**
    * Method responsible for adding new cars to database using
-   * {@linkplain org.retal.logiweb.service.logic.CarService service layer}.
+   * {@linkplain org.retal.logiweb.service.CarService service layer}.
    * 
-   * @see org.retal.logiweb.domain.entity.Car
+   * @see org.retal.logiweb.domain.Car
    */
   @PostMapping(value = "/addNewCar")
   public RedirectView addNewCar(CarDTO carDTO, BindingResult bindingResult, CityDTO cityDTO,
@@ -214,9 +214,9 @@ public class ManagerPageController {
 
   /**
    * Method responsible for attempt to delete car from database when button is clicked using
-   * {@linkplain org.retal.logiweb.service.logic.CarService service layer}.
+   * {@linkplain org.retal.logiweb.service.CarService service layer}.
    * 
-   * @see org.retal.logiweb.domain.entity.Car
+   * @see org.retal.logiweb.domain.Car
    */
   @GetMapping(value = "/deleteCar/{id}")
   public RedirectView deleteCar(@PathVariable String id, RedirectAttributes redir) {
@@ -232,7 +232,7 @@ public class ManagerPageController {
   /**
    * Method responsible for redirecting to car editor page.
    * 
-   * @see org.retal.logiweb.domain.entity.Car
+   * @see org.retal.logiweb.domain.Car
    */
   @GetMapping(value = "/editCar/{id}")
   public RedirectView editCar(@PathVariable String id, RedirectAttributes redir) {
@@ -244,7 +244,7 @@ public class ManagerPageController {
   /**
    * Method responsible for showing car editor page.
    * 
-   * @see org.retal.logiweb.domain.entity.Car
+   * @see org.retal.logiweb.domain.Car
    */
   @GetMapping(value = "/editCar")
   public String carEditForm(Model model) {
@@ -259,10 +259,10 @@ public class ManagerPageController {
 
   /**
    * Method responsible for submitting edited car to
-   * {@linkplain org.retal.logiweb.service.logic.CarService service layer} which will update car if input
+   * {@linkplain org.retal.logiweb.service.CarService service layer} which will update car if input
    * is valid.
    * 
-   * @see org.retal.logiweb.domain.entity.Car
+   * @see org.retal.logiweb.domain.Car
    */
   @PostMapping(value = "/submitEditedCar")
   public RedirectView finishCarEditing(CarDTO carDTO, BindingResult bindingResult,
@@ -282,12 +282,12 @@ public class ManagerPageController {
 
   /**
    * Method for mapping user related DTOs (user, user info, city) to
-   * {@linkplain org.retal.logiweb.domain.entity.User User} entity with user role set to 'driver'.
+   * {@linkplain org.retal.logiweb.domain.User User} entity with user role set to 'driver'.
    * 
    * @param userDTO instance of {@linkplain org.retal.logiweb.dto.UserDTO}
    * @param userInfoDTO instance of {@linkplain org.retal.logiweb.dto.UserInfoDTO}
    * @param cityDTO instance of {@linkplain org.retal.logiweb.dto.CityDTO}
-   * @return transient instance of {@linkplain org.retal.logiweb.domain.entity.User User} driver entity
+   * @return transient instance of {@linkplain org.retal.logiweb.domain.User User} driver entity
    */
   private User mapUserRelatedDTOsToDriverEntity(UserDTO userDTO, UserInfoDTO userInfoDTO,
       CityDTO cityDTO) {
@@ -301,12 +301,12 @@ public class ManagerPageController {
   }
 
   /**
-   * Method for mapping car related DTOs (car, city) to {@linkplain org.retal.logiweb.domain.entity.Car
+   * Method for mapping car related DTOs (car, city) to {@linkplain org.retal.logiweb.domain.Car
    * Car} entity with user role set to 'driver'.
    * 
    * @param carDTO instance of {@linkplain org.retal.logiweb.dto.CarDTO}
    * @param cityDTO instance of {@linkplain org.retal.logiweb.dto.CityDTO}
-   * @return transient instance of {@linkplain org.retal.logiweb.domain.entity.Car Car} entity
+   * @return transient instance of {@linkplain org.retal.logiweb.domain.Car Car} entity
    */
   private Car mapCarRelatedDTOsToCarEntity(CarDTO carDTO, CityDTO cityDTO) {
     Car car = new Car(carDTO);

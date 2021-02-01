@@ -18,9 +18,13 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>org.retal</groupId>
+			<artifactId>primary-source</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.sun.faces</groupId>
@@ -39,9 +43,13 @@
 			<artifactId>javax.el</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.retal</groupId>
+			<artifactId>ejbs</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>javax</groupId>
 			<artifactId>javaee-api</artifactId>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.jboss.ejb3</groupId>

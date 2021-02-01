@@ -1,9 +1,9 @@
 package org.retal.logiweb.dto;
 
-import org.retal.logiweb.domain.entity.User;
+import org.retal.logiweb.domain.User;
 
 /**
- * Wrapper for {@linkplain org.retal.logiweb.domain.entity.User User}. Used in validation process.
+ * Wrapper for {@linkplain org.retal.logiweb.domain.User User}. Used in validation process.
  * 
  * @author Alexander Retivov
  *

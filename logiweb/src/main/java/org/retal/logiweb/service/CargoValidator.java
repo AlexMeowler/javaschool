@@ -1,0 +1,77 @@
+package org.retal.logiweb.service;
+
+import java.util.Set;
+import javax.validation.ConstraintViolation;
+import org.apache.log4j.Logger;
+import org.retal.logiweb.domain.Cargo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.validation.Errors;
+import org.springframework.validation.Validator;
+
+/**
+ * Custom {@linkplain org.retal.logiweb.domain.Cargo Cargo} validator.
+ * 
+ * @author Alexander Retivov
+ *
+ */
+@Service
+public class CargoValidator implements Validator {
+
+  private final javax.validation.Validator validator;
+
+  private static final Logger log = Logger.getLogger(CargoValidator.class);
+
+  @Autowired
+  public CargoValidator(javax.validation.Validator validator) {
+    this.validator = validator;
+  }
+
+  @Override
+  public boolean supports(Class<?> clazz) {
+    return Cargo.class.isAssignableFrom(clazz);
+  }
+
+  @Override
+  public void validate(Object target, Errors errors) {
+    log.info("Validating cargo");
+    Cargo cargo = (Cargo) target;
+    Set<ConstraintViolation<Object>> validates = validator.validate(cargo);
+    for (ConstraintViolation<Object> violation : validates) {
+      String propertyPath = violation.getPropertyPath().toString();
+      String message = violation.getMessage();
+      throwError(errors, propertyPath, message);
+    }
+    Integer weight = cargo.getMass();
+    if (weight != null && weight < 0) {
+      throwError(errors, "mass", "Cargo weight length must non-negative integer.");
+    }
+    String response = UserValidator.checkForMaliciousInput(cargo.getName());
+    if (!response.isEmpty()) {
+      cargo.setName("");
+    }
+    String maliciousInputMessage = response;
+    //maliciousInputMessage = setIfEmpty(maliciousInputMessage, response);
+    response = UserValidator.checkForMaliciousInput(cargo.getDescription());
+    if (!response.isEmpty()) {
+      cargo.setDescription("");
+    }
+    maliciousInputMessage = setIfEmpty(maliciousInputMessage, response);
+    if (!maliciousInputMessage.isEmpty()) {
+      throwError(errors, "cargoMaliciousInput", maliciousInputMessage);
+    }
+  }
+
+  private String setIfEmpty(String givenString, String givenResult) {
+    if (givenString.isEmpty()) {
+      return givenResult;
+    } else {
+      return givenString;
+    }
+  }
+
+  private void throwError(Errors errors, String property, String message) {
+    log.debug(property + " : " + message);
+    errors.reject(property, message);
+  }
+}

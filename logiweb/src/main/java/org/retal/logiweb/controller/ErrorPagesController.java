@@ -13,7 +13,7 @@ import org.springframework.web.servlet.view.RedirectView;
  * Controller for redirecting to custom error pages.
  * 
  * @author Alexander Retivov
- * @see org.retal.logiweb.config.security.Error403Handler
+ * @see org.retal.logiweb.config.spring.security.Error403Handler
  */
 @Controller
 public class ErrorPagesController {

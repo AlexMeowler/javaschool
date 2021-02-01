@@ -9,12 +9,13 @@
 		<version>1.1.4</version>
 	</parent>
 
-	<artifactId>table</artifactId>
+	<artifactId>orders-table</artifactId>
 	<packaging>pom</packaging>
 
 	<name>orders-table</name>
 
 	<modules>
+		<module>primary-source</module>
 		<module>servlets</module>
 		<module>ejbs</module>
 		<module>ear</module>
@@ -44,24 +45,14 @@
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
-				<groupId>javax.servlet</groupId>
-				<artifactId>javax.servlet-api</artifactId>
-				<version>4.0.1</version>
+				<groupId>org.retal</groupId>
+				<artifactId>logging</artifactId>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>javax</groupId>
-				<artifactId>javaee-api</artifactId>
-				<version>8.0.1</version>
-			</dependency>
-			<dependency>
-				<groupId>jstl</groupId>
-				<artifactId>jstl</artifactId>
-				<version>1.2</version>
-			</dependency>
-			<dependency>
-				<groupId>org.glassfish</groupId>
-				<artifactId>javax.el</artifactId>
-				<version>3.0.0</version>
+				<groupId>org.retal</groupId>
+				<artifactId>primary-source</artifactId>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.retal</groupId>

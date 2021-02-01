@@ -4,17 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import org.retal.logiweb.domain.entity.Car;
-import org.retal.logiweb.domain.entity.Cargo;
-import org.retal.logiweb.domain.entity.Order;
-import org.retal.logiweb.domain.entity.SessionInfo;
-import org.retal.logiweb.domain.entity.User;
-import org.retal.logiweb.domain.entity.UserInfo;
+import org.retal.logiweb.domain.Car;
+import org.retal.logiweb.domain.Cargo;
+import org.retal.logiweb.domain.Order;
+import org.retal.logiweb.domain.SessionInfo;
+import org.retal.logiweb.domain.User;
+import org.retal.logiweb.domain.UserInfo;
 import org.retal.logiweb.dto.RoutePointListWrapper;
-import org.retal.logiweb.service.logic.CarService;
-import org.retal.logiweb.service.logic.CargoAndOrdersService;
-import org.retal.logiweb.service.logic.CityService;
-import org.retal.logiweb.service.validation.UserValidator;
+import org.retal.logiweb.service.CarService;
+import org.retal.logiweb.service.CargoAndOrdersService;
+import org.retal.logiweb.service.CityService;
+import org.retal.logiweb.service.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -83,8 +83,8 @@ public class CargoAndOrdersPageController {
   /**
    * Method for AJAX requests. Required for adding orders (form is generated dynamically using JS).
    * 
-   * @return List array of 2 elements. List[0] is all {@linkplain org.retal.logiweb.domain.entity.City
-   *         cities} from database. List[1] is all {@linkplain org.retal.logiweb.domain.entity.Cargo cargo}
+   * @return List array of 2 elements. List[0] is all {@linkplain org.retal.logiweb.domain.City
+   *         cities} from database. List[1] is all {@linkplain org.retal.logiweb.domain.Cargo cargo}
    *         available for creating order.
    */
   @SuppressWarnings("rawtypes")
@@ -99,8 +99,8 @@ public class CargoAndOrdersPageController {
   /**
    * Method for AJAX requests. Required for reassigning car for order.
    * 
-   * @param id {@linkplain org.retal.logiweb.domain.entity.Order Order} primary key
-   * @return List of {@linkplain org.retal.logiweb.domain.entity.Car Cars} available for assigning to this
+   * @param id {@linkplain org.retal.logiweb.domain.Order Order} primary key
+   * @return List of {@linkplain org.retal.logiweb.domain.Car Cars} available for assigning to this
    *         order.
    */
   @GetMapping(value = "/getCarsForOrder/{id}")
@@ -112,10 +112,10 @@ public class CargoAndOrdersPageController {
   /**
    * Method for AJAX requests. Required for changing assigned car for order
    * 
-   * @param data input data of pattern "A_B" where A is {@linkplain org.retal.logiweb.domain.entity.Order
-   *        Order} ID and B is {@linkplain org.retal.logiweb.domain.entity.Car Car} registration ID
+   * @param data input data of pattern "A_B" where A is {@linkplain org.retal.logiweb.domain.Order
+   *        Order} ID and B is {@linkplain org.retal.logiweb.domain.Car Car} registration ID
    * @return error message if operation failed and null if operation succeeded.
-   * @see org.retal.logiweb.service.logic.CargoAndOrdersService
+   * @see org.retal.logiweb.service.CargoAndOrdersService
    */
   @GetMapping(value = "/changeCarForOrder/{data}")
   @ResponseBody
@@ -125,7 +125,7 @@ public class CargoAndOrdersPageController {
 
   /**
    * Method responsible for adding new order from form using
-   * {@linkplain org.retal.logiweb.service.logic.CargoAndOrdersService service layer}.
+   * {@linkplain org.retal.logiweb.service.CargoAndOrdersService service layer}.
    * 
    */
   @PostMapping(value = "/addNewOrder")

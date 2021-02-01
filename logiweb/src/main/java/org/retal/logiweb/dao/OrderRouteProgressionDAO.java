@@ -2,7 +2,7 @@ package org.retal.logiweb.dao;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
-import org.retal.logiweb.domain.entity.OrderRouteProgression;
+import org.retal.logiweb.domain.OrderRouteProgression;
 import org.springframework.stereotype.Component;
 
 @Component

@@ -3,7 +3,5 @@
 .project
 .settings/*
 /target
-nondev/
-sql_backup/
 scan.bat
 

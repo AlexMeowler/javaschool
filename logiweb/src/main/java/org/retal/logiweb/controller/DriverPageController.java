@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import org.retal.logiweb.domain.entity.Order;
-import org.retal.logiweb.domain.entity.SessionInfo;
-import org.retal.logiweb.domain.entity.User;
+import org.retal.logiweb.domain.Order;
+import org.retal.logiweb.domain.SessionInfo;
+import org.retal.logiweb.domain.User;
 import org.retal.logiweb.domain.enums.DriverStatus;
-import org.retal.logiweb.service.logic.CargoAndOrdersService;
-import org.retal.logiweb.service.logic.DriverService;
-import org.retal.logiweb.service.validation.UserValidator;
+import org.retal.logiweb.service.CargoAndOrdersService;
+import org.retal.logiweb.service.DriverService;
+import org.retal.logiweb.service.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -85,7 +85,7 @@ public class DriverPageController {
   }
 
   /**
-   * Method for changing driver status using {@linkplain org.retal.logiweb.service.logic.DriverService
+   * Method for changing driver status using {@linkplain org.retal.logiweb.service.DriverService
    * service layer}.
    */
   @GetMapping(value = "/changeStatus/{status}")

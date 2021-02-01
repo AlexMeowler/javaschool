@@ -3,8 +3,8 @@
 import java.util.List;
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
-import org.retal.logiweb.domain.entity.User;
-import org.retal.logiweb.service.validation.UserValidator;
+import org.retal.logiweb.domain.User;
+import org.retal.logiweb.service.UserValidator;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -29,7 +29,7 @@ import org.springframework.stereotype.Component;
 <span class="fc" id="L29">    User user = session.get(User.class, id);</span>
 <span class="fc bfc" id="L30" title="All 2 branches covered.">    if (user != null) {</span>
 <span class="fc" id="L31">      log.debug(&quot;for user id='&quot; + user.getId() + &quot;' user info = &quot; + user.getUserInfo().toString());</span>
-    } else {
+<span class="fc" id="L32">    } else {</span>
 <span class="fc" id="L33">      log.debug(&quot;user not found&quot;);</span>
     }
 <span class="fc" id="L35">    DAO.end(session);</span>

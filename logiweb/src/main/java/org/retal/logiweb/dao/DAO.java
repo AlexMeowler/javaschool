@@ -3,8 +3,8 @@ package org.retal.logiweb.dao;
 import java.util.List;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import org.retal.logiweb.config.app.hibernate.HibernateSessionFactory;
-import org.retal.logiweb.domain.entity.MethodUndefinedException;
+import org.retal.logiweb.domain.HibernateSessionFactory;
+import org.retal.logiweb.domain.MethodUndefinedException;
 
 /**
  * Generic interface for basic CRUD operations. If method is not implemented properly due to some
