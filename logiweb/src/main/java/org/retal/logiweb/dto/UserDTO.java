@@ -1,9 +1,9 @@
 package org.retal.logiweb.dto;
 
-import org.retal.logiweb.domain.User;
+import org.retal.logiweb.domain.entity.User;
 
 /**
- * DTO for entity {@linkplain org.retal.logiweb.domain.User User}.
+ * DTO for entity {@linkplain org.retal.logiweb.domain.entity.User User}.
  * @author Alexander Retivov
  *
  */

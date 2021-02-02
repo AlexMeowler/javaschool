@@ -1,6 +1,8 @@
 package org.retal.logiweb.config.spring.app.jms;
 
 import java.util.Properties;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.log4j.Logger;
 import org.springframework.context.annotation.Bean;
@@ -10,7 +12,7 @@ import org.springframework.jms.core.JmsTemplate;
 
 @Configuration
 public class JMSConfiguration {
-  
+
   private static final Logger log = Logger.getLogger(JMSConfiguration.class);
 
   @Bean
@@ -32,7 +34,9 @@ public class JMSConfiguration {
 
   @Bean
   public SingleConnectionFactory singleConnectionFactory() {
-    return new SingleConnectionFactory(senderActiveMQConnectionFactory());
+    SingleConnectionFactory factory = new SingleConnectionFactory(senderActiveMQConnectionFactory());
+    factory.setReconnectOnException(true);
+    return factory;
   }
 
   @Bean

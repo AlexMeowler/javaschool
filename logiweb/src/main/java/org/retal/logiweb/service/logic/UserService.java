@@ -6,10 +6,10 @@ import java.io.InputStreamReader;
 import java.util.List;
 import org.apache.log4j.Logger;
 import org.retal.logiweb.dao.UserDAO;
-import org.retal.logiweb.domain.City;
-import org.retal.logiweb.domain.SessionInfo;
-import org.retal.logiweb.domain.User;
-import org.retal.logiweb.domain.UserInfo;
+import org.retal.logiweb.domain.entity.City;
+import org.retal.logiweb.domain.entity.SessionInfo;
+import org.retal.logiweb.domain.entity.User;
+import org.retal.logiweb.domain.entity.UserInfo;
 import org.retal.logiweb.domain.enums.DriverStatus;
 import org.retal.logiweb.domain.enums.UserRole;
 import org.retal.logiweb.dto.UserWrapper;
@@ -22,8 +22,8 @@ import org.springframework.validation.Validator;
 import org.springframework.web.server.ResponseStatusException;
 
 /**
- * Service, containing business-logic methods regarding {@linkplain org.retal.logiweb.domain.User
- * User} and {@linkplain org.retal.logiweb.domain.UserInfo UserInfo} entities.
+ * Service, containing business-logic methods regarding {@linkplain org.retal.logiweb.domain.entity.User
+ * User} and {@linkplain org.retal.logiweb.domain.entity.UserInfo UserInfo} entities.
  * 
  * @author Alexander Retivov
  *
@@ -70,7 +70,7 @@ public class UserService {
   /**
    * Validates and adds new user to database.
    * 
-   * @param user {@linkplain org.retal.logiweb.domain.User User} to be added
+   * @param user {@linkplain org.retal.logiweb.domain.entity.User User} to be added
    * @param bindingResult object to store validation result
    * @param password not hashed password to be validated
    */

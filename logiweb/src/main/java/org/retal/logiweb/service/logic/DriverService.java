@@ -11,20 +11,20 @@ import org.retal.logiweb.dao.CarDAO;
 import org.retal.logiweb.dao.CityDAO;
 import org.retal.logiweb.dao.OrderRouteProgressionDAO;
 import org.retal.logiweb.dao.UserDAO;
-import org.retal.logiweb.domain.Car;
-import org.retal.logiweb.domain.City;
-import org.retal.logiweb.domain.Order;
-import org.retal.logiweb.domain.OrderRouteProgression;
-import org.retal.logiweb.domain.RoutePoint;
-import org.retal.logiweb.domain.SessionInfo;
-import org.retal.logiweb.domain.User;
+import org.retal.logiweb.domain.entity.Car;
+import org.retal.logiweb.domain.entity.City;
+import org.retal.logiweb.domain.entity.Order;
+import org.retal.logiweb.domain.entity.OrderRouteProgression;
+import org.retal.logiweb.domain.entity.RoutePoint;
+import org.retal.logiweb.domain.entity.SessionInfo;
+import org.retal.logiweb.domain.entity.User;
 import org.retal.logiweb.domain.enums.DriverStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
 /**
- * Service, containing business-logic methods regarding {@linkplain org.retal.logiweb.domain.User
+ * Service, containing business-logic methods regarding {@linkplain org.retal.logiweb.domain.entity.User
  * User} entities with role 'driver'.
  * 
  * @author Alexander Retivov

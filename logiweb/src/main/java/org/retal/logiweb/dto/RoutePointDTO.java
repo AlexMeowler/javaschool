@@ -1,9 +1,9 @@
 package org.retal.logiweb.dto;
 
-import org.retal.logiweb.domain.RoutePoint;
+import org.retal.logiweb.domain.entity.RoutePoint;
 
 /**
- * DTO for entity {@linkplain org.retal.logiweb.domain.RoutePoint RoutePoint}.
+ * DTO for entity {@linkplain org.retal.logiweb.domain.entity.RoutePoint RoutePoint}.
  * @author Alexander Retivov
  *
  */

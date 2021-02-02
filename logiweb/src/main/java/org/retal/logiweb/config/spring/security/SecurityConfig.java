@@ -56,8 +56,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
   @Override
   protected void configure(HttpSecurity http) throws Exception {
-    http.authorizeRequests()
-        .antMatchers("/static/**", "/home", "/", "/403", "/404", "/spring_auth",
+    http.csrf().ignoringAntMatchers("/ws/**").and().authorizeRequests()
+        .antMatchers("/static/**", "/home", "/", "/403", "/404", "/spring_auth", "/ws/**",
             GlobalExceptionHandler.ERROR_PAGE)
         .permitAll().antMatchers("static/my_js_library.js").authenticated()
         .antMatchers("/adminPage", "/addNewUser", "/deleteUser/*")

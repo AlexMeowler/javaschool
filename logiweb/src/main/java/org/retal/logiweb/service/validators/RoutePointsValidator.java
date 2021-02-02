@@ -9,7 +9,7 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.retal.logiweb.dao.CargoDAO;
 import org.retal.logiweb.dao.CityDAO;
-import org.retal.logiweb.domain.Cargo;
+import org.retal.logiweb.domain.entity.Cargo;
 import org.retal.logiweb.dto.RoutePointDTO;
 import org.retal.logiweb.dto.RoutePointListWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,7 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
 /**
- * Custom {@linkplain org.retal.domain.RoutePoint RoutePoint} validator. However, it works with
+ * Custom {@linkplain org.retal.logiweb.domain.entity.domain.RoutePoint RoutePoint} validator. However, it works with
  * {@linkplain org.retal.dto.RoutePointListWrapper RoutePointListWrapper} objects.
  * 
  * @author Alexander Retivov

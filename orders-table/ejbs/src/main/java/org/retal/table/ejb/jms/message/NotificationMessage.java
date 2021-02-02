@@ -1,6 +1,10 @@
 package org.retal.table.ejb.jms.message;
 
-public class NotificationMessage {
+import java.io.Serializable;
+
+public class NotificationMessage implements Serializable {
+  
+  private static final long serialVersionUID = 1L;
   
   private final NotificationType type;
   

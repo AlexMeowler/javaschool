@@ -12,7 +12,7 @@
 	<parent>
 		<groupId>org.retal</groupId>
 		<artifactId>javaschool</artifactId>
-		<version>1.1.4</version>
+		<version>1.2.0</version>
 	</parent>
 
 	<properties>
@@ -201,6 +201,23 @@
 			<artifactId>activemq-spring</artifactId>
 			<version>5.16.1</version>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/wsdl4j/wsdl4j -->
+		<dependency>
+			<groupId>wsdl4j</groupId>
+			<artifactId>wsdl4j</artifactId>
+			<version>1.6.3</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.springframework.ws/spring-ws-core -->
+		<dependency>
+			<groupId>org.springframework.ws</groupId>
+			<artifactId>spring-ws-core</artifactId>
+			<version>3.0.10.RELEASE</version>
+		</dependency>
+		<dependency>
+			<groupId>org.retal</groupId>
+			<artifactId>ejbs</artifactId>
+			<version>1.2.0</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<finalName>javaschool</finalName>
@@ -287,6 +304,19 @@
 						</goals>
 					</execution>
 				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>jaxb2-maven-plugin</artifactId>
+				<version>2.5.0</version>
+				<configuration>
+					<sources>
+						<source>src/main/resources/xsd</source>
+					</sources>
+					<packageName>org.retal.logiweb.domain.ws</packageName>
+					<clearOutputDir>false</clearOutputDir>
+					<generateEpisode>false</generateEpisode>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>

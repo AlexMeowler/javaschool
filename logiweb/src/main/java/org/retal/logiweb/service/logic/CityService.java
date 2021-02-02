@@ -6,16 +6,16 @@ import java.io.InputStreamReader;
 import java.util.List;
 import org.retal.logiweb.dao.CityDAO;
 import org.retal.logiweb.dao.CityDistanceDAO;
-import org.retal.logiweb.domain.City;
-import org.retal.logiweb.domain.CityDistance;
+import org.retal.logiweb.domain.entity.City;
+import org.retal.logiweb.domain.entity.CityDistance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 /**
- * Service, containing business-logic methods regarding {@linkplain org.retal.logiweb.domain.City
- * City} and {@linkplain org.retal.logiweb.domain.CityDistance CityDistance} entities.
+ * Service, containing business-logic methods regarding {@linkplain org.retal.logiweb.domain.entity.City
+ * City} and {@linkplain org.retal.logiweb.domain.entity.CityDistance CityDistance} entities.
  * 
  * @author Alexander Retivov
  *
