@@ -1,6 +1,7 @@
 
 package org.retal.table.ejb.ws;
 
+import java.io.Serializable;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -19,7 +20,10 @@ import javax.xml.bind.annotation.XmlType;
  *       &lt;sequence&gt;
  *         &lt;element name="id" type="{http://www.w3.org/2001/XMLSchema}int"/&gt;
  *         &lt;element name="isCompleted" type="{http://www.w3.org/2001/XMLSchema}boolean"/&gt;
+ *         &lt;element name="car" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
  *         &lt;element name="route" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+ *         &lt;element name="driverList" type="{http://retal.org/logiweb/ws}driverList"/&gt;
+ *         &lt;element name="cargoList" type="{http://retal.org/logiweb/ws}cargoList"/&gt;
  *       &lt;/sequence&gt;
  *     &lt;/restriction&gt;
  *   &lt;/complexContent&gt;
@@ -32,14 +36,23 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "orderWS", propOrder = {
     "id",
     "isCompleted",
-    "route"
+    "car",
+    "route",
+    "driverList",
+    "cargoList"
 })
 public class OrderWS {
 
     protected int id;
     protected boolean isCompleted;
     @XmlElement(required = true)
+    protected String car;
+    @XmlElement(required = true)
     protected String route;
+    @XmlElement(required = true)
+    protected DriverList driverList;
+    @XmlElement(required = true)
+    protected CargoList cargoList;
 
     /**
      * Gets the value of the id property.
@@ -74,6 +87,30 @@ public class OrderWS {
     }
 
     /**
+     * Gets the value of the car property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getCar() {
+        return car;
+    }
+
+    /**
+     * Sets the value of the car property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setCar(String value) {
+        this.car = value;
+    }
+
+    /**
      * Gets the value of the route property.
      * 
      * @return
@@ -95,6 +132,54 @@ public class OrderWS {
      */
     public void setRoute(String value) {
         this.route = value;
+    }
+
+    /**
+     * Gets the value of the driverList property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link DriverList }
+     *     
+     */
+    public DriverList getDriverList() {
+        return driverList;
+    }
+
+    /**
+     * Sets the value of the driverList property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link DriverList }
+     *     
+     */
+    public void setDriverList(DriverList value) {
+        this.driverList = value;
+    }
+
+    /**
+     * Gets the value of the cargoList property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link CargoList }
+     *     
+     */
+    public CargoList getCargoList() {
+        return cargoList;
+    }
+
+    /**
+     * Sets the value of the cargoList property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link CargoList }
+     *     
+     */
+    public void setCargoList(CargoList value) {
+        this.cargoList = value;
     }
 
 }

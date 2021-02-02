@@ -12,7 +12,7 @@
 	<parent>
 		<groupId>org.retal</groupId>
 		<artifactId>javaschool</artifactId>
-		<version>1.1.4</version>
+		<version>1.2.0</version>
 	</parent>
 
 	<properties>
@@ -216,7 +216,7 @@
 		<dependency>
 			<groupId>org.retal</groupId>
 			<artifactId>ejbs</artifactId>
-			<version>1.1.4</version>
+			<version>1.2.0</version>
 		</dependency>
 	</dependencies>
 	<build>

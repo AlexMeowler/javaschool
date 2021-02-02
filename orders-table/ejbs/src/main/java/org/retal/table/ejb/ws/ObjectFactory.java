@@ -54,6 +54,30 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link DriverList }
+     * 
+     */
+    public DriverList createDriverList() {
+        return new DriverList();
+    }
+
+    /**
+     * Create an instance of {@link CargoList }
+     * 
+     */
+    public CargoList createCargoList() {
+        return new CargoList();
+    }
+
+    /**
+     * Create an instance of {@link CargoWS }
+     * 
+     */
+    public CargoWS createCargoWS() {
+        return new CargoWS();
+    }
+
+    /**
      * Create an instance of {@link OrderWS }
      * 
      */

@@ -30,10 +30,6 @@
 		<input type="submit" value="Add cars information to database">
 	</form:form> 
 	<br> -->
-	<c:url value="/testJMS" var = "testJMS"/>
-	<form:form action="${testJMS}" method="POST">
-		<input type="submit" value="Add cars information to database">
-	</form:form>
 	<span class = "error">${error_userDeletionFailed}</span>
 	<p>Here is user list:</p>
 	<table class="info-table">
