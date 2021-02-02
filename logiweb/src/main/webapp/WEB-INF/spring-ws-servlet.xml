@@ -16,7 +16,7 @@
    <sws:annotation-driven/>
 
    <sws:dynamic-wsdl id = "descriptor"
-      portTypeName = "LatestOrders"
+      portTypeName = "statistics"
       locationUri = "/ws/"
       targetNamespace = "http://retal.org/logiweb/ws">
       <sws:xsd location = "classpath:xsd/orders-ws.xsd"/>

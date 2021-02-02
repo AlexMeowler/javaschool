@@ -5,6 +5,7 @@
 	elementFormDefault="qualified">
 
 	<xs:element name="getLatestOrdersRequest">
+		<xs:complexType />
 	</xs:element>
 
 	<xs:element name="getLatestOrdersResponse">
@@ -30,24 +31,7 @@
 		</xs:sequence>
 	</xs:complexType>
 </xs:schema>
-<!-- 
- @XmlElement
-  private int id;
-
-  @XmlElement
-  private Boolean isCompleted;
-
-  @XmlElement
-  private Car car;
-
-  @XmlElement
-  private String route;
-
-  @XmlElement
-  private Set<UserInfo> driverInfo;
-
-  @XmlElement
-  private OrderRouteProgression orderRouteProgression;
-
-  @XmlElement
-  private Set<Cargo> cargo; -->
+<!-- @XmlElement private int id; @XmlElement private Boolean isCompleted; 
+	@XmlElement private Car car; @XmlElement private String route; @XmlElement 
+	private Set<UserInfo> driverInfo; @XmlElement private OrderRouteProgression 
+	orderRouteProgression; @XmlElement private Set<Cargo> cargo; -->
