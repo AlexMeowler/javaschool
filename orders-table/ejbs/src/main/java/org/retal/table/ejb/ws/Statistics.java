@@ -25,6 +25,30 @@ public interface Statistics {
 
     /**
      * 
+     * @param getDriversStatisticsRequest
+     * @return
+     *     returns org.retal.table.ejb.ws.GetDriversStatisticsResponse
+     */
+    @WebMethod
+    @WebResult(name = "getDriversStatisticsResponse", targetNamespace = "http://retal.org/logiweb/ws", partName = "getDriversStatisticsResponse")
+    public GetDriversStatisticsResponse getDriversStatistics(
+        @WebParam(name = "getDriversStatisticsRequest", targetNamespace = "http://retal.org/logiweb/ws", partName = "getDriversStatisticsRequest")
+        GetDriversStatisticsRequest getDriversStatisticsRequest);
+
+    /**
+     * 
+     * @param getCarsStatisticsRequest
+     * @return
+     *     returns org.retal.table.ejb.ws.GetCarsStatisticsResponse
+     */
+    @WebMethod
+    @WebResult(name = "getCarsStatisticsResponse", targetNamespace = "http://retal.org/logiweb/ws", partName = "getCarsStatisticsResponse")
+    public GetCarsStatisticsResponse getCarsStatistics(
+        @WebParam(name = "getCarsStatisticsRequest", targetNamespace = "http://retal.org/logiweb/ws", partName = "getCarsStatisticsRequest")
+        GetCarsStatisticsRequest getCarsStatisticsRequest);
+
+    /**
+     * 
      * @param getLatestOrdersRequest
      * @return
      *     returns org.retal.table.ejb.ws.GetLatestOrdersResponse

@@ -13,7 +13,9 @@ import org.retal.logiweb.domain.entity.UserInfo;
 import org.retal.logiweb.domain.enums.DriverStatus;
 import org.retal.logiweb.domain.enums.UserRole;
 import org.retal.logiweb.dto.UserWrapper;
+import org.retal.logiweb.service.jms.NotificationSender;
 import org.retal.logiweb.service.validators.UserValidator;
+import org.retal.table.ejb.jms.message.NotificationType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -22,8 +24,9 @@ import org.springframework.validation.Validator;
 import org.springframework.web.server.ResponseStatusException;
 
 /**
- * Service, containing business-logic methods regarding {@linkplain org.retal.logiweb.domain.entity.User
- * User} and {@linkplain org.retal.logiweb.domain.entity.UserInfo UserInfo} entities.
+ * Service, containing business-logic methods regarding
+ * {@linkplain org.retal.logiweb.domain.entity.User User} and
+ * {@linkplain org.retal.logiweb.domain.entity.UserInfo UserInfo} entities.
  * 
  * @author Alexander Retivov
  *
@@ -31,13 +34,15 @@ import org.springframework.web.server.ResponseStatusException;
 @Service
 public class UserService {
 
-  private UserDAO userDAO;
+  private final UserDAO userDAO;
 
-  private SessionInfo sessionInfo;
+  private final SessionInfo sessionInfo;
 
-  private Validator userValidator;
+  private final Validator userValidator;
 
-  private CityService cityService;
+  private final CityService cityService;
+
+  private final NotificationSender sender;
 
   private static final Logger log = Logger.getLogger(UserService.class);
 
@@ -48,11 +53,12 @@ public class UserService {
    */
   @Autowired
   public UserService(UserDAO userDAO, SessionInfo sessionInfo, UserValidator userValidator,
-      CityService cityService) {
+      CityService cityService, NotificationSender sender) {
     this.userDAO = userDAO;
     this.sessionInfo = sessionInfo;
     this.userValidator = userValidator;
     this.cityService = cityService;
+    this.sender = sender;
   }
 
   public List<User> getAllUsers() {
@@ -87,6 +93,9 @@ public class UserService {
     }
     if (!bindingResult.hasErrors()) {
       userDAO.add(user);
+      if (user.getRole().equalsIgnoreCase(UserRole.DRIVER.toString())) {
+        sender.send(NotificationType.DRIVERS_UPDATE);
+      }
     }
   }
 
@@ -114,6 +123,9 @@ public class UserService {
       UserInfo userInfo = target.getUserInfo();
       if (userInfo.getCar() == null && userInfo.getOrder() == null) {
         userDAO.delete(target);
+        if (target.getRole().equalsIgnoreCase(UserRole.DRIVER.toString())) {
+          sender.send(NotificationType.DRIVERS_UPDATE);
+        }
       } else {
         redirect = DELETION_UPDATION_ERROR;
       }
@@ -157,6 +169,9 @@ public class UserService {
           updatedUser = copy;
         }
         userDAO.update(updatedUser);
+        if (updatedUser.getRole().equalsIgnoreCase(UserRole.DRIVER.toString())) {
+          sender.send(NotificationType.DRIVERS_UPDATE);
+        }
       }
     } else {
       log.warn("Attempt to edit user without sufficient permissions");

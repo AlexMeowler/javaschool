@@ -38,8 +38,10 @@ import org.retal.logiweb.domain.enums.DriverStatus;
 import org.retal.logiweb.domain.enums.UserRole;
 import org.retal.logiweb.dto.RoutePointDTO;
 import org.retal.logiweb.dto.RoutePointListWrapper;
+import org.retal.logiweb.service.jms.NotificationSender;
 import org.retal.logiweb.service.validators.CargoValidator;
 import org.retal.logiweb.service.validators.RoutePointsValidator;
+import org.retal.table.ejb.jms.message.NotificationType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
@@ -84,6 +86,8 @@ public class CargoAndOrdersService {
 
   private final SessionInfo sessionInfo;
 
+  private final NotificationSender sender;
+
   private static final Logger log = Logger.getLogger(CargoAndOrdersService.class);
 
   /**
@@ -93,7 +97,8 @@ public class CargoAndOrdersService {
   public CargoAndOrdersService(CargoDAO cargoDAO, CityDAO cityDAO, CityDistanceDAO cityDistanceDAO,
       OrderDAO orderDAO, UserDAO userDAO, OrderRouteProgressionDAO orderRouteProgressionDAO,
       CarService carService, RoutePointDAO routePointDAO, CargoValidator cargoValidator,
-      RoutePointsValidator routePointsValidator, SessionInfo sessionInfo) {
+      RoutePointsValidator routePointsValidator, SessionInfo sessionInfo,
+      NotificationSender sender) {
     this.cargoDAO = cargoDAO;
     this.cityDAO = cityDAO;
     this.cityDistanceDAO = cityDistanceDAO;
@@ -105,6 +110,7 @@ public class CargoAndOrdersService {
     this.cargoValidator = cargoValidator;
     this.routePointsValidator = routePointsValidator;
     this.sessionInfo = sessionInfo;
+    this.sender = sender;
   }
 
   public List<Cargo> getAllCargo() {
@@ -185,6 +191,7 @@ public class CargoAndOrdersService {
     transaction.commit();
     orderDAO.setSession(null);
     session.close();
+    sender.send(NotificationType.ORDERS_UPDATE);
   }
 
   /**
@@ -259,7 +266,8 @@ public class CargoAndOrdersService {
   }
 
   /**
-   * Checks order for completion.
+   * Checks order for completion. If order is completed, this method will unassign car and all
+   * drivers from this order and mark it as completed.
    * 
    * @param order order to be checked
    * @return true if order is completed, false otherwise
@@ -279,17 +287,12 @@ public class CargoAndOrdersService {
         driverInfo.setHoursDrived(null);
         userDAO.update(driverInfo.getUser());
       }
+      sender.send(NotificationType.DRIVERS_UPDATE);
       orderRouteProgressionDAO.delete(order.getOrderRouteProgression());
       order.setIsCompleted(isCompleted);
       order.setCar(null);
-      Session session = HibernateSessionFactory.getSessionFactory().openSession();
-      orderDAO.setSession(session);
-      Transaction transaction = session.beginTransaction();
-      orderDAO.update(order);
-      session.flush();
-      transaction.commit();
-      orderDAO.setSession(null);
-      session.close();
+      updateOrder(order);
+      sender.send(NotificationType.CARS_UPDATE);
       sessionInfo.refreshUser();
     }
     return isCompleted;
@@ -390,11 +393,14 @@ public class CargoAndOrdersService {
         orderDAO.setSession(session);
         orderDAO.add(order);
         transaction.commit();
+        sender.send(NotificationType.ORDERS_UPDATE);
+        sender.send(NotificationType.CARS_UPDATE);
         transaction = session.beginTransaction();
         for (User driver : drivers) {
           driver.getUserInfo().setOrder(order);
           userDAO.update(driver);
         }
+        sender.send(NotificationType.DRIVERS_UPDATE);
         routePointDAO.setSession(session);
         for (RoutePoint rp : points) {
           rp.setOrder(order);

@@ -2,29 +2,34 @@ package org.retal.logiweb.config.spring.web;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 /**
- * Web configuration class. Provides 
- * {@linkplain org.springframework.web.servlet.ViewResolver ViewResolver}
- * and {@linkplain org.springframework.validation.beanvalidation.LocalValidatorFactoryBean
+ * Web configuration class. Provides {@linkplain org.springframework.web.servlet.ViewResolver
+ * ViewResolver} and
+ * {@linkplain org.springframework.validation.beanvalidation.LocalValidatorFactoryBean
  * LocalValidatorFactoryBean} beans.
+ * 
  * @author Alexander Retivov
  */
 @Configuration
 @EnableWebMvc
-@ComponentScan(basePackages = "org.retal")
+@ComponentScan(basePackages = "org.retal.logiweb", excludeFilters = @Filter(type = FilterType.REGEX,
+    pattern = "org.retal.logiweb.config.spring.app.jms.*"))
 public class WebConfig {
-  
+
   /**
-   * Configures {@linkplain org.springframework.web.servlet.ViewResolver ViewResolver}
-   * for .jsp pages.
-   * @return configured instance of 
-   * {@linkplain org.springframework.web.servlet.ViewResolver ViewResolver}
+   * Configures {@linkplain org.springframework.web.servlet.ViewResolver ViewResolver} for .jsp
+   * pages.
+   * 
+   * @return configured instance of {@linkplain org.springframework.web.servlet.ViewResolver
+   *         ViewResolver}
    */
   @Bean
   public ViewResolver viewResolver() {
@@ -37,9 +42,10 @@ public class WebConfig {
   /**
    * Provides {@linkplain org.springframework.validation.beanvalidation.LocalValidatorFactoryBean
    * LocalValidatorFactoryBean} for validating user input using annotations.
-   * @return instance of 
-   * {@linkplain org.springframework.validation.beanvalidation.LocalValidatorFactoryBean
-   * LocalValidatorFactoryBean}
+   * 
+   * @return instance of
+   *         {@linkplain org.springframework.validation.beanvalidation.LocalValidatorFactoryBean
+   *         LocalValidatorFactoryBean}
    */
   @Bean
   public javax.validation.Validator localValidatorFactoryBean() {

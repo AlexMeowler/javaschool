@@ -3,8 +3,7 @@ package org.retal.table.ejb.jsf;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import javax.ejb.Singleton;
-import javax.ejb.Startup;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Named;
 import org.apache.log4j.Logger;
 import org.retal.table.ejb.ws.GetLatestOrdersRequest;
@@ -14,13 +13,12 @@ import org.retal.table.ejb.ws.Statistics;
 import org.retal.table.ejb.ws.StatisticsService;
 
 @Named("ordersStorage")
-@Singleton
-@Startup
+@ApplicationScoped
 public class OrdersStorage {
 
   private static final Logger log = Logger.getLogger(OrdersStorage.class);
 
-  private List<OrderWS> orders;
+  private List<OrderWS> orders = new ArrayList<>();
 
   public OrdersStorage() throws IOException {
     try {
@@ -29,7 +27,6 @@ public class OrdersStorage {
       orders = statistics.getLatestOrders(new GetLatestOrdersRequest()).getOrderList().getOrders();
     } catch (Exception e) {
       log.error(e, e);
-      this.orders = new ArrayList<>();
     }
   }
 

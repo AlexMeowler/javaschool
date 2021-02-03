@@ -24,8 +24,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
 /**
- * Service, containing business-logic methods regarding {@linkplain org.retal.logiweb.domain.entity.User
- * User} entities with role 'driver'.
+ * Service, containing business-logic methods regarding
+ * {@linkplain org.retal.logiweb.domain.entity.User User} entities with role 'driver'.
  * 
  * @author Alexander Retivov
  *

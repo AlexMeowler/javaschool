@@ -54,6 +54,38 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link GetDriversStatisticsRequest }
+     * 
+     */
+    public GetDriversStatisticsRequest createGetDriversStatisticsRequest() {
+        return new GetDriversStatisticsRequest();
+    }
+
+    /**
+     * Create an instance of {@link GetDriversStatisticsResponse }
+     * 
+     */
+    public GetDriversStatisticsResponse createGetDriversStatisticsResponse() {
+        return new GetDriversStatisticsResponse();
+    }
+
+    /**
+     * Create an instance of {@link GetCarsStatisticsRequest }
+     * 
+     */
+    public GetCarsStatisticsRequest createGetCarsStatisticsRequest() {
+        return new GetCarsStatisticsRequest();
+    }
+
+    /**
+     * Create an instance of {@link GetCarsStatisticsResponse }
+     * 
+     */
+    public GetCarsStatisticsResponse createGetCarsStatisticsResponse() {
+        return new GetCarsStatisticsResponse();
+    }
+
+    /**
      * Create an instance of {@link DriverList }
      * 
      */

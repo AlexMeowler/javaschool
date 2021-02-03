@@ -259,13 +259,6 @@ public class AdminPageController {
     }
     return redirectView;
   }
-  
-  @GetMapping(value = "/jms")
-  public RedirectView testJMS() {
-    RedirectView redirectView = new RedirectView(ADMIN_PAGE, true);
-    sender.send(NotificationType.ORDERS_UPDATE);
-    return redirectView;
-  }
 
   /**
    * Method for mapping user related DTOs (user, user info, city) to

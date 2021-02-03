@@ -1,5 +1,6 @@
 package org.retal.logiweb.config.spring.web;
 
+import org.retal.logiweb.config.spring.app.jms.JMSConfiguration;
 import org.retal.logiweb.config.spring.security.SecurityConfig;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
@@ -7,7 +8,7 @@ public class WebInitialiser extends AbstractAnnotationConfigDispatcherServletIni
 
   @Override
   protected Class<?>[] getRootConfigClasses() {
-    return new Class[] {RootConfig.class, SecurityConfig.class};
+    return new Class[] {RootConfig.class, SecurityConfig.class, JMSConfiguration.class};
   }
 
   @Override

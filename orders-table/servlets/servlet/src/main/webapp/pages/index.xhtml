@@ -17,7 +17,22 @@
 	<h:body>
 		<ui:include src="menu.xhtml" />
 		<div class="container main-body">
-			<p>Welcome to Logiweb statistics table!</p>
+			<h2>Welcome to Logiweb statistics table!</h2>
+			<h3>Current driver statistics</h3>
+			<p>
+				<strong>#{driverStatsStorage.driversTotal}</strong> drivers in total.
+				<br /> <strong>#{driverStatsStorage.driversAvailable}</strong>
+				drivers available. <br /> <strong>#{driverStatsStorage.driversUnavailable}</strong>
+				drivers unavailable. <br />
+			</p>
+			<h3>Current cars statistics</h3>
+			<p>
+				<strong>#{carStatsStorage.carsTotal}</strong> cars in total.
+				<br /> <strong>#{carStatsStorage.carsAvailable}</strong>
+				cars available. <br /> <strong>#{carStatsStorage.carsAssigned}</strong>
+				cars assigned to orders. <br /> <strong>#{carStatsStorage.carsBroken}</strong> cars broken.
+			</p>
+			<h3>Orders table: 10 latest orders</h3>
 			<table class="info-table">
 				<caption style="display: none;">10 latest orders list</caption>
 				<tr>
@@ -43,6 +58,7 @@
 					</tr>
 				</ui:repeat>
 			</table>
+			<div class="footer"></div>
 		</div>
 	</h:body>
 </f:view>
