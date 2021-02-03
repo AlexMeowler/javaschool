@@ -44,7 +44,7 @@ public class ErrorPageControllerAndExceptionHandlerTest {
     mockMvc.perform(get("/exception503")).andExpect(status().is3xxRedirection())
     .andExpect(redirectedUrl(GlobalExceptionHandler.ERROR_PAGE))
     .andExpect(flash().attribute("errorCode", "Error 503"));
-    mockMvc.perform(get("/" + GlobalExceptionHandler.ERROR_PAGE)).andExpect(status().isOk())
+    mockMvc.perform(get(GlobalExceptionHandler.ERROR_PAGE)).andExpect(status().isOk())
         .andExpect(forwardedUrl("/pages/errorPage.jsp"));
   }
 

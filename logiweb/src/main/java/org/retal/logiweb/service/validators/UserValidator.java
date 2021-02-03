@@ -90,9 +90,6 @@ public class UserValidator implements Validator {
     maliciousInputMessage = setIfEmpty(maliciousInputMessage, response);
     String password = wrapper.getPassword();
     response = checkForMaliciousInput(password);
-    if (!response.isEmpty()) {
-      userInfo.setSurname("");
-    }
     maliciousInputMessage = setIfEmpty(maliciousInputMessage, response);
     if (password.length() < 6 && !password.isEmpty()) {
       String property = "realPassword";

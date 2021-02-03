@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 import java.util.Random;
+import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -21,13 +22,20 @@ import org.retal.logiweb.domain.entity.Cargo;
 import org.retal.logiweb.domain.entity.User;
 import org.retal.logiweb.dto.RoutePointListWrapper;
 import org.retal.logiweb.dto.UserWrapper;
+import org.retal.logiweb.service.jms.NotificationSender;
 import org.retal.logiweb.service.logic.CityService;
 import org.retal.logiweb.service.logic.UserService;
 import org.retal.logiweb.service.validators.CarValidator;
 import org.retal.logiweb.service.validators.CargoValidator;
 import org.retal.logiweb.service.validators.RoutePointsValidator;
 import org.retal.logiweb.service.validators.UserValidator;
+import org.retal.table.ejb.jms.message.NotificationType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.jms.JmsException;
+import org.springframework.jms.connection.SingleConnectionFactory;
+import org.springframework.jms.core.JmsTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -42,6 +50,27 @@ public class ServicesTest {
    * this whole test class is done only to cover some specifics which could not be covered when
    * testing controllers.
    */
+
+  static class ContextConfiguration {
+
+    private JmsTemplate template(String url) {
+      ActiveMQConnectionFactory activeMQConnectionFactory = new ActiveMQConnectionFactory();
+      activeMQConnectionFactory.setBrokerURL(url);
+      SingleConnectionFactory factory = new SingleConnectionFactory(activeMQConnectionFactory);
+      factory.setReconnectOnException(true);
+      JmsTemplate template = new JmsTemplate(factory);
+      template.setDefaultDestinationName("testQueue");
+      return template;
+    }
+
+    public JmsTemplate jmsTemplateCorrect() {
+      return template("vm://localhost?broker.persistent=false");
+    }
+
+    public JmsTemplate jmsTemplateWrong() {
+      return template("abc");
+    }
+  }
 
   private UserService userService;
 
@@ -171,5 +200,19 @@ public class ServicesTest {
     for (User user : userDAO.readAll()) {
       assertEquals(0, user.getUserInfo().getHoursWorked().intValue());
     }
+  }
+
+  @Test
+  public void testNotificationSenderNoConnection() {
+    NotificationSender sender =
+        new NotificationSender(new ContextConfiguration().jmsTemplateWrong());
+    sender.send(NotificationType.ORDERS_UPDATE);
+  }
+
+  @Test
+  public void testNotificationSenderIllegalClass() {
+    NotificationSender sender =
+        new NotificationSender(new ContextConfiguration().jmsTemplateCorrect());
+    sender.send(new Object());
   }
 }

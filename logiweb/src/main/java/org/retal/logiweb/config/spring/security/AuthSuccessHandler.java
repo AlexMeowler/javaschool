@@ -6,6 +6,9 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
+import org.retal.logiweb.controller.AdminPageController;
+import org.retal.logiweb.controller.DriverPageController;
+import org.retal.logiweb.controller.ManagerUserPageController;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -46,8 +49,8 @@ public class AuthSuccessHandler implements AuthenticationSuccessHandler {
         response.sendRedirect(request.getContextPath() + redirectAddress);
       }
     };
-    roleChecker.checkAndRedirect("ADMIN", "/adminPage");
-    roleChecker.checkAndRedirect("MANAGER", "/managerPage");
-    roleChecker.checkAndRedirect("DRIVER", "/driverPage");
+    roleChecker.checkAndRedirect("ADMIN", AdminPageController.ADMIN_PAGE);
+    roleChecker.checkAndRedirect("MANAGER", ManagerUserPageController.MANAGER_USERS_PAGE);
+    roleChecker.checkAndRedirect("DRIVER", DriverPageController.DRIVER_PAGE);
   }
 }

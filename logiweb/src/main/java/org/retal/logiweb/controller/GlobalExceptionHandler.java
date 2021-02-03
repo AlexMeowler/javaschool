@@ -18,7 +18,7 @@ import org.springframework.web.servlet.view.RedirectView;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-  public static final String ERROR_PAGE = "errorPage";
+  public static final String ERROR_PAGE = "/errorPage";
 
   private static final Logger log = Logger.getLogger(GlobalExceptionHandler.class);
 

@@ -49,7 +49,7 @@ import org.springframework.web.servlet.view.RedirectView;
    */
   @GetMapping(GlobalExceptionHandler.ERROR_PAGE)
   public String showErrorPage() {
-<span class="fc" id="L52">    return GlobalExceptionHandler.ERROR_PAGE;</span>
+<span class="fc" id="L52">    return GlobalExceptionHandler.ERROR_PAGE.substring(1);</span>
   }
 
   /**
