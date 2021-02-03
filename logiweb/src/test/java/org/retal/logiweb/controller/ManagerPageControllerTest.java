@@ -20,6 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.Random;
 import java.util.stream.Collectors;
+import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
 import org.junit.After;
@@ -51,6 +52,8 @@ import org.retal.logiweb.service.logic.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.jms.connection.SingleConnectionFactory;
+import org.springframework.jms.core.JmsTemplate;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -101,6 +104,17 @@ public class ManagerPageControllerTest {
     public OrderDAO getOrderDAO() {
       return new OrderDAO();
     }
+    
+    @Bean
+    public JmsTemplate jmsTemplate() {
+      ActiveMQConnectionFactory activeMQConnectionFactory = new ActiveMQConnectionFactory();
+      activeMQConnectionFactory.setBrokerURL("vm://localhost?broker.persistent=false");
+      SingleConnectionFactory factory = new SingleConnectionFactory(activeMQConnectionFactory);
+      factory.setReconnectOnException(true);
+      JmsTemplate template = new JmsTemplate(factory);
+      template.setDefaultDestinationName("testQueue");
+      return template;
+    }
   }
 
   @Autowired
@@ -146,8 +160,8 @@ public class ManagerPageControllerTest {
     CityService cityService = new CityService(new CityDAO(), new CityDistanceDAO());
     cityService.addCitiesFromFile();
     cityService.addDistancesFromFile();
-    new UserService(new UserDAO(), null, null, cityService).addDriversFromFile();
-    new CarService(new CarDAO(), null, cityService, null).generateCarForEachCity();
+    new UserService(new UserDAO(), null, null, cityService, null).addDriversFromFile();
+    new CarService(new CarDAO(), null, cityService, null, null).generateCarForEachCity();
   }
 
   /**

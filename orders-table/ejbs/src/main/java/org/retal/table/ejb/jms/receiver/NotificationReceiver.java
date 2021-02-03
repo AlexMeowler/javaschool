@@ -1,15 +1,19 @@
 package org.retal.table.ejb.jms.receiver;
 
 import javax.ejb.ActivationConfigProperty;
-import javax.ejb.EJB;
 import javax.ejb.MessageDriven;
+import javax.inject.Inject;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.ObjectMessage;
 import org.apache.log4j.Logger;
 import org.retal.table.ejb.jms.message.NotificationMessage;
+import org.retal.table.ejb.jsf.CarStatsStorage;
+import org.retal.table.ejb.jsf.DriverStatsStorage;
 import org.retal.table.ejb.jsf.OrdersStorage;
+import org.retal.table.ejb.ws.GetCarsStatisticsRequest;
+import org.retal.table.ejb.ws.GetDriversStatisticsRequest;
 import org.retal.table.ejb.ws.GetLatestOrdersRequest;
 import org.retal.table.ejb.ws.Statistics;
 import org.retal.table.ejb.ws.StatisticsService;
@@ -20,8 +24,14 @@ import org.retal.table.ejb.ws.StatisticsService;
     @ActivationConfigProperty(propertyName = "destination", propertyValue = "notificationsQueue")})
 public class NotificationReceiver implements MessageListener, Receiver {
 
-  @EJB
+  @Inject
   private OrdersStorage ordersStorage;
+
+  @Inject
+  private DriverStatsStorage driverStatsStorage;
+
+  @Inject
+  private CarStatsStorage carStatsStorage;
 
   private final StatisticsService statisticsService;
 
@@ -46,8 +56,11 @@ public class NotificationReceiver implements MessageListener, Receiver {
         Statistics statistics = statisticsService.getStatisticsSoap11();
         switch (msg.getType()) {
           case CARS_UPDATE:
+            carStatsStorage.update(statistics.getCarsStatistics(new GetCarsStatisticsRequest()));
             break;
           case DRIVERS_UPDATE:
+            driverStatsStorage
+                .update(statistics.getDriversStatistics(new GetDriversStatisticsRequest()));
             break;
           case ORDERS_UPDATE:
             ordersStorage.update(statistics.getLatestOrders(new GetLatestOrdersRequest()));

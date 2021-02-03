@@ -5,7 +5,9 @@ import org.retal.logiweb.domain.enums.UserRole;
 import org.retal.logiweb.service.logic.UserAuthorizationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -22,7 +24,8 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true)
-@ComponentScan(basePackages = "org.retal")
+@ComponentScan(basePackages = "org.retal.logiweb", excludeFilters = @Filter(type = FilterType.REGEX,
+    pattern = "org.retal.logiweb.config.spring.app.jms.*"))
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
   private final UserAuthorizationService authService;

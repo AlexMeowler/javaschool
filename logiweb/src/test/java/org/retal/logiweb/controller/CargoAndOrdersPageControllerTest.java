@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
+import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
 import org.junit.After;
@@ -53,6 +54,8 @@ import org.retal.logiweb.service.logic.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.jms.connection.SingleConnectionFactory;
+import org.springframework.jms.core.JmsTemplate;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -121,6 +124,17 @@ public class CargoAndOrdersPageControllerTest {
     public CityDAO getCityDAO() {
       return new CityDAO();
     }
+    
+    @Bean
+    public JmsTemplate jmsTemplate() {
+      ActiveMQConnectionFactory activeMQConnectionFactory = new ActiveMQConnectionFactory();
+      activeMQConnectionFactory.setBrokerURL("vm://localhost?broker.persistent=false");
+      SingleConnectionFactory factory = new SingleConnectionFactory(activeMQConnectionFactory);
+      factory.setReconnectOnException(true);
+      JmsTemplate template = new JmsTemplate(factory);
+      template.setDefaultDestinationName("testQueue");
+      return template;
+    }
   }
 
   @Autowired
@@ -181,7 +195,7 @@ public class CargoAndOrdersPageControllerTest {
     CityService cityService = new CityService(new CityDAO(), new CityDistanceDAO());
     cityService.addCitiesFromFile();
     cityService.addDistancesFromFile();
-    new UserService(new UserDAO(), null, null, cityService).addDriversFromFile();
+    new UserService(new UserDAO(), null, null, cityService, null).addDriversFromFile();
     List<City> cities = new CityDAO().readAll();
     CarDAO carDAO = new CarDAO();
     Random random = new Random();

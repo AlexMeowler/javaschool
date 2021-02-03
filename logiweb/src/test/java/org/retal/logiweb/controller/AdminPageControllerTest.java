@@ -17,6 +17,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.List;
 import java.util.stream.Collectors;
+import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
 import org.junit.After;
@@ -44,6 +45,8 @@ import org.retal.logiweb.domain.entity.UserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.jms.connection.SingleConnectionFactory;
+import org.springframework.jms.core.JmsTemplate;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -98,6 +101,17 @@ public class AdminPageControllerTest {
     @Bean
     public CargoDAO getCargoDAO() {
       return new CargoDAO();
+    }
+
+    @Bean
+    public JmsTemplate jmsTemplate() {
+      ActiveMQConnectionFactory activeMQConnectionFactory = new ActiveMQConnectionFactory();
+      activeMQConnectionFactory.setBrokerURL("vm://localhost?broker.persistent=false");
+      SingleConnectionFactory factory = new SingleConnectionFactory(activeMQConnectionFactory);
+      factory.setReconnectOnException(true);
+      JmsTemplate template = new JmsTemplate(factory);
+      template.setDefaultDestinationName("testQueue");
+      return template;
     }
   }
 

@@ -45,6 +45,7 @@ public class OrderEndpoint {
   @PayloadRoot(namespace = NAMESPACE_URI, localPart = "getLatestOrdersRequest")
   @ResponsePayload
   public GetLatestOrdersResponse getLatestOrders(@RequestPayload GetLatestOrdersRequest request) {
+    log.info("Received SOAP request");
     List<Order> orders = cargoAndOrdersService.getAllOrders();
     OrderList list = new OrderList();
     int startIndex = Math.max(0, orders.size() - LIST_SIZE);
@@ -52,6 +53,7 @@ public class OrderEndpoint {
         .forEach(o -> list.getOrders().add(o));
     GetLatestOrdersResponse response = new GetLatestOrdersResponse();
     response.setOrderList(list);
+    log.info("Sending SOAP response");
     return response;
   }
 

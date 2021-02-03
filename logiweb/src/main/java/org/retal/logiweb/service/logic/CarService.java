@@ -9,7 +9,9 @@ import org.retal.logiweb.dao.OrderDAO;
 import org.retal.logiweb.domain.entity.Car;
 import org.retal.logiweb.domain.entity.City;
 import org.retal.logiweb.domain.entity.Order;
+import org.retal.logiweb.service.jms.NotificationSender;
 import org.retal.logiweb.service.validators.CarValidator;
+import org.retal.table.ejb.jms.message.NotificationType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
@@ -32,6 +34,8 @@ public class CarService {
   private final CityService cityService;
 
   private final Validator carValidator;
+  
+  private final NotificationSender sender;
 
   private final Random rand = new Random();
 
@@ -42,11 +46,12 @@ public class CarService {
    */
   @Autowired
   public CarService(CarDAO carDAO, OrderDAO orderDAO, CityService cityService,
-      CarValidator carValidator) {
+      CarValidator carValidator, NotificationSender sender) {
     this.carDAO = carDAO;
     this.orderDAO = orderDAO;
     this.cityService = cityService;
     this.carValidator = carValidator;
+    this.sender = sender;
   }
 
   public List<Car> getAllCars() {
@@ -73,6 +78,7 @@ public class CarService {
     }
     if (!bindingResult.hasErrors()) {
       carDAO.add(car);
+      sender.send(NotificationType.CARS_UPDATE);
     }
   }
 
@@ -87,6 +93,7 @@ public class CarService {
     if (car.getOrder() == null && car.getDriver() == null) {
       status = true;
       carDAO.delete(car);
+      sender.send(NotificationType.CARS_UPDATE);
     }
     return status;
   }
@@ -106,6 +113,7 @@ public class CarService {
     }
     if (!bindingResult.hasErrors()) {
       carDAO.update(car);
+      sender.send(NotificationType.CARS_UPDATE);
     }
   }
 

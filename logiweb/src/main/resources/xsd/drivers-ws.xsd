@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:tns="http://retal.org/logiweb/ws"
+	targetNamespace="http://retal.org/logiweb/ws"
+	elementFormDefault="qualified">
+
+	<xs:element name="getDriversStatisticsRequest">
+		<xs:complexType />
+	</xs:element>
+
+	<xs:element name="getDriversStatisticsResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="totalDrivers" type="xs:int" />
+				<xs:element name="driversAvailable" type="xs:int" />
+				<xs:element name="driversUnavailable" type="xs:int" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

@@ -7,10 +7,10 @@ Java School Public Repository
 # SonarQube report (for version 1.1)
 ![SonarQube report](sonar.png?raw=true "SonarQube Report")
 
-# VERSION 1.2.0
+# VERSION 2.0.0
 
-Configured ActiveMQ queue senders and listeners. Implemented SOAP service for retrieving information about orders. Orders-table front end improvements. 
+Inserted messsaging in Logiweb application. Second application (table with statistics) is now live.
 
 # TODO
 
-SOAP for drivers/cars statistics, insert orders messaging into Logiweb, messaging for drivers/cars, serializing, code refactoring.
+Trying to make code look clean: splitting pages, classes, pagination. Testing stuff.

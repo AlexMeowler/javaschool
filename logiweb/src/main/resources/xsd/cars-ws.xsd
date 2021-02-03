@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:tns="http://retal.org/logiweb/ws"
+	targetNamespace="http://retal.org/logiweb/ws"
+	elementFormDefault="qualified">
+
+	<xs:element name="getCarsStatisticsRequest">
+		<xs:complexType />
+	</xs:element>
+
+	<xs:element name="getCarsStatisticsResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="totalCars" type="xs:int" />
+				<xs:element name="carsAvailable" type="xs:int" />
+				<xs:element name="carsAssigned" type="xs:int" />
+				<xs:element name="carsBroken" type="xs:int" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>
