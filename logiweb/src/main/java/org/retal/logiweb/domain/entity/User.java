@@ -28,6 +28,9 @@ public class User {
 
   }
   
+  /**
+   * Constructor for creating new instance of this class. Use it to avoid multiple setters calls.
+   */
   public User(String login, String password, String role, UserInfo userInfo) {
     setLogin(login);
     setPassword(password);

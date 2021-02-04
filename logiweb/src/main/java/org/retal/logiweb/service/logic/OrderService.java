@@ -240,7 +240,7 @@ public class OrderService {
     List<RoutePoint> entityList = new ArrayList<>();
     for (RoutePointDTO rpDTO : list) {
       RoutePoint rp = new RoutePoint(cityDAO.read(rpDTO.getCityName()), rpDTO.getIsLoading(),
-          cargoService.getCargo(rpDTO.getCargoId()));
+          cargoService.getCargo(rpDTO.getCargoId()), null);
       entityList.add(rp);
     }
     return entityList;

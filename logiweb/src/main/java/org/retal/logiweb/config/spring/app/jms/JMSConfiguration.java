@@ -1,8 +1,6 @@
 package org.retal.logiweb.config.spring.app.jms;
 
 import java.util.Properties;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.log4j.Logger;
 import org.springframework.context.annotation.Bean;
@@ -15,6 +13,12 @@ public class JMSConfiguration {
 
   private static final Logger log = Logger.getLogger(JMSConfiguration.class);
 
+  /**
+   * Configures and returns ActiveMQ ConnectionFactory instance. If resource file
+   * "activemq.properties" is not found, then null is returned.
+   * 
+   * @return ActiveMQConnectionFactory
+   */
   @Bean
   public ActiveMQConnectionFactory senderActiveMQConnectionFactory() {
     ActiveMQConnectionFactory activeMQConnectionFactory = new ActiveMQConnectionFactory();
@@ -32,6 +36,13 @@ public class JMSConfiguration {
     return activeMQConnectionFactory;
   }
 
+
+  /**
+   * SingleConnectionFactory bean. Uses {@link #senderActiveMQConnectionFactory()} for
+   * configuration.
+   * 
+   * @return SingleConnectionFactory instance
+   */
   @Bean
   public SingleConnectionFactory singleConnectionFactory() {
     SingleConnectionFactory factory =
@@ -40,6 +51,11 @@ public class JMSConfiguration {
     return factory;
   }
 
+  /**
+   * JMS template which is used by other classes. Provides access to JMS.
+   * Uses {@link #singleConnectionFactory()} for configuration.
+   * @return JmsTemplate
+   */
   @Bean
   public JmsTemplate jmsTemplate() {
     JmsTemplate template = new JmsTemplate(singleConnectionFactory());

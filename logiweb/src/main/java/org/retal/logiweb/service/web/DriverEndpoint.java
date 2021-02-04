@@ -27,10 +27,7 @@ public class DriverEndpoint {
   }
 
   /**
-   * Javadoc TODO
-   * 
-   * @param request
-   * @return
+   * Provides statistics about drivers: total, available, unavailable.
    */
   @PayloadRoot(namespace = NAMESPACE_URI, localPart = "getDriversStatisticsRequest")
   @ResponsePayload

@@ -30,6 +30,9 @@ public class Order {
 
   }
 
+  /**
+   * Constructor for creating new instance of this class. Use it to avoid multiple setters calls.
+   */
   public Order(Boolean isCompleted, Car car, Set<RoutePoint> points, String route,
       Float requiredCapacity, Integer requiredShiftLength) {
     setIsCompleted(isCompleted);

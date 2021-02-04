@@ -37,10 +37,7 @@ public class OrderEndpoint {
   }
 
   /**
-   * Javadoc TODO
-   * 
-   * @param request
-   * @return
+   * Provides full information about {@link #LIST_SIZE} latest orders.
    */
   @PayloadRoot(namespace = NAMESPACE_URI, localPart = "getLatestOrdersRequest")
   @ResponsePayload

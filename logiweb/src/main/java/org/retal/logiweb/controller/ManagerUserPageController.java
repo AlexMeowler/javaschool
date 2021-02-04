@@ -53,7 +53,7 @@ public class ManagerUserPageController {
   }
 
   /**
-   * Method responsible for showing manager page.
+   * Method responsible for redirecting to drivers page.
    */
   @GetMapping(value = MANAGER_USERS_PAGE)
   public RedirectView getManagerUserPage(Model model, RedirectAttributes redir) {
@@ -61,6 +61,9 @@ public class ManagerUserPageController {
     return new RedirectView(MANAGER_USERS_PAGE + "/1", true);
   }
 
+  /**
+   * Paginated view for drivers page.
+   */
   @GetMapping(value = MANAGER_USERS_PAGE + "/{page}")
   public String getPartUsers(Model model, @PathVariable Integer page) {
     int maxPage = getMaxPossiblePage();

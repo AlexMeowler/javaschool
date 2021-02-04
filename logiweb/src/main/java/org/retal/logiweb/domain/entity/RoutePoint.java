@@ -18,7 +18,10 @@ public class RoutePoint {
     
   }
   
-  public RoutePoint(City city, Boolean isLoading, Cargo cargo) {
+  /**
+   * Constructor for creating new instance of this class. Use it to avoid multiple setters calls.
+   */
+  public RoutePoint(City city, Boolean isLoading, Cargo cargo, Order order) {
     setCity(city);
     setIsLoading(isLoading);
     setCargo(cargo);

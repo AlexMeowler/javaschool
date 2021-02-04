@@ -22,7 +22,10 @@ public class UserInfo {
   public UserInfo() {
 
   }
-  
+
+  /**
+   * Constructor for creating new instance of this class. Use it to avoid multiple setters calls.
+   */
   public UserInfo(String name, String surname, String status, City city) {
     setName(name);
     setSurname(surname);

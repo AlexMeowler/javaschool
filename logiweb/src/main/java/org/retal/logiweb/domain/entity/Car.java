@@ -25,6 +25,9 @@ public class Car {
 
   }
 
+  /**
+   * Constructor for creating new instance of this class. Use it to avoid multiple setters calls.
+   */
   public Car(String registrationId, Integer shiftLength, Float capacityTons, Boolean isWorking,
       City location) {
     setRegistrationId(registrationId);

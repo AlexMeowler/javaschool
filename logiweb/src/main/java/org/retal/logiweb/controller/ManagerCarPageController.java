@@ -53,7 +53,7 @@ public class ManagerCarPageController {
   }
 
   /**
-   * Method responsible for showing manager page.
+   * Method responsible for redirecting to first page of cars page.
    */
   @GetMapping(value = MANAGER_CARS_PAGE)
   public RedirectView getManagerCarsPage(Model model, RedirectAttributes redir) {
@@ -61,6 +61,9 @@ public class ManagerCarPageController {
     return new RedirectView(MANAGER_CARS_PAGE + "/1", true);
   }
 
+  /**
+   * Paginated view for cars page.
+   */
   @GetMapping(value = MANAGER_CARS_PAGE + "/{page}")
   public String getPartUsers(Model model, @PathVariable Integer page) {
     int maxPage = getMaxPossiblePage();
