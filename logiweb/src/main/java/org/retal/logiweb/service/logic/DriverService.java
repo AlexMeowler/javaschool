@@ -43,7 +43,7 @@ public class DriverService {
 
   private final OrderRouteProgressionDAO orderRouteProgressionDAO;
 
-  private final CargoAndOrdersService cargoAndOrdersService;
+  private final OrderService cargoAndOrdersService;
 
   private static final Logger log = Logger.getLogger(DriverService.class);
 
@@ -53,7 +53,7 @@ public class DriverService {
   @Autowired
   public DriverService(SessionInfo sessionInfo, UserDAO userDAO, CityDAO cityDAO, CarDAO carDAO,
       OrderRouteProgressionDAO orderRouteProgressionDAO,
-      CargoAndOrdersService cargoAndOrdersService) {
+      OrderService cargoAndOrdersService) {
     this.sessionInfo = sessionInfo;
     this.userDAO = userDAO;
     this.cityDAO = cityDAO;
@@ -144,7 +144,7 @@ public class DriverService {
     int length = index < cities.length
         ? cargoAndOrdersService.lengthBetweenTwoCities(userCity, cities[index])
         : 0;
-    length = (int) Math.round((double) length / CargoAndOrdersService.AVERAGE_CAR_SPEED);
+    length = (int) Math.round((double) length / OrderService.AVERAGE_CAR_SPEED);
     Integer hoursDrived = driver.getUserInfo().getHoursDrived();
     if (hoursDrived != null) {
       hoursDrived += length;
@@ -193,7 +193,7 @@ public class DriverService {
     int pathLength = index < routeCities.length
         ? cargoAndOrdersService.lengthBetweenTwoCities(driverCity, routeCities[index])
         : 0;
-    pathLength = (int) Math.round((double) pathLength / CargoAndOrdersService.AVERAGE_CAR_SPEED);
+    pathLength = (int) Math.round((double) pathLength / OrderService.AVERAGE_CAR_SPEED);
     Integer hoursDrived = driver.getUserInfo().getHoursDrived();
     if (hoursDrived != null) {
       hoursDrived += pathLength;

@@ -8,8 +8,9 @@ import org.retal.logiweb.domain.entity.Order;
 import org.retal.logiweb.domain.entity.SessionInfo;
 import org.retal.logiweb.domain.entity.User;
 import org.retal.logiweb.domain.enums.DriverStatus;
-import org.retal.logiweb.service.logic.CargoAndOrdersService;
+import org.retal.logiweb.service.logic.CargoService;
 import org.retal.logiweb.service.logic.DriverService;
+import org.retal.logiweb.service.logic.OrderService;
 import org.retal.logiweb.service.validators.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -28,7 +29,9 @@ public class DriverPageController {
 
   private final DriverService driverService;
 
-  private final CargoAndOrdersService cargoAndOrdersService;
+  private final OrderService orderService;
+  
+  private final CargoService cargoService;
 
   public static final String DRIVER_PAGE = &quot;/driverPage&quot;;
 
@@ -36,52 +39,53 @@ public class DriverPageController {
    * Creates an instance of this class using constructor-based dependency injection.
    */
   @Autowired
-<span class="fc" id="L39">  public DriverPageController(SessionInfo sessionInfo, DriverService driverService,</span>
-      CargoAndOrdersService cargoAndOrdersService) {
-<span class="fc" id="L41">    this.sessionInfo = sessionInfo;</span>
-<span class="fc" id="L42">    this.driverService = driverService;</span>
-<span class="fc" id="L43">    this.cargoAndOrdersService = cargoAndOrdersService;</span>
-<span class="fc" id="L44">  }</span>
+  public DriverPageController(SessionInfo sessionInfo, DriverService driverService,
+<span class="fc" id="L43">      OrderService orderService, CargoService cargoService) {</span>
+<span class="fc" id="L44">    this.sessionInfo = sessionInfo;</span>
+<span class="fc" id="L45">    this.driverService = driverService;</span>
+<span class="fc" id="L46">    this.orderService = orderService;</span>
+<span class="fc" id="L47">    this.cargoService = cargoService;</span>
+<span class="fc" id="L48">  }</span>
 
   /**
    * Method responsible for showing driver page with all required information.
    */
   @GetMapping(DRIVER_PAGE)
   public String getDriverPage(Model model) {
-<span class="fc" id="L51">    sessionInfo.refreshUser();</span>
-<span class="fc" id="L52">    BindingResult result =</span>
-<span class="fc" id="L53">        (BindingResult) model.asMap().get(BindingResult.MODEL_KEY_PREFIX + &quot;driver&quot;);</span>
-<span class="fc" id="L54">    Map&lt;String, String&gt; errors = UserValidator.convertErrorsToHashMap(result);</span>
-<span class="fc" id="L55">    model.addAllAttributes(errors);</span>
-<span class="fc" id="L56">    User user = sessionInfo.getCurrentUser();</span>
-<span class="fc bfc" id="L57" title="All 2 branches covered.">    if (user.getUserInfo().getOrder() != null) {</span>
-<span class="fc" id="L58">      Order order = cargoAndOrdersService.getOrder(user.getUserInfo().getOrder().getId());</span>
-<span class="fc" id="L59">      model.addAttribute(&quot;order&quot;, order);</span>
-<span class="fc" id="L60">      List&lt;String&gt; routeList = new ArrayList&lt;&gt;();</span>
-<span class="fc" id="L61">      String nextHop = null;</span>
-<span class="fc" id="L62">      int nextHopLength = -1;</span>
-<span class="fc" id="L63">      String[] cities = order.getRoute().split(Order.ROUTE_DELIMETER);</span>
-<span class="fc" id="L64">      Collections.addAll(routeList, cities);</span>
-<span class="fc" id="L65">      String userCity = user.getUserInfo().getCity().getCurrentCity();</span>
-<span class="fc" id="L66">      int index = user.getUserInfo().getOrder().getOrderRouteProgression().getRouteCounter() + 1;</span>
-<span class="fc" id="L67">      model.addAttribute(&quot;routeCounter&quot;, index - 1);</span>
-<span class="pc bpc" id="L68" title="1 of 2 branches missed.">      if (index &lt; cities.length) {</span>
-<span class="fc" id="L69">        nextHop = cities[index];</span>
-<span class="fc" id="L70">        nextHopLength = cargoAndOrdersService.lengthBetweenTwoCities(userCity, cities[index]);</span>
-<span class="fc" id="L71">        nextHopLength =</span>
-<span class="fc" id="L72">            (int) Math.round((double) nextHopLength / CargoAndOrdersService.AVERAGE_CAR_SPEED);</span>
+<span class="fc" id="L55">    sessionInfo.refreshUser();</span>
+<span class="fc" id="L56">    BindingResult result =</span>
+<span class="fc" id="L57">        (BindingResult) model.asMap().get(BindingResult.MODEL_KEY_PREFIX + &quot;driver&quot;);</span>
+<span class="fc" id="L58">    Map&lt;String, String&gt; errors = UserValidator.convertErrorsToHashMap(result);</span>
+<span class="fc" id="L59">    model.addAllAttributes(errors);</span>
+<span class="fc" id="L60">    User user = sessionInfo.getCurrentUser();</span>
+<span class="fc bfc" id="L61" title="All 2 branches covered.">    if (user.getUserInfo().getOrder() != null) {</span>
+<span class="fc" id="L62">      Order order = orderService.getOrder(user.getUserInfo().getOrder().getId());</span>
+<span class="fc" id="L63">      model.addAttribute(&quot;order&quot;, order);</span>
+<span class="fc" id="L64">      List&lt;String&gt; routeList = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L65">      String nextHop = null;</span>
+<span class="fc" id="L66">      int nextHopLength = -1;</span>
+<span class="fc" id="L67">      String[] cities = order.getRoute().split(Order.ROUTE_DELIMETER);</span>
+<span class="fc" id="L68">      Collections.addAll(routeList, cities);</span>
+<span class="fc" id="L69">      String userCity = user.getUserInfo().getCity().getCurrentCity();</span>
+<span class="fc" id="L70">      int index = user.getUserInfo().getOrder().getOrderRouteProgression().getRouteCounter() + 1;</span>
+<span class="fc" id="L71">      model.addAttribute(&quot;routeCounter&quot;, index - 1);</span>
+<span class="pc bpc" id="L72" title="1 of 2 branches missed.">      if (index &lt; cities.length) {</span>
+<span class="fc" id="L73">        nextHop = cities[index];</span>
+<span class="fc" id="L74">        nextHopLength = orderService.lengthBetweenTwoCities(userCity, cities[index]);</span>
+<span class="fc" id="L75">        nextHopLength =</span>
+<span class="fc" id="L76">            (int) Math.round((double) nextHopLength / OrderService.AVERAGE_CAR_SPEED);</span>
       }
-<span class="fc" id="L74">      model.addAttribute(&quot;routeList&quot;, routeList);</span>
-<span class="fc" id="L75">      model.addAttribute(&quot;nextHop&quot;, nextHop);</span>
-<span class="fc" id="L76">      model.addAttribute(&quot;nextHopLength&quot;, nextHopLength);</span>
+<span class="fc" id="L78">      model.addAttribute(&quot;routeList&quot;, routeList);</span>
+<span class="fc" id="L79">      model.addAttribute(&quot;nextHop&quot;, nextHop);</span>
+<span class="fc" id="L80">      model.addAttribute(&quot;nextHopLength&quot;, nextHopLength);</span>
     }
-<span class="fc" id="L78">    model.addAttribute(&quot;user&quot;, user);</span>
-<span class="fc" id="L79">    List&lt;String&gt; statuses = new ArrayList&lt;&gt;();</span>
-<span class="fc bfc" id="L80" title="All 2 branches covered.">    for (DriverStatus ds : DriverStatus.values()) {</span>
-<span class="fc" id="L81">      statuses.add(ds.toString().replace(&quot; &quot;, &quot;_&quot;).toLowerCase());</span>
+<span class="fc" id="L82">    model.addAttribute(&quot;user&quot;, user);</span>
+<span class="fc" id="L83">    List&lt;String&gt; statuses = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L84" title="All 2 branches covered.">    for (DriverStatus ds : DriverStatus.values()) {</span>
+<span class="fc" id="L85">      statuses.add(ds.toString().replace(&quot; &quot;, &quot;_&quot;).toLowerCase());</span>
     }
-<span class="fc" id="L83">    model.addAttribute(&quot;statuses&quot;, statuses);</span>
-<span class="fc" id="L84">    return &quot;driverPage&quot;;</span>
+<span class="fc" id="L87">    model.addAttribute(&quot;statuses&quot;, statuses);</span>
+<span class="fc" id="L88">    return &quot;driverPage&quot;;</span>
   }
 
   /**
@@ -90,11 +94,11 @@ public class DriverPageController {
    */
   @GetMapping(value = &quot;/changeStatus/{status}&quot;)
   public RedirectView changeStatus(@PathVariable String status, RedirectAttributes redir) {
-<span class="fc" id="L93">    RedirectView redirectView = new RedirectView(DRIVER_PAGE, true);</span>
-<span class="fc" id="L94">    BindingResult bindingResult = new BindException(status, &quot;status&quot;);</span>
-<span class="fc" id="L95">    driverService.changeStatus(status, bindingResult);</span>
-<span class="fc" id="L96">    addErrorsAsFlashAttributes(redir, bindingResult);</span>
-<span class="fc" id="L97">    return redirectView;</span>
+<span class="fc" id="L97">    RedirectView redirectView = new RedirectView(DRIVER_PAGE, true);</span>
+<span class="fc" id="L98">    BindingResult bindingResult = new BindException(status, &quot;status&quot;);</span>
+<span class="fc" id="L99">    driverService.changeStatus(status, bindingResult);</span>
+<span class="fc" id="L100">    addErrorsAsFlashAttributes(redir, bindingResult);</span>
+<span class="fc" id="L101">    return redirectView;</span>
   }
 
   /**
@@ -102,11 +106,11 @@ public class DriverPageController {
    */
   @GetMapping(value = &quot;/changeLocation&quot;)
   public RedirectView changeLocation(RedirectAttributes redir) {
-<span class="fc" id="L105">    RedirectView redirectView = new RedirectView(DRIVER_PAGE, true);</span>
-<span class="fc" id="L106">    BindingResult bindingResult = new BindException(new Object(), &quot;city&quot;);</span>
-<span class="fc" id="L107">    driverService.changeLocation(bindingResult);</span>
-<span class="fc" id="L108">    addErrorsAsFlashAttributes(redir, bindingResult);</span>
-<span class="fc" id="L109">    return redirectView;</span>
+<span class="fc" id="L109">    RedirectView redirectView = new RedirectView(DRIVER_PAGE, true);</span>
+<span class="fc" id="L110">    BindingResult bindingResult = new BindException(new Object(), &quot;city&quot;);</span>
+<span class="fc" id="L111">    driverService.changeLocation(bindingResult);</span>
+<span class="fc" id="L112">    addErrorsAsFlashAttributes(redir, bindingResult);</span>
+<span class="fc" id="L113">    return redirectView;</span>
   }
 
   /**
@@ -114,16 +118,16 @@ public class DriverPageController {
    */
   @GetMapping(value = &quot;/updateCargo/{id}&quot;)
   public RedirectView updateCargo(@PathVariable Integer id, RedirectAttributes redir) {
-<span class="fc" id="L117">    BindingResult bindingResult = new BindException(id, &quot;id&quot;);</span>
-<span class="fc" id="L118">    driverService.changeStatus(DriverStatus.LOADING_AND_UNLOADING_CARGO.toString(), bindingResult);</span>
-<span class="fc" id="L119">    boolean isOrderCompleted =</span>
-<span class="fc" id="L120">        cargoAndOrdersService.updateCargoAndCheckOrderCompletion(id, bindingResult);</span>
-<span class="fc bfc" id="L121" title="All 2 branches covered.">    if (isOrderCompleted) {</span>
-<span class="fc" id="L122">      driverService.changeStatus(DriverStatus.ON_SHIFT.toString(), bindingResult);</span>
+<span class="fc" id="L121">    BindingResult bindingResult = new BindException(id, &quot;id&quot;);</span>
+<span class="fc" id="L122">    driverService.changeStatus(DriverStatus.LOADING_AND_UNLOADING_CARGO.toString(), bindingResult);</span>
+<span class="fc" id="L123">    boolean isOrderCompleted =</span>
+<span class="fc" id="L124">        cargoService.updateCargoAndCheckOrderCompletion(id, bindingResult);</span>
+<span class="fc bfc" id="L125" title="All 2 branches covered.">    if (isOrderCompleted) {</span>
+<span class="fc" id="L126">      driverService.changeStatus(DriverStatus.ON_SHIFT.toString(), bindingResult);</span>
     }
-<span class="fc" id="L124">    RedirectView redirectView = new RedirectView(DRIVER_PAGE, true);</span>
-<span class="fc" id="L125">    addErrorsAsFlashAttributes(redir, bindingResult);</span>
-<span class="fc" id="L126">    return redirectView;</span>
+<span class="fc" id="L128">    RedirectView redirectView = new RedirectView(DRIVER_PAGE, true);</span>
+<span class="fc" id="L129">    addErrorsAsFlashAttributes(redir, bindingResult);</span>
+<span class="fc" id="L130">    return redirectView;</span>
   }
 
   /**
@@ -132,9 +136,9 @@ public class DriverPageController {
    * for showing errors for users on page.
    */
   private void addErrorsAsFlashAttributes(RedirectAttributes redir, BindingResult bindingResult) {
-<span class="fc bfc" id="L135" title="All 2 branches covered.">    if (bindingResult.hasErrors()) {</span>
-<span class="fc" id="L136">      redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + &quot;driver&quot;, bindingResult);</span>
+<span class="fc bfc" id="L139" title="All 2 branches covered.">    if (bindingResult.hasErrors()) {</span>
+<span class="fc" id="L140">      redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + &quot;driver&quot;, bindingResult);</span>
     }
-<span class="fc" id="L138">  }</span>
+<span class="fc" id="L142">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

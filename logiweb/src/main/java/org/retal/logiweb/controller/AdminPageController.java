@@ -14,7 +14,7 @@ import org.retal.logiweb.dto.CityDTO;
 import org.retal.logiweb.dto.UserDTO;
 import org.retal.logiweb.dto.UserInfoDTO;
 import org.retal.logiweb.service.logic.CarService;
-import org.retal.logiweb.service.logic.CargoAndOrdersService;
+import org.retal.logiweb.service.logic.CargoService;
 import org.retal.logiweb.service.logic.CityService;
 import org.retal.logiweb.service.logic.UserService;
 import org.retal.logiweb.service.validators.UserValidator;
@@ -46,7 +46,7 @@ public class AdminPageController {
 
   private final CarService carService;
 
-  private final CargoAndOrdersService cargoAndOrdersService;
+  private final CargoService cargoService;
 
   public static final String ADMIN_PAGE = "/adminPage";
 
@@ -59,12 +59,12 @@ public class AdminPageController {
    */
   @Autowired
   public AdminPageController(UserService userService, SessionInfo sessionInfo,
-      CityService cityService, CarService carService, CargoAndOrdersService cargoAndOrdersService) {
+      CityService cityService, CarService carService, CargoService cargoService) {
     this.userService = userService;
     this.sessionInfo = sessionInfo;
     this.cityService = cityService;
     this.carService = carService;
-    this.cargoAndOrdersService = cargoAndOrdersService;
+    this.cargoService = cargoService;
   }
 
   /**
@@ -90,7 +90,7 @@ public class AdminPageController {
     model.addAttribute("userList", users);
     List<City> cities = cityService.getAllCities();
     model.addAttribute("cityList", cities);
-    model.addAttribute("cargoList", cargoAndOrdersService.getAllCargo());
+    model.addAttribute("cargoList", cargoService.getAllCargo());
     return "adminPage";
   }
 
@@ -234,7 +234,7 @@ public class AdminPageController {
 
   /**
    * Method responsible for adding cargo entities using
-   * {@linkplain org.retal.logiweb.service.logic.CargoAndOrdersService service layer}.
+   * {@linkplain org.retal.logiweb.service.logic.OrderService service layer}.
    * 
    * @see org.retal.logiweb.domain.entity.Cargo
    */
@@ -244,7 +244,7 @@ public class AdminPageController {
     redir.addFlashAttribute("visiblecargo", "true");
     Cargo cargo = new Cargo(cargoDTO);
     cargo.setStatus(CargoStatus.PREPARED.toString().toLowerCase());
-    cargoAndOrdersService.addNewCargo(cargo, bindingResult, weight);
+    cargoService.addNewCargo(cargo, bindingResult, weight);
     RedirectView redirectView = new RedirectView(ADMIN_PAGE, true);
     if (bindingResult.hasErrors()) {
       log.warn("Validation fail when adding new cargo");

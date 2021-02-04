@@ -16,7 +16,6 @@ import org.apache.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.retal.logiweb.config.spring.app.hibernate.HibernateSessionFactory;
-import org.retal.logiweb.dao.CargoDAO;
 import org.retal.logiweb.dao.CityDAO;
 import org.retal.logiweb.dao.CityDistanceDAO;
 import org.retal.logiweb.dao.OrderDAO;
@@ -39,7 +38,6 @@ import org.retal.logiweb.domain.enums.UserRole;
 import org.retal.logiweb.dto.RoutePointDTO;
 import org.retal.logiweb.dto.RoutePointListWrapper;
 import org.retal.logiweb.service.jms.NotificationSender;
-import org.retal.logiweb.service.validators.CargoValidator;
 import org.retal.logiweb.service.validators.RoutePointsValidator;
 import org.retal.table.ejb.jms.message.NotificationType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,14 +55,12 @@ import org.springframework.validation.Validator;
  *
  */
 @Service
-public class CargoAndOrdersService {
+public class OrderService {
 
   private static final int ANNEALING_START_TEMPERAURE = 1000;
   private static final int ANNEALING_END_TEMPERATURE = 76;
   private static final int MONTH_HOURS_LIMIT = 176;
   public static final int AVERAGE_CAR_SPEED = 80;
-
-  private final CargoDAO cargoDAO;
 
   private final CityDAO cityDAO;
 
@@ -78,9 +74,9 @@ public class CargoAndOrdersService {
 
   private final CarService carService;
 
-  private final RoutePointDAO routePointDAO;
+  private CargoService cargoService;
 
-  private final Validator cargoValidator;
+  private final RoutePointDAO routePointDAO;
 
   private final Validator routePointsValidator;
 
@@ -88,18 +84,18 @@ public class CargoAndOrdersService {
 
   private final NotificationSender sender;
 
-  private static final Logger log = Logger.getLogger(CargoAndOrdersService.class);
+  private Calendar calendarForSimulation = null;
+
+  private static final Logger log = Logger.getLogger(OrderService.class);
 
   /**
    * Creates an instance of this class using constructor-based dependency injection.
    */
   @Autowired
-  public CargoAndOrdersService(CargoDAO cargoDAO, CityDAO cityDAO, CityDistanceDAO cityDistanceDAO,
-      OrderDAO orderDAO, UserDAO userDAO, OrderRouteProgressionDAO orderRouteProgressionDAO,
-      CarService carService, RoutePointDAO routePointDAO, CargoValidator cargoValidator,
-      RoutePointsValidator routePointsValidator, SessionInfo sessionInfo,
-      NotificationSender sender) {
-    this.cargoDAO = cargoDAO;
+  public OrderService(CityDAO cityDAO, CityDistanceDAO cityDistanceDAO, OrderDAO orderDAO,
+      UserDAO userDAO, OrderRouteProgressionDAO orderRouteProgressionDAO, CarService carService,
+      RoutePointDAO routePointDAO, RoutePointsValidator routePointsValidator,
+      SessionInfo sessionInfo, NotificationSender sender) {
     this.cityDAO = cityDAO;
     this.cityDistanceDAO = cityDistanceDAO;
     this.orderDAO = orderDAO;
@@ -107,14 +103,9 @@ public class CargoAndOrdersService {
     this.orderRouteProgressionDAO = orderRouteProgressionDAO;
     this.carService = carService;
     this.routePointDAO = routePointDAO;
-    this.cargoValidator = cargoValidator;
     this.routePointsValidator = routePointsValidator;
     this.sessionInfo = sessionInfo;
     this.sender = sender;
-  }
-
-  public List<Cargo> getAllCargo() {
-    return cargoDAO.readAll();
   }
 
   public List<Order> getAllOrders() {
@@ -123,6 +114,15 @@ public class CargoAndOrdersService {
 
   public Order getOrder(Integer primaryKey) {
     return orderDAO.read(primaryKey);
+  }
+
+  @Autowired
+  public void setCargoService(CargoService cargoService) {
+    this.cargoService = cargoService;
+  }
+
+  public void setCalendarForSimulation(Calendar calendarForSimulation) {
+    this.calendarForSimulation = calendarForSimulation;
   }
 
   /**
@@ -197,84 +197,13 @@ public class CargoAndOrdersService {
   }
 
   /**
-   * Validates and adds new cargo row to database if validation was successful.
-   * 
-   * @param cargo cargo to be added
-   * @param bindingResult object for storing validation result
-   * @param weight input from submitted form to be parsed to integer
-   */
-  public void addNewCargo(Cargo cargo, BindingResult bindingResult, String weight) {
-    try {
-      Integer weightInt = Integer.parseInt(weight);
-      cargo.setMass(weightInt);
-    } catch (NumberFormatException e) {
-      bindingResult.reject("mass", "Cargo weight length must be non-negative integer");
-    }
-    cargoValidator.validate(cargo, bindingResult);
-    if (!bindingResult.hasErrors()) {
-      cargoDAO.add(cargo);
-    }
-  }
-
-  /**
-   * Updates cargo status following chain "prepared -> loaded -> unloaded". Additionally checks if
-   * order is completed after changing cargo's status.
-   * 
-   * @see CargoAndOrdersService#checkOrderForCompletion(Order)
-   * @param id cargo id to be updated
-   * @param bindingResult object for storing validation result
-   * @return true if order is completed, false otherwise
-   */
-  public boolean updateCargoAndCheckOrderCompletion(Integer id, BindingResult bindingResult) {
-    Cargo cargo = cargoDAO.read(id);
-    User user = sessionInfo.getCurrentUser();
-    Order order = orderDAO.read(user.getUserInfo().getOrder().getId());
-    if (cargo == null) {
-      bindingResult.reject("globalCargo", "Cargo not found");
-      log.warn("Cargo not found");
-    } else {
-      if (!order.getCargo().contains(cargo)) {
-        bindingResult.reject("globalCargo", "Attempt to change unassigned to your current"
-            + " order cargo. Please don't try to cahnge page code");
-        log.warn("Attempt to access unassigned cargo");
-      }
-
-    }
-    if (!bindingResult.hasErrors()) {
-      CargoStatus status = CargoStatus.valueOf(cargo.getStatus().toUpperCase());
-      switch (status) {
-        case PREPARED:
-          status = CargoStatus.LOADED;
-          checkCityMatch(cargo, true, bindingResult);
-          break;
-        case LOADED:
-          checkCityMatch(cargo, false, bindingResult);
-          status = CargoStatus.UNLOADED;
-          break;
-        case UNLOADED:
-        default:
-          break;
-      }
-      if (!bindingResult.hasErrors()) {
-        String newStatus = status.toString().toLowerCase();
-        log.info("Cargo id=" + cargo.getId() + ": changed status from " + cargo.getStatus() + " to "
-            + newStatus);
-        cargo.setStatus(newStatus);
-        cargoDAO.update(cargo);
-        return checkOrderForCompletion(order);
-      }
-    }
-    return false;
-  }
-
-  /**
    * Checks order for completion. If order is completed, this method will unassign car and all
    * drivers from this order and mark it as completed.
    * 
    * @param order order to be checked
    * @return true if order is completed, false otherwise
    */
-  private boolean checkOrderForCompletion(Order order) {
+  public boolean checkOrderForCompletion(Order order) {
     boolean isCompleted = true;
     order = orderDAO.read(order.getId());
     for (Cargo c : order.getCargo()) {
@@ -301,25 +230,6 @@ public class CargoAndOrdersService {
   }
 
   /**
-   * Checks if city where the driver is matches the city to load/unload cargo.
-   * 
-   * @param cargo {@linkplain org.retal.logiweb.domain.entity.Cargo Cargo} to be loaded/unloaded
-   * @param isLoading true if we are looking for match between city of load and current location,
-   *        false if we are looking for match between city of unload and current location
-   * @param bindingResult object to store validation errors
-   */
-  private void checkCityMatch(Cargo cargo, boolean isLoading, BindingResult bindingResult) {
-    User driver = sessionInfo.getCurrentUser();
-    RoutePoint point = cargo.getPoints().stream().filter(c -> c.getIsLoading().equals(isLoading))
-        .collect(Collectors.toList()).get(0);
-    if (!point.getCity().equals(driver.getUserInfo().getCity())) {
-      String action = isLoading ? "load" : "unload";
-      bindingResult.reject("cityNotMatching", "You must be in " + point.getCity().getCurrentCity()
-          + " to " + action + " cargo \"" + cargo.getName() + "\"");
-    }
-  }
-
-  /**
    * Maps list of {@linkplain org.retal.logiweb.dto.RoutePointDTO RoutePointDTOs} to list of
    * {@linkplain org.retal.logiweb.domain.entity.RoutePoint RoutePoints}.
    * 
@@ -330,7 +240,7 @@ public class CargoAndOrdersService {
     List<RoutePoint> entityList = new ArrayList<>();
     for (RoutePointDTO rpDTO : list) {
       RoutePoint rp = new RoutePoint(cityDAO.read(rpDTO.getCityName()), rpDTO.getIsLoading(),
-          cargoDAO.read(rpDTO.getCargoId()));
+          cargoService.getCargo(rpDTO.getCargoId()));
       entityList.add(rp);
     }
     return entityList;
@@ -1082,8 +992,10 @@ public class CargoAndOrdersService {
     List<User> driversChain = new ArrayList<>();
     List<Calendar> calendarChain = new ArrayList<>();
     User driver;
-    Calendar calendar = new GregorianCalendar();
-    calendarChain.add(calendar);
+    if (calendarForSimulation == null) {
+      calendarForSimulation = new GregorianCalendar();
+    }
+    calendarChain.add(calendarForSimulation);
     while (currentCityIndex != n - 1 && counters[0] < drivers.get(0).size()) {
       log.debug(driversChain.toString());
       if (counters[selectedDriverCity] < drivers.get(selectedDriverCity).size()) {
@@ -1095,7 +1007,7 @@ public class CargoAndOrdersService {
         selectedDriverCity = currentCityIndex;
         driversChain.remove(driversChain.size() - 1);
         calendarChain.remove(calendarChain.size() - 1);
-        calendar = calendarChain.get(calendarChain.size() - 1);
+        calendarForSimulation = calendarChain.get(calendarChain.size() - 1);
         counters[selectedDriverCity]++;
         for (int i = selectedDriverCity + 1; i < counters.length; i++) {
           counters[i] = 0;
@@ -1107,13 +1019,13 @@ public class CargoAndOrdersService {
       log.debug(hoursToNextCity);
       hoursAtDriving += hoursToNextCity;
       log.debug(hoursAtDriving);
-      Calendar copy = (Calendar) calendar.clone();
+      Calendar copy = (Calendar) calendarForSimulation.clone();
       copy.add(Calendar.HOUR_OF_DAY, hoursToNextCity);
       int hoursWorked = driver.getUserInfo().getHoursWorked();
-      if (copy.get(Calendar.MONTH) != calendar.get(Calendar.MONTH)) {
+      if (copy.get(Calendar.MONTH) != calendarForSimulation.get(Calendar.MONTH)) {
         hoursWorked = copy.get(Calendar.HOUR_OF_DAY);
       }
-      calendar = copy;
+      calendarForSimulation = copy;
       boolean hasTime = hoursWorked + hoursAtDriving <= MONTH_HOURS_LIMIT;
       boolean isCarShiftLengthCapacityReached = hoursAtDriving > selectedCar.getShiftLength();
       log.debug(hasTime + ";" + isCarShiftLengthCapacityReached);
@@ -1121,7 +1033,7 @@ public class CargoAndOrdersService {
         log.debug("Adding driver to chain");
         currentCityIndex++;
         driversChain.add(driver);
-        calendarChain.add(calendar);
+        calendarChain.add(calendarForSimulation);
       } else {
         hoursAtDriving = 0;
         if (selectedDriverCity != currentCityIndex) {
@@ -1133,6 +1045,7 @@ public class CargoAndOrdersService {
         }
       }
     }
+    calendarForSimulation = null;
     return currentCityIndex == n - 1 ? driversChain : null;
   }
 
