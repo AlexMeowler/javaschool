@@ -18,8 +18,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.Validator;
 
 /**
- * Service, containing business-logic methods regarding {@linkplain org.retal.logiweb.domain.entity.Car
- * Car} entities.
+ * Service, containing business-logic methods regarding
+ * {@linkplain org.retal.logiweb.domain.entity.Car Car} entities.
  * 
  * @author Alexander Retivov
  *
@@ -34,7 +34,7 @@ public class CarService {
   private final CityService cityService;
 
   private final Validator carValidator;
-  
+
   private final NotificationSender sender;
 
   private final Random rand = new Random();
@@ -148,14 +148,10 @@ public class CarService {
   public void generateCarForEachCity() {
     List<City> cities = cityService.getAllCities();
     for (City c : cities) {
-      Car car = new Car();
-      car.setIsWorking(true);
-      car.setLocation(c);
-      car.setCapacityTons((float) (1 + rand.nextInt(41) * 1.0 / 10));
       String registrationLetters = c.getCurrentCity().substring(0, 2).toUpperCase();
       String registrationNumber = "" + (10000 + rand.nextInt(90000));
-      car.setRegistrationId(registrationLetters + registrationNumber);
-      car.setShiftLength(12 + rand.nextInt(13));
+      Car car = new Car(registrationLetters + registrationNumber, 12 + rand.nextInt(13),
+          (float) (1 + rand.nextInt(41) * 1.0 / 10), true, c);
       carDAO.add(car);
     }
   }

@@ -20,6 +20,15 @@ import javax.persistence.Table;
 @Table(name = "order_route_progression")
 public class OrderRouteProgression {
 
+  public OrderRouteProgression() {
+    
+  }
+  
+  public OrderRouteProgression(Integer routeCounter, Order order) {
+    setRouteCounter(routeCounter);
+    setOrder(order);
+  }
+  
   @Id
   @Column(name = "order_id")
   private int id;

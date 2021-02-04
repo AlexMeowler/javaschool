@@ -27,6 +27,13 @@ public class User {
   public User() {
 
   }
+  
+  public User(String login, String password, String role, UserInfo userInfo) {
+    setLogin(login);
+    setPassword(password);
+    setRole(role);
+    setUserInfo(userInfo);
+  }
 
   /**
    * Constructor for mapping user DTO object to user entity.

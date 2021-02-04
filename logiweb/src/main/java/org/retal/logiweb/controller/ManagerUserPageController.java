@@ -216,7 +216,8 @@ public class ManagerUserPageController {
 
   private List<User> getDriversForGivenPage(Integer page) {
     List<User> users = userService.getAllDrivers();
-    return users.subList(USERS_PER_PAGE * (page - 1), Math.min(users.size(), USERS_PER_PAGE * page));
+    return users.subList(USERS_PER_PAGE * (page - 1),
+        Math.min(users.size(), USERS_PER_PAGE * page));
   }
 
   private Integer getMaxPossiblePage() {

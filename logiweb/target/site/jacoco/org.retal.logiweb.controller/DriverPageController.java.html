@@ -85,8 +85,8 @@ public class DriverPageController {
   }
 
   /**
-   * Method for changing driver status using {@linkplain org.retal.logiweb.service.logic.DriverService
-   * service layer}.
+   * Method for changing driver status using
+   * {@linkplain org.retal.logiweb.service.logic.DriverService service layer}.
    */
   @GetMapping(value = &quot;/changeStatus/{status}&quot;)
   public RedirectView changeStatus(@PathVariable String status, RedirectAttributes redir) {

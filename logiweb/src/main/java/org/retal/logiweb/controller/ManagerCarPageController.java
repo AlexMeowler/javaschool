@@ -3,7 +3,6 @@ package org.retal.logiweb.controller;
 import java.util.List;
 import java.util.Map;
 import org.apache.log4j.Logger;
-import org.apache.taglibs.standard.tag.common.core.NullAttributeException;
 import org.retal.logiweb.domain.entity.Car;
 import org.retal.logiweb.domain.entity.City;
 import org.retal.logiweb.domain.entity.SessionInfo;

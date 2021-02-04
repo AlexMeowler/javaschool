@@ -231,7 +231,8 @@ public class ManagerCarPageControllerTest {
         .andReturn();
     assertNull(carDAO.read(params.getFirst("registrationId")));
     mockMvc
-        .perform(get(ManagerCarPageController.MANAGER_CARS_PAGE + "/1").flashAttrs(result.getFlashMap()))
+        .perform(
+            get(ManagerCarPageController.MANAGER_CARS_PAGE + "/1").flashAttrs(result.getFlashMap()))
         .andExpect(status().isOk());
     //
     params = generateCarParameters();
@@ -401,37 +402,40 @@ public class ManagerCarPageControllerTest {
     user.getUserInfo().setCar(null);
     userDAO.update(user);
   }
+  
+  @Test
+  @WithMockUser(username = "manager", password = "manager", authorities = "MANAGER")
+  public void testB2EditNonExistentCar() throws Exception {
+    String id = "abcdef";
+    mockMvc.perform(get("/editCar/" + id)).andExpect(status().is3xxRedirection())
+        .andExpect(redirectedUrl(GlobalExceptionHandler.ERROR_PAGE));
+  }
 
   @Test
   @WithMockUser(username = "manager", password = "manager", authorities = "MANAGER")
-  public void testB2GetHomePage() throws Exception {
-    mockMvc.perform(get(ManagerCarPageController.MANAGER_CARS_PAGE)).andExpect(status().is3xxRedirection())
+  public void testB3GetHomePage() throws Exception {
+    mockMvc.perform(get(ManagerCarPageController.MANAGER_CARS_PAGE))
+        .andExpect(status().is3xxRedirection())
         .andExpect(redirectedUrl(ManagerCarPageController.MANAGER_CARS_PAGE + "/1"));
   }
 
   @Test
   @WithMockUser(username = "manager", password = "manager", authorities = "MANAGER")
-  public void testB5GetHomePageBigNumber() throws Exception {
+  public void testB4GetHomePageBigNumber() throws Exception {
     String page = "1000";
-    MvcResult result =
-        mockMvc.perform(get(ManagerCarPageController.MANAGER_CARS_PAGE + "/" + page))
-            .andExpect(status().is3xxRedirection()).andReturn();
-    assertNotEquals(
-        result.getResponse().getRedirectedUrl()
-            .substring(ManagerCarPageController.MANAGER_CARS_PAGE.length()).replace("/", ""),
-        page);
+    MvcResult result = mockMvc.perform(get(ManagerCarPageController.MANAGER_CARS_PAGE + "/" + page))
+        .andExpect(status().is3xxRedirection()).andReturn();
+    assertNotEquals(result.getResponse().getRedirectedUrl()
+        .substring(ManagerCarPageController.MANAGER_CARS_PAGE.length()).replace("/", ""), page);
   }
-  
+
   @Test
   @WithMockUser(username = "manager", password = "manager", authorities = "MANAGER")
   public void testB5GetHomePageNegativeNumber() throws Exception {
     String page = "-10";
-    MvcResult result =
-        mockMvc.perform(get(ManagerCarPageController.MANAGER_CARS_PAGE + "/" + page))
-            .andExpect(status().is3xxRedirection()).andReturn();
-    assertNotEquals(
-        result.getResponse().getRedirectedUrl()
-            .substring(ManagerCarPageController.MANAGER_CARS_PAGE.length()).replace("/", ""),
-        page);
+    MvcResult result = mockMvc.perform(get(ManagerCarPageController.MANAGER_CARS_PAGE + "/" + page))
+        .andExpect(status().is3xxRedirection()).andReturn();
+    assertNotEquals(result.getResponse().getRedirectedUrl()
+        .substring(ManagerCarPageController.MANAGER_CARS_PAGE.length()).replace("/", ""), page);
   }
 }

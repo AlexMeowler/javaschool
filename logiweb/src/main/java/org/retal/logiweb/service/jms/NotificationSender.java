@@ -24,8 +24,8 @@ public class NotificationSender implements Sender {
   public void send(Object message) {
     if (message instanceof NotificationMessage) {
       try {
-        template.send(s -> s.createObjectMessage((NotificationMessage) message)); 
-      } catch(JmsException e) {
+        template.send(s -> s.createObjectMessage((NotificationMessage) message));
+      } catch (JmsException e) {
         log.error("Could not send message: ");
         log.error(e, e);
       }

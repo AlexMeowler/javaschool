@@ -224,17 +224,10 @@ public class UserService {
       int i = 0;
       while (i < cities.size() && (name = namesReader.readLine()) != null
           && (surname = surnamesReader.readLine()) != null) {
-        User user = new User();
-        UserInfo userInfo = new UserInfo();
         String login = "d" + name.substring(0, 3) + surname.substring(0, 3);
-        user.setLogin(login);
-        user.setPassword(login);
-        user.setRole(UserRole.DRIVER.toString().toLowerCase());
-        user.setUserInfo(userInfo);
-        userInfo.setName(name);
-        userInfo.setSurname(surname);
-        userInfo.setStatus(DriverStatus.ON_SHIFT.toString().toLowerCase());
-        userInfo.setCity(cities.get(i));
+        UserInfo userInfo = new UserInfo(name, surname,
+            DriverStatus.ON_SHIFT.toString().toLowerCase(), cities.get(i));
+        User user = new User(login, login, UserRole.DRIVER.toString().toLowerCase(), userInfo);
         userDAO.add(user);
         i++;
       }

@@ -13,6 +13,7 @@ import org.retal.logiweb.dto.CarDTO;
 
 /**
  * Entity class for cars.
+ * 
  * @author Alexander Retivov
  *
  */
@@ -24,8 +25,18 @@ public class Car {
 
   }
 
+  public Car(String registrationId, Integer shiftLength, Float capacityTons, Boolean isWorking,
+      City location) {
+    setRegistrationId(registrationId);
+    setShiftLength(shiftLength);
+    setCapacityTons(capacityTons);
+    setIsWorking(isWorking);
+    setLocation(location);
+  }
+
   /**
    * Constructor for mapping car DTO object to car entity.
+   * 
    * @param carDTO an instance of {@linkplain org.retal.logiweb.dto.CarDTO CarDTO}
    */
   public Car(CarDTO carDTO) {
@@ -67,16 +78,16 @@ public class Car {
     return registrationId;
   }
 
-  public void setRegistrationId(String registrationid) {
-    this.registrationId = registrationid;
+  public void setRegistrationId(String registrationId) {
+    this.registrationId = registrationId;
   }
 
   public Integer getShiftLength() {
     return shiftLength;
   }
 
-  public void setShiftLength(Integer length) {
-    shiftLength = length;
+  public void setShiftLength(Integer shiftLength) {
+    this.shiftLength = shiftLength;
   }
 
   public Float getCapacityTons() {
@@ -91,8 +102,8 @@ public class Car {
     return isWorking;
   }
 
-  public void setIsWorking(Boolean flag) {
-    isWorking = flag;
+  public void setIsWorking(Boolean isWorking) {
+    this.isWorking = isWorking;
   }
 
   public City getLocation() {

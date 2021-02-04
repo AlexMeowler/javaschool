@@ -83,9 +83,9 @@ public class CargoAndOrdersPageController {
   /**
    * Method for AJAX requests. Required for adding orders (form is generated dynamically using JS).
    * 
-   * @return List array of 2 elements. List[0] is all {@linkplain org.retal.logiweb.domain.entity.City
-   *         cities} from database. List[1] is all {@linkplain org.retal.logiweb.domain.entity.Cargo cargo}
-   *         available for creating order.
+   * @return List array of 2 elements. List[0] is all
+   *         {@linkplain org.retal.logiweb.domain.entity.City cities} from database. List[1] is all
+   *         {@linkplain org.retal.logiweb.domain.entity.Cargo cargo} available for creating order.
    */
   @SuppressWarnings(&quot;rawtypes&quot;)
   @GetMapping(value = &quot;/getCityAndCargoInfo&quot;)
@@ -100,8 +100,8 @@ public class CargoAndOrdersPageController {
    * Method for AJAX requests. Required for reassigning car for order.
    * 
    * @param id {@linkplain org.retal.logiweb.domain.entity.Order Order} primary key
-   * @return List of {@linkplain org.retal.logiweb.domain.entity.Car Cars} available for assigning to this
-   *         order.
+   * @return List of {@linkplain org.retal.logiweb.domain.entity.Car Cars} available for assigning
+   *         to this order.
    */
   @GetMapping(value = &quot;/getCarsForOrder/{id}&quot;)
   @ResponseBody
@@ -112,15 +112,16 @@ public class CargoAndOrdersPageController {
   /**
    * Method for AJAX requests. Required for changing assigned car for order
    * 
-   * @param data input data of pattern &quot;A_B&quot; where A is {@linkplain org.retal.logiweb.domain.entity.Order
-   *        Order} ID and B is {@linkplain org.retal.logiweb.domain.entity.Car Car} registration ID
+   * @param data input data of pattern &quot;A_B&quot; where A is
+   *        {@linkplain org.retal.logiweb.domain.entity.Order Order} ID and B is
+   *        {@linkplain org.retal.logiweb.domain.entity.Car Car} registration ID
    * @return error message if operation failed and null if operation succeeded.
    * @see org.retal.logiweb.service.logic.CargoAndOrdersService
    */
   @GetMapping(value = &quot;/changeCarForOrder/{data}&quot;)
   @ResponseBody
   public String changeCarForOrder(@PathVariable String data) {
-<span class="fc" id="L123">    return cargoAndOrdersService.tryToChangeOrderCar(data);</span>
+<span class="fc" id="L124">    return cargoAndOrdersService.tryToChangeOrderCar(data);</span>
   }
 
   /**
@@ -131,18 +132,18 @@ public class CargoAndOrdersPageController {
   @PostMapping(value = &quot;/addNewOrder&quot;)
   public RedirectView addNewOrder(RoutePointListWrapper list, BindingResult bindingResult,
       RedirectAttributes redir) {
-<span class="fc" id="L134">    redir.addFlashAttribute(&quot;visible&quot;, &quot;true&quot;);</span>
-<span class="fc bfc" id="L135" title="All 2 branches covered.">    if (list.getList() == null) {</span>
-<span class="fc" id="L136">      list.setList(new ArrayList&lt;&gt;());</span>
+<span class="fc" id="L135">    redir.addFlashAttribute(&quot;visible&quot;, &quot;true&quot;);</span>
+<span class="fc bfc" id="L136" title="All 2 branches covered.">    if (list.getList() == null) {</span>
+<span class="fc" id="L137">      list.setList(new ArrayList&lt;&gt;());</span>
     }
-<span class="fc" id="L138">    cargoAndOrdersService.createOrderAndRoutePoints(list, bindingResult);</span>
-<span class="fc bfc" id="L139" title="All 2 branches covered.">    if (bindingResult.hasErrors()) {</span>
-<span class="fc" id="L140">      redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + ROUTE_POINT_MODEL_ATTRIBUTE,</span>
-<span class="fc" id="L141">          bindingResult);</span>
-<span class="fc" id="L142">      redir.addFlashAttribute(&quot;counter_value&quot;, list.getList().size());</span>
-<span class="fc" id="L143">      redir.addFlashAttribute(ROUTE_POINT_MODEL_ATTRIBUTE, list.getList());</span>
+<span class="fc" id="L139">    cargoAndOrdersService.createOrderAndRoutePoints(list, bindingResult);</span>
+<span class="fc bfc" id="L140" title="All 2 branches covered.">    if (bindingResult.hasErrors()) {</span>
+<span class="fc" id="L141">      redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + ROUTE_POINT_MODEL_ATTRIBUTE,</span>
+<span class="fc" id="L142">          bindingResult);</span>
+<span class="fc" id="L143">      redir.addFlashAttribute(&quot;counter_value&quot;, list.getList().size());</span>
+<span class="fc" id="L144">      redir.addFlashAttribute(ROUTE_POINT_MODEL_ATTRIBUTE, list.getList());</span>
     }
-<span class="fc" id="L145">    return new RedirectView(&quot;/cargoAndOrders&quot;, true);</span>
+<span class="fc" id="L146">    return new RedirectView(&quot;/cargoAndOrders&quot;, true);</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

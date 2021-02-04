@@ -14,7 +14,15 @@ import javax.persistence.Table;
 @Table(name = "route_points")
 public class RoutePoint {
 
-  public RoutePoint() {}
+  public RoutePoint() {
+    
+  }
+  
+  public RoutePoint(City city, Boolean isLoading, Cargo cargo) {
+    setCity(city);
+    setIsLoading(isLoading);
+    setCargo(cargo);
+  }
 
   @Id
   @Column(name = "id")

@@ -170,6 +170,8 @@ public class CargoAndOrdersService {
     if (errorMessage.isEmpty()) {
       order.setCar(car);
       updateOrder(order);
+      sender.send(NotificationType.ORDERS_UPDATE);
+      sender.send(NotificationType.CARS_UPDATE);
       return null;
     } else {
       log.warn("Hacking attempt by changing page code");
@@ -327,10 +329,8 @@ public class CargoAndOrdersService {
   public List<RoutePoint> mapRoutePointDTOsToEntities(List<RoutePointDTO> list) {
     List<RoutePoint> entityList = new ArrayList<>();
     for (RoutePointDTO rpDTO : list) {
-      RoutePoint rp = new RoutePoint();
-      rp.setIsLoading(rpDTO.getIsLoading());
-      rp.setCity(cityDAO.read(rpDTO.getCityName()));
-      rp.setCargo(cargoDAO.read(rpDTO.getCargoId()));
+      RoutePoint rp = new RoutePoint(cityDAO.read(rpDTO.getCityName()), rpDTO.getIsLoading(),
+          cargoDAO.read(rpDTO.getCargoId()));
       entityList.add(rp);
     }
     return entityList;
@@ -382,13 +382,8 @@ public class CargoAndOrdersService {
       }
       if (!bindingResult.hasErrors()) {
         Session session = HibernateSessionFactory.getSessionFactory().openSession();
-        Order order = new Order();
-        order.setCar(selectedCar);
-        order.setPoints(points);
-        order.setRoute(route);
-        order.setIsCompleted(false);
-        order.setRequiredCapacity(requiredCapacity);
-        order.setRequiredShiftLength(selectedCar.getShiftLength());
+        Order order = new Order(false, selectedCar, points, route, requiredCapacity,
+            selectedCar.getShiftLength());
         Transaction transaction = session.beginTransaction();
         orderDAO.setSession(session);
         orderDAO.add(order);
@@ -410,9 +405,7 @@ public class CargoAndOrdersService {
         orderDAO.setSession(null);
         routePointDAO.setSession(null);
         session.close();
-        OrderRouteProgression orderRouteProgression = new OrderRouteProgression();
-        orderRouteProgression.setOrder(order);
-        orderRouteProgression.setRouteCounter(0);
+        OrderRouteProgression orderRouteProgression = new OrderRouteProgression(0, order);
         orderRouteProgressionDAO.add(orderRouteProgression);
       }
     }

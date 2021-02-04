@@ -34,7 +34,8 @@ public class JMSConfiguration {
 
   @Bean
   public SingleConnectionFactory singleConnectionFactory() {
-    SingleConnectionFactory factory = new SingleConnectionFactory(senderActiveMQConnectionFactory());
+    SingleConnectionFactory factory =
+        new SingleConnectionFactory(senderActiveMQConnectionFactory());
     factory.setReconnectOnException(true);
     return factory;
   }

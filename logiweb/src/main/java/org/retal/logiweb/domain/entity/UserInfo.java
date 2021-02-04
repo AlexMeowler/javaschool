@@ -22,6 +22,13 @@ public class UserInfo {
   public UserInfo() {
 
   }
+  
+  public UserInfo(String name, String surname, String status, City city) {
+    setName(name);
+    setSurname(surname);
+    setStatus(status);
+    setCity(city);
+  }
 
   /**
    * Constructor for mapping user information DTO object to user information entity.

@@ -13,13 +13,11 @@ import org.retal.logiweb.dto.CargoDTO;
 import org.retal.logiweb.dto.CityDTO;
 import org.retal.logiweb.dto.UserDTO;
 import org.retal.logiweb.dto.UserInfoDTO;
-import org.retal.logiweb.service.jms.NotificationSender;
 import org.retal.logiweb.service.logic.CarService;
 import org.retal.logiweb.service.logic.CargoAndOrdersService;
 import org.retal.logiweb.service.logic.CityService;
 import org.retal.logiweb.service.logic.UserService;
 import org.retal.logiweb.service.validators.UserValidator;
-import org.retal.table.ejb.jms.message.NotificationType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -55,9 +53,6 @@ public class AdminPageController {
   public static final String CARGO_MODEL_ATTRIBUTE = "cargo";
 
   private static final Logger log = Logger.getLogger(AdminPageController.class);
-  
-  @Autowired
-  private NotificationSender sender;
 
   /**
    * Creates an instance of this class using constructor-based dependency injection.
@@ -214,8 +209,8 @@ public class AdminPageController {
 
   /**
    * Method responsible for submitting edited user to
-   * {@linkplain org.retal.logiweb.service.logic.UserService service layer} which will update user if
-   * input is valid.
+   * {@linkplain org.retal.logiweb.service.logic.UserService service layer} which will update user
+   * if input is valid.
    * 
    * @see org.retal.logiweb.domain.entity.User
    */
