@@ -39,7 +39,7 @@ import org.retal.logiweb.dto.RoutePointDTO;
 import org.retal.logiweb.dto.RoutePointListWrapper;
 import org.retal.logiweb.service.jms.NotificationSender;
 import org.retal.logiweb.service.validators.RoutePointsValidator;
-import org.retal.table.ejb.jms.message.NotificationType;
+import org.retal.table.jms.NotificationType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;

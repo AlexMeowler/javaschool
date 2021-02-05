@@ -6,7 +6,7 @@ import org.junit.runner.RunWith;
 import org.retal.logiweb.config.spring.web.RootConfig;
 import org.retal.logiweb.config.spring.web.WebConfig;
 import org.retal.logiweb.service.jms.NotificationSender;
-import org.retal.table.ejb.jms.message.NotificationType;
+import org.retal.table.jms.NotificationType;
 import org.springframework.jms.connection.SingleConnectionFactory;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.test.context.ContextConfiguration;

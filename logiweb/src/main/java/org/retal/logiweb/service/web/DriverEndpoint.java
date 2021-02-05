@@ -3,6 +3,7 @@ package org.retal.logiweb.service.web;
 import java.util.List;
 import org.apache.log4j.Logger;
 import org.retal.logiweb.domain.entity.User;
+import org.retal.logiweb.domain.enums.DriverStatus;
 import org.retal.logiweb.domain.ws.GetDriversStatisticsRequest;
 import org.retal.logiweb.domain.ws.GetDriversStatisticsResponse;
 import org.retal.logiweb.service.logic.UserService;
@@ -38,9 +39,9 @@ public class DriverEndpoint {
     List<User> drivers = userService.getAllDrivers();
     response.setTotalDrivers(drivers.size());
     response.setDriversAvailable((int) drivers.stream().map(u -> u.getUserInfo())
-        .filter(ui -> ui.getOrder() == null).filter(ui -> ui.getCar() == null).count());
+        .filter(ui -> ui.getStatus().equalsIgnoreCase(DriverStatus.ON_SHIFT.toString())).count());
     response.setDriversUnavailable((int) drivers.stream().map(u -> u.getUserInfo())
-        .filter(ui -> ui.getOrder() != null || ui.getCar() != null).count());
+        .filter(ui -> !ui.getStatus().equalsIgnoreCase(DriverStatus.ON_SHIFT.toString())).count());
     log.info("Sending SOAP response");
     return response;
   }

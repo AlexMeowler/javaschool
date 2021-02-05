@@ -1,8 +1,9 @@
 package org.retal.logiweb.service.jms;
 
 import org.apache.log4j.Logger;
-import org.retal.table.ejb.jms.message.NotificationMessage;
-import org.retal.table.ejb.jms.message.NotificationType;
+import org.retal.table.jms.NotificationMessage;
+import org.retal.table.jms.NotificationType;
+import org.retal.table.jms.Sender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.JmsException;
 import org.springframework.jms.core.JmsTemplate;

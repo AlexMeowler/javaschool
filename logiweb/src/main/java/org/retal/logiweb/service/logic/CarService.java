@@ -11,7 +11,7 @@ import org.retal.logiweb.domain.entity.City;
 import org.retal.logiweb.domain.entity.Order;
 import org.retal.logiweb.service.jms.NotificationSender;
 import org.retal.logiweb.service.validators.CarValidator;
-import org.retal.table.ejb.jms.message.NotificationType;
+import org.retal.table.jms.NotificationType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;

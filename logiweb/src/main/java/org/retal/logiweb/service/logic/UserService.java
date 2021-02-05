@@ -15,7 +15,7 @@ import org.retal.logiweb.domain.enums.UserRole;
 import org.retal.logiweb.dto.UserWrapper;
 import org.retal.logiweb.service.jms.NotificationSender;
 import org.retal.logiweb.service.validators.UserValidator;
-import org.retal.table.ejb.jms.message.NotificationType;
+import org.retal.table.jms.NotificationType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
