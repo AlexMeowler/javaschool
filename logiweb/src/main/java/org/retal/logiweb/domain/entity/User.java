@@ -27,6 +27,16 @@ public class User {
   public User() {
 
   }
+  
+  /**
+   * Constructor for creating new instance of this class. Use it to avoid multiple setters calls.
+   */
+  public User(String login, String password, String role, UserInfo userInfo) {
+    setLogin(login);
+    setPassword(password);
+    setRole(role);
+    setUserInfo(userInfo);
+  }
 
   /**
    * Constructor for mapping user DTO object to user entity.

@@ -1,0 +1,6 @@
+<ns2:getDriversStatisticsResponse
+	xmlns:ns2="http://retal.org/logiweb/ws">
+	<ns2:totalDrivers>1</ns2:totalDrivers>
+	<ns2:driversAvailable>1</ns2:driversAvailable>
+	<ns2:driversUnavailable>0</ns2:driversUnavailable>
+</ns2:getDriversStatisticsResponse>

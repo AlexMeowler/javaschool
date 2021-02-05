@@ -26,6 +26,23 @@ public class Order {
 
   public static final String ROUTE_DELIMETER = ";";
 
+  public Order() {
+
+  }
+
+  /**
+   * Constructor for creating new instance of this class. Use it to avoid multiple setters calls.
+   */
+  public Order(Boolean isCompleted, Car car, Set<RoutePoint> points, String route,
+      Float requiredCapacity, Integer requiredShiftLength) {
+    setIsCompleted(isCompleted);
+    setCar(car);
+    setPoints(points);
+    setRoute(route);
+    setRequiredCapacity(requiredCapacity);
+    setRequiredShiftLength(requiredShiftLength);
+  }
+
   @Id
   @Column(name = "id")
   @GeneratedValue(strategy = GenerationType.IDENTITY)

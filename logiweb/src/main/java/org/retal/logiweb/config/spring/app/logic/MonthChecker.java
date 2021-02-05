@@ -7,6 +7,7 @@ import org.retal.logiweb.service.logic.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class MonthChecker extends Thread {
+  
   @Autowired
   private UserService userService;
 

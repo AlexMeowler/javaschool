@@ -24,6 +24,16 @@ public class UserInfo {
   }
 
   /**
+   * Constructor for creating new instance of this class. Use it to avoid multiple setters calls.
+   */
+  public UserInfo(String name, String surname, String status, City city) {
+    setName(name);
+    setSurname(surname);
+    setStatus(status);
+    setCity(city);
+  }
+
+  /**
    * Constructor for mapping user information DTO object to user information entity.
    * 
    * @param userInfoDTO an instance of {@linkplain org.retal.logiweb.dto.UserInfoDTO UserInfoDTO}

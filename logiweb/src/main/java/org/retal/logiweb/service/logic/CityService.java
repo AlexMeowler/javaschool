@@ -14,8 +14,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 /**
- * Service, containing business-logic methods regarding {@linkplain org.retal.logiweb.domain.entity.City
- * City} and {@linkplain org.retal.logiweb.domain.entity.CityDistance CityDistance} entities.
+ * Service, containing business-logic methods regarding
+ * {@linkplain org.retal.logiweb.domain.entity.City City} and
+ * {@linkplain org.retal.logiweb.domain.entity.CityDistance CityDistance} entities.
  * 
  * @author Alexander Retivov
  *
@@ -54,8 +55,7 @@ public class CityService {
           CityService.class.getResourceAsStream("/" + cityNamesFileName + ".txt")));
       String line;
       while ((line = reader.readLine()) != null) {
-        City city = new City();
-        city.setCurrentCity(line);
+        City city = new City(line);
         cityDAO.add(city);
       }
       reader.close();

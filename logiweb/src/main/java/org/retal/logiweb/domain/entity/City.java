@@ -22,6 +22,10 @@ public class City {
   public City() {
 
   }
+  
+  public City(String currentCity) {
+    setCurrentCity(currentCity);
+  }
 
   /**
    * Constructor for mapping city DTO object to city entity.

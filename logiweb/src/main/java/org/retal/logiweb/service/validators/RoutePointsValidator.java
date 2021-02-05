@@ -18,8 +18,9 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
 /**
- * Custom {@linkplain org.retal.logiweb.domain.entity.domain.RoutePoint RoutePoint} validator. However, it works with
- * {@linkplain org.retal.dto.RoutePointListWrapper RoutePointListWrapper} objects.
+ * Custom {@linkplain org.retal.logiweb.domain.entity.domain.RoutePoint RoutePoint} validator.
+ * However, it works with {@linkplain org.retal.dto.RoutePointListWrapper RoutePointListWrapper}
+ * objects.
  * 
  * @author Alexander Retivov
  *

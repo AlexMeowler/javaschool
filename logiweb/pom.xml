@@ -224,6 +224,23 @@
 			<artifactId>xmlschema-core</artifactId>
 			<version>2.2.5</version>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.springframework.ws/spring-ws-test -->
+		<dependency>
+			<groupId>org.springframework.ws</groupId>
+			<artifactId>spring-ws-test</artifactId>
+			<version>3.0.10.RELEASE</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish.metro</groupId>
+			<artifactId>webservices-rt</artifactId>
+			<version>2.4.4</version>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish.metro</groupId>
+			<artifactId>webservices-api</artifactId>
+			<version>2.4.4</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<finalName>javaschool</finalName>

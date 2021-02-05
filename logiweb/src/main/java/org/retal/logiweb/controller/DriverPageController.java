@@ -8,8 +8,9 @@ import org.retal.logiweb.domain.entity.Order;
 import org.retal.logiweb.domain.entity.SessionInfo;
 import org.retal.logiweb.domain.entity.User;
 import org.retal.logiweb.domain.enums.DriverStatus;
-import org.retal.logiweb.service.logic.CargoAndOrdersService;
+import org.retal.logiweb.service.logic.CargoService;
 import org.retal.logiweb.service.logic.DriverService;
+import org.retal.logiweb.service.logic.OrderService;
 import org.retal.logiweb.service.validators.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -28,7 +29,9 @@ public class DriverPageController {
 
   private final DriverService driverService;
 
-  private final CargoAndOrdersService cargoAndOrdersService;
+  private final OrderService orderService;
+  
+  private final CargoService cargoService;
 
   public static final String DRIVER_PAGE = "/driverPage";
 
@@ -37,10 +40,11 @@ public class DriverPageController {
    */
   @Autowired
   public DriverPageController(SessionInfo sessionInfo, DriverService driverService,
-      CargoAndOrdersService cargoAndOrdersService) {
+      OrderService orderService, CargoService cargoService) {
     this.sessionInfo = sessionInfo;
     this.driverService = driverService;
-    this.cargoAndOrdersService = cargoAndOrdersService;
+    this.orderService = orderService;
+    this.cargoService = cargoService;
   }
 
   /**
@@ -55,7 +59,7 @@ public class DriverPageController {
     model.addAllAttributes(errors);
     User user = sessionInfo.getCurrentUser();
     if (user.getUserInfo().getOrder() != null) {
-      Order order = cargoAndOrdersService.getOrder(user.getUserInfo().getOrder().getId());
+      Order order = orderService.getOrder(user.getUserInfo().getOrder().getId());
       model.addAttribute("order", order);
       List<String> routeList = new ArrayList<>();
       String nextHop = null;
@@ -67,9 +71,9 @@ public class DriverPageController {
       model.addAttribute("routeCounter", index - 1);
       if (index < cities.length) {
         nextHop = cities[index];
-        nextHopLength = cargoAndOrdersService.lengthBetweenTwoCities(userCity, cities[index]);
+        nextHopLength = orderService.lengthBetweenTwoCities(userCity, cities[index]);
         nextHopLength =
-            (int) Math.round((double) nextHopLength / CargoAndOrdersService.AVERAGE_CAR_SPEED);
+            (int) Math.round((double) nextHopLength / OrderService.AVERAGE_CAR_SPEED);
       }
       model.addAttribute("routeList", routeList);
       model.addAttribute("nextHop", nextHop);
@@ -85,8 +89,8 @@ public class DriverPageController {
   }
 
   /**
-   * Method for changing driver status using {@linkplain org.retal.logiweb.service.logic.DriverService
-   * service layer}.
+   * Method for changing driver status using
+   * {@linkplain org.retal.logiweb.service.logic.DriverService service layer}.
    */
   @GetMapping(value = "/changeStatus/{status}")
   public RedirectView changeStatus(@PathVariable String status, RedirectAttributes redir) {
@@ -117,7 +121,7 @@ public class DriverPageController {
     BindingResult bindingResult = new BindException(id, "id");
     driverService.changeStatus(DriverStatus.LOADING_AND_UNLOADING_CARGO.toString(), bindingResult);
     boolean isOrderCompleted =
-        cargoAndOrdersService.updateCargoAndCheckOrderCompletion(id, bindingResult);
+        cargoService.updateCargoAndCheckOrderCompletion(id, bindingResult);
     if (isOrderCompleted) {
       driverService.changeStatus(DriverStatus.ON_SHIFT.toString(), bindingResult);
     }

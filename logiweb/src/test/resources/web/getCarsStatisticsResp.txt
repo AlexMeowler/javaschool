@@ -1,0 +1,6 @@
+<ns2:getCarsStatisticsResponse xmlns:ns2="http://retal.org/logiweb/ws">
+	<ns2:totalCars>1</ns2:totalCars>
+	<ns2:carsAvailable>1</ns2:carsAvailable>
+	<ns2:carsAssigned>0</ns2:carsAssigned>
+	<ns2:carsBroken>0</ns2:carsBroken>
+</ns2:getCarsStatisticsResponse>

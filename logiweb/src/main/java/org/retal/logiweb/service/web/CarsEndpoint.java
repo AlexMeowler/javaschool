@@ -27,10 +27,7 @@ public class CarsEndpoint {
   }
 
   /**
-   * Javadoc TODO
-   * 
-   * @param request
-   * @return
+   * Provides statistics about cars: total, broken, assigned to order etc.
    */
   @PayloadRoot(namespace = NAMESPACE_URI, localPart = "getCarsStatisticsRequest")
   @ResponsePayload

@@ -49,7 +49,7 @@ public class ErrorPagesController {
    */
   @GetMapping(GlobalExceptionHandler.ERROR_PAGE)
   public String showErrorPage() {
-    return GlobalExceptionHandler.ERROR_PAGE;
+    return GlobalExceptionHandler.ERROR_PAGE.substring(1);
   }
 
   /**

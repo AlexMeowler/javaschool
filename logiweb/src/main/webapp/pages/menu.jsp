@@ -20,7 +20,8 @@
 				<li class="navitem"><a class = "nav-link" href="<c:url value="/adminPage"/>">Administrator page</a></li>
 				</sec:authorize>
 				<sec:authorize access = "hasAnyAuthority('MANAGER', 'ADMIN')">
-				<li class="navitem"><a class = "nav-link" href="<c:url value="/managerPage"/>">Manager page</a></li>
+				<li class="navitem"><a class = "nav-link" href="<c:url value="/managerUsersPage"/>">Drivers management page</a></li>
+				<li class="navitem"><a class = "nav-link" href="<c:url value="/managerCarsPage"/>">Cars management page</a></li>
 				<li class="navitem"><a class = "nav-link" href="<c:url value="/cargoAndOrders"/>">Cargo &amp; Orders</a></li>
 				</sec:authorize>
 				<sec:authorize access = "hasAuthority('DRIVER')">

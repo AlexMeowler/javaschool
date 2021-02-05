@@ -1,0 +1,1 @@
+<getCarsStatisticsRequest xmlns="http://retal.org/logiweb/ws"/>

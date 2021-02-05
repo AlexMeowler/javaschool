@@ -13,7 +13,7 @@ import org.retal.logiweb.domain.ws.GetLatestOrdersRequest;
 import org.retal.logiweb.domain.ws.GetLatestOrdersResponse;
 import org.retal.logiweb.domain.ws.OrderList;
 import org.retal.logiweb.domain.ws.OrderWS;
-import org.retal.logiweb.service.logic.CargoAndOrdersService;
+import org.retal.logiweb.service.logic.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
@@ -23,7 +23,7 @@ import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
 @Endpoint
 public class OrderEndpoint {
 
-  private final CargoAndOrdersService cargoAndOrdersService;
+  private final OrderService cargoAndOrdersService;
 
   private static final int LIST_SIZE = 10;
 
@@ -32,15 +32,12 @@ public class OrderEndpoint {
   private static final Logger log = Logger.getLogger(OrderEndpoint.class);
 
   @Autowired
-  public OrderEndpoint(CargoAndOrdersService cargoAndOrdersService) {
+  public OrderEndpoint(OrderService cargoAndOrdersService) {
     this.cargoAndOrdersService = cargoAndOrdersService;
   }
 
   /**
-   * Javadoc TODO
-   * 
-   * @param request
-   * @return
+   * Provides full information about {@link #LIST_SIZE} latest orders.
    */
   @PayloadRoot(namespace = NAMESPACE_URI, localPart = "getLatestOrdersRequest")
   @ResponsePayload

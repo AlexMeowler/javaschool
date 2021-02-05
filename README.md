@@ -7,10 +7,10 @@ Java School Public Repository
 # SonarQube report (for version 1.1)
 ![SonarQube report](sonar.png?raw=true "SonarQube Report")
 
-# VERSION 2.0.0
+# VERSION 2.1.0
 
-Inserted messsaging in Logiweb application. Second application (table with statistics) is now live.
+Code refactoring. Second application now uses websockets and AJAX for updating info without page reload. Reorganized classes, dependencies and packages. Driver with status "resting" is counted as unavailable.
 
 # TODO
 
-Trying to make code look clean: splitting pages, classes, pagination. Testing stuff.
+Testing stuff.

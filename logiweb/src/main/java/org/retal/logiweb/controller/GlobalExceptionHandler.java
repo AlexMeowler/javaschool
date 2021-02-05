@@ -18,7 +18,7 @@ import org.springframework.web.servlet.view.RedirectView;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-  public static final String ERROR_PAGE = "errorPage";
+  public static final String ERROR_PAGE = "/errorPage";
 
   private static final Logger log = Logger.getLogger(GlobalExceptionHandler.class);
 
@@ -30,8 +30,8 @@ public class GlobalExceptionHandler {
    * @param redir redirect attributes object to pass HTTP error code
    * @return view for error page
    */
-  @ExceptionHandler(value = Exception.class)
-  public RedirectView customErrorPage(Exception e, RedirectAttributes redir) {
+  @ExceptionHandler(value = Throwable.class)
+  public RedirectView customErrorPage(Throwable e, RedirectAttributes redir) {
     log.error(e, e);
     ResponseStatus status = AnnotationUtils.findAnnotation(e.getClass(), ResponseStatus.class);
     Integer code = status != null ? status.code().value() : 500;
