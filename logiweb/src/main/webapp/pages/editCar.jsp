@@ -18,6 +18,8 @@
 	<form:form id = "form" action="${submit}" method="POST">
 		<br>
 		<table class="form-table">
+		  <caption hidden="true">form</caption>
+            <tr hidden="true"><th scope="col">Hidden header</th></tr>
 			<tr>
 				<td><label>Car ${car.registrationId}</label></td>
 				<td><input type="text" name="registrationId" value="${car.registrationId}" hidden="hidden"/></td>

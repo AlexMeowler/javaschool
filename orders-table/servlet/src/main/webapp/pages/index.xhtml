@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:o="http://omnifaces.org/ui"
+	xmlns:of="http://omnifaces.org/functions">
+
+<f:view>
+	<h:head>
+		<title>Logiweb Statistics</title>
+		<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+		<link rel="stylesheet" type="text/css" href="css/menu.css" />
+		<link rel="stylesheet" type="text/css" href="css/main.css" />
+	</h:head>
+	<h:body>
+		<nav class="navbar navbar-expand-lg fixed-top" style="height: 50px;">
+		</nav>
+		<div class="container main-body">
+			<h2>Welcome to Logiweb statistics table!</h2>
+			<h3>Current driver statistics</h3>
+			<h:form id="driversInfo">
+				<strong>#{driverStatsStorage.driversTotal}</strong> drivers in
+				total. <br />
+				<strong>#{driverStatsStorage.driversAvailable}</strong>
+				drivers available. <br />
+				<strong>#{driverStatsStorage.driversUnavailable}</strong>
+				drivers unavailable. <br />
+			</h:form>
+			<h3>Current cars statistics</h3>
+			<h:form id="carsInfo">
+				<strong>#{carStatsStorage.carsTotal}</strong> cars in total. <br />
+				<strong>#{carStatsStorage.carsAvailable}</strong> cars available. <br />
+				<strong>#{carStatsStorage.carsAssigned}</strong> cars assigned to
+				orders. <br />
+				<strong>#{carStatsStorage.carsBroken}</strong> cars
+				broken.
+			</h:form>
+			<h3>Latest orders table:</h3>
+			<h:form id="ordersInfo">
+				<table class="info-table">
+					<caption style="display: none;">10 latest orders list</caption>
+					<tr>
+						<th scope="col">Order ID</th>
+						<th scope="col">Status</th>
+						<th scope="col">Assigned car</th>
+						<th scope="col">Route</th>
+						<th scope="col">Currently assigned drivers</th>
+						<th scope="col">Assigned cargo</th>
+					</tr>
+					<ui:repeat value="#{ordersStorage.orders}" var="order">
+						<tr>
+							<td>#{order.id}</td>
+							<td>#{order.isCompleted ? 'Completed' : 'Not completed'}</td>
+							<td>#{order.car}</td>
+							<td>#{order.route}</td>
+							<td><ui:repeat value="#{order.driverList.drivers}"
+									var="name">
+							#{name}<br />
+								</ui:repeat></td>
+							<td><ui:repeat value="#{order.cargoList.cargo}" var="cargo">
+						#{cargo.id}: #{cargo.name} (To deliver from <strong>#{cargo.from}</strong> to <strong>#{cargo.to}</strong>)<br />
+								</ui:repeat></td>
+						</tr>
+					</ui:repeat>
+				</table>
+			</h:form>
+			<div class="footer"></div>
+		</div>
+		<o:socket channel="cars">
+			<f:ajax event="update" render="carsInfo" />
+		</o:socket>
+		<o:socket channel="drivers">
+			<f:ajax event="update" render="driversInfo" />
+		</o:socket>
+		<o:socket channel="orders">
+			<f:ajax event="update" render="ordersInfo" />
+		</o:socket>
+	</h:body>
+</f:view>
+
+</html>

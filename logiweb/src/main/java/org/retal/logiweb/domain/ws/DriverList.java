@@ -63,7 +63,7 @@ public class DriverList {
    */
   public List<String> getDrivers() {
     if (drivers == null) {
-      drivers = new ArrayList<String>();
+      drivers = new ArrayList<>();
     }
     return this.drivers;
   }

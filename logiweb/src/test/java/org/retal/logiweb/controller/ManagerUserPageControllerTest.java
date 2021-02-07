@@ -85,21 +85,6 @@ public class ManagerUserPageControllerTest {
   static class ContextConfiguration {
 
     @Bean
-    public UserDAO getUserDAO() {
-      return new UserDAO();
-    }
-
-    @Bean
-    public CarDAO getCarDAO() {
-      return new CarDAO();
-    }
-
-    @Bean
-    public OrderDAO getOrderDAO() {
-      return new OrderDAO();
-    }
-
-    @Bean
     public JmsTemplate jmsTemplate() {
       ActiveMQConnectionFactory activeMQConnectionFactory = new ActiveMQConnectionFactory();
       activeMQConnectionFactory.setBrokerURL("vm://localhost?broker.persistent=false");

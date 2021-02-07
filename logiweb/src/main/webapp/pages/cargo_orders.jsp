@@ -106,6 +106,8 @@
 		<span class = "error">${error_emptyInput} ${error_globalCar} ${error_globalDrivers}</span>
 		<br>
 		<table id="rows" class="form-table">
+		  <caption hidden="true">form</caption>
+            <tr hidden="true"><th scope="col">Hidden header</th></tr>
 			<c:forEach var="routePoint" items="${routePoints}" varStatus = "i">
 				<tr id="div${i.index}">
 					<td><label>City</label></td>

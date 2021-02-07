@@ -29,8 +29,6 @@ import org.retal.logiweb.domain.entity.RoutePoint;
 import org.retal.logiweb.domain.entity.User;
 import org.retal.logiweb.domain.entity.UserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -59,51 +57,6 @@ public class DAOTest {
 
   public static final String[] CITY_NAMES =
       {"Moscow", "Yaroslavl", "Omsk", "Samara", "Cheboksary", "Chelyabinsk"};
-
-
-  @Configuration
-  static class ContextConfiguration {
-
-    @Bean
-    public UserDAO getUserDAO() {
-      return new UserDAO();
-    }
-
-    @Bean
-    public CityDAO getCityDAO() {
-      return new CityDAO();
-    }
-
-    @Bean
-    public CarDAO getCarDAO() {
-      return new CarDAO();
-    }
-
-    @Bean
-    public OrderRouteProgressionDAO getOrderRouteProgressionDAO() {
-      return new OrderRouteProgressionDAO();
-    }
-
-    @Bean
-    public CityDistanceDAO getCityDistanceDAO() {
-      return new CityDistanceDAO();
-    }
-
-    @Bean
-    public CargoDAO getCargoDAO() {
-      return new CargoDAO();
-    }
-
-    @Bean
-    public OrderDAO getOrderDAO() {
-      return new OrderDAO();
-    }
-
-    @Bean
-    public RoutePointDAO getRoutePointDAO() {
-      return new RoutePointDAO();
-    }
-  }
 
   @Autowired
   public void setUserDAO(UserDAO userDAO) {

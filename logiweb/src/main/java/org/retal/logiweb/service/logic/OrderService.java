@@ -59,7 +59,7 @@ public class OrderService {
 
   private static final int ANNEALING_START_TEMPERAURE = 1000;
   private static final int ANNEALING_END_TEMPERATURE = 76;
-  private static final int MONTH_HOURS_LIMIT = 176;
+  public static final int MONTH_HOURS_LIMIT = 176;
   public static final int AVERAGE_CAR_SPEED = 80;
 
   private final CityDAO cityDAO;
@@ -446,18 +446,19 @@ public class OrderService {
             log.debug("Filled big matrix");
             n = rpCities.size();
             int[][] matrix = buildMatrix(n);
-            // calculate paths for cities which are not connected directly in real life;
+            // calculate paths for cities which are not connected directly in real life
             // this is used to make our graph full (i.e. all cities are connected to each other)
             resolvePathsForMatrix(matrix, bigMatrix, cityNames, rpCities);
             log.info("Calculating optimized route for cycle (annealing algorithm)...");
             int[] annealingPaths = findOptimalPathUsingAnnealingImitation(matrix,
                 ANNEALING_START_TEMPERAURE, ANNEALING_END_TEMPERATURE,
                 rpCities.indexOf(rp.getCity()), loadingCities, unloadingCities, true);
-            String path = "";
+            StringBuilder builder = new StringBuilder();
             int length = 0;
             for (int x : annealingPaths) {
-              path += rpCities.get(x).getCurrentCity() + " ";
+              builder.append(rpCities.get(x).getCurrentCity() + " ");
             }
+            String path = builder.toString();
             length = 0;
             for (int i = 0; i < annealingPaths.length - 1; i++) {
               length += matrix[annealingPaths[i]][annealingPaths[i + 1]];
@@ -938,10 +939,11 @@ public class OrderService {
           int value = getShortestPath(bigMatrix, route, k, m);
           matrix[i][j] = value;
           matrix[j][i] = value;
-          String path = "";
+          StringBuilder builder = new StringBuilder();
           for (Integer x : route) {
-            path += x + " ";
+            builder.append(x + " ");
           }
+          String path = builder.toString();
           log.debug(path);
         }
       }
@@ -961,9 +963,9 @@ public class OrderService {
    */
   private List<User> tryToAssignDriversForOrder(String path, int[][] matrix, List<City> rpCities,
       Car selectedCar) {
-    if (selectedCar == null) {
-      return null;
-    }
+    /*
+     * if (selectedCar == null) { return null; }
+     */
     // delimeter is ' '
     final String delimeter = " ";
     List<String> cityNames =
@@ -980,7 +982,8 @@ public class OrderService {
       distances[i] = matrix[indexCurrentCity][indexNextCity];
       // adding drivers
       List<User> cityDrivers = rpCities.get(indexCurrentCity).getUserInfos().stream()
-          .map(ui -> ui.getUser()).filter(this::isDriverCapable).collect(Collectors.toList());
+          .map(ui -> ui.getUser()).filter(this::isDriverCapable)
+          .sorted((a, b) -> a.getId() - b.getId()).collect(Collectors.toList());
       drivers.add(i, cityDrivers);
     }
     log.debug(drivers.toString());

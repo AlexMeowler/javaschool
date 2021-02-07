@@ -69,6 +69,8 @@
 	<form:form id = "formuser" action="${addUser}" method="POST" style = "${hidden}">
 		<br>
 		<table class="form-table">
+		<caption hidden="true">form</caption>
+		<tr hidden="true"><th scope="col">Hidden header</th></tr>
 		<tr>
 			<td><label>Login</label></td>
 			<td><input type="text" name="login" value="${user.login}"/></td>
@@ -152,6 +154,8 @@
 	<form:form id = "formcargo" action="${addCargo}" method="POST" style = "${hiddencargo}">
 		<br>
 		<table class="form-table">
+		<caption hidden="true">form</caption>
+        <tr hidden="true"><th scope="col">Hidden header</th></tr>
 		<tr>
 			<td><label>Name</label></td>
 			<td><input type="text" name="name" value="${cargo.name}"/></td>

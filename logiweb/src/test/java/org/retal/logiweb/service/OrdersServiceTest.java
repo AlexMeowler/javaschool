@@ -1,28 +1,16 @@
 package org.retal.logiweb.service;
 
-import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.forwardedUrl;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.log4j.Logger;
-import org.hibernate.Session;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -38,35 +26,29 @@ import org.retal.logiweb.dao.CarDAO;
 import org.retal.logiweb.dao.CargoDAO;
 import org.retal.logiweb.dao.CityDAO;
 import org.retal.logiweb.dao.CityDistanceDAO;
-import org.retal.logiweb.dao.DAO;
-import org.retal.logiweb.dao.DAOTest;
 import org.retal.logiweb.dao.OrderDAO;
 import org.retal.logiweb.dao.RoutePointDAO;
 import org.retal.logiweb.dao.UserDAO;
 import org.retal.logiweb.domain.entity.Car;
 import org.retal.logiweb.domain.entity.Cargo;
 import org.retal.logiweb.domain.entity.City;
-import org.retal.logiweb.domain.entity.Order;
-import org.retal.logiweb.domain.entity.RoutePoint;
 import org.retal.logiweb.domain.entity.User;
 import org.retal.logiweb.domain.entity.UserInfo;
+import org.retal.logiweb.dto.RoutePointDTO;
+import org.retal.logiweb.dto.RoutePointListWrapper;
 import org.retal.logiweb.service.logic.CityService;
+import org.retal.logiweb.service.logic.OrderService;
 import org.retal.logiweb.service.logic.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jms.connection.SingleConnectionFactory;
 import org.springframework.jms.core.JmsTemplate;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.context.WebApplicationContext;
+import org.springframework.validation.BindException;
+import org.springframework.validation.BindingResult;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {WebConfig.class, RootConfig.class})
@@ -80,11 +62,9 @@ public class OrdersServiceTest {
 
   private OrderDAO orderDAO;
 
-  private CargoDAO cargoDAO;
-
-  private RoutePointDAO routePointDAO;
-
   private CityDAO cityDAO;
+
+  private OrderService orderService;
 
   private static final Logger log = Logger.getLogger(OrdersServiceTest.class);
 
@@ -94,36 +74,6 @@ public class OrdersServiceTest {
   @Configuration
   static class ContextConfiguration {
 
-    @Bean
-    public UserDAO getUserDAO() {
-      return new UserDAO();
-    }
-
-    @Bean
-    public CarDAO getCarDAO() {
-      return new CarDAO();
-    }
-
-    @Bean
-    public OrderDAO getOrderDAO() {
-      return new OrderDAO();
-    }
-
-    @Bean
-    public CargoDAO getCargoDAO() {
-      return new CargoDAO();
-    }
-
-    @Bean
-    public RoutePointDAO getRoutePointDAO() {
-      return new RoutePointDAO();
-    }
-
-    @Bean
-    public CityDAO getCityDAO() {
-      return new CityDAO();
-    }
-    
     @Bean
     public JmsTemplate jmsTemplate() {
       ActiveMQConnectionFactory activeMQConnectionFactory = new ActiveMQConnectionFactory();
@@ -153,18 +103,22 @@ public class OrdersServiceTest {
 
   @Autowired
   public void setCargoDAO(CargoDAO cargoDAO) {
-    this.cargoDAO = cargoDAO;
   }
 
   @Autowired
   public void setRoutePointDAO(RoutePointDAO routePointDAO) {
-    this.routePointDAO = routePointDAO;
   }
 
   @Autowired
   public void setCityDAO(CityDAO cityDAO) {
     this.cityDAO = cityDAO;
   }
+
+  @Autowired
+  public void setOrderService(OrderService orderService) {
+    this.orderService = orderService;
+  }
+
   /**
    * Creates user account and fills DB before tests.
    */
@@ -239,8 +193,70 @@ public class OrdersServiceTest {
   }
 
   @Test
-  public void testA1() {
-    
+  public void testA1MonthChange() {
+    final String[] cities = {"Moscow", "Yaroslavl"};
+    Calendar calendar = new GregorianCalendar();
+    calendar.set(Calendar.MONTH, Calendar.JANUARY);
+    calendar.set(Calendar.DAY_OF_MONTH, 31);
+    calendar.set(Calendar.HOUR_OF_DAY, 23);
+    orderService.setCalendarForSimulation(calendar);
+    userDAO.readAllWithRole("driver").stream()
+        .filter(u -> u.getUserInfo().getCity().getCurrentCity().equals(cities[0])).forEach(u -> {
+          u.getUserInfo().setHoursWorked(OrderService.MONTH_HOURS_LIMIT - 1);
+          userDAO.update(u);
+        });
+
+    List<RoutePointDTO> list = new ArrayList<>();
+    list.add(new RoutePointDTO(cities[0], true, 1));
+    list.add(new RoutePointDTO(cities[1], false, 1));
+    RoutePointListWrapper wrapper = new RoutePointListWrapper();
+    wrapper.setList(list);
+    BindingResult bindingResult = new BindException(wrapper, "wrapper");
+    int before = orderDAO.readAll().size();
+    orderService.createOrderAndRoutePoints(wrapper, bindingResult);
+    int after = orderDAO.readAll().size();
+    assertEquals(before + 1, after);
+  }
+
+  @Test
+  public void testA2ChainDeletion() {
+    final String[] cities = {"Yaroslavl", "Cheboksary", "Kazan"};
+    final int offset = 7;
+    User lastDriver = userDAO.readAllWithRole("driver").stream()
+        .filter(u -> u.getUserInfo().getCity().getCurrentCity().equalsIgnoreCase(cities[0]))
+        .findFirst().orElse(null);
+    userDAO.update(lastDriver);
+    List<User> drivers = userDAO.readAllWithRole("driver").stream()
+        .filter(u -> !u.getUserInfo().getCity().getCurrentCity().equalsIgnoreCase(cities[0]))
+        .collect(Collectors.toList());
+    User firstDriver = drivers.get(drivers.size() - 1);
+    firstDriver.getUserInfo().setCity(cityDAO.read(cities[0]));
+    firstDriver.getUserInfo().setHoursWorked(OrderService.MONTH_HOURS_LIMIT - offset);
+    userDAO.update(firstDriver);
+    assertNotEquals(firstDriver, lastDriver);
+    drivers.stream()
+        .filter(u -> u.getUserInfo().getCity().getCurrentCity().equalsIgnoreCase(cities[1]))
+        .forEach(u -> {
+          u.getUserInfo().setHoursWorked(OrderService.MONTH_HOURS_LIMIT);
+          userDAO.update(u);
+        });
+    Car car = carDAO.readAll().stream()
+        .filter(c -> c.getLocation().getCurrentCity().equalsIgnoreCase(cities[0])).findFirst()
+        .orElse(null);
+    car.setCapacityTons(10f);
+    car.setShiftLength(22);
+    carDAO.update(car);
+    List<RoutePointDTO> list = new ArrayList<>();
+    for (int i = 0; i < cities.length + 1; i++) {
+      list.add(new RoutePointDTO(cities[(int) Math.round((double) i / 2)], i % 2 == 0, 2 + i / 2));
+    }
+    RoutePointListWrapper wrapper = new RoutePointListWrapper();
+    wrapper.setList(list);
+    BindingResult bindingResult = new BindException(wrapper, "wrapper");
+    int before = orderDAO.readAll().size();
+    orderService.createOrderAndRoutePoints(wrapper, bindingResult);
+    int after = orderDAO.readAll().size();
+    assertEquals(before + 1, after);
   }
 }
 

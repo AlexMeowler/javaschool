@@ -94,36 +94,6 @@ public class CargoAndOrdersPageControllerTest {
 
   @Configuration
   static class ContextConfiguration {
-
-    @Bean
-    public UserDAO getUserDAO() {
-      return new UserDAO();
-    }
-
-    @Bean
-    public CarDAO getCarDAO() {
-      return new CarDAO();
-    }
-
-    @Bean
-    public OrderDAO getOrderDAO() {
-      return new OrderDAO();
-    }
-
-    @Bean
-    public CargoDAO getCargoDAO() {
-      return new CargoDAO();
-    }
-
-    @Bean
-    public RoutePointDAO getRoutePointDAO() {
-      return new RoutePointDAO();
-    }
-
-    @Bean
-    public CityDAO getCityDAO() {
-      return new CityDAO();
-    }
     
     @Bean
     public JmsTemplate jmsTemplate() {

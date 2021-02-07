@@ -57,6 +57,8 @@
 	<form:form id = "carform" action="${addCar}" method="POST" style = "${hiddencar}">
 		<br>
 		<table class="form-table">
+		  <caption hidden="true">form</caption>
+            <tr hidden="true"><th scope="col">Hidden header</th></tr>
 			<tr>
 				<td><label>Registration ID</label></td>
 				<td><input type="text" name="registrationId" value="${car.registrationId}"/></td>

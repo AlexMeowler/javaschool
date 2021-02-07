@@ -19,7 +19,7 @@ public class OrderRouteProgressionDAO implements DAO<OrderRouteProgression> {
   }
 
   @Override
-  public OrderRouteProgression read(Object... keys) throws IllegalArgumentException {
+  public OrderRouteProgression read(Object... keys) {
     DAO.validatePrimaryKeys(new Class<?>[] {Integer.class}, keys);
     Integer id = (Integer) keys[0];
     Session session = DAO.start();
