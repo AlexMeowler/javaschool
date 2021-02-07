@@ -32,7 +32,7 @@ public interface DAO<T> {
    * @return found entity object or null
    * @throws IllegalArgumentException is keys input is invalid
    */
-  public T read(Object... keys) throws IllegalArgumentException;
+  public T read(Object... keys);
 
   /**
    * Reads all entities from database. This method is optional to override, but if it is called with
@@ -42,7 +42,7 @@ public interface DAO<T> {
    * @throws MethodUndefinedException if default method implementation is called
    * 
    */
-  public default List<T> readAll() throws MethodUndefinedException {
+  public default List<T> readAll() {
     throw new MethodUndefinedException();
   }
 
@@ -69,17 +69,18 @@ public interface DAO<T> {
    * @throws IllegalArgumentException if the input is invalid
    * 
    */
-  public static void validatePrimaryKeys(Class<?>[] classes, Object... objects)
-      throws IllegalArgumentException {
+  public static void validatePrimaryKeys(Class<?>[] classes, Object... objects) {
     boolean isValid = objects.length == classes.length;
     for (int i = 0; i < classes.length; i++) {
       isValid &= classes[i].isInstance(objects[i]);
     }
     if (!isValid) {
-      String message = "";
+      StringBuilder builder = new StringBuilder();
+      
       for (Class<?> c : classes) {
-        message += c.getName() + ", ";
+        builder.append(c.getName() + ", ");
       }
+      String message = builder.toString();
       message = message.substring(0, message.length() - 2);
       throw new IllegalArgumentException("Primary key must be " + message);
     }

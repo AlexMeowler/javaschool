@@ -1,5 +1,6 @@
 package org.retal.logiweb.config.spring.app.jms;
 
+import java.util.Arrays;
 import java.util.Properties;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.log4j.Logger;
@@ -22,6 +23,7 @@ public class JMSConfiguration {
   @Bean
   public ActiveMQConnectionFactory senderActiveMQConnectionFactory() {
     ActiveMQConnectionFactory activeMQConnectionFactory = new ActiveMQConnectionFactory();
+    activeMQConnectionFactory.setTrustedPackages(Arrays.asList("org.retal.table.jms"));
     Properties properties = new Properties();
     try {
       properties.load(JMSConfiguration.class.getResourceAsStream("/activemq.properties"));

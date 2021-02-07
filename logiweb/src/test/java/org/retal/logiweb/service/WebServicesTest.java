@@ -53,6 +53,9 @@ public class WebServicesTest {
 
   private MockWebServiceClient mockClient;
 
+  /**
+   * Fills DB with some orders, drivers and cars for providing info about.
+   */
   @BeforeClass
   public static void startup() {
     CityDAO cityDAO = new CityDAO();
@@ -107,6 +110,9 @@ public class WebServicesTest {
     AdminPageControllerTest.cleanup();
   }
 
+  /**
+   * Autowired setter for mocking webservice client.
+   */
   @Autowired
   public void setMockClient(ApplicationContext applicationContext) {
     mockClient = MockWebServiceClient.createClient(applicationContext);

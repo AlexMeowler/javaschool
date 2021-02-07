@@ -30,7 +30,9 @@ public class ObjectFactory {
    * for package: org.retal.logiweb.domain.ws
    * 
    */
-  public ObjectFactory() {}
+  public ObjectFactory() {
+    // Empty constructor
+  }
 
   /**
    * Create an instance of {@link GetCarsStatisticsRequest }.

@@ -170,9 +170,8 @@ public class CarService {
             .filter(c -> c.getLocation().equals(order.getCar().getLocation()))
             .filter(c -> c.getShiftLength() >= order.getRequiredShiftLength())
             .collect(Collectors.toList());
-    String message =
-        availableCars != null ? availableCars.size() + " cars are fit for order ID=" + order.getId()
-            : "null";
+    String message = (availableCars != null ? availableCars.size() : "null")
+        + " cars are fit for order ID=" + order.getId();
     log.debug(message);
     return availableCars;
   }

@@ -3,7 +3,7 @@ logiweb,org.retal.logiweb.dao,CargoDAO,0,105,0,2,0,28,0,8,0,7
 logiweb,org.retal.logiweb.dao,RoutePointDAO,0,50,0,2,0,13,0,8,0,7
 logiweb,org.retal.logiweb.dao,UserDAO,0,221,0,8,0,53,0,13,0,9
 logiweb,org.retal.logiweb.dao,CityDAO,0,112,0,2,0,24,0,8,0,7
-logiweb,org.retal.logiweb.dao,DAO,0,102,0,10,0,19,0,9,0,4
+logiweb,org.retal.logiweb.dao,DAO,0,107,0,10,0,20,0,9,0,4
 logiweb,org.retal.logiweb.dao,OrderRouteProgressionDAO,0,73,0,0,0,24,0,6,0,6
 logiweb,org.retal.logiweb.dao,CarDAO,0,103,0,0,0,31,0,7,0,7
 logiweb,org.retal.logiweb.dao,OrderDAO,0,173,0,12,0,38,0,14,0,8
@@ -14,8 +14,8 @@ logiweb,org.retal.logiweb.service.logic,UserAuthorizationService,0,66,0,2,0,13,0
 logiweb,org.retal.logiweb.service.logic,UserService,10,481,2,44,2,101,2,34,0,13
 logiweb,org.retal.logiweb.service.logic,CityService,20,158,0,4,4,35,0,8,0,6
 logiweb,org.retal.logiweb.service.logic,DriverService,7,463,4,40,2,113,4,25,0,6
-logiweb,org.retal.logiweb.service.logic,OrderService,98,2751,23,253,22,528,24,146,2,30
-logiweb,org.retal.logiweb.service.logic,CarService,2,349,2,24,0,65,2,26,0,15
+logiweb,org.retal.logiweb.service.logic,OrderService,36,2827,15,259,8,543,16,154,1,32
+logiweb,org.retal.logiweb.service.logic,CarService,2,350,2,24,0,64,2,26,0,15
 logiweb,org.retal.logiweb.controller,ErrorPagesController,0,35,0,0,0,9,0,8,0,8
 logiweb,org.retal.logiweb.controller,AdminPageController,0,463,0,16,0,96,0,21,0,13
 logiweb,org.retal.logiweb.controller,ErrorPagesController.Annotated503ErrorCodeException,0,3,0,0,0,2,0,1,0,1

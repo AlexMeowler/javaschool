@@ -63,7 +63,7 @@ public class CargoList {
    */
   public List<CargoWS> getCargo() {
     if (cargo == null) {
-      cargo = new ArrayList<CargoWS>();
+      cargo = new ArrayList<>();
     }
     return this.cargo;
   }

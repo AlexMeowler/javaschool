@@ -36,8 +36,6 @@ import org.retal.logiweb.domain.entity.Order;
 import org.retal.logiweb.domain.entity.User;
 import org.retal.logiweb.domain.enums.DriverStatus;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -67,36 +65,6 @@ public class DriverPageControllerTest {
   private static final Logger log = Logger.getLogger(DriverPageControllerTest.class);
 
   private static int counter = 0;
-
-
-  @Configuration
-  static class ContextConfiguration {
-
-    @Bean
-    public UserDAO getUserDAO() {
-      return new UserDAO();
-    }
-
-    @Bean
-    public CarDAO getCarDAO() {
-      return new CarDAO();
-    }
-
-    @Bean
-    public OrderDAO getOrderDAO() {
-      return new OrderDAO();
-    }
-
-    @Bean
-    public CargoDAO getCargoDAO() {
-      return new CargoDAO();
-    }
-
-    @Bean
-    public CityDAO getCityDAO() {
-      return new CityDAO();
-    }
-  }
 
   @Autowired
   public void setUserDAO(UserDAO userDAO) {

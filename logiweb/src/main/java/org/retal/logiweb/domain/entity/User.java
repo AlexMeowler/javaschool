@@ -27,7 +27,7 @@ public class User {
   public User() {
 
   }
-  
+
   /**
    * Constructor for creating new instance of this class. Use it to avoid multiple setters calls.
    */
@@ -120,8 +120,11 @@ public class User {
     this.userInfo = userInfo;
   }
 
+  @Override
   public String toString() {
-    return "User [id = " + id + ", login = " + login + ", role = " + role + "]";
+    return "User [id = " + id + ", login = " + login + ", role = " + role + ", location = "
+        + userInfo.getCity().getCurrentCity() + ", hoursWorked = " + userInfo.getHoursWorked()
+        + "]";
   }
 
   private String getPasswordAsBase64Hash(String pass) {

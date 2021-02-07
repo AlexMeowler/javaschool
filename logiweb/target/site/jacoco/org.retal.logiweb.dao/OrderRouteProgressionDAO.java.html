@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
 <span class="fc" id="L19">  }</span>
 
   @Override
-  public OrderRouteProgression read(Object... keys) throws IllegalArgumentException {
+  public OrderRouteProgression read(Object... keys) {
 <span class="fc" id="L23">    DAO.validatePrimaryKeys(new Class&lt;?&gt;[] {Integer.class}, keys);</span>
 <span class="fc" id="L24">    Integer id = (Integer) keys[0];</span>
 <span class="fc" id="L25">    Session session = DAO.start();</span>

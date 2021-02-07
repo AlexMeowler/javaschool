@@ -25,6 +25,7 @@ public class RoutePoint {
     setCity(city);
     setIsLoading(isLoading);
     setCargo(cargo);
+    setOrder(order);
   }
 
   @Id
