@@ -34,12 +34,12 @@ function addRow() {
 		for(var i = 0; i < cargo.length; i++) {
 			options_cargo += "<option value = \"" + cargo[i].id + "\"" + ">" + cargo[i].id + ": " + cargo[i].name + "</option>" 
 		}
-		document.getElementById('rows').innerHTML = document.getElementById('rows').innerHTML 
+		document.getElementById('rows').getElementsByTagName('tbody')[0].innerHTML = document.getElementById('rows').getElementsByTagName('tbody')[0].innerHTML 
 		+ "<tr id = \"div" + counter + "\">" 
 		+ "<td><label>City</label></td>"
 		+ "<td><select id = \"city" + counter + "\" name = \"list[" + counter + "].cityName\">"  
 		+ options_city 
-		+ "</select><td>" 
+		+ "</select></td>" 
 		+ "<td><label>Cargo</label></td>" 
 		+ "<td><select id = \"cargo" + counter + "\" name =\"list[" + counter + "].cargoId\">"   
 		+ options_cargo

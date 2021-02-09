@@ -39,9 +39,12 @@ public class DriverEndpoint {
     List<User> drivers = userService.getAllDrivers();
     response.setTotalDrivers(drivers.size());
     response.setDriversAvailable((int) drivers.stream().map(u -> u.getUserInfo())
-        .filter(ui -> ui.getStatus().equalsIgnoreCase(DriverStatus.ON_SHIFT.toString())).count());
+        .filter(ui -> ui.getStatus().equalsIgnoreCase(DriverStatus.ON_SHIFT.toString()))
+        .filter(ui -> ui.getOrder() == null).count());
     response.setDriversUnavailable((int) drivers.stream().map(u -> u.getUserInfo())
-        .filter(ui -> !ui.getStatus().equalsIgnoreCase(DriverStatus.ON_SHIFT.toString())).count());
+        .filter(ui -> !ui.getStatus().equalsIgnoreCase(DriverStatus.ON_SHIFT.toString())
+            || ui.getOrder() != null)
+        .count());
     log.info("Sending SOAP response");
     return response;
   }

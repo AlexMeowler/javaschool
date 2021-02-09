@@ -14,7 +14,7 @@ logiweb,org.retal.logiweb.service.logic,UserAuthorizationService,0,66,0,2,0,13,0
 logiweb,org.retal.logiweb.service.logic,UserService,10,481,2,44,2,101,2,34,0,13
 logiweb,org.retal.logiweb.service.logic,CityService,20,158,0,4,4,35,0,8,0,6
 logiweb,org.retal.logiweb.service.logic,DriverService,7,463,4,40,2,113,4,25,0,6
-logiweb,org.retal.logiweb.service.logic,OrderService,36,2827,15,259,8,543,16,154,1,32
+logiweb,org.retal.logiweb.service.logic,OrderService,36,2825,15,259,8,542,16,154,1,32
 logiweb,org.retal.logiweb.service.logic,CarService,2,350,2,24,0,64,2,26,0,15
 logiweb,org.retal.logiweb.controller,ErrorPagesController,0,35,0,0,0,9,0,8,0,8
 logiweb,org.retal.logiweb.controller,AdminPageController,0,463,0,16,0,96,0,21,0,13
@@ -30,6 +30,6 @@ logiweb,org.retal.logiweb.service.validators,CargoValidator,0,123,0,14,0,32,0,13
 logiweb,org.retal.logiweb.service.validators,UserValidator,0,343,0,34,0,76,0,25,0,8
 logiweb,org.retal.logiweb.service.validators,RoutePointsValidator,0,268,0,32,0,49,0,21,0,5
 logiweb,org.retal.logiweb.service.validators,CarValidator,0,104,0,14,0,25,0,12,0,5
-logiweb,org.retal.logiweb.service.web,OrderEndpoint,0,197,0,2,0,38,0,11,0,10
+logiweb,org.retal.logiweb.service.web,OrderEndpoint,0,209,0,4,0,42,0,12,0,10
 logiweb,org.retal.logiweb.service.web,CarsEndpoint,4,84,3,3,0,15,3,8,0,8
-logiweb,org.retal.logiweb.service.web,DriverEndpoint,1,71,1,1,0,14,1,7,0,7
+logiweb,org.retal.logiweb.service.web,DriverEndpoint,2,82,3,3,0,17,3,8,0,8

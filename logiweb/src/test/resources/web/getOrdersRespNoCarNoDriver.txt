@@ -5,7 +5,9 @@
 			<ns2:isCompleted>false</ns2:isCompleted>
 			<ns2:car>-</ns2:car>
 			<ns2:route>Moscow;Yaroslavl</ns2:route>
-			<ns2:driverList />
+			<ns2:driverList>
+			     <ns2:drivers>-</ns2:drivers>
+			</ns2:driverList>
 			<ns2:cargoList>
 				<ns2:cargo>
 					<ns2:id>1</ns2:id>
