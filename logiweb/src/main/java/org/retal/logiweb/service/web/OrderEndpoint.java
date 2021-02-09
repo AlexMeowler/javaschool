@@ -1,11 +1,13 @@
 package org.retal.logiweb.service.web;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.log4j.Logger;
 import org.retal.logiweb.domain.entity.Cargo;
 import org.retal.logiweb.domain.entity.Order;
 import org.retal.logiweb.domain.entity.RoutePoint;
+import org.retal.logiweb.domain.entity.UserInfo;
 import org.retal.logiweb.domain.ws.CargoList;
 import org.retal.logiweb.domain.ws.CargoWS;
 import org.retal.logiweb.domain.ws.DriverList;
@@ -67,7 +69,12 @@ public class OrderEndpoint {
 
   private DriverList toMappedDriverList(Order order) {
     DriverList list = new DriverList();
-    order.getDriverInfo().stream().forEach(ui -> list.getDrivers()
+    Set<UserInfo> driverInfo = order.getDriverInfo();
+    if (driverInfo.isEmpty()) {
+      list.getDrivers().add("-");
+      return list;
+    }
+    driverInfo.stream().forEach(ui -> list.getDrivers()
         .add(String.format("%s %s (%d)", ui.getName(), ui.getSurname(), ui.getUser().getId())));
     return list;
   }

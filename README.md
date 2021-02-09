@@ -7,10 +7,8 @@ Java School Public Repository
 # SonarQube report (for version 2.2.0)
 ![SonarQube report](sonar.png?raw=true "SonarQube Report")
 
-# VERSION 2.2.0
+# VERSION 2.3.0
 
-Added test to cover month change scenario and some cases for calculation drivers chain. Removed 'servlets' multi-module package with one module 'servlet' (because servlets has only one module inside it anyway). Added a few tests for orders-table project. Removed warning from IDE and SonarQube.
+Fixed visual bug - when adding new orders fails, and user tries to add new route points - padding for input form just goes crazy. Added icons for both projects. Fixed a bug when DriverEndpoint returned empty field regarding drivers instead of '-' if there are none for given order. Changed conditions at which driver is counted as available/unavailable.
 
 # TODO
-
-Testing stuff.

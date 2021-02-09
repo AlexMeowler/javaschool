@@ -6,6 +6,7 @@
 <html lang="en">
 <head>
 	<title>Manager page (user editing)</title>
+	<link rel="shortcut icon" href="<c:url value="/static/icon.png"/>" type="image/png">
 	<link rel="stylesheet" type="text/css" href="<c:url value="/static/bootstrap.min.css"/>">
 	<link rel="stylesheet" type="text/css" href="<c:url value="/static/menu.css"/>">
 	<link rel="stylesheet" type="text/css" href="<c:url value="/static/main.css"/>">
