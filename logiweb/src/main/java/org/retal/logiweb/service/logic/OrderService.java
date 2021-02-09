@@ -59,6 +59,7 @@ public class OrderService {
 
   private static final int ANNEALING_START_TEMPERAURE = 1000;
   private static final int ANNEALING_END_TEMPERATURE = 76;
+  private static final String PATH_DELIMETER = "->";
   public static final int MONTH_HOURS_LIMIT = 176;
   public static final int AVERAGE_CAR_SPEED = 80;
 
@@ -298,8 +299,6 @@ public class OrderService {
         orderDAO.setSession(session);
         orderDAO.add(order);
         transaction.commit();
-        sender.send(NotificationType.ORDERS_UPDATE);
-        sender.send(NotificationType.CARS_UPDATE);
         transaction = session.beginTransaction();
         for (User driver : drivers) {
           driver.getUserInfo().setOrder(order);
@@ -317,6 +316,8 @@ public class OrderService {
         session.close();
         OrderRouteProgression orderRouteProgression = new OrderRouteProgression(0, order);
         orderRouteProgressionDAO.add(orderRouteProgression);
+        sender.send(NotificationType.ORDERS_UPDATE);
+        sender.send(NotificationType.CARS_UPDATE);
       }
     }
   }
@@ -373,11 +374,11 @@ public class OrderService {
         }
       }
     }
-    String t = "";
+    String debugStatus = "";
     for (City c : rpCities) {
-      t += c.getCurrentCity() + " ";
+      debugStatus += c.getCurrentCity() + " ";
     }
-    log.debug(t);
+    log.debug(debugStatus);
     log.debug(loadingCities.toString());
     log.debug(unloadingCities.toString());
     // maps for calculating optimal route for all cities which can be start points
@@ -411,7 +412,7 @@ public class OrderService {
           String route = "";
           int length = 0;
           for (int path : annealing) {
-            route += rpCities.get(path).getCurrentCity() + " ";
+            route += rpCities.get(path).getCurrentCity() + PATH_DELIMETER;
           }
           length = 0;
           for (int i = 0; i < annealing.length - 1; i++) {
@@ -456,7 +457,7 @@ public class OrderService {
             StringBuilder builder = new StringBuilder();
             int length = 0;
             for (int x : annealingPaths) {
-              builder.append(rpCities.get(x).getCurrentCity() + " ");
+              builder.append(rpCities.get(x).getCurrentCity() + PATH_DELIMETER);
             }
             String path = builder.toString();
             length = 0;
@@ -482,7 +483,7 @@ public class OrderService {
       }
     }
     // calculating required capacity when following path
-    String[] shortestPathCities = shortestPath.split(" ");
+    String[] shortestPathCities = shortestPath.split(PATH_DELIMETER);
     float requiredCapacity = 0;
     float currentCapacity = 0;
     for (RoutePoint rp : list) {
@@ -505,7 +506,7 @@ public class OrderService {
     }
     requiredCapacity /= 1000;
     log.debug("Required capacity - " + requiredCapacity + " tons");
-    String firstCity = shortestPath.split(" ")[0];
+    String firstCity = shortestPath.split(PATH_DELIMETER)[0];
     // calculate drivers for all possible cars
     List<Car> selectedCarList = new ArrayList<>();
     List<List<User>> selectedDriversList = new ArrayList<>();
@@ -532,7 +533,7 @@ public class OrderService {
     if (selectedCar != null) {
       selectedDrivers = selectedDriversList.get(selectedCarList.indexOf(selectedCar));
     }
-    shortestPath = shortestPath.replace(" ", Order.ROUTE_DELIMETER);
+    shortestPath = shortestPath.replace(PATH_DELIMETER, Order.ROUTE_DELIMETER);
     shortestPath = shortestPath.substring(0, shortestPath.length() - 1);
     String driversMessage = selectedDrivers != null ? selectedDrivers.toString() : "null";
     String carMessage = selectedCar != null ? selectedCar.toString() : "null";
@@ -941,7 +942,7 @@ public class OrderService {
           matrix[j][i] = value;
           StringBuilder builder = new StringBuilder();
           for (Integer x : route) {
-            builder.append(x + " ");
+            builder.append(x + PATH_DELIMETER);
           }
           String path = builder.toString();
           log.debug(path);
@@ -966,12 +967,10 @@ public class OrderService {
     /*
      * if (selectedCar == null) { return null; }
      */
-    // delimeter is ' '
-    final String delimeter = " ";
     List<String> cityNames =
         rpCities.stream().map(c -> c.getCurrentCity()).collect(Collectors.toList());
     log.debug(cityNames.toString());
-    String[] cities = path.split(delimeter);
+    String[] cities = path.split(PATH_DELIMETER);
     final int n = cities.length;
     int[] distances = new int[n - 1];
     // list of capable drivers from each city on route
