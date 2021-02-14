@@ -1,7 +1,7 @@
 package org.retal.logiweb.domain.enums;
 
 /**
- * Enumeration for representing cargo status.
+ * Enumeration for representing driver status.
  * @author Alexander Retivov
  *
  */

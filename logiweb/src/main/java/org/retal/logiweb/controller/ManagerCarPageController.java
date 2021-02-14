@@ -10,8 +10,8 @@ import org.retal.logiweb.domain.entity.User;
 import org.retal.logiweb.domain.entity.UserInfo;
 import org.retal.logiweb.dto.CarDTO;
 import org.retal.logiweb.dto.CityDTO;
-import org.retal.logiweb.service.logic.CarService;
-import org.retal.logiweb.service.logic.CityService;
+import org.retal.logiweb.service.logic.impl.CarService;
+import org.retal.logiweb.service.logic.impl.CityService;
 import org.retal.logiweb.service.validators.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -87,12 +87,14 @@ public class ManagerCarPageController {
     model.addAttribute("carsList", cars);
     List<City> cities = cityService.getAllCities();
     model.addAttribute(CITY_LIST_ATTRIBUTE_NAME, cities);
+    model.addAttribute("page", page);
+    model.addAttribute("maxPage", maxPage);
     return "managerCars";
   }
 
   /**
    * Method responsible for adding new cars to database using
-   * {@linkplain org.retal.logiweb.service.logic.CarService service layer}.
+   * {@linkplain org.retal.logiweb.service.logic.impl.CarService service layer}.
    * 
    * @see org.retal.logiweb.domain.entity.Car
    */
@@ -113,7 +115,7 @@ public class ManagerCarPageController {
 
   /**
    * Method responsible for attempt to delete car from database when button is clicked using
-   * {@linkplain org.retal.logiweb.service.logic.CarService service layer}.
+   * {@linkplain org.retal.logiweb.service.logic.impl.CarService service layer}.
    * 
    * @see org.retal.logiweb.domain.entity.Car
    */
@@ -162,8 +164,8 @@ public class ManagerCarPageController {
 
   /**
    * Method responsible for submitting edited car to
-   * {@linkplain org.retal.logiweb.service.logic.CarService service layer} which will update car if
-   * input is valid.
+   * {@linkplain org.retal.logiweb.service.logic.impl.CarService service layer} which will update
+   * car if input is valid.
    * 
    * @see org.retal.logiweb.domain.entity.Car
    */
@@ -199,11 +201,10 @@ public class ManagerCarPageController {
   }
 
   private List<Car> getCarsForGivenPage(Integer page) {
-    List<Car> cars = carService.getAllCars();
-    return cars.subList(CARS_PER_PAGE * (page - 1), Math.min(cars.size(), CARS_PER_PAGE * page));
+    return carService.getPartCars(CARS_PER_PAGE * (page - 1), CARS_PER_PAGE);
   }
 
   private Integer getMaxPossiblePage() {
-    return (int) Math.ceil(1.0 * carService.getAllCars().size() / CARS_PER_PAGE);
+    return (int) Math.ceil(1.0 * carService.getRowsAmount() / CARS_PER_PAGE);
   }
 }

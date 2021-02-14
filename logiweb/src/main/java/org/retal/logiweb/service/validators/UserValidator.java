@@ -6,7 +6,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 import javax.validation.ConstraintViolation;
 import org.apache.log4j.Logger;
-import org.retal.logiweb.dao.CityDAO;
+import org.retal.logiweb.dao.impl.CityDAO;
 import org.retal.logiweb.domain.entity.User;
 import org.retal.logiweb.domain.entity.UserInfo;
 import org.retal.logiweb.domain.enums.DriverStatus;

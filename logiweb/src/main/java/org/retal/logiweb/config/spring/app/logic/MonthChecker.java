@@ -3,7 +3,7 @@ package org.retal.logiweb.config.spring.app.logic;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import org.apache.log4j.Logger;
-import org.retal.logiweb.service.logic.UserService;
+import org.retal.logiweb.service.logic.impl.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class MonthChecker extends Thread {

@@ -29,7 +29,7 @@ public class RootConfig implements WebMvcConfigurer {
    * A method which starts daemon thread to check month change.
    * Check is done every minute. If month does change, amount of hours at work
    * will be set to 0 for all users.
-   * @see org.retal.logiweb.service.logic.UserService#setUsersWorkedHoursToZero()
+   * @see org.retal.logiweb.service.logic.impl.UserService#setUsersWorkedHoursToZero()
    */
   @PostConstruct
   public void startMonthChecker() {

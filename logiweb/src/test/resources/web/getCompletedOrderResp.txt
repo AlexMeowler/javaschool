@@ -1,0 +1,21 @@
+<ns2:getLatestOrdersResponse xmlns:ns2="http://retal.org/logiweb/ws">
+	<ns2:orderList>
+		<ns2:orders>
+			<ns2:id>1</ns2:id>
+			<ns2:isCompleted>true</ns2:isCompleted>
+			<ns2:car>AB12345</ns2:car>
+			<ns2:route>Moscow;Yaroslavl</ns2:route>
+			<ns2:driverList>
+			     <ns2:drivers>Abc Abc (10)</ns2:drivers>
+			</ns2:driverList>
+			<ns2:cargoList>
+				<ns2:cargo>
+					<ns2:id>1</ns2:id>
+					<ns2:name>X</ns2:name>
+					<ns2:from>Moscow</ns2:from>
+					<ns2:to>Yaroslavl</ns2:to>
+				</ns2:cargo>
+			</ns2:cargoList>
+		</ns2:orders>
+	</ns2:orderList>
+</ns2:getLatestOrdersResponse>

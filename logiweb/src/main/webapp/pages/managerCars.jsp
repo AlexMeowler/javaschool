@@ -15,7 +15,7 @@
 <body>
 	<jsp:include page="menu.jsp"/>
 	<div class="container main-body">
-	<p>Welcome, manager ${current_user_name}!</p>
+	<h3>Welcome, manager ${current_user_name}!</h3>
 	<span class = "error">${error_carDeletionFailed}</span>
 	<p>Cars list:</p>
 	<table class="info-table">
@@ -47,7 +47,7 @@
 		</tr>
 		<tr>
 			<td style="border-color: rgba(0, 0, 0, 0.0)"><input type="submit" value="Previous page" onclick="window.location='<c:url value="/managerCarsPage/${page - 1}"/>';" /></td>
-			<td colspan="5" style="border-color: rgba(0, 0, 0, 0.0)"></td>
+			<td colspan="5" style="border-color: rgba(0, 0, 0, 0.0)">Page ${page} of ${maxPage}</td>
 			<td style="border-color: rgba(0, 0, 0, 0.0)"><input type="submit" value="Next page" onclick="window.location='<c:url value="/managerCarsPage/${page + 1}"/>';" /></td>
 		</tr>
 	</table>

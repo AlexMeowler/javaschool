@@ -1,7 +1,7 @@
 package org.retal.logiweb.service.validators;
 
 import org.apache.log4j.Logger;
-import org.retal.logiweb.dao.CityDAO;
+import org.retal.logiweb.dao.impl.CityDAO;
 import org.retal.logiweb.domain.entity.Car;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

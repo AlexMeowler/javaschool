@@ -15,7 +15,7 @@
 <body>
 	<jsp:include page="menu.jsp"/>
 	<div class="container main-body">
-	<p>Welcome, administrator <sec:authentication property="principal.username" />!</p>
+	<h3>Welcome, administrator <sec:authentication property="principal.username" />!</h3>
 	<!--<c:url value="/addCityInfo" var = "addCityInfo"/>
 	<form:form action="${addCityInfo}" method="POST">
 		<input type="submit" value="Add city information to database">

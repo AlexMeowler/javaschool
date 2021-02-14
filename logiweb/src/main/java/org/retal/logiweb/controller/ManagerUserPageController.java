@@ -11,8 +11,8 @@ import org.retal.logiweb.domain.enums.UserRole;
 import org.retal.logiweb.dto.CityDTO;
 import org.retal.logiweb.dto.UserDTO;
 import org.retal.logiweb.dto.UserInfoDTO;
-import org.retal.logiweb.service.logic.CityService;
-import org.retal.logiweb.service.logic.UserService;
+import org.retal.logiweb.service.logic.impl.CityService;
+import org.retal.logiweb.service.logic.impl.UserService;
 import org.retal.logiweb.service.validators.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -88,12 +88,13 @@ public class ManagerUserPageController {
     List<City> cities = cityService.getAllCities();
     model.addAttribute(CITY_LIST_ATTRIBUTE_NAME, cities);
     model.addAttribute("page", page);
+    model.addAttribute("maxPage", maxPage);
     return "managerUsers";
   }
 
   /**
    * Method responsible for adding new drivers to database using
-   * {@linkplain org.retal.logiweb.service.logic.UserService service layer}.
+   * {@linkplain org.retal.logiweb.service.logic.impl.UserService service layer}.
    * 
    * @see org.retal.logiweb.domain.entity.User
    */
@@ -114,7 +115,7 @@ public class ManagerUserPageController {
 
   /**
    * Method responsible for attempt to delete driver from database when button is clicked using
-   * {@linkplain org.retal.logiweb.service.logic.UserService service layer}.
+   * {@linkplain org.retal.logiweb.service.logic.impl.UserService service layer}.
    * 
    * @see org.retal.logiweb.domain.entity.User
    */
@@ -173,8 +174,8 @@ public class ManagerUserPageController {
 
   /**
    * Method responsible for submitting edited driver to
-   * {@linkplain org.retal.logiweb.service.logic.UserService service layer} which will update entity
-   * if input is valid.
+   * {@linkplain org.retal.logiweb.service.logic.impl.UserService service layer} which will update
+   * entity if input is valid.
    * 
    * @see org.retal.logiweb.domain.entity.User
    */
@@ -218,12 +219,10 @@ public class ManagerUserPageController {
   }
 
   private List<User> getDriversForGivenPage(Integer page) {
-    List<User> users = userService.getAllDrivers();
-    return users.subList(USERS_PER_PAGE * (page - 1),
-        Math.min(users.size(), USERS_PER_PAGE * page));
+    return userService.getPartUsers(USERS_PER_PAGE * (page - 1), USERS_PER_PAGE);
   }
 
   private Integer getMaxPossiblePage() {
-    return (int) Math.ceil(1.0 * userService.getAllDrivers().size() / USERS_PER_PAGE);
+    return (int) Math.ceil(1.0 * userService.getRowsAmount() / USERS_PER_PAGE);
   }
 }

@@ -12,7 +12,7 @@
     <parent>
         <groupId>org.retal</groupId>
         <artifactId>javaschool</artifactId>
-        <version>2.2.0</version>
+        <version>2.4.0</version>
     </parent>
 
     <properties>
@@ -216,7 +216,7 @@
         <dependency>
             <groupId>org.retal</groupId>
             <artifactId>ejbs</artifactId>
-            <version>2.2.0</version>
+            <version>2.4.0</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.apache.ws.xmlschema/xmlschema-core -->
         <dependency>

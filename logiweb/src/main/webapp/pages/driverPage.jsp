@@ -15,10 +15,23 @@
 <body>
 	<jsp:include page="menu.jsp"/>
 	<div class="container main-body">
-	Welcome, driver ${user.userInfo.name} ${user.userInfo.surname}!<br>
-	You are currently located in <strong>${user.userInfo.city.currentCity}</strong>.<br>
-	In this month you worked <strong>${user.userInfo.hoursWorked}</strong> of <strong>176</strong> hours.<br>
-	Your status is <strong>&quot;${user.userInfo.status}&quot;</strong>.
+	<h3>Welcome, driver ${user.userInfo.name} ${user.userInfo.surname}!</h3>
+	Your information:
+	<table class="info-table">
+	   <caption hidden="true">Driver information</caption>
+	   <tr>
+	       <th scope="col">ID</th>
+	       <th scope="col">Location</th>
+	       <th scope="col">Worked in this month (hours)</th>
+	       <th scope="col">Status</th>
+	   </tr>
+	   <tr>
+	       <td>${user.id}</td>
+	       <td>${user.userInfo.city.currentCity}</td>
+	       <td>${user.userInfo.hoursWorked} out of 176</td>
+	       <td>${user.userInfo.status}</td>
+	   </tr>
+	</table>
 	<table>
 		<caption hidden="true">Status table</caption>
 		<tr hidden="true">
@@ -34,13 +47,14 @@
 		</td>
 		</tr>
 	</table>
+	<br>
 	<c:if test="${not empty error_argument or not empty error_car}">
 		<span class="error">${error_argument}${error_car}</span><br>
 	</c:if>
-	Your ID is ${user.id}.<br>
+	<br><br>
 	<c:set var = "orderText" value = "No orders assigned"/>
-	<c:if test = "${not empty order}"><c:set var = "orderText" value = "Currently assigned order:"/></c:if>
-	${orderText}
+	<c:if test = "${not empty order}"><c:set var = "orderText" value = "Currently assigned order"/></c:if>
+	<h4>${orderText}</h4>
 	<c:if test = "${not empty order}">
 	<table class ="info-table">
 		<caption hidden="true">Order info</caption>
@@ -102,6 +116,7 @@
 		No other drivers were assigned.
 	</c:if>
 	</p>
+	<h4>Actions:</h4>
 	<c:if test="${empty user.userInfo.hoursDrived or user.userInfo.hoursDrived + nextHopLength <= order.car.shiftLength}">
 		<c:if test="${not empty nextHop}">
 			<p>Next city on your route is <strong>${nextHop}</strong>, it should take about <strong>${nextHopLength}</strong> hours to reach it. 

@@ -5,7 +5,7 @@ import org.apache.log4j.Logger;
 import org.retal.logiweb.domain.entity.Car;
 import org.retal.logiweb.domain.ws.GetCarsStatisticsRequest;
 import org.retal.logiweb.domain.ws.GetCarsStatisticsResponse;
-import org.retal.logiweb.service.logic.CarService;
+import org.retal.logiweb.service.logic.impl.CarService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;

@@ -8,9 +8,9 @@ import org.retal.logiweb.domain.entity.Order;
 import org.retal.logiweb.domain.entity.SessionInfo;
 import org.retal.logiweb.domain.entity.User;
 import org.retal.logiweb.domain.enums.DriverStatus;
-import org.retal.logiweb.service.logic.CargoService;
-import org.retal.logiweb.service.logic.DriverService;
-import org.retal.logiweb.service.logic.OrderService;
+import org.retal.logiweb.service.logic.impl.CargoService;
+import org.retal.logiweb.service.logic.impl.DriverService;
+import org.retal.logiweb.service.logic.impl.OrderService;
 import org.retal.logiweb.service.validators.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -90,7 +90,7 @@ public class DriverPageController {
 
   /**
    * Method for changing driver status using
-   * {@linkplain org.retal.logiweb.service.logic.DriverService service layer}.
+   * {@linkplain org.retal.logiweb.service.logic.impl.DriverService service layer}.
    */
   @GetMapping(value = "/changeStatus/{status}")
   public RedirectView changeStatus(@PathVariable String status, RedirectAttributes redir) {
@@ -121,7 +121,7 @@ public class DriverPageController {
     BindingResult bindingResult = new BindException(id, "id");
     driverService.changeStatus(DriverStatus.LOADING_AND_UNLOADING_CARGO.toString(), bindingResult);
     boolean isOrderCompleted =
-        cargoService.updateCargoAndCheckOrderCompletion(id, bindingResult);
+        cargoService.updateCargoWithOrder(id, bindingResult);
     if (isOrderCompleted) {
       driverService.changeStatus(DriverStatus.ON_SHIFT.toString(), bindingResult);
     }

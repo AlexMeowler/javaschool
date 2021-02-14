@@ -18,10 +18,21 @@ import org.retal.logiweb.config.spring.app.hibernate.HibernateSessionFactory;
 import org.retal.logiweb.config.spring.web.RootConfig;
 import org.retal.logiweb.config.spring.web.WebConfig;
 import org.retal.logiweb.controller.AdminPageControllerTest;
+import org.retal.logiweb.dao.impl.CarDAO;
+import org.retal.logiweb.dao.impl.CargoDAO;
+import org.retal.logiweb.dao.impl.CityDAO;
+import org.retal.logiweb.dao.impl.CityDistanceDAO;
+import org.retal.logiweb.dao.impl.CompletedOrderInfoDAO;
+import org.retal.logiweb.dao.impl.OrderDAO;
+import org.retal.logiweb.dao.impl.OrderRouteProgressionDAO;
+import org.retal.logiweb.dao.impl.RoutePointDAO;
+import org.retal.logiweb.dao.impl.UserDAO;
+import org.retal.logiweb.dao.interfaces.DAO;
 import org.retal.logiweb.domain.entity.Car;
 import org.retal.logiweb.domain.entity.Cargo;
 import org.retal.logiweb.domain.entity.City;
 import org.retal.logiweb.domain.entity.CityDistance;
+import org.retal.logiweb.domain.entity.CompletedOrderInfo;
 import org.retal.logiweb.domain.entity.MethodUndefinedException;
 import org.retal.logiweb.domain.entity.Order;
 import org.retal.logiweb.domain.entity.OrderRouteProgression;
@@ -46,6 +57,8 @@ public class DAOTest {
   private CarDAO carDAO;
 
   private OrderRouteProgressionDAO orderRouteProgressionDAO;
+
+  private CompletedOrderInfoDAO completedOrderInfoDAO;
 
   private CityDistanceDAO cityDistanceDAO;
 
@@ -79,6 +92,11 @@ public class DAOTest {
   }
 
   @Autowired
+  public void setCompletedOrderInfoDAO(CompletedOrderInfoDAO completedOrderInfoDAO) {
+    this.completedOrderInfoDAO = completedOrderInfoDAO;
+  }
+
+  @Autowired
   public void setCityDistanceDAO(CityDistanceDAO cityDistanceDAO) {
     this.cityDistanceDAO = cityDistanceDAO;
   }
@@ -97,7 +115,7 @@ public class DAOTest {
   public void setRoutePointDAO(RoutePointDAO routePointDAO) {
     this.routePointDAO = routePointDAO;
   }
-  
+
   /**
    * Cleaning DB after all tests are performed.
    */
@@ -200,6 +218,16 @@ public class DAOTest {
   }
 
   @Test
+  public void testA40UserRowsCount() {
+    assertEquals(0, userDAO.getRowsAmount());
+  }
+
+  @Test
+  public void testA41UserPartRead() {
+    assertEquals(0, userDAO.readRows(0, 1).size());
+  }
+
+  @Test
   public void testA5UserDelete() {
     User user = userDAO.read(Integer.valueOf(1));
     userDAO.delete(user);
@@ -238,6 +266,16 @@ public class DAOTest {
   @Test(expected = IllegalArgumentException.class)
   public void testA9CarReadError() {
     carDAO.read(Integer.valueOf(4));
+  }
+
+  @Test
+  public void testB00CarGetRows() {
+    assertEquals(carDAO.readAll().size(), carDAO.getRowsAmount());
+  }
+
+  @Test
+  public void testB0CarReadPart() {
+    assertEquals(carDAO.readAll().get(1), carDAO.readRows(1, 1).get(0));
   }
 
   @Test(expected = MethodUndefinedException.class)
@@ -441,7 +479,7 @@ public class DAOTest {
     orderRouteProgressionDAO.add(orp);
     assertEquals(orderRouteProgressionDAO.read(1), orp);
   }
-  
+
   @Test
   public void testD5UpdateAndDeleteRouteProgression() {
     OrderRouteProgression orp = orderRouteProgressionDAO.read(1);
@@ -450,5 +488,26 @@ public class DAOTest {
     assertEquals(orderRouteProgressionDAO.read(1).getRouteCounter(), Integer.valueOf(1));
     orderRouteProgressionDAO.delete(orp);
     assertNull(orderRouteProgressionDAO.read(1));
+  }
+
+  @Test
+  public void testD6CompletedOrderAddAndRead() {
+    Order order = orderDAO.readAll().get(0);
+    completedOrderInfoDAO
+        .add(new CompletedOrderInfo(order.getCar().getRegistrationId(), "test", order));
+    assertEquals(orderDAO.readAll().get(0).getCompletedOrderInfo(),
+        completedOrderInfoDAO.read(order.getId()));
+  }
+
+  @Test(expected = MethodUndefinedException.class)
+  public void testD7DeleteCompletedOrderInfo() {
+    completedOrderInfoDAO.delete(completedOrderInfoDAO.read(1));
+  }
+
+  @Test(expected = MethodUndefinedException.class)
+  public void testD8UpdateCompletedOrderInfo() {
+    CompletedOrderInfo info = completedOrderInfoDAO.read(1);
+    info.setCarId("ZZ00000");
+    completedOrderInfoDAO.update(info);
   }
 }

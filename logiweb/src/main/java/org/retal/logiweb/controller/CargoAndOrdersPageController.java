@@ -11,10 +11,10 @@ import org.retal.logiweb.domain.entity.SessionInfo;
 import org.retal.logiweb.domain.entity.User;
 import org.retal.logiweb.domain.entity.UserInfo;
 import org.retal.logiweb.dto.RoutePointListWrapper;
-import org.retal.logiweb.service.logic.CarService;
-import org.retal.logiweb.service.logic.CargoService;
-import org.retal.logiweb.service.logic.CityService;
-import org.retal.logiweb.service.logic.OrderService;
+import org.retal.logiweb.service.logic.impl.CarService;
+import org.retal.logiweb.service.logic.impl.CargoService;
+import org.retal.logiweb.service.logic.impl.CityService;
+import org.retal.logiweb.service.logic.impl.OrderService;
 import org.retal.logiweb.service.validators.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -69,7 +69,7 @@ public class CargoAndOrdersPageController {
     model.addAttribute("current_user_name", userInfo.getName() + " " + userInfo.getSurname());
     model.addAttribute("cargoList", cargoService.getAllCargo());
     model.addAttribute("availableCargoList", getAllCitiesAndAssignableCargo()[1]);
-    List<Order> orders = orderService.getAllOrders();
+    List<Order> orders = orderService.getAllActiveOrders();
     model.addAttribute("ordersList", orders);
     model.addAttribute("cityList", cityService.getAllCities());
     List<Boolean> isOrderStarted = new ArrayList<>();
@@ -120,17 +120,17 @@ public class CargoAndOrdersPageController {
    *        {@linkplain org.retal.logiweb.domain.entity.Order Order} ID and B is
    *        {@linkplain org.retal.logiweb.domain.entity.Car Car} registration ID
    * @return error message if operation failed and null if operation succeeded.
-   * @see org.retal.logiweb.service.logic.OrderService
+   * @see org.retal.logiweb.service.logic.impl.OrderService
    */
   @GetMapping(value = "/changeCarForOrder/{data}")
   @ResponseBody
   public String changeCarForOrder(@PathVariable String data) {
-    return orderService.tryToChangeOrderCar(data);
+    return orderService.changeOrderCar(data);
   }
 
   /**
    * Method responsible for adding new order from form using
-   * {@linkplain org.retal.logiweb.service.logic.OrderService service layer}.
+   * {@linkplain org.retal.logiweb.service.logic.impl.OrderService service layer}.
    * 
    */
   @PostMapping(value = "/addNewOrder")
@@ -140,7 +140,7 @@ public class CargoAndOrdersPageController {
     if (list.getList() == null) {
       list.setList(new ArrayList<>());
     }
-    orderService.createOrderAndRoutePoints(list, bindingResult);
+    orderService.createOrderFromRoutePoints(list, bindingResult);
     if (bindingResult.hasErrors()) {
       redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + ROUTE_POINT_MODEL_ATTRIBUTE,
           bindingResult);

@@ -67,6 +67,10 @@ public class Order {
   @OneToOne(mappedBy = "order", fetch = FetchType.EAGER)
   @PrimaryKeyJoinColumn
   private OrderRouteProgression orderRouteProgression;
+  
+  @OneToOne(mappedBy = "order", fetch = FetchType.EAGER)
+  @PrimaryKeyJoinColumn
+  private CompletedOrderInfo completedOrderInfo;
 
   @Transient
   private Set<Cargo> cargo;
@@ -131,6 +135,14 @@ public class Order {
 
   public void setOrderRouteProgression(OrderRouteProgression orderRouteProgression) {
     this.orderRouteProgression = orderRouteProgression;
+  }
+  
+  public CompletedOrderInfo getCompletedOrderInfo() {
+    return completedOrderInfo;
+  }
+
+  public void setCompletedOrderInfo(CompletedOrderInfo completedOrderInfo) {
+    this.completedOrderInfo = completedOrderInfo;
   }
 
   public Set<Cargo> getCargo() {

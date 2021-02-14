@@ -6,7 +6,7 @@ import org.retal.logiweb.domain.entity.User;
 import org.retal.logiweb.domain.enums.DriverStatus;
 import org.retal.logiweb.domain.ws.GetDriversStatisticsRequest;
 import org.retal.logiweb.domain.ws.GetDriversStatisticsResponse;
-import org.retal.logiweb.service.logic.UserService;
+import org.retal.logiweb.service.logic.impl.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
