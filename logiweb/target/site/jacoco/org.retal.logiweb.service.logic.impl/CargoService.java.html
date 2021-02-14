@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CargoService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">logiweb</a> &gt; <a href="index.source.html" class="el_package">org.retal.logiweb.service.logic.impl</a> &gt; <span class="el_source">CargoService.java</span></div><h1>CargoService.java</h1><pre class="source lang-java linenums">package org.retal.logiweb.service.logic.impl;
+
+import java.util.List;
+import java.util.stream.Collectors;
+import org.apache.log4j.Logger;
+import org.retal.logiweb.dao.impl.CargoDAO;
+import org.retal.logiweb.domain.entity.Cargo;
+import org.retal.logiweb.domain.entity.Order;
+import org.retal.logiweb.domain.entity.RoutePoint;
+import org.retal.logiweb.domain.entity.SessionInfo;
+import org.retal.logiweb.domain.entity.User;
+import org.retal.logiweb.domain.enums.CargoStatus;
+import org.retal.logiweb.service.logic.interfaces.CargoServices;
+import org.retal.logiweb.service.validators.CargoValidator;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.Validator;
+
+/**
+ * Implementation of {@link CargoServices} interface.
+ * 
+ * @author Alexander Retivov
+ *
+ */
+@Service
+public class CargoService implements CargoServices {
+
+  private final CargoDAO cargoDAO;
+
+  private final Validator cargoValidator;
+
+  private final SessionInfo sessionInfo;
+
+  private OrderService orderService;
+
+<span class="fc" id="L37">  private static final Logger log = Logger.getLogger(CargoService.class);</span>
+
+  /**
+   * Creates an instance of this class using constructor-based dependency injection.
+   */
+  @Autowired
+<span class="fc" id="L43">  public CargoService(CargoDAO cargoDAO, CargoValidator cargoValidator, SessionInfo sessionInfo) {</span>
+<span class="fc" id="L44">    this.cargoDAO = cargoDAO;</span>
+<span class="fc" id="L45">    this.cargoValidator = cargoValidator;</span>
+<span class="fc" id="L46">    this.sessionInfo = sessionInfo;</span>
+<span class="fc" id="L47">  }</span>
+
+  public List&lt;Cargo&gt; getAllCargo() {
+<span class="fc" id="L50">    return cargoDAO.readAll();</span>
+  }
+
+  public Cargo getCargo(Integer id) {
+<span class="fc" id="L54">    return cargoDAO.read(id);</span>
+  }
+  
+  @Autowired
+  public void setOrderService(OrderService orderService) {
+<span class="fc" id="L59">    this.orderService = orderService;</span>
+<span class="fc" id="L60">  }</span>
+
+  @Override
+  public void addNewCargo(Cargo cargo, BindingResult bindingResult, String weight) {
+    try {
+<span class="fc" id="L65">      Integer weightInt = Integer.parseInt(weight);</span>
+<span class="fc" id="L66">      cargo.setMass(weightInt);</span>
+<span class="fc" id="L67">    } catch (NumberFormatException e) {</span>
+<span class="fc" id="L68">      bindingResult.reject(&quot;mass&quot;, &quot;Cargo weight length must be non-negative integer&quot;);</span>
+    }
+<span class="fc" id="L70">    cargoValidator.validate(cargo, bindingResult);</span>
+<span class="fc bfc" id="L71" title="All 2 branches covered.">    if (!bindingResult.hasErrors()) {</span>
+<span class="fc" id="L72">      cargoDAO.add(cargo);</span>
+    }
+<span class="fc" id="L74">  }</span>
+
+  @Override
+  public boolean updateCargoWithOrder(Integer id, BindingResult bindingResult) {
+<span class="fc" id="L78">    Cargo cargo = getCargo(id);</span>
+<span class="fc" id="L79">    User user = sessionInfo.getCurrentUser();</span>
+<span class="fc" id="L80">    Order order = orderService.getOrder(user.getUserInfo().getOrder().getId());</span>
+<span class="fc bfc" id="L81" title="All 2 branches covered.">    if (cargo == null) {</span>
+<span class="fc" id="L82">      bindingResult.reject(&quot;globalCargo&quot;, &quot;Cargo not found&quot;);</span>
+<span class="fc" id="L83">      log.warn(&quot;Cargo not found&quot;);</span>
+<span class="fc" id="L84">    } else {</span>
+<span class="fc bfc" id="L85" title="All 2 branches covered.">      if (!order.getCargo().contains(cargo)) {</span>
+<span class="fc" id="L86">        bindingResult.reject(&quot;globalCargo&quot;, &quot;Attempt to change unassigned to your current&quot;</span>
+            + &quot; order cargo. Please don't try to cahnge page code&quot;);
+<span class="fc" id="L88">        log.warn(&quot;Attempt to access unassigned cargo&quot;);</span>
+      }
+
+    }
+<span class="fc bfc" id="L92" title="All 2 branches covered.">    if (!bindingResult.hasErrors()) {</span>
+<span class="fc" id="L93">      CargoStatus status = CargoStatus.valueOf(cargo.getStatus().toUpperCase());</span>
+<span class="pc bpc" id="L94" title="1 of 3 branches missed.">      switch (status) {</span>
+        case PREPARED:
+<span class="fc" id="L96">          status = CargoStatus.LOADED;</span>
+<span class="fc" id="L97">          checkCityMatch(cargo, true, bindingResult);</span>
+<span class="fc" id="L98">          break;</span>
+        case LOADED:
+<span class="fc" id="L100">          checkCityMatch(cargo, false, bindingResult);</span>
+<span class="fc" id="L101">          status = CargoStatus.UNLOADED;</span>
+<span class="fc" id="L102">          break;</span>
+        case UNLOADED:
+        default:
+          break;
+      }
+<span class="fc bfc" id="L107" title="All 2 branches covered.">      if (!bindingResult.hasErrors()) {</span>
+<span class="fc" id="L108">        String newStatus = status.toString().toLowerCase();</span>
+<span class="fc" id="L109">        log.info(&quot;Cargo id=&quot; + cargo.getId() + &quot;: changed status from &quot; + cargo.getStatus() + &quot; to &quot;</span>
+<span class="fc" id="L110">            + newStatus);</span>
+<span class="fc" id="L111">        cargo.setStatus(newStatus);</span>
+<span class="fc" id="L112">        cargoDAO.update(cargo);</span>
+<span class="fc" id="L113">        return orderService.checkOrderForCompletion(order);</span>
+      }
+    }
+<span class="fc" id="L116">    return false;</span>
+  }
+
+  /**
+   * Checks if city where the driver is matches the city to load/unload cargo.
+   * 
+   * @param cargo {@linkplain org.retal.logiweb.domain.entity.Cargo Cargo} to be loaded/unloaded
+   * @param isLoading true if we are looking for match between city of load and current location,
+   *        false if we are looking for match between city of unload and current location
+   * @param bindingResult object to store validation errors
+   */
+  private void checkCityMatch(Cargo cargo, boolean isLoading, BindingResult bindingResult) {
+<span class="fc" id="L128">    User driver = sessionInfo.getCurrentUser();</span>
+<span class="fc" id="L129">    RoutePoint point = cargo.getPoints().stream().filter(c -&gt; c.getIsLoading().equals(isLoading))</span>
+<span class="fc" id="L130">        .collect(Collectors.toList()).get(0);</span>
+<span class="fc bfc" id="L131" title="All 2 branches covered.">    if (!point.getCity().equals(driver.getUserInfo().getCity())) {</span>
+<span class="pc bpc" id="L132" title="1 of 2 branches missed.">      String action = isLoading ? &quot;load&quot; : &quot;unload&quot;;</span>
+<span class="fc" id="L133">      bindingResult.reject(&quot;cityNotMatching&quot;, &quot;You must be in &quot; + point.getCity().getCurrentCity()</span>
+<span class="fc" id="L134">          + &quot; to &quot; + action + &quot; cargo \&quot;&quot; + cargo.getName() + &quot;\&quot;&quot;);</span>
+    }
+<span class="fc" id="L136">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>
