@@ -18,18 +18,20 @@ import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.retal.logiweb.config.spring.app.hibernate.HibernateSessionFactory;
 import org.retal.logiweb.controller.AdminPageControllerTest;
-import org.retal.logiweb.dao.CarDAO;
-import org.retal.logiweb.dao.CargoDAO;
-import org.retal.logiweb.dao.CityDAO;
-import org.retal.logiweb.dao.CityDistanceDAO;
-import org.retal.logiweb.dao.DAO;
-import org.retal.logiweb.dao.OrderDAO;
-import org.retal.logiweb.dao.RoutePointDAO;
-import org.retal.logiweb.dao.UserDAO;
+import org.retal.logiweb.dao.impl.CarDAO;
+import org.retal.logiweb.dao.impl.CargoDAO;
+import org.retal.logiweb.dao.impl.CityDAO;
+import org.retal.logiweb.dao.impl.CityDistanceDAO;
+import org.retal.logiweb.dao.impl.CompletedOrderInfoDAO;
+import org.retal.logiweb.dao.impl.OrderDAO;
+import org.retal.logiweb.dao.impl.RoutePointDAO;
+import org.retal.logiweb.dao.impl.UserDAO;
+import org.retal.logiweb.dao.interfaces.DAO;
 import org.retal.logiweb.domain.entity.Car;
 import org.retal.logiweb.domain.entity.Cargo;
 import org.retal.logiweb.domain.entity.City;
 import org.retal.logiweb.domain.entity.CityDistance;
+import org.retal.logiweb.domain.entity.CompletedOrderInfo;
 import org.retal.logiweb.domain.entity.Order;
 import org.retal.logiweb.domain.entity.RoutePoint;
 import org.retal.logiweb.domain.entity.User;
@@ -142,11 +144,12 @@ public class WebServicesTest {
   }
   
   @Test
-  public void testA2OrderEndpoint() throws Exception {
+  public void testA2CompletedOrderEndpoint() throws Exception {
     OrderDAO orderDAO = new OrderDAO();
     Order order = orderDAO.readAll().get(0);
     Session session = DAO.start();
     order.setCar(null);
+    order.setIsCompleted(true);
     orderDAO.setSession(session);
     orderDAO.update(order);
     DAO.end(session);
@@ -155,8 +158,10 @@ public class WebServicesTest {
     User user = userDAO.readAll().get(0);
     user.getUserInfo().setOrder(null);
     userDAO.update(user);
+    CompletedOrderInfoDAO completedOrderInfoDAO = new CompletedOrderInfoDAO();
+    completedOrderInfoDAO.add(new CompletedOrderInfo("AB12345", "Abc Abc (10)", order));
     Source requestPayload = new StringSource(getBody("/web/getOrdersReq.txt"));
-    Source responsePayload = new StringSource(getBody("/web/getOrdersRespNoCarNoDriver.txt"));
+    Source responsePayload = new StringSource(getBody("/web/getCompletedOrderResp.txt"));
     mockClient.sendRequest(withPayload(requestPayload)).andExpect(payload(responsePayload));
   }
   

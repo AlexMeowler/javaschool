@@ -17,8 +17,8 @@
 <body>
 	<jsp:include page="menu.jsp"/>
 	<div class="container main-body">
-	<p>Welcome, manager ${current_user_name}!</p>
-	<p>Cargo list:</p>
+	<h3>Welcome, manager ${current_user_name}!</h3>
+	<h3>Cargo list:</h3>
 	<table class="info-table">
 		<caption hidden="true">Cargo list</caption>
 		<tr>
@@ -38,12 +38,58 @@
 		</tr>
 		</c:forEach>
 	</table>
-	<p>Orders list:</p>
+	<button class = "table-edit-button" name = "openOrCloseForm" onclick = "showForm('formorder')">Add new order</button>
+    <c:set var = "hidden" value = ""/>
+    <c:if test = "${empty visible}"><c:set var = "hidden" value = "display:none;"/></c:if>
+    <c:url value="/addNewOrder" var = "addOrder"/>
+    <form:form id = "formorder" action="${addOrder}" method="POST" style = "${hidden}">
+        <span class = "error">${error_globalCity} ${error_globalCargo}</span>
+        <br>
+        <span class = "error">${error_emptyInput} ${error_globalCar} ${error_globalDrivers}</span>
+        <br>
+        <table id="rows" class="form-table">
+          <caption hidden="true">form</caption>
+            <tr hidden="true"><th scope="col">Hidden header</th></tr>
+            <c:forEach var="routePoint" items="${routePoints}" varStatus = "i">
+                <tr id="div${i.index}">
+                    <td><label>City</label></td>
+                    <td>
+                        <select id="city${i.index}" name="list[${i.index}].cityName">
+                            <c:forEach var="city" items="${cityList}">
+                                <option value = "${city.currentCity}" ${routePoint.cityName == city.currentCity ? 'selected' : ''}>${city.currentCity}</option>
+                            </c:forEach>
+                        </select>
+                    </td>
+                    <td><label>Cargo</label></td>
+                    <td>
+                        <select id="cargo${i.index}" name="list[${i.index}].cargoId">
+                            <c:forEach var="cargo" items="${availableCargoList}">
+                                <option value = "${cargo.id}" ${routePoint.cargoId == cargo.id ? 'selected' : ''}>${cargo.id}: ${cargo.name}</option>
+                            </c:forEach>
+                        </select>
+                    </td>
+                    <td><label>Status</label></td>
+                    <td>
+                        <select id="status${i.index}" name="list[${i.index}].isLoading">
+                            <option value="true" ${routePoint.isLoading ? 'selected' : ''}>Load</option>
+                            <option value="false" ${!routePoint.isLoading ? 'selected' : ''}>Drop</option>
+                        </select>
+                    </td>
+                    <td><a id="a${i.index}" href="javascript: deleteRow(${i.index});">Delete this row</a></td>
+                    <td><span class = "error">${routePoint.error}</span></td>
+                </tr>
+            </c:forEach>
+        </table>
+        <button type="button" class = "table-edit-button" name = "addRoutePoint" onclick = "addRow()">Add route point</button>
+        <br>
+        <br>
+        <input type="submit" value="Register order">
+    </form:form>
+	<h3>Active orders list:</h3>
 	<table class="info-table">
 		<caption hidden="true">Orders list</caption>
 		<tr>
 			<th scope="col">Order ID</th>
-			<th scope="col">Status</th>
 			<th scope="col">Assigned car</th>
 			<th scope="col">Route</th>
 			<th scope="col">Currently assigned drivers</th>
@@ -53,9 +99,6 @@
 		<c:forEach var="order" items="${ordersList}" varStatus="i">
 		<tr>
 			<td>${order.id}</td>
-			<c:set var = "status" value = "Not completed"/>
-			<c:if test = "${order.isCompleted}"><c:set var = "status" value = "Completed"/></c:if>
-			<td>${status}</td>
 			<td>
 				<c:if test="${not empty order.car}">${order.car.registrationId}</c:if>
 				<c:if test="${empty order.car}">-</c:if>
@@ -97,53 +140,6 @@
 		</tr>
 		</c:forEach>
 	</table>
-	<button class = "table-edit-button" name = "openOrCloseForm" onclick = "showForm('formorder')">Add new order</button>
-	<c:set var = "hidden" value = ""/>
-	<c:if test = "${empty visible}"><c:set var = "hidden" value = "display:none;"/></c:if>
-	<c:url value="/addNewOrder" var = "addOrder"/>
-	<form:form id = "formorder" action="${addOrder}" method="POST" style = "${hidden}">
-		<span class = "error">${error_globalCity} ${error_globalCargo}</span>
-		<br>
-		<span class = "error">${error_emptyInput} ${error_globalCar} ${error_globalDrivers}</span>
-		<br>
-		<table id="rows" class="form-table">
-		  <caption hidden="true">form</caption>
-            <tr hidden="true"><th scope="col">Hidden header</th></tr>
-			<c:forEach var="routePoint" items="${routePoints}" varStatus = "i">
-				<tr id="div${i.index}">
-					<td><label>City</label></td>
-					<td>
-						<select id="city${i.index}" name="list[${i.index}].cityName">
-							<c:forEach var="city" items="${cityList}">
-								<option value = "${city.currentCity}" ${routePoint.cityName == city.currentCity ? 'selected' : ''}>${city.currentCity}</option>
-							</c:forEach>
-						</select>
-					</td>
-					<td><label>Cargo</label></td>
-					<td>
-						<select id="cargo${i.index}" name="list[${i.index}].cargoId">
-							<c:forEach var="cargo" items="${availableCargoList}">
-								<option value = "${cargo.id}" ${routePoint.cargoId == cargo.id ? 'selected' : ''}>${cargo.id}: ${cargo.name}</option>
-							</c:forEach>
-						</select>
-					</td>
-					<td><label>Status</label></td>
-					<td>
-						<select id="status${i.index}" name="list[${i.index}].isLoading">
-							<option value="true" ${routePoint.isLoading ? 'selected' : ''}>Load</option>
-							<option value="false" ${!routePoint.isLoading ? 'selected' : ''}>Drop</option>
-						</select>
-					</td>
-					<td><a id="a${i.index}" href="javascript: deleteRow(${i.index});">Delete this row</a></td>
-					<td><span class = "error">${routePoint.error}</span></td>
-				</tr>
-			</c:forEach>
-		</table>
-		<button type="button" class = "table-edit-button" name = "addRoutePoint" onclick = "addRow()">Add route point</button>
-		<br>
-		<br>
-		<input type="submit" value="Register order">
-	</form:form>
 	<div class="footer"></div>
 	</div>
 </body>

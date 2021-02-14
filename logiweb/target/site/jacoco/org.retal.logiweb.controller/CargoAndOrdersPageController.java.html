@@ -11,10 +11,10 @@ import org.retal.logiweb.domain.entity.SessionInfo;
 import org.retal.logiweb.domain.entity.User;
 import org.retal.logiweb.domain.entity.UserInfo;
 import org.retal.logiweb.dto.RoutePointListWrapper;
-import org.retal.logiweb.service.logic.CarService;
-import org.retal.logiweb.service.logic.CargoService;
-import org.retal.logiweb.service.logic.CityService;
-import org.retal.logiweb.service.logic.OrderService;
+import org.retal.logiweb.service.logic.impl.CarService;
+import org.retal.logiweb.service.logic.impl.CargoService;
+import org.retal.logiweb.service.logic.impl.CityService;
+import org.retal.logiweb.service.logic.impl.OrderService;
 import org.retal.logiweb.service.validators.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -69,7 +69,7 @@ public class CargoAndOrdersPageController {
 <span class="fc" id="L69">    model.addAttribute(&quot;current_user_name&quot;, userInfo.getName() + &quot; &quot; + userInfo.getSurname());</span>
 <span class="fc" id="L70">    model.addAttribute(&quot;cargoList&quot;, cargoService.getAllCargo());</span>
 <span class="fc" id="L71">    model.addAttribute(&quot;availableCargoList&quot;, getAllCitiesAndAssignableCargo()[1]);</span>
-<span class="fc" id="L72">    List&lt;Order&gt; orders = orderService.getAllOrders();</span>
+<span class="fc" id="L72">    List&lt;Order&gt; orders = orderService.getAllActiveOrders();</span>
 <span class="fc" id="L73">    model.addAttribute(&quot;ordersList&quot;, orders);</span>
 <span class="fc" id="L74">    model.addAttribute(&quot;cityList&quot;, cityService.getAllCities());</span>
 <span class="fc" id="L75">    List&lt;Boolean&gt; isOrderStarted = new ArrayList&lt;&gt;();</span>
@@ -77,7 +77,7 @@ public class CargoAndOrdersPageController {
 <span class="fc" id="L77">    orders.forEach(o -&gt; {</span>
 <span class="fc" id="L78">      isOrderStarted.add(orderService.isOrderStarted(o));</span>
 <span class="fc" id="L79">      List&lt;Car&gt; cars = getAvailableCarsForOrder(o.getId());</span>
-<span class="fc bfc" id="L80" title="All 4 branches covered.">      hasCarsAvailable.add(cars != null &amp;&amp; !cars.isEmpty());</span>
+<span class="pc bpc" id="L80" title="1 of 4 branches missed.">      hasCarsAvailable.add(cars != null &amp;&amp; !cars.isEmpty());</span>
 <span class="fc" id="L81">    });</span>
 <span class="fc" id="L82">    model.addAttribute(&quot;orderStarted&quot;, isOrderStarted);</span>
 <span class="fc" id="L83">    model.addAttribute(&quot;hasCarsAvailable&quot;, hasCarsAvailable);</span>
@@ -120,17 +120,17 @@ public class CargoAndOrdersPageController {
    *        {@linkplain org.retal.logiweb.domain.entity.Order Order} ID and B is
    *        {@linkplain org.retal.logiweb.domain.entity.Car Car} registration ID
    * @return error message if operation failed and null if operation succeeded.
-   * @see org.retal.logiweb.service.logic.OrderService
+   * @see org.retal.logiweb.service.logic.impl.OrderService
    */
   @GetMapping(value = &quot;/changeCarForOrder/{data}&quot;)
   @ResponseBody
   public String changeCarForOrder(@PathVariable String data) {
-<span class="fc" id="L128">    return orderService.tryToChangeOrderCar(data);</span>
+<span class="fc" id="L128">    return orderService.changeOrderCar(data);</span>
   }
 
   /**
    * Method responsible for adding new order from form using
-   * {@linkplain org.retal.logiweb.service.logic.OrderService service layer}.
+   * {@linkplain org.retal.logiweb.service.logic.impl.OrderService service layer}.
    * 
    */
   @PostMapping(value = &quot;/addNewOrder&quot;)
@@ -140,7 +140,7 @@ public class CargoAndOrdersPageController {
 <span class="fc bfc" id="L140" title="All 2 branches covered.">    if (list.getList() == null) {</span>
 <span class="fc" id="L141">      list.setList(new ArrayList&lt;&gt;());</span>
     }
-<span class="fc" id="L143">    orderService.createOrderAndRoutePoints(list, bindingResult);</span>
+<span class="fc" id="L143">    orderService.createOrderFromRoutePoints(list, bindingResult);</span>
 <span class="fc bfc" id="L144" title="All 2 branches covered.">    if (bindingResult.hasErrors()) {</span>
 <span class="fc" id="L145">      redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + ROUTE_POINT_MODEL_ATTRIBUTE,</span>
 <span class="fc" id="L146">          bindingResult);</span>

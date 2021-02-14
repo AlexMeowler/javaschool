@@ -1,6 +1,6 @@
 package org.retal.logiweb.domain.entity;
 
-import org.retal.logiweb.dao.UserDAO;
+import org.retal.logiweb.dao.impl.UserDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;

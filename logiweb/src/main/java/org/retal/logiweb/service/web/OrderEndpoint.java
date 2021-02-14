@@ -1,10 +1,12 @@
 package org.retal.logiweb.service.web;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.log4j.Logger;
 import org.retal.logiweb.domain.entity.Cargo;
+import org.retal.logiweb.domain.entity.CompletedOrderInfo;
 import org.retal.logiweb.domain.entity.Order;
 import org.retal.logiweb.domain.entity.RoutePoint;
 import org.retal.logiweb.domain.entity.UserInfo;
@@ -15,7 +17,7 @@ import org.retal.logiweb.domain.ws.GetLatestOrdersRequest;
 import org.retal.logiweb.domain.ws.GetLatestOrdersResponse;
 import org.retal.logiweb.domain.ws.OrderList;
 import org.retal.logiweb.domain.ws.OrderWS;
-import org.retal.logiweb.service.logic.OrderService;
+import org.retal.logiweb.service.logic.impl.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
@@ -60,7 +62,8 @@ public class OrderEndpoint {
     OrderWS mapped = new OrderWS();
     mapped.setId(order.getId());
     mapped.setIsCompleted(order.getIsCompleted());
-    mapped.setCar(order.getCar() != null ? order.getCar().getRegistrationId() : "-");
+    mapped.setCar(order.getCar() != null ? order.getCar().getRegistrationId()
+        : order.getCompletedOrderInfo().getCarId());
     mapped.setRoute(order.getRoute());
     mapped.setDriverList(toMappedDriverList(order));
     mapped.setCargoList(toMappedCargoList(order));
@@ -71,7 +74,9 @@ public class OrderEndpoint {
     DriverList list = new DriverList();
     Set<UserInfo> driverInfo = order.getDriverInfo();
     if (driverInfo.isEmpty()) {
-      list.getDrivers().add("-");
+      Arrays.asList(
+          order.getCompletedOrderInfo().getDrivers().split(CompletedOrderInfo.DRIVERS_DELIMETER))
+          .forEach(list.getDrivers()::add);
       return list;
     }
     driverInfo.stream().forEach(ui -> list.getDrivers()

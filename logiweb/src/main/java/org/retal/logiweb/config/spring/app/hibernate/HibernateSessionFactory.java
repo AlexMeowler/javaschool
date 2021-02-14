@@ -10,6 +10,7 @@ import org.retal.logiweb.domain.entity.Car;
 import org.retal.logiweb.domain.entity.Cargo;
 import org.retal.logiweb.domain.entity.City;
 import org.retal.logiweb.domain.entity.CityDistance;
+import org.retal.logiweb.domain.entity.CompletedOrderInfo;
 import org.retal.logiweb.domain.entity.Order;
 import org.retal.logiweb.domain.entity.OrderRouteProgression;
 import org.retal.logiweb.domain.entity.RoutePoint;
@@ -53,7 +54,8 @@ public class HibernateSessionFactory {
       config.addAnnotatedClass(User.class).addAnnotatedClass(UserInfo.class)
           .addAnnotatedClass(Car.class).addAnnotatedClass(City.class).addAnnotatedClass(Cargo.class)
           .addAnnotatedClass(RoutePoint.class).addAnnotatedClass(Order.class)
-          .addAnnotatedClass(CityDistance.class).addAnnotatedClass(OrderRouteProgression.class);
+          .addAnnotatedClass(CityDistance.class).addAnnotatedClass(OrderRouteProgression.class)
+          .addAnnotatedClass(CompletedOrderInfo.class);
       ServiceRegistry serviceRegistry =
           new StandardServiceRegistryBuilder().applySettings(config.getProperties()).build();
       sessionFactory = config.buildSessionFactory(serviceRegistry);

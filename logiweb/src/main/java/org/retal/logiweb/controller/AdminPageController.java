@@ -13,10 +13,10 @@ import org.retal.logiweb.dto.CargoDTO;
 import org.retal.logiweb.dto.CityDTO;
 import org.retal.logiweb.dto.UserDTO;
 import org.retal.logiweb.dto.UserInfoDTO;
-import org.retal.logiweb.service.logic.CarService;
-import org.retal.logiweb.service.logic.CargoService;
-import org.retal.logiweb.service.logic.CityService;
-import org.retal.logiweb.service.logic.UserService;
+import org.retal.logiweb.service.logic.impl.CarService;
+import org.retal.logiweb.service.logic.impl.CargoService;
+import org.retal.logiweb.service.logic.impl.CityService;
+import org.retal.logiweb.service.logic.impl.UserService;
 import org.retal.logiweb.service.validators.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -135,7 +135,7 @@ public class AdminPageController {
 
   /**
    * Method responsible for adding new user to database from form on page using
-   * {@linkplain org.retal.logiweb.service.logic.UserService service layer}.
+   * {@linkplain org.retal.logiweb.service.logic.impl.UserService service layer}.
    * 
    * @see org.retal.logiweb.domain.entity.User
    */
@@ -156,7 +156,7 @@ public class AdminPageController {
 
   /**
    * Method responsible for attempt to delete user from database when button is clicked using
-   * {@linkplain org.retal.logiweb.service.logic.UserService service layer}.
+   * {@linkplain org.retal.logiweb.service.logic.impl.UserService service layer}.
    * 
    * @see org.retal.logiweb.domain.entity.User
    */
@@ -209,8 +209,8 @@ public class AdminPageController {
 
   /**
    * Method responsible for submitting edited user to
-   * {@linkplain org.retal.logiweb.service.logic.UserService service layer} which will update user
-   * if input is valid.
+   * {@linkplain org.retal.logiweb.service.logic.impl.UserService service layer} which will update
+   * user if input is valid.
    * 
    * @see org.retal.logiweb.domain.entity.User
    */
@@ -234,7 +234,7 @@ public class AdminPageController {
 
   /**
    * Method responsible for adding cargo entities using
-   * {@linkplain org.retal.logiweb.service.logic.OrderService service layer}.
+   * {@linkplain org.retal.logiweb.service.logic.impl.OrderService service layer}.
    * 
    * @see org.retal.logiweb.domain.entity.Cargo
    */
