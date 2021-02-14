@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>OrderEndpoint.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">logiweb</a> &gt; <a href="index.source.html" class="el_package">org.retal.logiweb.service.web</a> &gt; <span class="el_source">OrderEndpoint.java</span></div><h1>OrderEndpoint.java</h1><pre class="source lang-java linenums">package org.retal.logiweb.service.web;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import org.apache.log4j.Logger;
+import org.retal.logiweb.domain.entity.Cargo;
+import org.retal.logiweb.domain.entity.CompletedOrderInfo;
+import org.retal.logiweb.domain.entity.Order;
+import org.retal.logiweb.domain.entity.RoutePoint;
+import org.retal.logiweb.domain.entity.UserInfo;
+import org.retal.logiweb.domain.ws.CargoList;
+import org.retal.logiweb.domain.ws.CargoWS;
+import org.retal.logiweb.domain.ws.DriverList;
+import org.retal.logiweb.domain.ws.GetLatestOrdersRequest;
+import org.retal.logiweb.domain.ws.GetLatestOrdersResponse;
+import org.retal.logiweb.domain.ws.OrderList;
+import org.retal.logiweb.domain.ws.OrderWS;
+import org.retal.logiweb.service.logic.impl.OrderService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ws.server.endpoint.annotation.Endpoint;
+import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
+import org.springframework.ws.server.endpoint.annotation.RequestPayload;
+import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
+
+@Endpoint
+public class OrderEndpoint {
+
+  private final OrderService cargoAndOrdersService;
+
+  private static final int LIST_SIZE = 10;
+
+  private static final String NAMESPACE_URI = &quot;http://retal.org/logiweb/ws&quot;;
+
+<span class="fc" id="L36">  private static final Logger log = Logger.getLogger(OrderEndpoint.class);</span>
+
+  @Autowired
+<span class="fc" id="L39">  public OrderEndpoint(OrderService cargoAndOrdersService) {</span>
+<span class="fc" id="L40">    this.cargoAndOrdersService = cargoAndOrdersService;</span>
+<span class="fc" id="L41">  }</span>
+
+  /**
+   * Provides full information about {@link #LIST_SIZE} latest orders.
+   */
+  @PayloadRoot(namespace = NAMESPACE_URI, localPart = &quot;getLatestOrdersRequest&quot;)
+  @ResponsePayload
+  public GetLatestOrdersResponse getLatestOrders(@RequestPayload GetLatestOrdersRequest request) {
+<span class="fc" id="L49">    log.info(&quot;Received SOAP request&quot;);</span>
+<span class="fc" id="L50">    List&lt;Order&gt; orders = cargoAndOrdersService.getAllOrders();</span>
+<span class="fc" id="L51">    OrderList list = new OrderList();</span>
+<span class="fc" id="L52">    int startIndex = Math.max(0, orders.size() - LIST_SIZE);</span>
+<span class="fc" id="L53">    orders.subList(startIndex, orders.size()).stream().map(this::toWebServiceResponse)</span>
+<span class="fc" id="L54">        .forEach(o -&gt; list.getOrders().add(o));</span>
+<span class="fc" id="L55">    GetLatestOrdersResponse response = new GetLatestOrdersResponse();</span>
+<span class="fc" id="L56">    response.setOrderList(list);</span>
+<span class="fc" id="L57">    log.info(&quot;Sending SOAP response&quot;);</span>
+<span class="fc" id="L58">    return response;</span>
+  }
+
+  private OrderWS toWebServiceResponse(Order order) {
+<span class="fc" id="L62">    OrderWS mapped = new OrderWS();</span>
+<span class="fc" id="L63">    mapped.setId(order.getId());</span>
+<span class="fc" id="L64">    mapped.setIsCompleted(order.getIsCompleted());</span>
+<span class="fc bfc" id="L65" title="All 2 branches covered.">    mapped.setCar(order.getCar() != null ? order.getCar().getRegistrationId()</span>
+<span class="fc" id="L66">        : order.getCompletedOrderInfo().getCarId());</span>
+<span class="fc" id="L67">    mapped.setRoute(order.getRoute());</span>
+<span class="fc" id="L68">    mapped.setDriverList(toMappedDriverList(order));</span>
+<span class="fc" id="L69">    mapped.setCargoList(toMappedCargoList(order));</span>
+<span class="fc" id="L70">    return mapped;</span>
+  }
+
+  private DriverList toMappedDriverList(Order order) {
+<span class="fc" id="L74">    DriverList list = new DriverList();</span>
+<span class="fc" id="L75">    Set&lt;UserInfo&gt; driverInfo = order.getDriverInfo();</span>
+<span class="fc bfc" id="L76" title="All 2 branches covered.">    if (driverInfo.isEmpty()) {</span>
+<span class="fc" id="L77">      Arrays.asList(</span>
+<span class="fc" id="L78">          order.getCompletedOrderInfo().getDrivers().split(CompletedOrderInfo.DRIVERS_DELIMETER))</span>
+<span class="fc" id="L79">          .forEach(list.getDrivers()::add);</span>
+<span class="fc" id="L80">      return list;</span>
+    }
+<span class="fc" id="L82">    driverInfo.stream().forEach(ui -&gt; list.getDrivers()</span>
+<span class="fc" id="L83">        .add(String.format(&quot;%s %s (%d)&quot;, ui.getName(), ui.getSurname(), ui.getUser().getId())));</span>
+<span class="fc" id="L84">    return list;</span>
+  }
+
+  private CargoList toMappedCargoList(Order order) {
+<span class="fc" id="L88">    CargoList list = new CargoList();</span>
+<span class="fc" id="L89">    order.getCargo().stream().map(this::toMappedCargo).forEach(list.getCargo()::add);</span>
+<span class="fc" id="L90">    return list;</span>
+  }
+
+  private CargoWS toMappedCargo(Cargo cargo) {
+<span class="fc" id="L94">    CargoWS cargoWS = new CargoWS();</span>
+<span class="fc" id="L95">    cargoWS.setId(cargo.getId());</span>
+<span class="fc" id="L96">    cargoWS.setName(cargo.getName());</span>
+<span class="fc" id="L97">    List&lt;RoutePoint&gt; points =</span>
+<span class="fc" id="L98">        cargo.getPoints().stream().sorted((a, b) -&gt; b.getIsLoading().compareTo(a.getIsLoading()))</span>
+<span class="fc" id="L99">            .collect(Collectors.toList());</span>
+<span class="fc" id="L100">    cargoWS.setFrom(points.get(0).getCity().getCurrentCity());</span>
+<span class="fc" id="L101">    cargoWS.setTo(points.get(1).getCity().getCurrentCity());</span>
+<span class="fc" id="L102">    return cargoWS;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CompletedOrdersPageController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">logiweb</a> &gt; <a href="index.source.html" class="el_package">org.retal.logiweb.controller</a> &gt; <span class="el_source">CompletedOrdersPageController.java</span></div><h1>CompletedOrdersPageController.java</h1><pre class="source lang-java linenums">package org.retal.logiweb.controller;
+
+import java.util.List;
+import org.retal.logiweb.domain.entity.Order;
+import org.retal.logiweb.domain.entity.SessionInfo;
+import org.retal.logiweb.domain.entity.User;
+import org.retal.logiweb.domain.entity.UserInfo;
+import org.retal.logiweb.service.logic.impl.OrderService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+
+@Controller
+public class CompletedOrdersPageController {
+
+  private final SessionInfo sessionInfo;
+
+  private final OrderService orderService;
+
+  /**
+   * Creates an instance of this class using constructor-based dependency injection.
+   */
+  @Autowired
+<span class="fc" id="L25">  public CompletedOrdersPageController(SessionInfo sessionInfo, OrderService orderService) {</span>
+<span class="fc" id="L26">    this.sessionInfo = sessionInfo;</span>
+<span class="fc" id="L27">    this.orderService = orderService;</span>
+<span class="fc" id="L28">  }</span>
+
+  /**
+   * Method responsible for showing the main page for cargo and orders.
+   */
+  @GetMapping(value = &quot;/completedOrders&quot;)
+  public String getCargoAndOrdersPage(Model model) {
+<span class="fc" id="L35">    User user = sessionInfo.getCurrentUser();</span>
+<span class="fc" id="L36">    UserInfo userInfo = user.getUserInfo();</span>
+<span class="fc" id="L37">    model.addAttribute(&quot;current_user_name&quot;, userInfo.getName() + &quot; &quot; + userInfo.getSurname());</span>
+<span class="fc" id="L38">    List&lt;Order&gt; orders = orderService.getAllCompletedOrders();</span>
+<span class="fc" id="L39">    model.addAttribute(&quot;ordersList&quot;, orders);</span>
+<span class="fc" id="L40">    return &quot;completedOrders&quot;;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

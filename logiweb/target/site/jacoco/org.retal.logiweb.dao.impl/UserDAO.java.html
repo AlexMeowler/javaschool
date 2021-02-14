@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UserDAO.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">logiweb</a> &gt; <a href="index.source.html" class="el_package">org.retal.logiweb.dao.impl</a> &gt; <span class="el_source">UserDAO.java</span></div><h1>UserDAO.java</h1><pre class="source lang-java linenums">package org.retal.logiweb.dao.impl;
+
+import java.math.BigInteger;
+import java.util.List;
+import org.apache.log4j.Logger;
+import org.hibernate.Session;
+import org.retal.logiweb.dao.interfaces.CountableRows;
+import org.retal.logiweb.dao.interfaces.DAO;
+import org.retal.logiweb.dao.interfaces.PartRowsReader;
+import org.retal.logiweb.domain.entity.User;
+import org.retal.logiweb.service.validators.UserValidator;
+import org.springframework.stereotype.Component;
+
+@Component
+<span class="fc" id="L15">public class UserDAO implements DAO&lt;User&gt;, CountableRows, PartRowsReader&lt;User&gt; {</span>
+
+<span class="fc" id="L17">  private static final Logger log = Logger.getLogger(UserDAO.class);</span>
+
+<span class="fc" id="L19">  private static final String TABLE_NAME = &quot;USERS&quot;;</span>
+
+  @Override
+  public void add(User user) {
+<span class="fc" id="L23">    log.info(&quot;Attempt to add user: name='&quot; + user.getLogin() + &quot;', role='&quot; + user.getRole() + &quot;'&quot;);</span>
+<span class="fc" id="L24">    Session session = DAO.start();</span>
+<span class="fc" id="L25">    session.save(user);</span>
+<span class="fc" id="L26">    session.flush();</span>
+<span class="fc" id="L27">    DAO.end(session);</span>
+<span class="fc" id="L28">  }</span>
+
+  @Override
+  public User read(Object... keys) {
+<span class="fc" id="L32">    DAO.validatePrimaryKeys(new Class&lt;?&gt;[] {Integer.class}, keys);</span>
+<span class="fc" id="L33">    Integer id = (Integer) keys[0];</span>
+<span class="fc" id="L34">    Session session = DAO.start();</span>
+<span class="fc" id="L35">    User user = session.get(User.class, id);</span>
+<span class="fc bfc" id="L36" title="All 2 branches covered.">    if (user != null) {</span>
+<span class="fc" id="L37">      log.debug(&quot;for user id='&quot; + user.getId() + &quot;' user info = &quot; + user.getUserInfo().toString());</span>
+<span class="fc" id="L38">    } else {</span>
+<span class="fc" id="L39">      log.debug(&quot;user not found&quot;);</span>
+    }
+<span class="fc" id="L41">    DAO.end(session);</span>
+<span class="fc" id="L42">    return user;</span>
+  }
+
+  /**
+   * Method for finding users by their login ({@link UserDAO#read(Object...)} method won't work
+   * because login is not primary key).
+   * 
+   * @param username user login
+   * @return found user if there is one and only one user with that login, null otherwise
+   */
+  public User findUser(String username) {
+<span class="fc bfc" id="L53" title="All 2 branches covered.">    if (!UserValidator.checkForMaliciousInput(username).isEmpty()) {</span>
+<span class="fc" id="L54">      log.warn(&quot;Attempt to inject malicious input&quot;);</span>
+<span class="fc" id="L55">      return null;</span>
+    }
+<span class="fc" id="L57">    Session session = DAO.start();</span>
+<span class="fc" id="L58">    String query = String.format(&quot;SELECT * FROM %s WHERE login= '%s'&quot;, TABLE_NAME, username);</span>
+<span class="fc" id="L59">    List&lt;User&gt; users = session.createNativeQuery(query, User.class).getResultList();</span>
+<span class="fc" id="L60">    DAO.end(session);</span>
+<span class="fc bfc" id="L61" title="All 2 branches covered.">    return users.size() == 1 ? users.get(0) : null;</span>
+  }
+
+  @Override
+  public List&lt;User&gt; readAll() {
+<span class="fc" id="L66">    Session session = DAO.start();</span>
+<span class="fc" id="L67">    List&lt;User&gt; users =</span>
+<span class="fc" id="L68">        session.createNativeQuery(&quot;SELECT * FROM &quot; + TABLE_NAME, User.class).getResultList();</span>
+<span class="fc" id="L69">    DAO.end(session);</span>
+<span class="fc" id="L70">    log.info(users.size() + &quot; users retrieved&quot;);</span>
+<span class="fc" id="L71">    return users;</span>
+  }
+
+  /**
+   * Method for fetching all users with given role.
+   * 
+   * @param role user role in lower case
+   * @return List of user entities with matching role
+   */
+  public List&lt;User&gt; readAllWithRole(String role) {
+<span class="fc" id="L81">    role = role.toLowerCase();</span>
+<span class="fc bfc" id="L82" title="All 2 branches covered.">    if (!UserValidator.checkForMaliciousInput(role).isEmpty()) {</span>
+<span class="fc" id="L83">      log.warn(&quot;Attempt to inject malicious input&quot;);</span>
+<span class="fc" id="L84">      return null;</span>
+    }
+<span class="fc" id="L86">    Session session = DAO.start();</span>
+<span class="fc" id="L87">    List&lt;User&gt; users =</span>
+<span class="fc" id="L88">        session.createNativeQuery(&quot;SELECT * FROM &quot; + TABLE_NAME + &quot; WHERE role = '&quot; + role + &quot;'&quot;,</span>
+<span class="fc" id="L89">            User.class).getResultList();</span>
+<span class="fc" id="L90">    log.debug(&quot;Retrieved &quot; + users.size() + &quot; users with role '&quot; + role + &quot;'&quot;);</span>
+<span class="fc" id="L91">    DAO.end(session);</span>
+<span class="fc" id="L92">    return users;</span>
+  }
+
+  @Override
+  public void update(User newUser) {
+<span class="fc" id="L97">    log.info(&quot;Finishing editing user id = &quot; + newUser.getId());</span>
+<span class="fc" id="L98">    Session session = DAO.start();</span>
+<span class="fc" id="L99">    session.update(newUser);</span>
+<span class="fc" id="L100">    session.flush();</span>
+<span class="fc" id="L101">    DAO.end(session);</span>
+<span class="fc" id="L102">  }</span>
+
+  @Override
+  public void delete(User user) {
+<span class="fc" id="L106">    log.info(&quot;Attempt to delete user: &quot; + user.toString());</span>
+<span class="fc" id="L107">    Session session = DAO.start();</span>
+<span class="fc" id="L108">    session.delete(user);</span>
+<span class="fc" id="L109">    session.flush();</span>
+<span class="fc" id="L110">    DAO.end(session);</span>
+<span class="fc" id="L111">  }</span>
+
+  /**
+   * Reads part of table and returns it as list. Only drivers are accounted.
+   * 
+   * @param from number of row from which reading is started (the row itself is excluded)
+   * @param amount amount of rows to be read from database
+   * @return list of read rows
+   */
+  @Override
+  public List&lt;User&gt; readRows(int from, int amount) {
+<span class="fc" id="L122">    Session session = DAO.start();</span>
+<span class="fc" id="L123">    List&lt;User&gt; users =</span>
+<span class="fc" id="L124">        session.createNativeQuery(String.format(&quot;SELECT * FROM %s WHERE role = '%s' LIMIT %d, %d&quot;,</span>
+<span class="fc" id="L125">            TABLE_NAME, &quot;driver&quot;, from, amount), User.class).getResultList();</span>
+<span class="fc" id="L126">    log.info(users.size() + &quot; users retrieved&quot;);</span>
+<span class="fc" id="L127">    DAO.end(session);</span>
+<span class="fc" id="L128">    return users;</span>
+  }
+
+  /**
+   * Returns the amount of rows in table. Only drivers are accounted.
+   * 
+   * @return the amount of rows
+   */
+  @Override
+  public int getRowsAmount() {
+<span class="fc" id="L138">    Session session = DAO.start();</span>
+<span class="fc" id="L139">    BigInteger amount = (BigInteger) session</span>
+<span class="fc" id="L140">        .createNativeQuery(&quot;SELECT COUNT(*) FROM &quot; + TABLE_NAME + &quot; WHERE role = 'driver'&quot;)</span>
+<span class="fc" id="L141">        .getSingleResult();</span>
+<span class="fc" id="L142">    DAO.end(session);</span>
+<span class="fc" id="L143">    return amount.intValue();</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>
