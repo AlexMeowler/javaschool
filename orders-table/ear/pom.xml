@@ -70,6 +70,18 @@
 							<port>10090</port>
 						</configuration>
 					</execution>
+                    <execution>
+                        <id>deploy-to-google-cloud</id>
+                        <goals>
+                            <goal>deploy</goal>
+                        </goals>
+                        <configuration>
+                            <force>true</force>
+                            <id>WildFlyServer</id>
+                            <hostname>34.105.76.76</hostname>
+                            <port>9990</port>
+                        </configuration>
+                    </execution>
 				</executions>
 			</plugin>
 		</plugins>
