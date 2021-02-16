@@ -15,7 +15,7 @@ public class CarDAO implements DAO<Car>, CountableRows, PartRowsReader<Car> {
 
   private static final Logger log = Logger.getLogger(CarDAO.class);
 
-  private static final String TABLE_NAME = "CARS";
+  private static final String TABLE_NAME = "cars";
 
   @Override
   public void add(Car car) {

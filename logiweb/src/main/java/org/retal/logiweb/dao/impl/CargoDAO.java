@@ -13,7 +13,7 @@ public class CargoDAO implements DAO<Cargo> {
 
   private static final Logger log = Logger.getLogger(CargoDAO.class);
   
-  private static final String TABLE_NAME = "CARGO";
+  private static final String TABLE_NAME = "cargo";
 
   @Override
   public void add(Cargo cargo) {

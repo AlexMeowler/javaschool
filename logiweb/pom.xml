@@ -217,6 +217,7 @@
             <groupId>org.retal</groupId>
             <artifactId>ejbs</artifactId>
             <version>2.4.0</version>
+            <type>ejb</type>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.apache.ws.xmlschema/xmlschema-core -->
         <dependency>
@@ -308,6 +309,18 @@
                             <server>TomcatServer</server>
                             <path>/logiweb</path>
                             <port>8080</port>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>deploy-to-google-cloud</id>
+                        <goals>
+                            <goal>deploy</goal>
+                        </goals>
+                        <configuration>
+                            <update>true</update>
+                            <url>http://34.94.176.120/manager/text</url>
+                            <server>TomcatServer</server>
+                            <path>/logiweb</path>
                         </configuration>
                     </execution>
                 </executions>

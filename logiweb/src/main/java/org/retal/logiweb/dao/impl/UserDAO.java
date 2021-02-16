@@ -16,7 +16,7 @@ public class UserDAO implements DAO<User>, CountableRows, PartRowsReader<User> {
 
   private static final Logger log = Logger.getLogger(UserDAO.class);
 
-  private static final String TABLE_NAME = "USERS";
+  private static final String TABLE_NAME = "users";
 
   @Override
   public void add(User user) {

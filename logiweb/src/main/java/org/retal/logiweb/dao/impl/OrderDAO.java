@@ -25,7 +25,7 @@ public class OrderDAO implements DAO<Order> {
 
   private static final Logger log = Logger.getLogger(OrderDAO.class);
   
-  private static final String TABLE_NAME = "ORDERS";
+  private static final String TABLE_NAME = "orders";
 
   @Override
   public void add(Order t) {
