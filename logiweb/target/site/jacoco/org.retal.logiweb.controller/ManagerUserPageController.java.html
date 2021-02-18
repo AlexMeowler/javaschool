@@ -45,8 +45,8 @@ public class ManagerUserPageController {
    * Creates an instance of this class using constructor-based dependency injection.
    */
   @Autowired
-<span class="fc" id="L48">  public ManagerUserPageController(SessionInfo sessionInfo, UserService userService,</span>
-      CityService cityService) {
+  public ManagerUserPageController(SessionInfo sessionInfo, UserService userService,
+<span class="fc" id="L49">      CityService cityService) {</span>
 <span class="fc" id="L50">    this.sessionInfo = sessionInfo;</span>
 <span class="fc" id="L51">    this.userService = userService;</span>
 <span class="fc" id="L52">    this.cityService = cityService;</span>
@@ -78,7 +78,7 @@ public class ManagerUserPageController {
 <span class="fc" id="L78">    Map&lt;String, String&gt; errors = UserValidator.convertErrorsToHashMap(userResult);</span>
 <span class="fc bfc" id="L79" title="All 2 branches covered.">    for (Map.Entry&lt;String, String&gt; e : errors.entrySet()) {</span>
 <span class="fc" id="L80">      log.debug(e.getKey() + &quot;:&quot; + e.getValue());</span>
-    }
+<span class="fc" id="L81">    }</span>
 <span class="fc" id="L82">    model.addAllAttributes(errors);</span>
 <span class="fc" id="L83">    User user = sessionInfo.getCurrentUser();</span>
 <span class="fc" id="L84">    UserInfo userInfo = user.getUserInfo();</span>
@@ -129,7 +129,7 @@ public class ManagerUserPageController {
     }
 <span class="fc bfc" id="L130" title="All 2 branches covered.">    if (url403.equals(UserService.DELETION_UPDATION_ERROR)) {</span>
 <span class="fc" id="L131">      redir.addFlashAttribute(&quot;error_userDeletionFailed&quot;,</span>
-<span class="fc" id="L132">          &quot;Could not delete driver due to assigned order or being driving car&quot;);</span>
+          &quot;Could not delete driver due to assigned order or being driving car&quot;);
     }
 <span class="fc" id="L134">    return redirectView;</span>
   }
@@ -148,7 +148,7 @@ public class ManagerUserPageController {
 <span class="fc bfc" id="L148" title="All 2 branches covered.">    if (userService.userHasRightsToEditOrDeleteUser(we, target)) {</span>
 <span class="fc" id="L149">      redir.addFlashAttribute(&quot;user&quot;, target);</span>
 <span class="fc" id="L150">      redir.addFlashAttribute(&quot;we&quot;, we);</span>
-<span class="fc" id="L151">    } else {</span>
+    } else {
 <span class="fc" id="L152">      redirectView.setUrl(&quot;/403/&quot; + we.getLogin());</span>
 <span class="fc" id="L153">      log.debug(redirectView.getUrl());</span>
     }

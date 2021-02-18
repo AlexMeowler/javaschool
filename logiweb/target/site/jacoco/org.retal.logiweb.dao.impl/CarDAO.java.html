@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 
 <span class="fc" id="L16">  private static final Logger log = Logger.getLogger(CarDAO.class);</span>
 
-<span class="fc" id="L18">  private static final String TABLE_NAME = &quot;cars&quot;;</span>
+  private static final String TABLE_NAME = &quot;cars&quot;;
 
   @Override
   public void add(Car car) {
@@ -68,7 +68,7 @@ import org.springframework.stereotype.Component;
   public List&lt;Car&gt; readRows(int from, int amount) {
 <span class="fc" id="L69">    Session session = DAO.start();</span>
 <span class="fc" id="L70">    List&lt;Car&gt; cars =</span>
-<span class="fc" id="L71">        session</span>
+        session
 <span class="fc" id="L72">            .createNativeQuery(</span>
 <span class="fc" id="L73">                String.format(&quot;SELECT * FROM %s LIMIT %d, %d&quot;, TABLE_NAME, from, amount), Car.class)</span>
 <span class="fc" id="L74">            .getResultList();</span>

@@ -16,7 +16,7 @@
 	<jsp:include page="menu.jsp"/>
 	<div class="container main-body">
 	<h3>Welcome, driver ${user.userInfo.name} ${user.userInfo.surname}!</h3>
-	Your information:
+	Overall information:
 	<table class="info-table">
 	   <caption hidden="true">Driver information</caption>
 	   <tr>

@@ -45,14 +45,14 @@ public class UserService implements UserServices {
 
 <span class="fc" id="L46">  private static final Logger log = Logger.getLogger(UserService.class);</span>
 
-<span class="fc" id="L48">  public static final String DELETION_UPDATION_ERROR = &quot;ERROR&quot;;</span>
+  public static final String DELETION_UPDATION_ERROR = &quot;ERROR&quot;;
 
   /**
    * Creates an instance of this class using constructor-based dependency injection.
    */
   @Autowired
-<span class="fc" id="L54">  public UserService(UserDAO userDAO, SessionInfo sessionInfo, UserValidator userValidator,</span>
-      CityService cityService, NotificationSender sender) {
+  public UserService(UserDAO userDAO, SessionInfo sessionInfo, UserValidator userValidator,
+<span class="fc" id="L55">      CityService cityService, NotificationSender sender) {</span>
 <span class="fc" id="L56">    this.userDAO = userDAO;</span>
 <span class="fc" id="L57">    this.sessionInfo = sessionInfo;</span>
 <span class="fc" id="L58">    this.userValidator = userValidator;</span>
@@ -129,7 +129,7 @@ public class UserService implements UserServices {
 <span class="fc bfc" id="L129" title="All 2 branches covered.">        if (target.getRole().equalsIgnoreCase(UserRole.DRIVER.toString())) {</span>
 <span class="fc" id="L130">          sender.send(NotificationType.DRIVERS_UPDATE);</span>
         }
-<span class="fc" id="L132">      } else {</span>
+      } else {
 <span class="fc" id="L133">        redirect = DELETION_UPDATION_ERROR;</span>
       }
 <span class="fc" id="L135">    } else {</span>
@@ -152,7 +152,7 @@ public class UserService implements UserServices {
 <span class="fc" id="L152">    UserInfo userInfo = target.getUserInfo();</span>
 <span class="fc bfc" id="L153" title="All 4 branches covered.">    if (userInfo.getOrder() != null || userInfo.getCar() != null) {</span>
 <span class="fc" id="L154">      bindingResult.reject(&quot;userUnavailable&quot;,</span>
-<span class="fc" id="L155">          &quot;User could not be updated due to assigned order or being driving car&quot;);</span>
+          &quot;User could not be updated due to assigned order or being driving car&quot;);
     }
 <span class="fc bfc" id="L157" title="All 2 branches covered.">    if (userHasRightsToEditOrDeleteUser(caller, target)) {</span>
 <span class="fc bfc" id="L158" title="All 2 branches covered.">      if (!bindingResult.hasErrors()) {</span>
@@ -168,7 +168,7 @@ public class UserService implements UserServices {
 <span class="fc" id="L168">          sender.send(NotificationType.DRIVERS_UPDATE);</span>
         }
       }
-<span class="fc" id="L171">    } else {</span>
+    } else {
 <span class="fc" id="L172">      log.warn(&quot;Attempt to edit user without sufficient permissions&quot;);</span>
 <span class="fc" id="L173">      redirect = &quot;/403/&quot; + caller.getLogin();</span>
     }
@@ -219,16 +219,16 @@ public class UserService implements UserServices {
 <span class="fc" id="L219">        User user = new User(login, login, UserRole.DRIVER.toString().toLowerCase(), userInfo);</span>
 <span class="fc" id="L220">        userDAO.add(user);</span>
 <span class="fc" id="L221">        i++;</span>
-      }
+<span class="fc" id="L222">      }</span>
 <span class="fc" id="L223">      namesReader.close();</span>
 <span class="fc" id="L224">      surnamesReader.close();</span>
-<span class="pc" id="L225">    } catch (IOException e) {</span>
+<span class="nc" id="L225">    } catch (IOException e) {</span>
 <span class="nc" id="L226">      String message = &quot;I/O error has occurred&quot;;</span>
 <span class="nc" id="L227">      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, message, e);</span>
 <span class="fc" id="L228">    } catch (NullPointerException e) {</span>
 <span class="fc" id="L229">      String message = &quot;File &quot; + namesFileName + &quot;.txt or &quot; + surnamesFileName + &quot;.txt not found&quot;;</span>
 <span class="fc" id="L230">      throw new ResponseStatusException(HttpStatus.NOT_FOUND, message, e);</span>
-    }
+<span class="fc" id="L231">    }</span>
 <span class="fc" id="L232">  }</span>
 
   /**
@@ -239,7 +239,7 @@ public class UserService implements UserServices {
 <span class="fc bfc" id="L239" title="All 2 branches covered.">    for (User u : userDAO.readAll()) {</span>
 <span class="fc" id="L240">      u.getUserInfo().setHoursWorked(0);</span>
 <span class="fc" id="L241">      userDAO.update(u);</span>
-    }
+<span class="fc" id="L242">    }</span>
 <span class="fc" id="L243">  }</span>
 
 

@@ -29,8 +29,8 @@ public class NotificationSender implements Sender {
 <span class="fc" id="L29">      } catch (JmsException e) {</span>
 <span class="fc" id="L30">        log.error(&quot;Could not send message: &quot;);</span>
 <span class="fc" id="L31">        log.error(e, e);</span>
-      }
-<span class="fc" id="L33">    } else {</span>
+<span class="fc" id="L32">      }</span>
+    } else {
 <span class="fc" id="L34">      log.warn(&quot;Input message is not an instance of &quot; + NotificationMessage.class.getName());</span>
     }
 

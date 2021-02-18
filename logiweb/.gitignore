@@ -2,6 +2,7 @@ target/*
 !target/site/
 !target/jacoco.exec
 src/main/resources/db.properties
+src/main/resources/activemq.properties
 src/main/resources/citynames.txt
 src/main/resources/graph.txt
 src/main/resources/names.txt

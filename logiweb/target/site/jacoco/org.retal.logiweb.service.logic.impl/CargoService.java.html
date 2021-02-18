@@ -66,7 +66,7 @@ public class CargoService implements CargoServices {
 <span class="fc" id="L66">      cargo.setMass(weightInt);</span>
 <span class="fc" id="L67">    } catch (NumberFormatException e) {</span>
 <span class="fc" id="L68">      bindingResult.reject(&quot;mass&quot;, &quot;Cargo weight length must be non-negative integer&quot;);</span>
-    }
+<span class="fc" id="L69">    }</span>
 <span class="fc" id="L70">    cargoValidator.validate(cargo, bindingResult);</span>
 <span class="fc bfc" id="L71" title="All 2 branches covered.">    if (!bindingResult.hasErrors()) {</span>
 <span class="fc" id="L72">      cargoDAO.add(cargo);</span>
@@ -81,7 +81,7 @@ public class CargoService implements CargoServices {
 <span class="fc bfc" id="L81" title="All 2 branches covered.">    if (cargo == null) {</span>
 <span class="fc" id="L82">      bindingResult.reject(&quot;globalCargo&quot;, &quot;Cargo not found&quot;);</span>
 <span class="fc" id="L83">      log.warn(&quot;Cargo not found&quot;);</span>
-<span class="fc" id="L84">    } else {</span>
+    } else {
 <span class="fc bfc" id="L85" title="All 2 branches covered.">      if (!order.getCargo().contains(cargo)) {</span>
 <span class="fc" id="L86">        bindingResult.reject(&quot;globalCargo&quot;, &quot;Attempt to change unassigned to your current&quot;</span>
             + &quot; order cargo. Please don't try to cahnge page code&quot;);
@@ -107,7 +107,7 @@ public class CargoService implements CargoServices {
 <span class="fc bfc" id="L107" title="All 2 branches covered.">      if (!bindingResult.hasErrors()) {</span>
 <span class="fc" id="L108">        String newStatus = status.toString().toLowerCase();</span>
 <span class="fc" id="L109">        log.info(&quot;Cargo id=&quot; + cargo.getId() + &quot;: changed status from &quot; + cargo.getStatus() + &quot; to &quot;</span>
-<span class="fc" id="L110">            + newStatus);</span>
+            + newStatus);
 <span class="fc" id="L111">        cargo.setStatus(newStatus);</span>
 <span class="fc" id="L112">        cargoDAO.update(cargo);</span>
 <span class="fc" id="L113">        return orderService.checkOrderForCompletion(order);</span>

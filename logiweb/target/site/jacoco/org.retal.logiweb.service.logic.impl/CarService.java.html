@@ -45,8 +45,8 @@ public class CarService implements CarServices {
    * Creates an instance of this class using constructor-based dependency injection.
    */
   @Autowired
-<span class="fc" id="L48">  public CarService(CarDAO carDAO, OrderDAO orderDAO, CityService cityService,</span>
-      CarValidator carValidator, NotificationSender sender) {
+  public CarService(CarDAO carDAO, OrderDAO orderDAO, CityService cityService,
+<span class="fc" id="L49">      CarValidator carValidator, NotificationSender sender) {</span>
 <span class="fc" id="L50">    this.carDAO = carDAO;</span>
 <span class="fc" id="L51">    this.orderDAO = orderDAO;</span>
 <span class="fc" id="L52">    this.cityService = cityService;</span>
@@ -111,7 +111,7 @@ public class CarService implements CarServices {
 <span class="fc" id="L111">    Car persistedCar = carDAO.read(car.getRegistrationId());</span>
 <span class="fc bfc" id="L112" title="All 4 branches covered.">    if (persistedCar.getOrder() != null || persistedCar.getDriver() != null) {</span>
 <span class="fc" id="L113">      bindingResult.reject(&quot;carUnavailable&quot;,</span>
-<span class="fc" id="L114">          &quot;Car could not be updated due to assigned order or being driven by someone&quot;);</span>
+          &quot;Car could not be updated due to assigned order or being driven by someone&quot;);
     }
 <span class="fc bfc" id="L116" title="All 2 branches covered.">    if (!bindingResult.hasErrors()) {</span>
 <span class="fc" id="L117">      carDAO.update(car);</span>
@@ -134,13 +134,13 @@ public class CarService implements CarServices {
 <span class="fc" id="L134">      car.setShiftLength(shiftLength);</span>
 <span class="fc" id="L135">    } catch (NumberFormatException e) {</span>
 <span class="fc" id="L136">      bindingResult.reject(&quot;shiftLength&quot;, &quot;Shift length must be positive integer&quot;);</span>
-    }
+<span class="fc" id="L137">    }</span>
     try {
 <span class="fc" id="L139">      Float capacityTons = Float.parseFloat(capacity);</span>
 <span class="fc" id="L140">      car.setCapacityTons(capacityTons);</span>
 <span class="fc" id="L141">    } catch (NumberFormatException e) {</span>
 <span class="fc" id="L142">      bindingResult.reject(&quot;capacityTons&quot;, &quot;Capacity must be positive decimal&quot;);</span>
-    }
+<span class="fc" id="L143">    }</span>
 <span class="fc" id="L144">    carValidator.validate(car, bindingResult);</span>
 <span class="fc" id="L145">  }</span>
 
@@ -155,7 +155,7 @@ public class CarService implements CarServices {
 <span class="fc" id="L155">      Car car = new Car(registrationLetters + registrationNumber, 12 + rand.nextInt(13),</span>
 <span class="fc" id="L156">          (float) (1 + rand.nextInt(41) * 1.0 / 10), true, c);</span>
 <span class="fc" id="L157">      carDAO.add(car);</span>
-    }
+<span class="fc" id="L158">    }</span>
 <span class="fc" id="L159">  }</span>
 
   @Override

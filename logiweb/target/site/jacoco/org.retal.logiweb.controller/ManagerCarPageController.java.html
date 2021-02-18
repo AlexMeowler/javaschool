@@ -45,8 +45,8 @@ public class ManagerCarPageController {
    * Creates an instance of this class using constructor-based dependency injection.
    */
   @Autowired
-<span class="fc" id="L48">  public ManagerCarPageController(SessionInfo sessionInfo, CarService carService,</span>
-      CityService cityService) {
+  public ManagerCarPageController(SessionInfo sessionInfo, CarService carService,
+<span class="fc" id="L49">      CityService cityService) {</span>
 <span class="fc" id="L50">    this.sessionInfo = sessionInfo;</span>
 <span class="fc" id="L51">    this.carService = carService;</span>
 <span class="fc" id="L52">    this.cityService = cityService;</span>
@@ -78,7 +78,7 @@ public class ManagerCarPageController {
 <span class="fc" id="L78">    Map&lt;String, String&gt; errors = UserValidator.convertErrorsToHashMap(carResult);</span>
 <span class="fc bfc" id="L79" title="All 2 branches covered.">    for (Map.Entry&lt;String, String&gt; e : errors.entrySet()) {</span>
 <span class="fc" id="L80">      log.debug(e.getKey() + &quot;:&quot; + e.getValue());</span>
-    }
+<span class="fc" id="L81">    }</span>
 <span class="fc" id="L82">    model.addAllAttributes(errors);</span>
 <span class="fc" id="L83">    User user = sessionInfo.getCurrentUser();</span>
 <span class="fc" id="L84">    UserInfo userInfo = user.getUserInfo();</span>
@@ -125,7 +125,7 @@ public class ManagerCarPageController {
 <span class="fc" id="L125">    Car car = carService.getCar(id);</span>
 <span class="fc bfc" id="L126" title="All 2 branches covered.">    if (!carService.deleteCar(car)) {</span>
 <span class="fc" id="L127">      redir.addFlashAttribute(&quot;error_carDeletionFailed&quot;,</span>
-<span class="fc" id="L128">          &quot;Could not delete car due to assigned order or being driven by someone&quot;);</span>
+          &quot;Could not delete car due to assigned order or being driven by someone&quot;);
     }
 <span class="fc" id="L130">    return redirectView;</span>
   }

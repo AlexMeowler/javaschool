@@ -58,8 +58,8 @@ public class AdminPageController {
    * Creates an instance of this class using constructor-based dependency injection.
    */
   @Autowired
-<span class="fc" id="L61">  public AdminPageController(UserService userService, SessionInfo sessionInfo,</span>
-      CityService cityService, CarService carService, CargoService cargoService) {
+  public AdminPageController(UserService userService, SessionInfo sessionInfo,
+<span class="fc" id="L62">      CityService cityService, CarService carService, CargoService cargoService) {</span>
 <span class="fc" id="L63">    this.userService = userService;</span>
 <span class="fc" id="L64">    this.sessionInfo = sessionInfo;</span>
 <span class="fc" id="L65">    this.cityService = cityService;</span>
@@ -77,14 +77,14 @@ public class AdminPageController {
 <span class="fc" id="L77">    Map&lt;String, String&gt; errors = UserValidator.convertErrorsToHashMap(result);</span>
 <span class="fc bfc" id="L78" title="All 2 branches covered.">    for (Map.Entry&lt;String, String&gt; e : errors.entrySet()) {</span>
 <span class="fc" id="L79">      log.debug(e.getKey() + &quot;:&quot; + e.getValue());</span>
-    }
+<span class="fc" id="L80">    }</span>
 <span class="fc" id="L81">    model.addAllAttributes(errors);</span>
 <span class="fc" id="L82">    result =</span>
 <span class="fc" id="L83">        (BindingResult) model.asMap().get(BindingResult.MODEL_KEY_PREFIX + CARGO_MODEL_ATTRIBUTE);</span>
 <span class="fc" id="L84">    errors = UserValidator.convertErrorsToHashMap(result);</span>
 <span class="fc bfc" id="L85" title="All 2 branches covered.">    for (Map.Entry&lt;String, String&gt; e : errors.entrySet()) {</span>
 <span class="fc" id="L86">      log.debug(e.getKey() + &quot;:&quot; + e.getValue());</span>
-    }
+<span class="fc" id="L87">    }</span>
 <span class="fc" id="L88">    model.addAllAttributes(errors);</span>
 <span class="fc" id="L89">    List&lt;User&gt; users = userService.getAllUsers();</span>
 <span class="fc" id="L90">    model.addAttribute(&quot;userList&quot;, users);</span>
@@ -166,7 +166,7 @@ public class AdminPageController {
 <span class="fc" id="L166">    String answer = userService.deleteUser(id);</span>
 <span class="fc bfc" id="L167" title="All 2 branches covered.">    if (answer.equals(UserService.DELETION_UPDATION_ERROR)) {</span>
 <span class="fc" id="L168">      redir.addFlashAttribute(&quot;error_userDeletionFailed&quot;,</span>
-<span class="fc" id="L169">          &quot;Could not delete user due to assigned order or being driving car&quot;);</span>
+          &quot;Could not delete user due to assigned order or being driving car&quot;);
     }
 <span class="fc" id="L171">    return redirectView;</span>
   }
@@ -184,7 +184,7 @@ public class AdminPageController {
 <span class="fc bfc" id="L184" title="All 2 branches covered.">    if (userService.userHasRightsToEditOrDeleteUser(currentUser, targetUser)) {</span>
 <span class="fc" id="L185">      redir.addFlashAttribute(&quot;user&quot;, targetUser);</span>
 <span class="fc" id="L186">      redir.addFlashAttribute(&quot;we&quot;, currentUser);</span>
-<span class="fc" id="L187">    } else {</span>
+    } else {
 <span class="fc" id="L188">      redirectView.setUrl(&quot;/403/&quot; + currentUser.getLogin());</span>
     }
 <span class="fc" id="L190">    return redirectView;</span>
@@ -249,7 +249,7 @@ public class AdminPageController {
 <span class="fc bfc" id="L249" title="All 2 branches covered.">    if (bindingResult.hasErrors()) {</span>
 <span class="fc" id="L250">      log.warn(&quot;Validation fail when adding new cargo&quot;);</span>
 <span class="fc" id="L251">      redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + CARGO_MODEL_ATTRIBUTE,</span>
-<span class="fc" id="L252">          bindingResult);</span>
+          bindingResult);
 <span class="fc" id="L253">      redir.addFlashAttribute(CARGO_MODEL_ATTRIBUTE, cargo);</span>
     }
 <span class="fc" id="L255">    return redirectView;</span>

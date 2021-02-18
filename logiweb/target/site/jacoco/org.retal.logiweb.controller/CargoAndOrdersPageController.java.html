@@ -46,8 +46,8 @@ public class CargoAndOrdersPageController {
    * Creates an instance of this class using constructor-based dependency injection.
    */
   @Autowired
-<span class="fc" id="L49">  public CargoAndOrdersPageController(SessionInfo sessionInfo, OrderService orderService,</span>
-      CargoService cargoService, CityService cityService, CarService carService) {
+  public CargoAndOrdersPageController(SessionInfo sessionInfo, OrderService orderService,
+<span class="fc" id="L50">      CargoService cargoService, CityService cityService, CarService carService) {</span>
 <span class="fc" id="L51">    this.sessionInfo = sessionInfo;</span>
 <span class="fc" id="L52">    this.orderService = orderService;</span>
 <span class="fc" id="L53">    this.cityService = cityService;</span>
@@ -143,7 +143,7 @@ public class CargoAndOrdersPageController {
 <span class="fc" id="L143">    orderService.createOrderFromRoutePoints(list, bindingResult);</span>
 <span class="fc bfc" id="L144" title="All 2 branches covered.">    if (bindingResult.hasErrors()) {</span>
 <span class="fc" id="L145">      redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + ROUTE_POINT_MODEL_ATTRIBUTE,</span>
-<span class="fc" id="L146">          bindingResult);</span>
+          bindingResult);
 <span class="fc" id="L147">      redir.addFlashAttribute(&quot;counter_value&quot;, list.getList().size());</span>
 <span class="fc" id="L148">      redir.addFlashAttribute(ROUTE_POINT_MODEL_ATTRIBUTE, list.getList());</span>
     }

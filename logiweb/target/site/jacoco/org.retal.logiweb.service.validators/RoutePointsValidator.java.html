@@ -80,7 +80,7 @@ public class RoutePointsValidator implements Validator {
 <span class="fc" id="L80">          values[1]++;</span>
 <span class="fc bfc" id="L81" title="All 2 branches covered.">          if (!cargoCitiesEntries.get(cargo).contains(rp.getCityName())) {</span>
 <span class="fc" id="L82">            cargoCitiesEntries.get(cargo).add(rp.getCityName());</span>
-<span class="fc" id="L83">          } else {</span>
+          } else {
 <span class="fc" id="L84">            errors.reject(&quot;globalCity&quot;, &quot;Sorry, but we don't do logistics within the same city.&quot;);</span>
           }
 <span class="fc" id="L86">        } else {</span>
@@ -89,17 +89,17 @@ public class RoutePointsValidator implements Validator {
 <span class="fc" id="L89">          set.add(rp.getCityName());</span>
 <span class="fc" id="L90">          cargoCitiesEntries.put(cargo, set);</span>
         }
-      }
+<span class="fc" id="L92">      }</span>
 <span class="fc" id="L93">      cargoEntries</span>
 <span class="fc" id="L94">          .forEach((a, b) -&gt; log.debug(&quot;[&quot; + a.toString() + &quot;; &quot; + Arrays.toString(b) + &quot;]&quot;));</span>
 <span class="fc" id="L95">      boolean allCargosAreLoadingAndUnloading = true;</span>
 <span class="fc bfc" id="L96" title="All 2 branches covered.">      for (Map.Entry&lt;Integer, Integer[]&gt; e : cargoEntries.entrySet()) {</span>
 <span class="fc" id="L97">        Integer[] values = e.getValue();</span>
 <span class="fc bfc" id="L98" title="All 4 branches covered.">        allCargosAreLoadingAndUnloading &amp;= values[0] == 0 &amp;&amp; values[1] == 2;</span>
-      }
+<span class="fc" id="L99">      }</span>
 <span class="fc bfc" id="L100" title="All 2 branches covered.">      if (!allCargosAreLoadingAndUnloading) {</span>
 <span class="fc" id="L101">        errors.reject(&quot;globalCargo&quot;,</span>
-<span class="fc" id="L102">            &quot;All cargo must be loaded somewhere and unloaded somewhere else.&quot;);</span>
+            &quot;All cargo must be loaded somewhere and unloaded somewhere else.&quot;);
       }
     }
 <span class="fc" id="L105">  }</span>

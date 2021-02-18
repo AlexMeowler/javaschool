@@ -33,7 +33,7 @@ public class UserValidator implements Validator {
           + &quot;(^add )|(^database )&quot;
           + &quot;|(^select )|(^where )|(^join )|(^or )|(^and )|(^alter )|(^update )|( create )|( drop )&quot;
           + &quot;|( table )|( add )|( database )|( select )|( where )|( join )|( or )|( and )&quot;
-<span class="fc" id="L36">          + &quot;|( alter )|( update )&quot;;</span>
+          + &quot;|( alter )|( update )&quot;;
 
   @Autowired
 <span class="fc" id="L39">  public UserValidator(javax.validation.Validator validator, CityDAO cityDAO) {</span>
@@ -56,7 +56,7 @@ public class UserValidator implements Validator {
 <span class="fc" id="L56">      String propertyPath = violation.getPropertyPath().toString();</span>
 <span class="fc" id="L57">      String message = violation.getMessage();</span>
 <span class="fc" id="L58">      throwError(errors, propertyPath, message);</span>
-    }
+<span class="fc" id="L59">    }</span>
 <span class="fc" id="L60">    log.info(&quot;Validating user info&quot;);</span>
 <span class="fc" id="L61">    UserInfo userInfo = user.getUserInfo();</span>
 <span class="fc" id="L62">    validates = validator.validate(userInfo);</span>
@@ -64,7 +64,7 @@ public class UserValidator implements Validator {
 <span class="fc" id="L64">      String propertyPath = violation.getPropertyPath().toString();</span>
 <span class="fc" id="L65">      String message = violation.getMessage();</span>
 <span class="fc" id="L66">      throwError(errors, propertyPath, message);</span>
-    }
+<span class="fc" id="L67">    }</span>
 <span class="fc" id="L68">    Pattern digits = Pattern.compile(&quot;\\d+&quot;);</span>
 <span class="fc bfc" id="L69" title="All 2 branches covered.">    if (digits.matcher(userInfo.getName()).find()) {</span>
 <span class="fc" id="L70">      throwError(errors, &quot;noDigitsName&quot;, &quot;Name must not contain digits.&quot;);</span>
@@ -158,7 +158,7 @@ public class UserValidator implements Validator {
 <span class="fc bfc" id="L158" title="All 2 branches covered.">      for (ObjectError o : bindingResult.getAllErrors()) {</span>
 <span class="fc" id="L159">        map.put(&quot;error_&quot; + o.getCode(), o.getDefaultMessage());</span>
 <span class="fc" id="L160">        log.debug(o.getCode() + &quot;:&quot; + o.getDefaultMessage());</span>
-      }
+<span class="fc" id="L161">      }</span>
     }
 <span class="fc" id="L163">    return map;</span>
   }
