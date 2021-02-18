@@ -160,7 +160,10 @@ public class UserValidator implements Validator {
 <span class="fc" id="L160">        log.debug(o.getCode() + &quot;:&quot; + o.getDefaultMessage());</span>
 <span class="fc" id="L161">      }</span>
     }
-<span class="fc" id="L163">    return map;</span>
+<span class="fc bfc" id="L163" title="All 2 branches covered.">    for (Map.Entry&lt;String, String&gt; e : map.entrySet()) {</span>
+<span class="fc" id="L164">      log.debug(e.getKey() + &quot;:&quot; + e.getValue());</span>
+<span class="fc" id="L165">    }</span>
+<span class="fc" id="L166">    return map;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

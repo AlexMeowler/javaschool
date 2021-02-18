@@ -142,7 +142,7 @@ public class DriverService implements DriverServices {
 <span class="fc" id="L142">    int index = driver.getUserInfo().getOrder().getOrderRouteProgression().getRouteCounter() + 1;</span>
 <span class="fc bfc" id="L143" title="All 2 branches covered.">    int length = index &lt; cities.length</span>
 <span class="fc" id="L144">        ? cargoAndOrdersService.lengthBetweenTwoCities(userCity, cities[index])</span>
-        : 0;
+<span class="fc" id="L145">        : 0;</span>
 <span class="fc" id="L146">    length = (int) Math.round((double) length / OrderService.AVERAGE_CAR_SPEED);</span>
 <span class="fc" id="L147">    Integer hoursDrived = driver.getUserInfo().getHoursDrived();</span>
 <span class="fc bfc" id="L148" title="All 2 branches covered.">    if (hoursDrived != null) {</span>
@@ -190,8 +190,8 @@ public class DriverService implements DriverServices {
 <span class="fc" id="L190">    String[] routeCities = driver.getUserInfo().getOrder().getRoute().split(Order.ROUTE_DELIMETER);</span>
 <span class="fc" id="L191">    int index = driver.getUserInfo().getOrder().getOrderRouteProgression().getRouteCounter() + 1;</span>
 <span class="pc bpc" id="L192" title="1 of 2 branches missed.">    int pathLength = index &lt; routeCities.length</span>
-<span class="pc" id="L193">        ? cargoAndOrdersService.lengthBetweenTwoCities(driverCity, routeCities[index])</span>
-        : 0;
+<span class="fc" id="L193">        ? cargoAndOrdersService.lengthBetweenTwoCities(driverCity, routeCities[index])</span>
+<span class="pc" id="L194">        : 0;</span>
 <span class="fc" id="L195">    pathLength = (int) Math.round((double) pathLength / OrderService.AVERAGE_CAR_SPEED);</span>
 <span class="fc" id="L196">    Integer hoursDrived = driver.getUserInfo().getHoursDrived();</span>
 <span class="fc bfc" id="L197" title="All 2 branches covered.">    if (hoursDrived != null) {</span>

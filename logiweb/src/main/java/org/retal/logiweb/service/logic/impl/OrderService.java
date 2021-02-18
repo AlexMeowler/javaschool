@@ -217,6 +217,7 @@ public class OrderService implements OrderServices {
       log.debug(c.getStatus());
       isCompleted &= c.getStatus().equalsIgnoreCase(CargoStatus.UNLOADED.toString());
     }
+    
     if (isCompleted) {
       StringBuilder builder = new StringBuilder();
       for (UserInfo driverInfo : order.getDriverInfo()) {
@@ -230,6 +231,7 @@ public class OrderService implements OrderServices {
       }
       sender.send(NotificationType.DRIVERS_UPDATE);
       String drivers = builder.toString();
+      
       drivers = drivers.substring(0, drivers.length() - 1);
       orderRouteProgressionDAO.delete(order.getOrderRouteProgression());
       CompletedOrderInfo additionalInfo =
@@ -275,12 +277,14 @@ public class OrderService implements OrderServices {
   public void createOrderFromRoutePoints(RoutePointListWrapper wrapper,
       BindingResult bindingResult) {
     routePointsValidator.validate(wrapper, bindingResult);
+    
     if (!bindingResult.hasErrors()) {
       List<RoutePoint> list = mapRoutePointDTOsToEntities(wrapper.getList());
       log.info("Mapped " + list.size() + " DTOs to entities");
       List<CityDistance> distances = cityDistanceDAO.readAll();
       List<City> cities = cityDAO.readAll();
       Set<RoutePoint> points = new HashSet<>(list);
+      
       Object[] carAndDriversAndPath =
           findAppropriateCarAndDriversAndCalculatePath(list, distances, cities);
       Car selectedCar = (Car) carAndDriversAndPath[0];
@@ -288,6 +292,7 @@ public class OrderService implements OrderServices {
       List<User> drivers = (List<User>) carAndDriversAndPath[1];
       String route = (String) carAndDriversAndPath[2];
       Float requiredCapacity = (Float) carAndDriversAndPath[3];
+      
       // i don't know if this will ever be triggered because if route hadn't been calculated
       // then algorithm would have been in an infinite loop
       if (route == null || route.isEmpty()) {
@@ -306,6 +311,7 @@ public class OrderService implements OrderServices {
                   + ".");
         }
       }
+      
       if (!bindingResult.hasErrors()) {
         Session session = HibernateSessionFactory.getSessionFactory().openSession();
         Order order = new Order(false, selectedCar, points, route, requiredCapacity,
@@ -320,12 +326,14 @@ public class OrderService implements OrderServices {
           userDAO.update(driver);
         }
         sender.send(NotificationType.DRIVERS_UPDATE);
+        
         routePointDAO.setSession(session);
         for (RoutePoint rp : points) {
           rp.setOrder(order);
           routePointDAO.add(rp);
         }
         transaction.commit();
+        
         orderDAO.setSession(null);
         routePointDAO.setSession(null);
         session.close();
@@ -371,8 +379,10 @@ public class OrderService implements OrderServices {
     List<String> cityNames =
         cities.stream().map(c -> c.getCurrentCity()).collect(Collectors.toList());
     log.debug("Mapped city names");
+    
     List<Integer> loadingCities = new ArrayList<>();
     List<Integer> unloadingCities = new ArrayList<>();
+    
     // adding all unique cities to set
     for (RoutePoint rp : list) {
       allRoutePointCities.add(rp.getCity());
@@ -389,6 +399,7 @@ public class OrderService implements OrderServices {
         }
       }
     }
+    
     StringBuilder builder = new StringBuilder();
     for (City c : rpCities) {
       builder.append(c.getCurrentCity() + " ");
@@ -400,6 +411,7 @@ public class OrderService implements OrderServices {
     // maps for calculating optimal route for all cities which can be start points
     Map<String, Integer> optimalRoutes = new HashMap<>();
     Map<String, int[][]> optimalRoutesMatrixes = new HashMap<>();
+    
     for (RoutePoint rp : list) {
       // only loading cities can be starting points to save time(it is my heuristic hypothesis)
       if (rp.getIsLoading()) {
@@ -443,6 +455,7 @@ public class OrderService implements OrderServices {
         }
       }
     }
+    
     // if we have full cycle (i.e. each city is both city of loading and unloading come cargo)
     // for example:
     // cargo 1 - load in A; drop in B
@@ -499,6 +512,7 @@ public class OrderService implements OrderServices {
         shortestPathMatrix = optimalRoutesMatrixes.get(shortestPath);
       }
     }
+    
     // calculating required capacity when following path
     String[] shortestPathCities = shortestPath.split(PATH_DELIMETER);
     float requiredCapacity = 0;
@@ -521,6 +535,7 @@ public class OrderService implements OrderServices {
         }
       }
     }
+    
     requiredCapacity /= 1000;
     log.debug("Required capacity - " + requiredCapacity + " tons");
     String firstCity = shortestPath.split(PATH_DELIMETER)[0];
@@ -542,6 +557,7 @@ public class OrderService implements OrderServices {
         break;
       }
     }
+    
     // selecting car with minimal fitting capacity
     log.debug("Matching cars: " + selectedCarList.toString());
     Car selectedCar = selectedCarList.stream()
@@ -688,6 +704,7 @@ public class OrderService implements OrderServices {
         cycleDetected = true;
       }
     }
+    
     // if we have cycle in our path, we need to check if its one big cycle or set of different
     // cycles
     if (cycleDetected) {
@@ -719,6 +736,7 @@ public class OrderService implements OrderServices {
         }
         // log.debug(Arrays.toString(answer));
       }
+      
       boolean allVisited = true;
       for (boolean flag : visited) {
         allVisited &= flag;

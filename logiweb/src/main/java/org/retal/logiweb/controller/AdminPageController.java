@@ -75,16 +75,10 @@ public class AdminPageController {
     BindingResult result =
         (BindingResult) model.asMap().get(BindingResult.MODEL_KEY_PREFIX + "user");
     Map<String, String> errors = UserValidator.convertErrorsToHashMap(result);
-    for (Map.Entry<String, String> e : errors.entrySet()) {
-      log.debug(e.getKey() + ":" + e.getValue());
-    }
     model.addAllAttributes(errors);
     result =
         (BindingResult) model.asMap().get(BindingResult.MODEL_KEY_PREFIX + CARGO_MODEL_ATTRIBUTE);
     errors = UserValidator.convertErrorsToHashMap(result);
-    for (Map.Entry<String, String> e : errors.entrySet()) {
-      log.debug(e.getKey() + ":" + e.getValue());
-    }
     model.addAllAttributes(errors);
     List<User> users = userService.getAllUsers();
     model.addAttribute("userList", users);

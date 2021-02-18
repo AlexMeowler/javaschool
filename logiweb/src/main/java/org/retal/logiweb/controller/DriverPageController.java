@@ -58,27 +58,7 @@ public class DriverPageController {
     Map<String, String> errors = UserValidator.convertErrorsToHashMap(result);
     model.addAllAttributes(errors);
     User user = sessionInfo.getCurrentUser();
-    if (user.getUserInfo().getOrder() != null) {
-      Order order = orderService.getOrder(user.getUserInfo().getOrder().getId());
-      model.addAttribute("order", order);
-      List<String> routeList = new ArrayList<>();
-      String nextHop = null;
-      int nextHopLength = -1;
-      String[] cities = order.getRoute().split(Order.ROUTE_DELIMETER);
-      Collections.addAll(routeList, cities);
-      String userCity = user.getUserInfo().getCity().getCurrentCity();
-      int index = user.getUserInfo().getOrder().getOrderRouteProgression().getRouteCounter() + 1;
-      model.addAttribute("routeCounter", index - 1);
-      if (index < cities.length) {
-        nextHop = cities[index];
-        nextHopLength = orderService.lengthBetweenTwoCities(userCity, cities[index]);
-        nextHopLength =
-            (int) Math.round((double) nextHopLength / OrderService.AVERAGE_CAR_SPEED);
-      }
-      model.addAttribute("routeList", routeList);
-      model.addAttribute("nextHop", nextHop);
-      model.addAttribute("nextHopLength", nextHopLength);
-    }
+    addOrderIfExists(user, model);
     model.addAttribute("user", user);
     List<String> statuses = new ArrayList<>();
     for (DriverStatus ds : DriverStatus.values()) {
@@ -138,6 +118,30 @@ public class DriverPageController {
   private void addErrorsAsFlashAttributes(RedirectAttributes redir, BindingResult bindingResult) {
     if (bindingResult.hasErrors()) {
       redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + "driver", bindingResult);
+    }
+  }
+  
+  private void addOrderIfExists(User user, Model model) {
+    if (user.getUserInfo().getOrder() != null) {
+      Order order = orderService.getOrder(user.getUserInfo().getOrder().getId());
+      model.addAttribute("order", order);
+      List<String> routeList = new ArrayList<>();
+      String nextHop = null;
+      int nextHopLength = -1;
+      String[] cities = order.getRoute().split(Order.ROUTE_DELIMETER);
+      Collections.addAll(routeList, cities);
+      String userCity = user.getUserInfo().getCity().getCurrentCity();
+      int index = user.getUserInfo().getOrder().getOrderRouteProgression().getRouteCounter() + 1;
+      model.addAttribute("routeCounter", index - 1);
+      if (index < cities.length) {
+        nextHop = cities[index];
+        nextHopLength = orderService.lengthBetweenTwoCities(userCity, cities[index]);
+        nextHopLength =
+            (int) Math.round((double) nextHopLength / OrderService.AVERAGE_CAR_SPEED);
+      }
+      model.addAttribute("routeList", routeList);
+      model.addAttribute("nextHop", nextHop);
+      model.addAttribute("nextHopLength", nextHopLength);
     }
   }
 }
