@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 
 <span class="fc" id="L17">  private static final Logger log = Logger.getLogger(UserDAO.class);</span>
 
-<span class="fc" id="L19">  private static final String TABLE_NAME = &quot;users&quot;;</span>
+  private static final String TABLE_NAME = &quot;users&quot;;
 
   @Override
   public void add(User user) {
@@ -35,7 +35,7 @@ import org.springframework.stereotype.Component;
 <span class="fc" id="L35">    User user = session.get(User.class, id);</span>
 <span class="fc bfc" id="L36" title="All 2 branches covered.">    if (user != null) {</span>
 <span class="fc" id="L37">      log.debug(&quot;for user id='&quot; + user.getId() + &quot;' user info = &quot; + user.getUserInfo().toString());</span>
-<span class="fc" id="L38">    } else {</span>
+    } else {
 <span class="fc" id="L39">      log.debug(&quot;user not found&quot;);</span>
     }
 <span class="fc" id="L41">    DAO.end(session);</span>

@@ -25,7 +25,7 @@ import org.springframework.stereotype.Component;
 
 <span class="fc" id="L26">  private static final Logger log = Logger.getLogger(OrderDAO.class);</span>
   
-<span class="fc" id="L28">  private static final String TABLE_NAME = &quot;orders&quot;;</span>
+  private static final String TABLE_NAME = &quot;orders&quot;;
 
   @Override
   public void add(Order t) {
@@ -47,7 +47,7 @@ import org.springframework.stereotype.Component;
 <span class="fc" id="L47">      Set&lt;Cargo&gt; cargo = new HashSet&lt;&gt;();</span>
 <span class="fc bfc" id="L48" title="All 2 branches covered.">      for (RoutePoint rp : order.getPoints()) {</span>
 <span class="fc" id="L49">        cargo.add(rp.getCargo());</span>
-      }
+<span class="fc" id="L50">      }</span>
 <span class="fc" id="L51">      order.setCargo(cargo);</span>
 <span class="fc" id="L52">      return order;</span>
     } else {
@@ -65,9 +65,9 @@ import org.springframework.stereotype.Component;
 <span class="fc" id="L65">      Set&lt;Cargo&gt; cargo = new HashSet&lt;&gt;();</span>
 <span class="fc bfc" id="L66" title="All 2 branches covered.">      for (RoutePoint rp : o.getPoints()) {</span>
 <span class="fc" id="L67">        cargo.add(rp.getCargo());</span>
-      }
+<span class="fc" id="L68">      }</span>
 <span class="fc" id="L69">      o.setCargo(cargo);</span>
-    }
+<span class="fc" id="L70">    }</span>
 <span class="fc" id="L71">    DAO.end(session);</span>
 <span class="fc" id="L72">    return orders;</span>
   }

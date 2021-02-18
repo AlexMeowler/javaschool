@@ -63,7 +63,7 @@ public class OrderList {
    */
   public List<OrderWS> getOrders() {
     if (orders == null) {
-      orders = new ArrayList<OrderWS>();
+      orders = new ArrayList<>();
     }
     return this.orders;
   }

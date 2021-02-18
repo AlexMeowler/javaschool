@@ -76,9 +76,6 @@ public class ManagerCarPageController {
     BindingResult carResult =
         (BindingResult) model.asMap().get(BindingResult.MODEL_KEY_PREFIX + "car");
     Map<String, String> errors = UserValidator.convertErrorsToHashMap(carResult);
-    for (Map.Entry<String, String> e : errors.entrySet()) {
-      log.debug(e.getKey() + ":" + e.getValue());
-    }
     model.addAllAttributes(errors);
     User user = sessionInfo.getCurrentUser();
     UserInfo userInfo = user.getUserInfo();

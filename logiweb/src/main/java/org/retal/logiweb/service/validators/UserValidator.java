@@ -160,6 +160,9 @@ public class UserValidator implements Validator {
         log.debug(o.getCode() + ":" + o.getDefaultMessage());
       }
     }
+    for (Map.Entry<String, String> e : map.entrySet()) {
+      log.debug(e.getKey() + ":" + e.getValue());
+    }
     return map;
   }
 }

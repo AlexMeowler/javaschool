@@ -76,9 +76,6 @@ public class ManagerUserPageController {
     BindingResult userResult =
         (BindingResult) model.asMap().get(BindingResult.MODEL_KEY_PREFIX + "user");
     Map<String, String> errors = UserValidator.convertErrorsToHashMap(userResult);
-    for (Map.Entry<String, String> e : errors.entrySet()) {
-      log.debug(e.getKey() + ":" + e.getValue());
-    }
     model.addAllAttributes(errors);
     User user = sessionInfo.getCurrentUser();
     UserInfo userInfo = user.getUserInfo();

@@ -45,8 +45,8 @@ public class ManagerCarPageController {
    * Creates an instance of this class using constructor-based dependency injection.
    */
   @Autowired
-<span class="fc" id="L48">  public ManagerCarPageController(SessionInfo sessionInfo, CarService carService,</span>
-      CityService cityService) {
+  public ManagerCarPageController(SessionInfo sessionInfo, CarService carService,
+<span class="fc" id="L49">      CityService cityService) {</span>
 <span class="fc" id="L50">    this.sessionInfo = sessionInfo;</span>
 <span class="fc" id="L51">    this.carService = carService;</span>
 <span class="fc" id="L52">    this.cityService = cityService;</span>
@@ -76,20 +76,17 @@ public class ManagerCarPageController {
 <span class="fc" id="L76">    BindingResult carResult =</span>
 <span class="fc" id="L77">        (BindingResult) model.asMap().get(BindingResult.MODEL_KEY_PREFIX + &quot;car&quot;);</span>
 <span class="fc" id="L78">    Map&lt;String, String&gt; errors = UserValidator.convertErrorsToHashMap(carResult);</span>
-<span class="fc bfc" id="L79" title="All 2 branches covered.">    for (Map.Entry&lt;String, String&gt; e : errors.entrySet()) {</span>
-<span class="fc" id="L80">      log.debug(e.getKey() + &quot;:&quot; + e.getValue());</span>
-    }
-<span class="fc" id="L82">    model.addAllAttributes(errors);</span>
-<span class="fc" id="L83">    User user = sessionInfo.getCurrentUser();</span>
-<span class="fc" id="L84">    UserInfo userInfo = user.getUserInfo();</span>
-<span class="fc" id="L85">    model.addAttribute(&quot;current_user_name&quot;, userInfo.getName() + &quot; &quot; + userInfo.getSurname());</span>
-<span class="fc" id="L86">    List&lt;Car&gt; cars = getCarsForGivenPage(page);</span>
-<span class="fc" id="L87">    model.addAttribute(&quot;carsList&quot;, cars);</span>
-<span class="fc" id="L88">    List&lt;City&gt; cities = cityService.getAllCities();</span>
-<span class="fc" id="L89">    model.addAttribute(CITY_LIST_ATTRIBUTE_NAME, cities);</span>
-<span class="fc" id="L90">    model.addAttribute(&quot;page&quot;, page);</span>
-<span class="fc" id="L91">    model.addAttribute(&quot;maxPage&quot;, maxPage);</span>
-<span class="fc" id="L92">    return &quot;managerCars&quot;;</span>
+<span class="fc" id="L79">    model.addAllAttributes(errors);</span>
+<span class="fc" id="L80">    User user = sessionInfo.getCurrentUser();</span>
+<span class="fc" id="L81">    UserInfo userInfo = user.getUserInfo();</span>
+<span class="fc" id="L82">    model.addAttribute(&quot;current_user_name&quot;, userInfo.getName() + &quot; &quot; + userInfo.getSurname());</span>
+<span class="fc" id="L83">    List&lt;Car&gt; cars = getCarsForGivenPage(page);</span>
+<span class="fc" id="L84">    model.addAttribute(&quot;carsList&quot;, cars);</span>
+<span class="fc" id="L85">    List&lt;City&gt; cities = cityService.getAllCities();</span>
+<span class="fc" id="L86">    model.addAttribute(CITY_LIST_ATTRIBUTE_NAME, cities);</span>
+<span class="fc" id="L87">    model.addAttribute(&quot;page&quot;, page);</span>
+<span class="fc" id="L88">    model.addAttribute(&quot;maxPage&quot;, maxPage);</span>
+<span class="fc" id="L89">    return &quot;managerCars&quot;;</span>
   }
 
   /**
@@ -102,15 +99,15 @@ public class ManagerCarPageController {
   public RedirectView addNewCar(CarDTO carDTO, BindingResult bindingResult, CityDTO cityDTO,
       RedirectAttributes redir, @RequestParam(name = &quot;capacity&quot;) String capacity,
       @RequestParam(name = &quot;shift&quot;) String shiftLength) {
-<span class="fc" id="L105">    redir.addFlashAttribute(&quot;visiblecar&quot;, &quot;true&quot;);</span>
-<span class="fc" id="L106">    Car car = mapCarRelatedDTOsToCarEntity(carDTO, cityDTO);</span>
-<span class="fc" id="L107">    carService.addNewCar(car, bindingResult, capacity, shiftLength);</span>
-<span class="fc bfc" id="L108" title="All 2 branches covered.">    if (bindingResult.hasErrors()) {</span>
-<span class="fc" id="L109">      log.warn(&quot;There were validation errors at adding new car&quot;);</span>
-<span class="fc" id="L110">      redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + &quot;car&quot;, bindingResult);</span>
-<span class="fc" id="L111">      redir.addFlashAttribute(&quot;car&quot;, car);</span>
+<span class="fc" id="L102">    redir.addFlashAttribute(&quot;visiblecar&quot;, &quot;true&quot;);</span>
+<span class="fc" id="L103">    Car car = mapCarRelatedDTOsToCarEntity(carDTO, cityDTO);</span>
+<span class="fc" id="L104">    carService.addNewCar(car, bindingResult, capacity, shiftLength);</span>
+<span class="fc bfc" id="L105" title="All 2 branches covered.">    if (bindingResult.hasErrors()) {</span>
+<span class="fc" id="L106">      log.warn(&quot;There were validation errors at adding new car&quot;);</span>
+<span class="fc" id="L107">      redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + &quot;car&quot;, bindingResult);</span>
+<span class="fc" id="L108">      redir.addFlashAttribute(&quot;car&quot;, car);</span>
     }
-<span class="fc" id="L113">    return new RedirectView(MANAGER_CARS_PAGE, true);</span>
+<span class="fc" id="L110">    return new RedirectView(MANAGER_CARS_PAGE, true);</span>
   }
 
   /**
@@ -121,13 +118,13 @@ public class ManagerCarPageController {
    */
   @GetMapping(value = &quot;/deleteCar/{id}&quot;)
   public RedirectView deleteCar(@PathVariable String id, RedirectAttributes redir) {
-<span class="fc" id="L124">    RedirectView redirectView = new RedirectView(MANAGER_CARS_PAGE, true);</span>
-<span class="fc" id="L125">    Car car = carService.getCar(id);</span>
-<span class="fc bfc" id="L126" title="All 2 branches covered.">    if (!carService.deleteCar(car)) {</span>
-<span class="fc" id="L127">      redir.addFlashAttribute(&quot;error_carDeletionFailed&quot;,</span>
-<span class="fc" id="L128">          &quot;Could not delete car due to assigned order or being driven by someone&quot;);</span>
+<span class="fc" id="L121">    RedirectView redirectView = new RedirectView(MANAGER_CARS_PAGE, true);</span>
+<span class="fc" id="L122">    Car car = carService.getCar(id);</span>
+<span class="fc bfc" id="L123" title="All 2 branches covered.">    if (!carService.deleteCar(car)) {</span>
+<span class="fc" id="L124">      redir.addFlashAttribute(&quot;error_carDeletionFailed&quot;,</span>
+          &quot;Could not delete car due to assigned order or being driven by someone&quot;);
     }
-<span class="fc" id="L130">    return redirectView;</span>
+<span class="fc" id="L127">    return redirectView;</span>
   }
 
   /**
@@ -137,13 +134,13 @@ public class ManagerCarPageController {
    */
   @GetMapping(value = &quot;/editCar/{id}&quot;)
   public RedirectView editCar(@PathVariable String id, RedirectAttributes redir) {
-<span class="fc" id="L140">    RedirectView redirectView = new RedirectView(&quot;/editCar&quot;, true);</span>
-<span class="fc" id="L141">    Car car = carService.getCar(id);</span>
-<span class="fc bfc" id="L142" title="All 2 branches covered.">    if (car == null) {</span>
-<span class="fc" id="L143">      throw new NullPointerException(&quot;Car not found&quot;);</span>
+<span class="fc" id="L137">    RedirectView redirectView = new RedirectView(&quot;/editCar&quot;, true);</span>
+<span class="fc" id="L138">    Car car = carService.getCar(id);</span>
+<span class="fc bfc" id="L139" title="All 2 branches covered.">    if (car == null) {</span>
+<span class="fc" id="L140">      throw new NullPointerException(&quot;Car not found&quot;);</span>
     }
-<span class="fc" id="L145">    redir.addFlashAttribute(&quot;car&quot;, car);</span>
-<span class="fc" id="L146">    return redirectView;</span>
+<span class="fc" id="L142">    redir.addFlashAttribute(&quot;car&quot;, car);</span>
+<span class="fc" id="L143">    return redirectView;</span>
   }
 
   /**
@@ -153,13 +150,13 @@ public class ManagerCarPageController {
    */
   @GetMapping(value = &quot;/editCar&quot;)
   public String carEditForm(Model model) {
-<span class="fc" id="L156">    BindingResult result =</span>
-<span class="fc" id="L157">        (BindingResult) model.asMap().get(BindingResult.MODEL_KEY_PREFIX + &quot;car&quot;);</span>
-<span class="fc" id="L158">    Map&lt;String, String&gt; errors = UserValidator.convertErrorsToHashMap(result);</span>
-<span class="fc" id="L159">    model.addAllAttributes(errors);</span>
-<span class="fc" id="L160">    List&lt;City&gt; cities = cityService.getAllCities();</span>
-<span class="fc" id="L161">    model.addAttribute(CITY_LIST_ATTRIBUTE_NAME, cities);</span>
-<span class="fc" id="L162">    return &quot;editCar&quot;;</span>
+<span class="fc" id="L153">    BindingResult result =</span>
+<span class="fc" id="L154">        (BindingResult) model.asMap().get(BindingResult.MODEL_KEY_PREFIX + &quot;car&quot;);</span>
+<span class="fc" id="L155">    Map&lt;String, String&gt; errors = UserValidator.convertErrorsToHashMap(result);</span>
+<span class="fc" id="L156">    model.addAllAttributes(errors);</span>
+<span class="fc" id="L157">    List&lt;City&gt; cities = cityService.getAllCities();</span>
+<span class="fc" id="L158">    model.addAttribute(CITY_LIST_ATTRIBUTE_NAME, cities);</span>
+<span class="fc" id="L159">    return &quot;editCar&quot;;</span>
   }
 
   /**
@@ -173,16 +170,16 @@ public class ManagerCarPageController {
   public RedirectView finishCarEditing(CarDTO carDTO, BindingResult bindingResult,
       RedirectAttributes redir, @RequestParam(name = &quot;capacity&quot;) String capacity,
       @RequestParam(name = &quot;shift&quot;) String shiftLength, CityDTO cityDTO) {
-<span class="fc" id="L176">    RedirectView redirectView = new RedirectView(MANAGER_CARS_PAGE, true);</span>
-<span class="fc" id="L177">    Car car = mapCarRelatedDTOsToCarEntity(carDTO, cityDTO);</span>
-<span class="fc" id="L178">    carService.updateCar(car, bindingResult, capacity, shiftLength);</span>
-<span class="fc bfc" id="L179" title="All 2 branches covered.">    if (bindingResult.hasErrors()) {</span>
-<span class="fc" id="L180">      log.warn(&quot;There were validation errors at editing car&quot;);</span>
-<span class="fc" id="L181">      redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + &quot;car&quot;, bindingResult);</span>
-<span class="fc" id="L182">      redir.addFlashAttribute(&quot;car&quot;, car);</span>
-<span class="fc" id="L183">      redirectView.setUrl(&quot;/editCar&quot;);</span>
+<span class="fc" id="L173">    RedirectView redirectView = new RedirectView(MANAGER_CARS_PAGE, true);</span>
+<span class="fc" id="L174">    Car car = mapCarRelatedDTOsToCarEntity(carDTO, cityDTO);</span>
+<span class="fc" id="L175">    carService.updateCar(car, bindingResult, capacity, shiftLength);</span>
+<span class="fc bfc" id="L176" title="All 2 branches covered.">    if (bindingResult.hasErrors()) {</span>
+<span class="fc" id="L177">      log.warn(&quot;There were validation errors at editing car&quot;);</span>
+<span class="fc" id="L178">      redir.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + &quot;car&quot;, bindingResult);</span>
+<span class="fc" id="L179">      redir.addFlashAttribute(&quot;car&quot;, car);</span>
+<span class="fc" id="L180">      redirectView.setUrl(&quot;/editCar&quot;);</span>
     }
-<span class="fc" id="L185">    return redirectView;</span>
+<span class="fc" id="L182">    return redirectView;</span>
   }
 
   /**
@@ -194,18 +191,18 @@ public class ManagerCarPageController {
    * @return transient instance of {@linkplain org.retal.logiweb.domain.entity.Car Car} entity
    */
   private Car mapCarRelatedDTOsToCarEntity(CarDTO carDTO, CityDTO cityDTO) {
-<span class="fc" id="L197">    Car car = new Car(carDTO);</span>
-<span class="fc" id="L198">    City city = new City(cityDTO);</span>
-<span class="fc" id="L199">    car.setLocation(city);</span>
-<span class="fc" id="L200">    return car;</span>
+<span class="fc" id="L194">    Car car = new Car(carDTO);</span>
+<span class="fc" id="L195">    City city = new City(cityDTO);</span>
+<span class="fc" id="L196">    car.setLocation(city);</span>
+<span class="fc" id="L197">    return car;</span>
   }
 
   private List&lt;Car&gt; getCarsForGivenPage(Integer page) {
-<span class="fc" id="L204">    return carService.getPartCars(CARS_PER_PAGE * (page - 1), CARS_PER_PAGE);</span>
+<span class="fc" id="L201">    return carService.getPartCars(CARS_PER_PAGE * (page - 1), CARS_PER_PAGE);</span>
   }
 
   private Integer getMaxPossiblePage() {
-<span class="fc" id="L208">    return (int) Math.ceil(1.0 * carService.getRowsAmount() / CARS_PER_PAGE);</span>
+<span class="fc" id="L205">    return (int) Math.ceil(1.0 * carService.getRowsAmount() / CARS_PER_PAGE);</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>
