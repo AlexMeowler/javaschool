@@ -339,13 +339,13 @@ public class DriverPageControllerTest {
 
   @Test
   @WithMockUser(username = "dMaxKuz", password = "dMaxKuz", authorities = "DRIVER")
-  public void testC2EndShiftForFirstDriver() throws Exception {
+  public void testC2WontEndShiftForFirstDriver() throws Exception {
     mockMvc.perform(get("/changeStatus/resting")).andExpect(status().is3xxRedirection())
         .andExpect(redirectedUrl(DriverPageController.DRIVER_PAGE));
     assertEquals(DriverStatus.RESTING.toString().toLowerCase(),
         userDAO.findUser("dMaxKuz").getUserInfo().getStatus());
     assertNull(orderDAO.read(1).getCar().getDriver());
-    assertNull(userDAO.findUser("dMaxKuz").getUserInfo().getOrder());
+    assertNotNull(userDAO.findUser("dMaxKuz").getUserInfo().getOrder());
   }
 
   @Test

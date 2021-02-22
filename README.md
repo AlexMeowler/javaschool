@@ -1,10 +1,11 @@
 # Logiweb
-A web application that simulates the operation of the system of a certain company carrying out the transportation of goods.
+A two-part web application that simulates the operation of the system of a certain company carrying out the transportation of goods.
+It consists of two parts - Logiweb application itself and a table with statistics (available [here](http://34.105.76.76/table/)).
 
 # Codeship
 [![Codeship Status for AlexMeowler/javaschool](https://app.codeship.com/projects/ae9cc548-5107-43bc-a4c0-60ee813c0211/status?branch=main)](https://app.codeship.com/projects/423888)
 
-# VERSION 2.5.0
+# VERSION 2.5.1
 
 # HOW TO START
 
@@ -25,11 +26,11 @@ hibernate.connection.url=%CCC%
 7. Fill DB with tables and data (structure of table has to be reverse engineered from org.retal.logiweb.domain package).
 8. Done!
 
-# SonarQube report (for version 2.4.0)
+# SonarQube report (for version 2.5.1)
 ![SonarQube report](sonar.png?raw=true "SonarQube Report")
 
 # CHANGES
 
-A bit of code refactoring. made README.md look like readme of an average GitHub repository.
+Removed commented blocks of code. Added technical solution description.
 
 # TODO

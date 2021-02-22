@@ -16,21 +16,6 @@
 	<jsp:include page="menu.jsp"/>
 	<div class="container main-body">
 	<h3>Welcome, administrator <sec:authentication property="principal.username" />!</h3>
-	<!--<c:url value="/addCityInfo" var = "addCityInfo"/>
-	<form:form action="${addCityInfo}" method="POST">
-		<input type="submit" value="Add city information to database">
-	</form:form>
-	<br>
-	<c:url value="/addDriverInfo" var = "addDriverInfo"/>
-	<form:form action="${addDriverInfo}" method="POST">
-		<input type="submit" value="Add drivers information to database">
-	</form:form>
-	<br>
-	<c:url value="/addCarsInfo" var = "addCarsInfo"/>
-	<form:form action="${addCarsInfo}" method="POST">
-		<input type="submit" value="Add cars information to database">
-	</form:form> 
-	<br> -->
 	<span class = "error">${error_userDeletionFailed}</span>
 	<p>Here is user list:</p>
 	<table class="info-table">

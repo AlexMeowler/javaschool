@@ -103,7 +103,7 @@ public class DriverService implements DriverServices {
           driver.getUserInfo().setCar(null);
           break;
         case RESTING:
-          unassignDriverIfPossible(driver);
+          //unassignDriverIfPossible(driver);
           driver.getUserInfo().setCar(null);
           break;
         case LOADING_AND_UNLOADING_CARGO:
@@ -182,27 +182,6 @@ public class DriverService implements DriverServices {
       bindingResult.reject("city",
           "Illegal next city argument. Please don't try to change page code.");
       log.warn("Illegal next city on route of order id=" + driver.getUserInfo().getOrder().getId());
-    }
-  }
-
-  private void unassignDriverIfPossible(User driver) {
-    String driverCity = driver.getUserInfo().getCity().getCurrentCity();
-    String[] routeCities = driver.getUserInfo().getOrder().getRoute().split(Order.ROUTE_DELIMETER);
-    int index = driver.getUserInfo().getOrder().getOrderRouteProgression().getRouteCounter() + 1;
-    int pathLength = index < routeCities.length
-        ? cargoAndOrdersService.lengthBetweenTwoCities(driverCity, routeCities[index])
-        : 0;
-    pathLength = (int) Math.round((double) pathLength / OrderService.AVERAGE_CAR_SPEED);
-    Integer hoursDrived = driver.getUserInfo().getHoursDrived();
-    if (hoursDrived != null) {
-      hoursDrived += pathLength;
-    } else {
-      hoursDrived = pathLength;
-    }
-    if (index < routeCities.length
-        && hoursDrived > driver.getUserInfo().getOrder().getCar().getShiftLength()) {
-      driver.getUserInfo().setOrder(null);
-      driver.getUserInfo().setHoursDrived(null);
     }
   }
 }

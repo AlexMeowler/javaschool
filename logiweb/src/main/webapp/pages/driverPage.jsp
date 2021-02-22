@@ -127,9 +127,7 @@
 		</c:if>
 	</c:if>
 	<c:if test="${not empty user.userInfo.hoursDrived and user.userInfo.hoursDrived + nextHopLength > order.car.shiftLength}">
-		<p>Car shift length limit exceeded, you can't drive any further. You can end shift now, but remember, after that you will be
-		<strong>unassigned from the order</strong>.<br>Please, <strong>do not end shift before you unload cargo</strong> which destination point is your current location.
-		</p>
+		<p>Car shift length limit exceeded, you can't drive any further.</p>
 	</c:if>
 	<c:if test="${not empty error_city}">
 		<span class="error">${error_city}</span><br>

@@ -683,9 +683,6 @@ public class OrderService implements OrderServices {
             int counter = 0;
             for (int j = 0; j < visited.length; j++) {
               counter = !visited[j] ? counter + 1 : counter;
-              /*
-               * if (!visited[j]) { counter++; }
-               */
             }
             if (counter > 1) {
               visited[i] = true;
@@ -734,7 +731,6 @@ public class OrderService implements OrderServices {
             }
           }
         }
-        // log.debug(Arrays.toString(answer));
       }
       
       boolean allVisited = true;
@@ -786,7 +782,6 @@ public class OrderService implements OrderServices {
         }
       }
       currentTemperature = decreaseTemperature(initialTemperature, k);
-      // log.debug("k = " + k + "; T = " + currentTemperature);
       k++;
     }
     log.debug("Annealing ended");
@@ -1000,9 +995,6 @@ public class OrderService implements OrderServices {
    */
   private List<User> tryToAssignDriversForOrder(String path, int[][] matrix, List<City> rpCities,
       Car selectedCar) {
-    /*
-     * if (selectedCar == null) { return null; }
-     */
     List<String> cityNames =
         rpCities.stream().map(c -> c.getCurrentCity()).collect(Collectors.toList());
     log.debug(cityNames.toString());
