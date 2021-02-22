@@ -683,114 +683,109 @@ public class OrderService implements OrderServices {
 <span class="fc" id="L683">            int counter = 0;</span>
 <span class="fc bfc" id="L684" title="All 2 branches covered.">            for (int j = 0; j &lt; visited.length; j++) {</span>
 <span class="fc bfc" id="L685" title="All 2 branches covered.">              counter = !visited[j] ? counter + 1 : counter;</span>
-              /*
-               * if (!visited[j]) { counter++; }
-               */
             }
-<span class="fc bfc" id="L690" title="All 2 branches covered.">            if (counter &gt; 1) {</span>
-<span class="fc" id="L691">              visited[i] = true;</span>
-<span class="pc bpc" id="L692" title="1 of 2 branches missed.">              for (int j = 0; j &lt; visited.length; j++) {</span>
-<span class="fc bfc" id="L693" title="All 2 branches covered.">                if (!visited[j]) {</span>
-<span class="fc" id="L694">                  i = j;</span>
-<span class="fc" id="L695">                  break;</span>
+<span class="fc bfc" id="L687" title="All 2 branches covered.">            if (counter &gt; 1) {</span>
+<span class="fc" id="L688">              visited[i] = true;</span>
+<span class="pc bpc" id="L689" title="1 of 2 branches missed.">              for (int j = 0; j &lt; visited.length; j++) {</span>
+<span class="fc bfc" id="L690" title="All 2 branches covered.">                if (!visited[j]) {</span>
+<span class="fc" id="L691">                  i = j;</span>
+<span class="fc" id="L692">                  break;</span>
                 }
               }
             }
-<span class="fc" id="L699">          }</span>
+<span class="fc" id="L696">          }</span>
         }
       }
-<span class="fc bfc" id="L702" title="All 2 branches covered.">      if (visited[i]) {</span>
-<span class="fc" id="L703">        log.debug(&quot;Possible cycle detected&quot;);</span>
-<span class="fc" id="L704">        cycleDetected = true;</span>
+<span class="fc bfc" id="L699" title="All 2 branches covered.">      if (visited[i]) {</span>
+<span class="fc" id="L700">        log.debug(&quot;Possible cycle detected&quot;);</span>
+<span class="fc" id="L701">        cycleDetected = true;</span>
       }
     }
     
     // if we have cycle in our path, we need to check if its one big cycle or set of different
     // cycles
-<span class="fc bfc" id="L710" title="All 2 branches covered.">    if (cycleDetected) {</span>
-<span class="fc" id="L711">      log.debug(&quot;Annealing: Trying to define cycle type&quot;);</span>
-<span class="fc" id="L712">      boolean[] visited = new boolean[n];</span>
-<span class="fc" id="L713">      int[] answer = new int[n + 1];</span>
-<span class="fc" id="L714">      Arrays.fill(answer, -1);</span>
-<span class="fc" id="L715">      int k = 0;</span>
-<span class="fc" id="L716">      int i = from;</span>
-<span class="fc bfc" id="L717" title="All 2 branches covered.">      while (!visited[i]) {</span>
-<span class="fc" id="L718">        visited[i] = true;</span>
-<span class="fc" id="L719">        answer[k] = i;</span>
-<span class="fc" id="L720">        k++;</span>
-<span class="fc bfc" id="L721" title="All 2 branches covered.">        if (loadingCities.indexOf(i) != -1) {</span>
-<span class="fc" id="L722">          i = unloadingCities.get(loadingCities.indexOf(i));</span>
+<span class="fc bfc" id="L707" title="All 2 branches covered.">    if (cycleDetected) {</span>
+<span class="fc" id="L708">      log.debug(&quot;Annealing: Trying to define cycle type&quot;);</span>
+<span class="fc" id="L709">      boolean[] visited = new boolean[n];</span>
+<span class="fc" id="L710">      int[] answer = new int[n + 1];</span>
+<span class="fc" id="L711">      Arrays.fill(answer, -1);</span>
+<span class="fc" id="L712">      int k = 0;</span>
+<span class="fc" id="L713">      int i = from;</span>
+<span class="fc bfc" id="L714" title="All 2 branches covered.">      while (!visited[i]) {</span>
+<span class="fc" id="L715">        visited[i] = true;</span>
+<span class="fc" id="L716">        answer[k] = i;</span>
+<span class="fc" id="L717">        k++;</span>
+<span class="fc bfc" id="L718" title="All 2 branches covered.">        if (loadingCities.indexOf(i) != -1) {</span>
+<span class="fc" id="L719">          i = unloadingCities.get(loadingCities.indexOf(i));</span>
         } else {
-<span class="fc" id="L724">          int index = unloadingCities.indexOf(i);</span>
-<span class="fc" id="L725">          int x = loadingCities.get(index);</span>
-<span class="fc bfc" id="L726" title="All 2 branches covered.">          for (int j = 0; j &lt; loadingCities.size(); j++) {</span>
-<span class="pc bpc" id="L727" title="1 of 4 branches missed.">            if (loadingCities.get(j) == x &amp;&amp; j != index) {</span>
-<span class="nc" id="L728">              i = x;</span>
-<span class="nc" id="L729">              int[] buffer = new int[answer.length + 1];</span>
-<span class="nc" id="L730">              System.arraycopy(answer, 0, buffer, 0, k);</span>
-<span class="nc" id="L731">              answer = buffer;</span>
-<span class="nc" id="L732">              visited[i] = false;</span>
-<span class="nc" id="L733">              break;</span>
+<span class="fc" id="L721">          int index = unloadingCities.indexOf(i);</span>
+<span class="fc" id="L722">          int x = loadingCities.get(index);</span>
+<span class="fc bfc" id="L723" title="All 2 branches covered.">          for (int j = 0; j &lt; loadingCities.size(); j++) {</span>
+<span class="pc bpc" id="L724" title="1 of 4 branches missed.">            if (loadingCities.get(j) == x &amp;&amp; j != index) {</span>
+<span class="nc" id="L725">              i = x;</span>
+<span class="nc" id="L726">              int[] buffer = new int[answer.length + 1];</span>
+<span class="nc" id="L727">              System.arraycopy(answer, 0, buffer, 0, k);</span>
+<span class="nc" id="L728">              answer = buffer;</span>
+<span class="nc" id="L729">              visited[i] = false;</span>
+<span class="nc" id="L730">              break;</span>
             }
           }
-<span class="fc" id="L736">        }</span>
-        // log.debug(Arrays.toString(answer));
+<span class="fc" id="L733">        }</span>
       }
       
-<span class="fc" id="L740">      boolean allVisited = true;</span>
-<span class="fc bfc" id="L741" title="All 2 branches covered.">      for (boolean flag : visited) {</span>
-<span class="fc" id="L742">        allVisited &amp;= flag;</span>
+<span class="fc" id="L736">      boolean allVisited = true;</span>
+<span class="fc bfc" id="L737" title="All 2 branches covered.">      for (boolean flag : visited) {</span>
+<span class="fc" id="L738">        allVisited &amp;= flag;</span>
       }
-<span class="fc bfc" id="L744" title="All 2 branches covered.">      if (allVisited) {</span>
-<span class="fc" id="L745">        log.debug(&quot;Annealing: Full cycle detected - only one possible route&quot;);</span>
-<span class="fc" id="L746">        answer[answer.length - 1] = i;</span>
-<span class="fc" id="L747">        return answer;</span>
+<span class="fc bfc" id="L740" title="All 2 branches covered.">      if (allVisited) {</span>
+<span class="fc" id="L741">        log.debug(&quot;Annealing: Full cycle detected - only one possible route&quot;);</span>
+<span class="fc" id="L742">        answer[answer.length - 1] = i;</span>
+<span class="fc" id="L743">        return answer;</span>
       }
     }
-<span class="fc" id="L750">    List&lt;Integer&gt; routeList = new ArrayList&lt;&gt;();</span>
-<span class="fc bfc" id="L751" title="All 2 branches covered.">    for (int i = 0; i &lt; n; i++) {</span>
-<span class="fc" id="L752">      routeList.add(i);</span>
+<span class="fc" id="L746">    List&lt;Integer&gt; routeList = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L747" title="All 2 branches covered.">    for (int i = 0; i &lt; n; i++) {</span>
+<span class="fc" id="L748">      routeList.add(i);</span>
     }
-<span class="fc" id="L754">    Collections.shuffle(routeList);</span>
-<span class="fc" id="L755">    int valueIndex = routeList.indexOf(from);</span>
-<span class="fc" id="L756">    routeList.set(valueIndex, routeList.get(0));</span>
-<span class="fc" id="L757">    routeList.set(0, from);</span>
+<span class="fc" id="L750">    Collections.shuffle(routeList);</span>
+<span class="fc" id="L751">    int valueIndex = routeList.indexOf(from);</span>
+<span class="fc" id="L752">    routeList.set(valueIndex, routeList.get(0));</span>
+<span class="fc" id="L753">    routeList.set(0, from);</span>
     // in case of set of cycles we have to go back to some cities to deliver cargo
-<span class="fc bfc" id="L759" title="All 2 branches covered.">    if (cycleDetected) {</span>
-<span class="fc" id="L760">      log.debug(&quot;Annealing: Set of cycles detected - editing entry candidate&quot;);</span>
-<span class="fc" id="L761">      adaptCandidateForCycleProcessing(routeList, loadingCities, unloadingCities);</span>
-<span class="fc" id="L762">      n = routeList.size();</span>
+<span class="fc bfc" id="L755" title="All 2 branches covered.">    if (cycleDetected) {</span>
+<span class="fc" id="L756">      log.debug(&quot;Annealing: Set of cycles detected - editing entry candidate&quot;);</span>
+<span class="fc" id="L757">      adaptCandidateForCycleProcessing(routeList, loadingCities, unloadingCities);</span>
+<span class="fc" id="L758">      n = routeList.size();</span>
     }
-<span class="fc" id="L764">    Object[] obj = routeList.toArray();</span>
-<span class="fc" id="L765">    int[] route = new int[n];</span>
-<span class="fc bfc" id="L766" title="All 2 branches covered.">    for (int i = 0; i &lt; n; i++) {</span>
-<span class="fc" id="L767">      route[i] = (Integer) obj[i];</span>
+<span class="fc" id="L760">    Object[] obj = routeList.toArray();</span>
+<span class="fc" id="L761">    int[] route = new int[n];</span>
+<span class="fc bfc" id="L762" title="All 2 branches covered.">    for (int i = 0; i &lt; n; i++) {</span>
+<span class="fc" id="L763">      route[i] = (Integer) obj[i];</span>
     }
-<span class="fc" id="L769">    double currentTemperature = initialTemperature;</span>
-<span class="fc" id="L770">    int currentEnergy = calculateEnergy(route, matr);</span>
-<span class="fc" id="L771">    int k = 1;</span>
-<span class="fc" id="L772">    n = matr.length;</span>
-<span class="fc" id="L773">    log.debug(&quot;Annealing: annealing&quot;);</span>
-<span class="fc bfc" id="L774" title="All 2 branches covered.">    while (currentTemperature &gt; endTemperature) {</span>
-<span class="fc" id="L775">      int[] routeCandidate =</span>
-<span class="fc" id="L776">          generateCandidate(route, n, from, loadingCities, unloadingCities, cycleDetected);</span>
-<span class="fc" id="L777">      int candidateEnergy = calculateEnergy(routeCandidate, matr);</span>
-<span class="fc bfc" id="L778" title="All 2 branches covered.">      if (candidateEnergy &lt; currentEnergy) {</span>
-<span class="fc" id="L779">        currentEnergy = candidateEnergy;</span>
-<span class="fc" id="L780">        route = routeCandidate;</span>
+<span class="fc" id="L765">    double currentTemperature = initialTemperature;</span>
+<span class="fc" id="L766">    int currentEnergy = calculateEnergy(route, matr);</span>
+<span class="fc" id="L767">    int k = 1;</span>
+<span class="fc" id="L768">    n = matr.length;</span>
+<span class="fc" id="L769">    log.debug(&quot;Annealing: annealing&quot;);</span>
+<span class="fc bfc" id="L770" title="All 2 branches covered.">    while (currentTemperature &gt; endTemperature) {</span>
+<span class="fc" id="L771">      int[] routeCandidate =</span>
+<span class="fc" id="L772">          generateCandidate(route, n, from, loadingCities, unloadingCities, cycleDetected);</span>
+<span class="fc" id="L773">      int candidateEnergy = calculateEnergy(routeCandidate, matr);</span>
+<span class="fc bfc" id="L774" title="All 2 branches covered.">      if (candidateEnergy &lt; currentEnergy) {</span>
+<span class="fc" id="L775">        currentEnergy = candidateEnergy;</span>
+<span class="fc" id="L776">        route = routeCandidate;</span>
       } else {
-<span class="fc" id="L782">        double p = getTranstionProbability(candidateEnergy - currentEnergy, currentTemperature);</span>
-<span class="fc bfc" id="L783" title="All 2 branches covered.">        if (makeTransit(p)) {</span>
-<span class="fc" id="L784">          currentEnergy = candidateEnergy;</span>
-<span class="fc" id="L785">          route = routeCandidate;</span>
+<span class="fc" id="L778">        double p = getTranstionProbability(candidateEnergy - currentEnergy, currentTemperature);</span>
+<span class="fc bfc" id="L779" title="All 2 branches covered.">        if (makeTransit(p)) {</span>
+<span class="fc" id="L780">          currentEnergy = candidateEnergy;</span>
+<span class="fc" id="L781">          route = routeCandidate;</span>
         }
       }
-<span class="fc" id="L788">      currentTemperature = decreaseTemperature(initialTemperature, k);</span>
-      // log.debug(&quot;k = &quot; + k + &quot;; T = &quot; + currentTemperature);
-<span class="fc" id="L790">      k++;</span>
-<span class="fc" id="L791">    }</span>
-<span class="fc" id="L792">    log.debug(&quot;Annealing ended&quot;);</span>
-<span class="fc" id="L793">    return route;</span>
+<span class="fc" id="L784">      currentTemperature = decreaseTemperature(initialTemperature, k);</span>
+<span class="fc" id="L785">      k++;</span>
+<span class="fc" id="L786">    }</span>
+<span class="fc" id="L787">    log.debug(&quot;Annealing ended&quot;);</span>
+<span class="fc" id="L788">    return route;</span>
   }
 
   /**
@@ -801,12 +796,12 @@ public class OrderService implements OrderServices {
    * @return energy amount
    */
   private int calculateEnergy(int[] route, int[][] matr) {
-<span class="fc" id="L804">    int n = route.length;</span>
-<span class="fc" id="L805">    int energy = 0;</span>
-<span class="fc bfc" id="L806" title="All 2 branches covered.">    for (int i = 0; i &lt; n - 1; i++) {</span>
-<span class="fc" id="L807">      energy += matr[route[i]][route[i + 1]];</span>
+<span class="fc" id="L799">    int n = route.length;</span>
+<span class="fc" id="L800">    int energy = 0;</span>
+<span class="fc bfc" id="L801" title="All 2 branches covered.">    for (int i = 0; i &lt; n - 1; i++) {</span>
+<span class="fc" id="L802">      energy += matr[route[i]][route[i + 1]];</span>
     }
-<span class="fc" id="L809">    return energy;</span>
+<span class="fc" id="L804">    return energy;</span>
   }
 
   /**
@@ -823,30 +818,30 @@ public class OrderService implements OrderServices {
    */
   private int[] generateCandidate(int[] previousState, int n, int from, List&lt;Integer&gt; loadingCities,
       List&lt;Integer&gt; unloadingCities, boolean cycleDetected) {
-<span class="fc" id="L826">    List&lt;Integer&gt; state = new ArrayList&lt;&gt;();</span>
-<span class="fc bfc" id="L827" title="All 2 branches covered.">    for (int i = 0; i &lt; n; i++) {</span>
-<span class="fc" id="L828">      state.add(previousState[i]);</span>
+<span class="fc" id="L821">    List&lt;Integer&gt; state = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L822" title="All 2 branches covered.">    for (int i = 0; i &lt; n; i++) {</span>
+<span class="fc" id="L823">      state.add(previousState[i]);</span>
     }
-<span class="fc" id="L830">    boolean sequenceCorrect = false;</span>
-<span class="fc bfc" id="L831" title="All 2 branches covered.">    while (!sequenceCorrect) {</span>
-<span class="fc" id="L832">      Collections.shuffle(state);</span>
-<span class="fc" id="L833">      state.set(state.indexOf(from), state.get(0));</span>
-<span class="fc" id="L834">      state.set(0, from);</span>
-<span class="fc" id="L835">      sequenceCorrect = true;</span>
-<span class="fc bfc" id="L836" title="All 2 branches covered.">      if (!cycleDetected) {</span>
-<span class="fc bfc" id="L837" title="All 2 branches covered.">        for (int i = 0; i &lt; loadingCities.size(); i++) {</span>
-<span class="fc" id="L838">          sequenceCorrect &amp;=</span>
-<span class="fc bfc" id="L839" title="All 2 branches covered.">              state.indexOf(loadingCities.get(i)) &lt; state.indexOf(unloadingCities.get(i));</span>
+<span class="fc" id="L825">    boolean sequenceCorrect = false;</span>
+<span class="fc bfc" id="L826" title="All 2 branches covered.">    while (!sequenceCorrect) {</span>
+<span class="fc" id="L827">      Collections.shuffle(state);</span>
+<span class="fc" id="L828">      state.set(state.indexOf(from), state.get(0));</span>
+<span class="fc" id="L829">      state.set(0, from);</span>
+<span class="fc" id="L830">      sequenceCorrect = true;</span>
+<span class="fc bfc" id="L831" title="All 2 branches covered.">      if (!cycleDetected) {</span>
+<span class="fc bfc" id="L832" title="All 2 branches covered.">        for (int i = 0; i &lt; loadingCities.size(); i++) {</span>
+<span class="fc" id="L833">          sequenceCorrect &amp;=</span>
+<span class="fc bfc" id="L834" title="All 2 branches covered.">              state.indexOf(loadingCities.get(i)) &lt; state.indexOf(unloadingCities.get(i));</span>
         }
       } else {
-<span class="fc" id="L842">        adaptCandidateForCycleProcessing(state, loadingCities, unloadingCities);</span>
+<span class="fc" id="L837">        adaptCandidateForCycleProcessing(state, loadingCities, unloadingCities);</span>
       }
     }
-<span class="fc" id="L845">    int[] newState = new int[state.size()];</span>
-<span class="fc bfc" id="L846" title="All 2 branches covered.">    for (int i = 0; i &lt; newState.length; i++) {</span>
-<span class="fc" id="L847">      newState[i] = state.get(i);</span>
+<span class="fc" id="L840">    int[] newState = new int[state.size()];</span>
+<span class="fc bfc" id="L841" title="All 2 branches covered.">    for (int i = 0; i &lt; newState.length; i++) {</span>
+<span class="fc" id="L842">      newState[i] = state.get(i);</span>
     }
-<span class="fc" id="L849">    return newState;</span>
+<span class="fc" id="L844">    return newState;</span>
   }
 
   /**
@@ -858,7 +853,7 @@ public class OrderService implements OrderServices {
    * @return probability of state change
    */
   private double getTranstionProbability(int energy, double temperature) {
-<span class="fc" id="L861">    return 1 / (1 + Math.exp(energy / temperature));</span>
+<span class="fc" id="L856">    return 1 / (1 + Math.exp(energy / temperature));</span>
   }
 
   /**
@@ -868,7 +863,7 @@ public class OrderService implements OrderServices {
    * @return true if state should be changed, else otherwise
    */
   private boolean makeTransit(double probability) {
-<span class="fc bfc" id="L871" title="All 2 branches covered.">    return Math.random() &lt;= probability;</span>
+<span class="fc bfc" id="L866" title="All 2 branches covered.">    return Math.random() &lt;= probability;</span>
   }
 
   /**
@@ -879,7 +874,7 @@ public class OrderService implements OrderServices {
    * @return decreased temperature
    */
   private double decreaseTemperature(double initialTemperature, int k) {
-<span class="fc" id="L882">    return initialTemperature / Math.log(1.0 + k);</span>
+<span class="fc" id="L877">    return initialTemperature / Math.log(1.0 + k);</span>
   }
 
   /**
@@ -891,31 +886,31 @@ public class OrderService implements OrderServices {
    */
   private void adaptCandidateForCycleProcessing(List&lt;Integer&gt; routeList,
       List&lt;Integer&gt; loadingCities, List&lt;Integer&gt; unloadingCities) {
-<span class="fc" id="L894">    boolean[] loaded = new boolean[loadingCities.size()];</span>
-<span class="fc" id="L895">    boolean[] unloaded = new boolean[unloadingCities.size()];</span>
-<span class="fc bfc" id="L896" title="All 2 branches covered.">    for (int i = 0; i &lt; routeList.size(); i++) {</span>
-<span class="fc bfc" id="L897" title="All 2 branches covered.">      for (int j = 0; j &lt; loadingCities.size(); j++) {</span>
-<span class="fc bfc" id="L898" title="All 2 branches covered.">        if (loadingCities.get(j).equals(routeList.get(i))) {</span>
-<span class="fc" id="L899">          loaded[j] = true;</span>
+<span class="fc" id="L889">    boolean[] loaded = new boolean[loadingCities.size()];</span>
+<span class="fc" id="L890">    boolean[] unloaded = new boolean[unloadingCities.size()];</span>
+<span class="fc bfc" id="L891" title="All 2 branches covered.">    for (int i = 0; i &lt; routeList.size(); i++) {</span>
+<span class="fc bfc" id="L892" title="All 2 branches covered.">      for (int j = 0; j &lt; loadingCities.size(); j++) {</span>
+<span class="fc bfc" id="L893" title="All 2 branches covered.">        if (loadingCities.get(j).equals(routeList.get(i))) {</span>
+<span class="fc" id="L894">          loaded[j] = true;</span>
         }
       }
-<span class="fc bfc" id="L902" title="All 2 branches covered.">      for (int j = 0; j &lt; unloadingCities.size(); j++) {</span>
-<span class="fc bfc" id="L903" title="All 4 branches covered.">        if (unloadingCities.get(j).equals(routeList.get(i)) &amp;&amp; loaded[j]) {</span>
-<span class="fc" id="L904">          unloaded[j] = true;</span>
+<span class="fc bfc" id="L897" title="All 2 branches covered.">      for (int j = 0; j &lt; unloadingCities.size(); j++) {</span>
+<span class="fc bfc" id="L898" title="All 4 branches covered.">        if (unloadingCities.get(j).equals(routeList.get(i)) &amp;&amp; loaded[j]) {</span>
+<span class="fc" id="L899">          unloaded[j] = true;</span>
         }
       }
     }
-<span class="fc" id="L908">    List&lt;Integer&gt; leftCities = new ArrayList&lt;&gt;();</span>
-<span class="fc bfc" id="L909" title="All 2 branches covered.">    for (int i = 0; i &lt; unloaded.length; i++) {</span>
-<span class="fc bfc" id="L910" title="All 2 branches covered.">      if (!unloaded[i]) {</span>
-<span class="fc" id="L911">        leftCities.add(unloadingCities.get(i));</span>
+<span class="fc" id="L903">    List&lt;Integer&gt; leftCities = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L904" title="All 2 branches covered.">    for (int i = 0; i &lt; unloaded.length; i++) {</span>
+<span class="fc bfc" id="L905" title="All 2 branches covered.">      if (!unloaded[i]) {</span>
+<span class="fc" id="L906">        leftCities.add(unloadingCities.get(i));</span>
       }
     }
-<span class="fc" id="L914">    Collections.shuffle(leftCities);</span>
-<span class="fc bfc" id="L915" title="All 2 branches covered.">    for (int i = 0; i &lt; leftCities.size(); i++) {</span>
-<span class="fc" id="L916">      routeList.add(leftCities.get(i));</span>
+<span class="fc" id="L909">    Collections.shuffle(leftCities);</span>
+<span class="fc bfc" id="L910" title="All 2 branches covered.">    for (int i = 0; i &lt; leftCities.size(); i++) {</span>
+<span class="fc" id="L911">      routeList.add(leftCities.get(i));</span>
     }
-<span class="fc" id="L918">  }</span>
+<span class="fc" id="L913">  }</span>
 
   /**
    * Creates and fills matrix.
@@ -924,13 +919,13 @@ public class OrderService implements OrderServices {
    * @return matrix filled with {@linkplain Integer#MAX_VALUE Integer.MAX_VALUE} / 2
    */
   private int[][] buildMatrix(int n) {
-<span class="fc" id="L927">    int[][] matrix = new int[n][n];</span>
-<span class="fc bfc" id="L928" title="All 2 branches covered.">    for (int i = 0; i &lt; n; i++) {</span>
-<span class="fc bfc" id="L929" title="All 2 branches covered.">      for (int j = 0; j &lt; n; j++) {</span>
-<span class="fc" id="L930">        matrix[i][j] = Integer.MAX_VALUE / 2;</span>
+<span class="fc" id="L922">    int[][] matrix = new int[n][n];</span>
+<span class="fc bfc" id="L923" title="All 2 branches covered.">    for (int i = 0; i &lt; n; i++) {</span>
+<span class="fc bfc" id="L924" title="All 2 branches covered.">      for (int j = 0; j &lt; n; j++) {</span>
+<span class="fc" id="L925">        matrix[i][j] = Integer.MAX_VALUE / 2;</span>
       }
     }
-<span class="fc" id="L933">    return matrix;</span>
+<span class="fc" id="L928">    return matrix;</span>
   }
 
   /**
@@ -942,13 +937,13 @@ public class OrderService implements OrderServices {
    */
   private void fillMatrixWithDefaultCityDistances(int[][] matrix, List&lt;CityDistance&gt; distances,
       List&lt;String&gt; cityNames) {
-<span class="fc bfc" id="L945" title="All 2 branches covered.">    for (CityDistance cd : distances) {</span>
-<span class="fc" id="L946">      int i = cityNames.indexOf(cd.getCityA());</span>
-<span class="fc" id="L947">      int j = cityNames.indexOf(cd.getCityB());</span>
-<span class="fc" id="L948">      matrix[i][j] = cd.getDistance();</span>
-<span class="fc" id="L949">      matrix[j][i] = cd.getDistance();</span>
-<span class="fc" id="L950">    }</span>
-<span class="fc" id="L951">  }</span>
+<span class="fc bfc" id="L940" title="All 2 branches covered.">    for (CityDistance cd : distances) {</span>
+<span class="fc" id="L941">      int i = cityNames.indexOf(cd.getCityA());</span>
+<span class="fc" id="L942">      int j = cityNames.indexOf(cd.getCityB());</span>
+<span class="fc" id="L943">      matrix[i][j] = cd.getDistance();</span>
+<span class="fc" id="L944">      matrix[j][i] = cd.getDistance();</span>
+<span class="fc" id="L945">    }</span>
+<span class="fc" id="L946">  }</span>
 
   /**
    * Fills matrix with calculated path between cities which are not connected directly.
@@ -960,32 +955,32 @@ public class OrderService implements OrderServices {
    */
   private void resolvePathsForMatrix(int[][] matrix, int[][] bigMatrix, List&lt;String&gt; cityNames,
       List&lt;City&gt; rpCities) {
-<span class="fc" id="L963">    int n = matrix.length;</span>
-<span class="fc bfc" id="L964" title="All 2 branches covered.">    for (int i = 0; i &lt; n; i++) {</span>
-<span class="fc bfc" id="L965" title="All 2 branches covered.">      for (int j = i + 1; j &lt; n; j++) {</span>
-<span class="fc" id="L966">        int k = cityNames.indexOf(rpCities.get(i).getCurrentCity());</span>
-<span class="fc" id="L967">        int m = cityNames.indexOf(rpCities.get(j).getCurrentCity());</span>
-<span class="fc bfc" id="L968" title="All 2 branches covered.">        if (bigMatrix[k][m] != Integer.MAX_VALUE / 2) {</span>
-<span class="fc" id="L969">          matrix[i][j] = bigMatrix[k][m];</span>
-<span class="fc" id="L970">          matrix[j][i] = bigMatrix[k][m];</span>
+<span class="fc" id="L958">    int n = matrix.length;</span>
+<span class="fc bfc" id="L959" title="All 2 branches covered.">    for (int i = 0; i &lt; n; i++) {</span>
+<span class="fc bfc" id="L960" title="All 2 branches covered.">      for (int j = i + 1; j &lt; n; j++) {</span>
+<span class="fc" id="L961">        int k = cityNames.indexOf(rpCities.get(i).getCurrentCity());</span>
+<span class="fc" id="L962">        int m = cityNames.indexOf(rpCities.get(j).getCurrentCity());</span>
+<span class="fc bfc" id="L963" title="All 2 branches covered.">        if (bigMatrix[k][m] != Integer.MAX_VALUE / 2) {</span>
+<span class="fc" id="L964">          matrix[i][j] = bigMatrix[k][m];</span>
+<span class="fc" id="L965">          matrix[j][i] = bigMatrix[k][m];</span>
         } else {
-<span class="fc" id="L972">          List&lt;Integer&gt; route = new ArrayList&lt;&gt;();</span>
-<span class="fc" id="L973">          log.info(&quot;Trying to calulate path between &quot; + rpCities.get(i).getCurrentCity() + &quot; and &quot;</span>
-<span class="fc" id="L974">              + rpCities.get(j).getCurrentCity());</span>
-<span class="fc" id="L975">          int value = getShortestPath(bigMatrix, route, k, m);</span>
-<span class="fc" id="L976">          matrix[i][j] = value;</span>
-<span class="fc" id="L977">          matrix[j][i] = value;</span>
-<span class="fc" id="L978">          StringBuilder builder = new StringBuilder();</span>
-<span class="fc bfc" id="L979" title="All 2 branches covered.">          for (Integer x : route) {</span>
-<span class="fc" id="L980">            builder.append(x + PATH_DELIMETER);</span>
-<span class="fc" id="L981">          }</span>
-<span class="fc" id="L982">          String path = builder.toString();</span>
-<span class="fc" id="L983">          path = path.substring(0, path.length() - PATH_DELIMETER.length());</span>
-<span class="fc" id="L984">          log.debug(path);</span>
+<span class="fc" id="L967">          List&lt;Integer&gt; route = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L968">          log.info(&quot;Trying to calulate path between &quot; + rpCities.get(i).getCurrentCity() + &quot; and &quot;</span>
+<span class="fc" id="L969">              + rpCities.get(j).getCurrentCity());</span>
+<span class="fc" id="L970">          int value = getShortestPath(bigMatrix, route, k, m);</span>
+<span class="fc" id="L971">          matrix[i][j] = value;</span>
+<span class="fc" id="L972">          matrix[j][i] = value;</span>
+<span class="fc" id="L973">          StringBuilder builder = new StringBuilder();</span>
+<span class="fc bfc" id="L974" title="All 2 branches covered.">          for (Integer x : route) {</span>
+<span class="fc" id="L975">            builder.append(x + PATH_DELIMETER);</span>
+<span class="fc" id="L976">          }</span>
+<span class="fc" id="L977">          String path = builder.toString();</span>
+<span class="fc" id="L978">          path = path.substring(0, path.length() - PATH_DELIMETER.length());</span>
+<span class="fc" id="L979">          log.debug(path);</span>
         }
       }
     }
-<span class="fc" id="L988">  }</span>
+<span class="fc" id="L983">  }</span>
 
   /**
    * Method which will assign drivers for given path and car. The best solution is counted as one
@@ -1000,91 +995,88 @@ public class OrderService implements OrderServices {
    */
   private List&lt;User&gt; tryToAssignDriversForOrder(String path, int[][] matrix, List&lt;City&gt; rpCities,
       Car selectedCar) {
-    /*
-     * if (selectedCar == null) { return null; }
-     */
-<span class="fc" id="L1006">    List&lt;String&gt; cityNames =</span>
-<span class="fc" id="L1007">        rpCities.stream().map(c -&gt; c.getCurrentCity()).collect(Collectors.toList());</span>
-<span class="fc" id="L1008">    log.debug(cityNames.toString());</span>
-<span class="fc" id="L1009">    String[] cities = path.split(PATH_DELIMETER);</span>
-<span class="fc" id="L1010">    final int n = cities.length;</span>
-<span class="fc" id="L1011">    int[] distances = new int[n - 1];</span>
+<span class="fc" id="L998">    List&lt;String&gt; cityNames =</span>
+<span class="fc" id="L999">        rpCities.stream().map(c -&gt; c.getCurrentCity()).collect(Collectors.toList());</span>
+<span class="fc" id="L1000">    log.debug(cityNames.toString());</span>
+<span class="fc" id="L1001">    String[] cities = path.split(PATH_DELIMETER);</span>
+<span class="fc" id="L1002">    final int n = cities.length;</span>
+<span class="fc" id="L1003">    int[] distances = new int[n - 1];</span>
     // list of capable drivers from each city on route
-<span class="fc" id="L1013">    List&lt;List&lt;User&gt;&gt; drivers = new ArrayList&lt;&gt;();</span>
-<span class="fc bfc" id="L1014" title="All 2 branches covered.">    for (int i = 0; i &lt; n - 1; i++) {</span>
-<span class="fc" id="L1015">      int indexCurrentCity = cityNames.indexOf(cities[i]);</span>
-<span class="fc" id="L1016">      int indexNextCity = cityNames.indexOf(cities[i + 1]);</span>
-<span class="fc" id="L1017">      distances[i] = matrix[indexCurrentCity][indexNextCity];</span>
+<span class="fc" id="L1005">    List&lt;List&lt;User&gt;&gt; drivers = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L1006" title="All 2 branches covered.">    for (int i = 0; i &lt; n - 1; i++) {</span>
+<span class="fc" id="L1007">      int indexCurrentCity = cityNames.indexOf(cities[i]);</span>
+<span class="fc" id="L1008">      int indexNextCity = cityNames.indexOf(cities[i + 1]);</span>
+<span class="fc" id="L1009">      distances[i] = matrix[indexCurrentCity][indexNextCity];</span>
       // adding drivers
-<span class="fc" id="L1019">      List&lt;User&gt; cityDrivers = rpCities.get(indexCurrentCity).getUserInfos().stream()</span>
-<span class="fc" id="L1020">          .map(ui -&gt; ui.getUser()).filter(this::isDriverCapable)</span>
-<span class="fc" id="L1021">          .sorted((a, b) -&gt; a.getId() - b.getId()).collect(Collectors.toList());</span>
-<span class="fc" id="L1022">      drivers.add(i, cityDrivers);</span>
+<span class="fc" id="L1011">      List&lt;User&gt; cityDrivers = rpCities.get(indexCurrentCity).getUserInfos().stream()</span>
+<span class="fc" id="L1012">          .map(ui -&gt; ui.getUser()).filter(this::isDriverCapable)</span>
+<span class="fc" id="L1013">          .sorted((a, b) -&gt; a.getId() - b.getId()).collect(Collectors.toList());</span>
+<span class="fc" id="L1014">      drivers.add(i, cityDrivers);</span>
     }
-<span class="fc" id="L1024">    log.debug(drivers.toString());</span>
+<span class="fc" id="L1016">    log.debug(drivers.toString());</span>
     // counter for list of drivers for each city
-<span class="fc" id="L1026">    int[] counters = new int[n - 1];</span>
-<span class="fc" id="L1027">    int currentCityIndex = 0;</span>
-<span class="fc" id="L1028">    int selectedDriverCity = 0;</span>
-<span class="fc" id="L1029">    int hoursAtDriving = 0;</span>
-<span class="fc" id="L1030">    List&lt;User&gt; driversChain = new ArrayList&lt;&gt;();</span>
-<span class="fc" id="L1031">    List&lt;Calendar&gt; calendarChain = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L1018">    int[] counters = new int[n - 1];</span>
+<span class="fc" id="L1019">    int currentCityIndex = 0;</span>
+<span class="fc" id="L1020">    int selectedDriverCity = 0;</span>
+<span class="fc" id="L1021">    int hoursAtDriving = 0;</span>
+<span class="fc" id="L1022">    List&lt;User&gt; driversChain = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L1023">    List&lt;Calendar&gt; calendarChain = new ArrayList&lt;&gt;();</span>
     User driver;
-<span class="fc bfc" id="L1033" title="All 2 branches covered.">    if (calendarForSimulation == null) {</span>
-<span class="fc" id="L1034">      calendarForSimulation = new GregorianCalendar();</span>
+<span class="fc bfc" id="L1025" title="All 2 branches covered.">    if (calendarForSimulation == null) {</span>
+<span class="fc" id="L1026">      calendarForSimulation = new GregorianCalendar();</span>
     }
-<span class="fc" id="L1036">    calendarChain.add(calendarForSimulation);</span>
-<span class="fc bfc" id="L1037" title="All 4 branches covered.">    while (currentCityIndex != n - 1 &amp;&amp; counters[0] &lt; drivers.get(0).size()) {</span>
-<span class="fc" id="L1038">      log.debug(driversChain.toString());</span>
-<span class="fc bfc" id="L1039" title="All 2 branches covered.">      if (counters[selectedDriverCity] &lt; drivers.get(selectedDriverCity).size()) {</span>
-<span class="fc" id="L1040">        log.debug(&quot;Selecting driver&quot;);</span>
-<span class="fc" id="L1041">        driver = drivers.get(selectedDriverCity).get(counters[selectedDriverCity]);</span>
+<span class="fc" id="L1028">    calendarChain.add(calendarForSimulation);</span>
+<span class="fc bfc" id="L1029" title="All 4 branches covered.">    while (currentCityIndex != n - 1 &amp;&amp; counters[0] &lt; drivers.get(0).size()) {</span>
+<span class="fc" id="L1030">      log.debug(driversChain.toString());</span>
+<span class="fc bfc" id="L1031" title="All 2 branches covered.">      if (counters[selectedDriverCity] &lt; drivers.get(selectedDriverCity).size()) {</span>
+<span class="fc" id="L1032">        log.debug(&quot;Selecting driver&quot;);</span>
+<span class="fc" id="L1033">        driver = drivers.get(selectedDriverCity).get(counters[selectedDriverCity]);</span>
       } else {
-<span class="fc" id="L1043">        log.debug(&quot;Deleting last entry from chain&quot;);</span>
-<span class="fc" id="L1044">        currentCityIndex--;</span>
-<span class="fc" id="L1045">        selectedDriverCity = currentCityIndex;</span>
-<span class="fc" id="L1046">        driversChain.remove(driversChain.size() - 1);</span>
-<span class="fc" id="L1047">        calendarChain.remove(calendarChain.size() - 1);</span>
-<span class="fc" id="L1048">        calendarForSimulation = calendarChain.get(calendarChain.size() - 1);</span>
-<span class="fc" id="L1049">        counters[selectedDriverCity]++;</span>
-<span class="fc bfc" id="L1050" title="All 2 branches covered.">        for (int i = selectedDriverCity + 1; i &lt; counters.length; i++) {</span>
-<span class="fc" id="L1051">          counters[i] = 0;</span>
+<span class="fc" id="L1035">        log.debug(&quot;Deleting last entry from chain&quot;);</span>
+<span class="fc" id="L1036">        currentCityIndex--;</span>
+<span class="fc" id="L1037">        selectedDriverCity = currentCityIndex;</span>
+<span class="fc" id="L1038">        driversChain.remove(driversChain.size() - 1);</span>
+<span class="fc" id="L1039">        calendarChain.remove(calendarChain.size() - 1);</span>
+<span class="fc" id="L1040">        calendarForSimulation = calendarChain.get(calendarChain.size() - 1);</span>
+<span class="fc" id="L1041">        counters[selectedDriverCity]++;</span>
+<span class="fc bfc" id="L1042" title="All 2 branches covered.">        for (int i = selectedDriverCity + 1; i &lt; counters.length; i++) {</span>
+<span class="fc" id="L1043">          counters[i] = 0;</span>
         }
-<span class="fc" id="L1053">        continue;</span>
+<span class="fc" id="L1045">        continue;</span>
       }
-<span class="fc" id="L1055">      int hoursToNextCity =</span>
-<span class="fc" id="L1056">          (int) Math.round((double) distances[currentCityIndex] / AVERAGE_CAR_SPEED);</span>
-<span class="fc" id="L1057">      log.debug(hoursToNextCity);</span>
-<span class="fc" id="L1058">      hoursAtDriving += hoursToNextCity;</span>
-<span class="fc" id="L1059">      log.debug(hoursAtDriving);</span>
-<span class="fc" id="L1060">      Calendar copy = (Calendar) calendarForSimulation.clone();</span>
-<span class="fc" id="L1061">      copy.add(Calendar.HOUR_OF_DAY, hoursToNextCity);</span>
-<span class="fc" id="L1062">      int hoursWorked = driver.getUserInfo().getHoursWorked();</span>
-<span class="fc bfc" id="L1063" title="All 2 branches covered.">      if (copy.get(Calendar.MONTH) != calendarForSimulation.get(Calendar.MONTH)) {</span>
-<span class="fc" id="L1064">        hoursWorked = copy.get(Calendar.HOUR_OF_DAY);</span>
+<span class="fc" id="L1047">      int hoursToNextCity =</span>
+<span class="fc" id="L1048">          (int) Math.round((double) distances[currentCityIndex] / AVERAGE_CAR_SPEED);</span>
+<span class="fc" id="L1049">      log.debug(hoursToNextCity);</span>
+<span class="fc" id="L1050">      hoursAtDriving += hoursToNextCity;</span>
+<span class="fc" id="L1051">      log.debug(hoursAtDriving);</span>
+<span class="fc" id="L1052">      Calendar copy = (Calendar) calendarForSimulation.clone();</span>
+<span class="fc" id="L1053">      copy.add(Calendar.HOUR_OF_DAY, hoursToNextCity);</span>
+<span class="fc" id="L1054">      int hoursWorked = driver.getUserInfo().getHoursWorked();</span>
+<span class="fc bfc" id="L1055" title="All 2 branches covered.">      if (copy.get(Calendar.MONTH) != calendarForSimulation.get(Calendar.MONTH)) {</span>
+<span class="fc" id="L1056">        hoursWorked = copy.get(Calendar.HOUR_OF_DAY);</span>
       }
-<span class="fc" id="L1066">      calendarForSimulation = copy;</span>
-<span class="fc bfc" id="L1067" title="All 2 branches covered.">      boolean hasTime = hoursWorked + hoursAtDriving &lt;= MONTH_HOURS_LIMIT;</span>
-<span class="fc bfc" id="L1068" title="All 2 branches covered.">      boolean isCarShiftLengthCapacityReached = hoursAtDriving &gt; selectedCar.getShiftLength();</span>
-<span class="fc" id="L1069">      log.debug(hasTime + &quot;;&quot; + isCarShiftLengthCapacityReached);</span>
-<span class="fc bfc" id="L1070" title="All 4 branches covered.">      if (hasTime &amp;&amp; !isCarShiftLengthCapacityReached) {</span>
-<span class="fc" id="L1071">        log.debug(&quot;Adding driver to chain&quot;);</span>
-<span class="fc" id="L1072">        currentCityIndex++;</span>
-<span class="fc" id="L1073">        driversChain.add(driver);</span>
-<span class="fc" id="L1074">        calendarChain.add(calendarForSimulation);</span>
+<span class="fc" id="L1058">      calendarForSimulation = copy;</span>
+<span class="fc bfc" id="L1059" title="All 2 branches covered.">      boolean hasTime = hoursWorked + hoursAtDriving &lt;= MONTH_HOURS_LIMIT;</span>
+<span class="fc bfc" id="L1060" title="All 2 branches covered.">      boolean isCarShiftLengthCapacityReached = hoursAtDriving &gt; selectedCar.getShiftLength();</span>
+<span class="fc" id="L1061">      log.debug(hasTime + &quot;;&quot; + isCarShiftLengthCapacityReached);</span>
+<span class="fc bfc" id="L1062" title="All 4 branches covered.">      if (hasTime &amp;&amp; !isCarShiftLengthCapacityReached) {</span>
+<span class="fc" id="L1063">        log.debug(&quot;Adding driver to chain&quot;);</span>
+<span class="fc" id="L1064">        currentCityIndex++;</span>
+<span class="fc" id="L1065">        driversChain.add(driver);</span>
+<span class="fc" id="L1066">        calendarChain.add(calendarForSimulation);</span>
       } else {
-<span class="fc" id="L1076">        hoursAtDriving = 0;</span>
-<span class="fc bfc" id="L1077" title="All 2 branches covered.">        if (selectedDriverCity != currentCityIndex) {</span>
-<span class="fc" id="L1078">          log.debug(&quot;City has changed&quot;);</span>
-<span class="fc" id="L1079">          selectedDriverCity = currentCityIndex;</span>
+<span class="fc" id="L1068">        hoursAtDriving = 0;</span>
+<span class="fc bfc" id="L1069" title="All 2 branches covered.">        if (selectedDriverCity != currentCityIndex) {</span>
+<span class="fc" id="L1070">          log.debug(&quot;City has changed&quot;);</span>
+<span class="fc" id="L1071">          selectedDriverCity = currentCityIndex;</span>
         } else {
-<span class="fc" id="L1081">          log.debug(&quot;City hasn't changed, switching to next driver&quot;);</span>
-<span class="fc" id="L1082">          counters[selectedDriverCity]++;</span>
+<span class="fc" id="L1073">          log.debug(&quot;City hasn't changed, switching to next driver&quot;);</span>
+<span class="fc" id="L1074">          counters[selectedDriverCity]++;</span>
         }
       }
-<span class="fc" id="L1085">    }</span>
-<span class="fc" id="L1086">    calendarForSimulation = null;</span>
-<span class="fc bfc" id="L1087" title="All 2 branches covered.">    return currentCityIndex == n - 1 ? driversChain : null;</span>
+<span class="fc" id="L1077">    }</span>
+<span class="fc" id="L1078">    calendarForSimulation = null;</span>
+<span class="fc bfc" id="L1079" title="All 2 branches covered.">    return currentCityIndex == n - 1 ? driversChain : null;</span>
   }
 
   /**
@@ -1095,11 +1087,11 @@ public class OrderService implements OrderServices {
    * @return true if user can be used for driving for given order, false otherwise
    */
   private boolean isDriverCapable(User user) {
-<span class="fc" id="L1098">    boolean isDriver = user.getRole().equalsIgnoreCase(UserRole.DRIVER.toString());</span>
-<span class="fc" id="L1099">    boolean isOnShift =</span>
-<span class="fc" id="L1100">        user.getUserInfo().getStatus().equalsIgnoreCase(DriverStatus.ON_SHIFT.toString());</span>
-<span class="fc bfc" id="L1101" title="All 2 branches covered.">    boolean hasAssignedOrder = user.getUserInfo().getOrder() != null;</span>
-<span class="pc bpc" id="L1102" title="1 of 6 branches missed.">    return isDriver &amp;&amp; isOnShift &amp;&amp; !hasAssignedOrder;</span>
+<span class="fc" id="L1090">    boolean isDriver = user.getRole().equalsIgnoreCase(UserRole.DRIVER.toString());</span>
+<span class="fc" id="L1091">    boolean isOnShift =</span>
+<span class="fc" id="L1092">        user.getUserInfo().getStatus().equalsIgnoreCase(DriverStatus.ON_SHIFT.toString());</span>
+<span class="fc bfc" id="L1093" title="All 2 branches covered.">    boolean hasAssignedOrder = user.getUserInfo().getOrder() != null;</span>
+<span class="pc bpc" id="L1094" title="1 of 6 branches missed.">    return isDriver &amp;&amp; isOnShift &amp;&amp; !hasAssignedOrder;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>
