@@ -103,7 +103,6 @@ public class DriverService implements DriverServices {
           driver.getUserInfo().setCar(null);
           break;
         case RESTING:
-          //unassignDriverIfPossible(driver);
           driver.getUserInfo().setCar(null);
           break;
         case LOADING_AND_UNLOADING_CARGO:

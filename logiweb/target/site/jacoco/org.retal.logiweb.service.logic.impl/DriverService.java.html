@@ -103,87 +103,86 @@ public class DriverService implements DriverServices {
 <span class="fc" id="L103">          driver.getUserInfo().setCar(null);</span>
 <span class="fc" id="L104">          break;</span>
         case RESTING:
-          //unassignDriverIfPossible(driver);
-<span class="fc" id="L107">          driver.getUserInfo().setCar(null);</span>
-<span class="fc" id="L108">          break;</span>
+<span class="fc" id="L106">          driver.getUserInfo().setCar(null);</span>
+<span class="fc" id="L107">          break;</span>
         case LOADING_AND_UNLOADING_CARGO:
         default:
           break;
       }
-<span class="fc bfc" id="L113" title="All 2 branches covered.">      if (!bindingResult.hasErrors()) {</span>
-<span class="fc" id="L114">        newStatus = newStatus.replace(&quot;_&quot;, &quot; &quot;);</span>
-<span class="fc" id="L115">        driver.getUserInfo().setStatus(newStatus);</span>
-<span class="fc" id="L116">        userDAO.update(driver);</span>
+<span class="fc bfc" id="L112" title="All 2 branches covered.">      if (!bindingResult.hasErrors()) {</span>
+<span class="fc" id="L113">        newStatus = newStatus.replace(&quot;_&quot;, &quot; &quot;);</span>
+<span class="fc" id="L114">        driver.getUserInfo().setStatus(newStatus);</span>
+<span class="fc" id="L115">        userDAO.update(driver);</span>
       }
     }
-<span class="fc" id="L119">  }</span>
+<span class="fc" id="L118">  }</span>
 
   @Override
   public void changeLocation(BindingResult bindingResult) {
-<span class="fc" id="L123">    User driver = sessionInfo.getCurrentUser();</span>
-<span class="fc" id="L124">    Session session = HibernateSessionFactory.getSessionFactory().openSession();</span>
-<span class="fc" id="L125">    boolean canChangeLocation = true;</span>
-<span class="fc" id="L126">    City driverCity = driver.getUserInfo().getCity();</span>
-<span class="fc" id="L127">    session.persist(driverCity);</span>
-<span class="fc" id="L128">    Set&lt;RoutePoint&gt; points = driverCity.getPoints().stream()</span>
-<span class="pc bpc" id="L129" title="1 of 2 branches missed.">        .filter(rp -&gt; rp.getOrder().getId() == driver.getUserInfo().getOrder().getId())</span>
-<span class="fc" id="L130">        .collect(Collectors.toSet());</span>
-<span class="fc bfc" id="L131" title="All 2 branches covered.">    for (RoutePoint rp : points) {</span>
-<span class="fc bfc" id="L132" title="All 2 branches covered.">      String statusToAvoid = rp.getIsLoading() ? &quot;prepared&quot; : &quot;loaded&quot;;</span>
-<span class="fc bfc" id="L133" title="All 2 branches covered.">      canChangeLocation &amp;= !rp.getCargo().getStatus().equalsIgnoreCase(statusToAvoid);</span>
+<span class="fc" id="L122">    User driver = sessionInfo.getCurrentUser();</span>
+<span class="fc" id="L123">    Session session = HibernateSessionFactory.getSessionFactory().openSession();</span>
+<span class="fc" id="L124">    boolean canChangeLocation = true;</span>
+<span class="fc" id="L125">    City driverCity = driver.getUserInfo().getCity();</span>
+<span class="fc" id="L126">    session.persist(driverCity);</span>
+<span class="fc" id="L127">    Set&lt;RoutePoint&gt; points = driverCity.getPoints().stream()</span>
+<span class="pc bpc" id="L128" title="1 of 2 branches missed.">        .filter(rp -&gt; rp.getOrder().getId() == driver.getUserInfo().getOrder().getId())</span>
+<span class="fc" id="L129">        .collect(Collectors.toSet());</span>
+<span class="fc bfc" id="L130" title="All 2 branches covered.">    for (RoutePoint rp : points) {</span>
+<span class="fc bfc" id="L131" title="All 2 branches covered.">      String statusToAvoid = rp.getIsLoading() ? &quot;prepared&quot; : &quot;loaded&quot;;</span>
+<span class="fc bfc" id="L132" title="All 2 branches covered.">      canChangeLocation &amp;= !rp.getCargo().getStatus().equalsIgnoreCase(statusToAvoid);</span>
     }
-<span class="fc" id="L135">    session.close();</span>
-<span class="fc bfc" id="L136" title="All 2 branches covered.">    if (!canChangeLocation) {</span>
-<span class="fc" id="L137">      bindingResult.reject(&quot;cargoManagement&quot;,</span>
-<span class="fc" id="L138">          &quot;Not all assigned to current city cargo is loaded/unloaded, please double-check.&quot;);</span>
+<span class="fc" id="L134">    session.close();</span>
+<span class="fc bfc" id="L135" title="All 2 branches covered.">    if (!canChangeLocation) {</span>
+<span class="fc" id="L136">      bindingResult.reject(&quot;cargoManagement&quot;,</span>
+<span class="fc" id="L137">          &quot;Not all assigned to current city cargo is loaded/unloaded, please double-check.&quot;);</span>
     }
-<span class="fc" id="L140">    String userCity = driver.getUserInfo().getCity().getCurrentCity();</span>
-<span class="fc" id="L141">    String[] cities = driver.getUserInfo().getOrder().getRoute().split(Order.ROUTE_DELIMETER);</span>
-<span class="fc" id="L142">    int index = driver.getUserInfo().getOrder().getOrderRouteProgression().getRouteCounter() + 1;</span>
-<span class="fc bfc" id="L143" title="All 2 branches covered.">    int length = index &lt; cities.length</span>
-<span class="fc" id="L144">        ? cargoAndOrdersService.lengthBetweenTwoCities(userCity, cities[index])</span>
-<span class="fc" id="L145">        : 0;</span>
-<span class="fc" id="L146">    length = (int) Math.round((double) length / OrderService.AVERAGE_CAR_SPEED);</span>
-<span class="fc" id="L147">    Integer hoursDrived = driver.getUserInfo().getHoursDrived();</span>
-<span class="fc bfc" id="L148" title="All 2 branches covered.">    if (hoursDrived != null) {</span>
-<span class="fc" id="L149">      hoursDrived += length;</span>
-<span class="fc" id="L150">    } else {</span>
-<span class="fc" id="L151">      hoursDrived = length;</span>
+<span class="fc" id="L139">    String userCity = driver.getUserInfo().getCity().getCurrentCity();</span>
+<span class="fc" id="L140">    String[] cities = driver.getUserInfo().getOrder().getRoute().split(Order.ROUTE_DELIMETER);</span>
+<span class="fc" id="L141">    int index = driver.getUserInfo().getOrder().getOrderRouteProgression().getRouteCounter() + 1;</span>
+<span class="fc bfc" id="L142" title="All 2 branches covered.">    int length = index &lt; cities.length</span>
+<span class="fc" id="L143">        ? cargoAndOrdersService.lengthBetweenTwoCities(userCity, cities[index])</span>
+<span class="fc" id="L144">        : 0;</span>
+<span class="fc" id="L145">    length = (int) Math.round((double) length / OrderService.AVERAGE_CAR_SPEED);</span>
+<span class="fc" id="L146">    Integer hoursDrived = driver.getUserInfo().getHoursDrived();</span>
+<span class="fc bfc" id="L147" title="All 2 branches covered.">    if (hoursDrived != null) {</span>
+<span class="fc" id="L148">      hoursDrived += length;</span>
+<span class="fc" id="L149">    } else {</span>
+<span class="fc" id="L150">      hoursDrived = length;</span>
     }
-<span class="fc" id="L153">    Integer hoursWorked = driver.getUserInfo().getHoursWorked() + length;</span>
-<span class="fc" id="L154">    Calendar currentDate = new GregorianCalendar();</span>
-<span class="fc" id="L155">    Calendar modifiedDate = (Calendar) currentDate.clone();</span>
-<span class="fc" id="L156">    modifiedDate.add(Calendar.HOUR_OF_DAY, length);</span>
-<span class="pc bpc" id="L157" title="1 of 2 branches missed.">    if (currentDate.get(Calendar.MONTH) != modifiedDate.get(Calendar.MONTH)) {</span>
-<span class="nc" id="L158">      hoursWorked = modifiedDate.get(Calendar.HOUR_OF_DAY);</span>
+<span class="fc" id="L152">    Integer hoursWorked = driver.getUserInfo().getHoursWorked() + length;</span>
+<span class="fc" id="L153">    Calendar currentDate = new GregorianCalendar();</span>
+<span class="fc" id="L154">    Calendar modifiedDate = (Calendar) currentDate.clone();</span>
+<span class="fc" id="L155">    modifiedDate.add(Calendar.HOUR_OF_DAY, length);</span>
+<span class="pc bpc" id="L156" title="1 of 2 branches missed.">    if (currentDate.get(Calendar.MONTH) != modifiedDate.get(Calendar.MONTH)) {</span>
+<span class="nc" id="L157">      hoursWorked = modifiedDate.get(Calendar.HOUR_OF_DAY);</span>
     }
-<span class="fc bfc" id="L160" title="All 2 branches covered.">    if (index &lt; cities.length</span>
-<span class="fc bfc" id="L161" title="All 2 branches covered.">        &amp;&amp; hoursDrived &lt;= driver.getUserInfo().getOrder().getCar().getShiftLength()) {</span>
-<span class="fc" id="L162">      String previousStatus = driver.getUserInfo().getStatus();</span>
-<span class="fc" id="L163">      changeStatus(DriverStatus.DRIVING.toString(), bindingResult);</span>
-<span class="fc bfc" id="L164" title="All 2 branches covered.">      if (!bindingResult.hasErrors()) {</span>
-<span class="fc" id="L165">        City newCity = cityDAO</span>
-<span class="fc" id="L166">            .read(driver.getUserInfo().getOrder().getRoute().split(Order.ROUTE_DELIMETER)[index]);</span>
-<span class="fc" id="L167">        driver.getUserInfo().setCity(newCity);</span>
-<span class="fc" id="L168">        driver.getUserInfo().setHoursWorked(hoursWorked);</span>
-<span class="fc" id="L169">        driver.getUserInfo().setHoursDrived(hoursDrived);</span>
-<span class="fc" id="L170">        userDAO.update(driver);</span>
-<span class="fc" id="L171">        Car car = driver.getUserInfo().getCar();</span>
-<span class="fc" id="L172">        car.setLocation(newCity);</span>
-<span class="fc" id="L173">        carDAO.update(car);</span>
-<span class="fc" id="L174">        OrderRouteProgression orderRouteProgression =</span>
-<span class="fc" id="L175">            driver.getUserInfo().getOrder().getOrderRouteProgression();</span>
-<span class="fc" id="L176">        orderRouteProgression.incrementCounter();</span>
-<span class="fc" id="L177">        orderRouteProgressionDAO.update(orderRouteProgression);</span>
-<span class="fc" id="L178">      } else {</span>
-<span class="fc" id="L179">        changeStatus(previousStatus, bindingResult);</span>
+<span class="fc bfc" id="L159" title="All 2 branches covered.">    if (index &lt; cities.length</span>
+<span class="fc bfc" id="L160" title="All 2 branches covered.">        &amp;&amp; hoursDrived &lt;= driver.getUserInfo().getOrder().getCar().getShiftLength()) {</span>
+<span class="fc" id="L161">      String previousStatus = driver.getUserInfo().getStatus();</span>
+<span class="fc" id="L162">      changeStatus(DriverStatus.DRIVING.toString(), bindingResult);</span>
+<span class="fc bfc" id="L163" title="All 2 branches covered.">      if (!bindingResult.hasErrors()) {</span>
+<span class="fc" id="L164">        City newCity = cityDAO</span>
+<span class="fc" id="L165">            .read(driver.getUserInfo().getOrder().getRoute().split(Order.ROUTE_DELIMETER)[index]);</span>
+<span class="fc" id="L166">        driver.getUserInfo().setCity(newCity);</span>
+<span class="fc" id="L167">        driver.getUserInfo().setHoursWorked(hoursWorked);</span>
+<span class="fc" id="L168">        driver.getUserInfo().setHoursDrived(hoursDrived);</span>
+<span class="fc" id="L169">        userDAO.update(driver);</span>
+<span class="fc" id="L170">        Car car = driver.getUserInfo().getCar();</span>
+<span class="fc" id="L171">        car.setLocation(newCity);</span>
+<span class="fc" id="L172">        carDAO.update(car);</span>
+<span class="fc" id="L173">        OrderRouteProgression orderRouteProgression =</span>
+<span class="fc" id="L174">            driver.getUserInfo().getOrder().getOrderRouteProgression();</span>
+<span class="fc" id="L175">        orderRouteProgression.incrementCounter();</span>
+<span class="fc" id="L176">        orderRouteProgressionDAO.update(orderRouteProgression);</span>
+<span class="fc" id="L177">      } else {</span>
+<span class="fc" id="L178">        changeStatus(previousStatus, bindingResult);</span>
       }
-<span class="fc" id="L181">    } else {</span>
-<span class="fc" id="L182">      bindingResult.reject(&quot;city&quot;,</span>
-<span class="fc" id="L183">          &quot;Illegal next city argument. Please don't try to change page code.&quot;);</span>
-<span class="fc" id="L184">      log.warn(&quot;Illegal next city on route of order id=&quot; + driver.getUserInfo().getOrder().getId());</span>
+<span class="fc" id="L180">    } else {</span>
+<span class="fc" id="L181">      bindingResult.reject(&quot;city&quot;,</span>
+<span class="fc" id="L182">          &quot;Illegal next city argument. Please don't try to change page code.&quot;);</span>
+<span class="fc" id="L183">      log.warn(&quot;Illegal next city on route of order id=&quot; + driver.getUserInfo().getOrder().getId());</span>
     }
-<span class="fc" id="L186">  }</span>
+<span class="fc" id="L185">  }</span>
 }
 
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>
