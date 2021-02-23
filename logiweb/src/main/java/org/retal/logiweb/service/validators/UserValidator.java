@@ -67,10 +67,10 @@ public class UserValidator implements Validator {
     }
     Pattern digits = Pattern.compile("\\d+");
     if (digits.matcher(userInfo.getName()).find()) {
-      throwError(errors, "noDigitsName", "Name must not contain digits.");
+      throwError(errors, "name", "Name must not contain digits.");
     }
     if (digits.matcher(userInfo.getSurname()).find()) {
-      throwError(errors, "noDigitsSurname", "Surname must not contain digits.");
+      throwError(errors, "surname", "Surname must not contain digits.");
     }
     log.info("Checking for malicious input");
     String response = checkForMaliciousInput(user.getLogin());
@@ -157,7 +157,6 @@ public class UserValidator implements Validator {
     if (bindingResult != null) {
       for (ObjectError o : bindingResult.getAllErrors()) {
         map.put("error_" + o.getCode(), o.getDefaultMessage());
-        log.debug(o.getCode() + ":" + o.getDefaultMessage());
       }
     }
     for (Map.Entry<String, String> e : map.entrySet()) {

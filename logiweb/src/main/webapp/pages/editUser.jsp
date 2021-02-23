@@ -65,7 +65,6 @@
 			<td><select name = "status">
 					<option value = "resting" ${user.userInfo.status == 'resting' ? 'selected' : ''}>Resting</option>
 					<option value = "on shift" ${user.userInfo.status == 'on shift' ? 'selected' : ''}>On shift</option>
-					<option value = "driving" ${user.userInfo.status == 'driving' ? 'selected' : ''}>Driving</option>
 				</select>
 			</td>
 			<td><span class = "error">${error_status}</span></td>

@@ -45,8 +45,8 @@ public class ManagerUserPageController {
    * Creates an instance of this class using constructor-based dependency injection.
    */
   @Autowired
-  public ManagerUserPageController(SessionInfo sessionInfo, UserService userService,
-<span class="fc" id="L49">      CityService cityService) {</span>
+<span class="fc" id="L48">  public ManagerUserPageController(SessionInfo sessionInfo, UserService userService,</span>
+      CityService cityService) {
 <span class="fc" id="L50">    this.sessionInfo = sessionInfo;</span>
 <span class="fc" id="L51">    this.userService = userService;</span>
 <span class="fc" id="L52">    this.cityService = cityService;</span>
@@ -126,7 +126,7 @@ public class ManagerUserPageController {
     }
 <span class="fc bfc" id="L127" title="All 2 branches covered.">    if (url403.equals(UserService.DELETION_UPDATION_ERROR)) {</span>
 <span class="fc" id="L128">      redir.addFlashAttribute(&quot;error_userDeletionFailed&quot;,</span>
-          &quot;Could not delete driver due to assigned order or being driving car&quot;);
+<span class="fc" id="L129">          &quot;Could not delete driver due to assigned order or being driving car&quot;);</span>
     }
 <span class="fc" id="L131">    return redirectView;</span>
   }
@@ -145,7 +145,7 @@ public class ManagerUserPageController {
 <span class="fc bfc" id="L145" title="All 2 branches covered.">    if (userService.userHasRightsToEditOrDeleteUser(we, target)) {</span>
 <span class="fc" id="L146">      redir.addFlashAttribute(&quot;user&quot;, target);</span>
 <span class="fc" id="L147">      redir.addFlashAttribute(&quot;we&quot;, we);</span>
-    } else {
+<span class="fc" id="L148">    } else {</span>
 <span class="fc" id="L149">      redirectView.setUrl(&quot;/403/&quot; + we.getLogin());</span>
 <span class="fc" id="L150">      log.debug(redirectView.getUrl());</span>
     }

@@ -5,7 +5,7 @@ It consists of two parts - Logiweb application itself and a table with statistic
 # Codeship
 [![Codeship Status for AlexMeowler/javaschool](https://app.codeship.com/projects/ae9cc548-5107-43bc-a4c0-60ee813c0211/status?branch=main)](https://app.codeship.com/projects/423888)
 
-# VERSION 2.5.1
+# VERSION 2.5.2
 
 # HOW TO START
 
@@ -26,11 +26,11 @@ hibernate.connection.url=%CCC%
 7. Fill DB with tables and data (structure of table has to be reverse engineered from org.retal.logiweb.domain package).
 8. Done!
 
-# SonarQube report (for version 2.5.1)
+# SonarQube report (for version 2.5.2)
 ![SonarQube report](sonar.png?raw=true "SonarQube Report")
 
 # CHANGES
 
-Removed commented blocks of code. Added technical solution description.
+Small fixes before presentation.
 
 # TODO
