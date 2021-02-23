@@ -15,12 +15,12 @@ logiweb,org.retal.logiweb.controller,AuthAndLogoutController,0,33,0,4,0,9,0,5,0,
 logiweb,org.retal.logiweb.controller,DriverPageController,0,285,1,9,0,61,1,11,0,7
 logiweb,org.retal.logiweb.controller,ManagerCarPageController,0,336,0,12,0,68,0,18,0,12
 logiweb,org.retal.logiweb.controller,HomePageController,0,14,0,0,0,5,0,4,0,4
-logiweb,org.retal.logiweb.controller,ManagerUserPageController,0,418,0,18,0,82,0,21,0,12
+logiweb,org.retal.logiweb.controller,ManagerUserPageController,0,416,0,18,0,84,0,21,0,12
 logiweb,org.retal.logiweb.controller,CompletedOrdersPageController,0,43,0,0,0,10,0,2,0,2
 logiweb,org.retal.logiweb.controller,GlobalExceptionHandler,0,59,0,6,0,11,0,6,0,3
 logiweb,org.retal.logiweb.dao.interfaces,DAO,0,108,0,10,0,20,0,9,0,4
 logiweb,org.retal.logiweb.service.validators,CargoValidator,0,123,0,14,0,33,0,13,0,6
-logiweb,org.retal.logiweb.service.validators,UserValidator,0,372,0,36,0,81,0,26,0,8
+logiweb,org.retal.logiweb.service.validators,UserValidator,0,357,0,36,0,77,0,26,0,8
 logiweb,org.retal.logiweb.service.validators,RoutePointsValidator,0,283,0,32,0,49,0,21,0,5
 logiweb,org.retal.logiweb.service.validators,CarValidator,0,104,0,14,0,24,0,12,0,5
 logiweb,org.retal.logiweb.service.web,OrderEndpoint,0,221,0,4,0,45,0,12,0,10
